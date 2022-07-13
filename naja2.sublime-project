@@ -1,0 +1,23 @@
+{
+    "folders":
+    [
+        {
+            "path": ".",
+            "folder_exclude_patterns":
+            [
+                ".vs",
+                "build",
+                "out",
+            ],
+            "file_exclude_patterns":
+            [
+                "naja2.sublime-workspace"
+            ]
+        }
+    ],
+
+    "settings":
+    {
+        "tab_size": 4
+    }
+}

@@ -1,0 +1,17 @@
+LOBYTES          =   $0800
+SET_PAGE         =   $08C0
+HGR              =   $08D7
+INIT_RANDOM      =   $08EC
+HIBYTES          =   $0900
+CLEAR_PAGE       =   $0C00
+CLEAR_PAGE1      =   $0C04
+CLEAR_PAGE2      =   $0C08
+RANDOM           =   $0D94
+MOVE_TO          =   $0DB7
+DRAW_TEXT        =   $0E2D
+SET_TEXTBOX      =   $0EB4
+WRAP_TEXTBOX     =   $0ECD
+DRAW_TEXTBOX     =   $0ED1
+UNPACK_TO        =   $1210
+UNPACK_FILL      =   $1222
+UNPACK           =   $1226
