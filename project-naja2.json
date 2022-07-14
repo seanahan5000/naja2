@@ -1,0 +1,16 @@
+
+{
+  "projectName": "naja2",
+  "startAddress": "0x6000",
+  "bins": [
+    { "fileName": "naja2/COMMON", "loadAddress": "0x0800" },
+    { "fileName": "naja2/TEST.COMMON", "loadAddress": "0x6000" }
+  ],
+  "lsts": [
+    { "fileName": "naja2/TEST.COMMON.LST" },
+    { "fileName": "naja2/COMMON.LST" }
+  ],
+  "images": [
+    { "fileName": "naja2/naja2.nib", "drive": 1, "enabled": true }
+  ]
+}

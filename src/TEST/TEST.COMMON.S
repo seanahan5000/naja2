@@ -1,12 +1,13 @@
 
-                PUT VARS
-                PUT COMMON.EXT
+                PUT /COMMON/VARS
+                PUT /COMMON/COMMON.EXT
 
                 ORG $6000
 
 TEST            JSR INIT_RANDOM
                 JSR HGR
 
+        do 0
                 LDX #0
 :1              LDA INSERT_TEXT,X
                 STA INSERT_BUFFER,X
@@ -23,6 +24,7 @@ TEST            JSR INIT_RANDOM
                 JSR DRAW_TEXT
 
                 JSR CLEAR_PAGE
+        fin
 
                 LDX #19*7
                 LDY #39
