@@ -52,3 +52,5 @@ cp project-naja2.json $PROJ/..
 
 cp $OBJ/*           $PROJ
 cp $DSK/naja2.nib   $PROJ
+
+#---------------------------------------

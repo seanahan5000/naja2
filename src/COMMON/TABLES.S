@@ -27,6 +27,11 @@ LOBYTES         ENT
                 HEX 5050505050505050
                 HEX D0D0D0D0D0D0D0D0
 
+SET_PAGE2       ENT
+                LDA #$40
+                BNE SET_PAGE        ; always
+SET_PAGE1       ENT
+                LDA #$20
 SET_PAGE        ENT
                 STA PAGE
                 LDA HIBYTES
@@ -100,7 +105,23 @@ HMASKS          ;ENT
                 DB  %00100000
                 DB  %01000000
 
-                DS  \,$EE               ; TODO: use these bytes
+LEFT_MASKS      DB  %00000000
+                DB  %00000001
+                DB  %00000011
+                DB  %00000111
+                DB  %00001111
+                DB  %00011111
+                DB  %00111111
+
+RIGHT_MASKS     DB  %01111110       ; NOTE: right masks are inclusive
+                DB  %01111100
+                DB  %01111000
+                DB  %01110000
+                DB  %01100000
+                DB  %01000000
+                DB  %00000000
+
+                DS  \,$EE           ; TODO: use these bytes
 
 DIV7            ;ENT
                 HEX 00000000000000

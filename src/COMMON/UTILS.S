@@ -1,4 +1,6 @@
 
+; TODO: combined SET_CLEAR_PAGE1/2
+
 CLEAR_PAGE      ENT
                 LDA PAGE
                 BNE CLR_COM         ; always
@@ -227,4 +229,54 @@ RANDOM          ENT
                 EOR SEED0
                 STA SEED0
                 RTS
+;
+; On entry:
+;   A: key code with high bit set
+;
+; On exit:
+;   A: unchanged
+;   X: unchanged
+;   Y: unchanged
+;   Z: 1 on successful key compare
+;
+; TODO: handle lower case?
+;
+CHECK_UP        ENT
+                CMP #"A"
+                BEQ :1
+                CMP #"I"
+                BEQ :1
+                CMP #$8B            ; up arrow
+:1              RTS
 
+CHECK_DOWN      ENT
+                CMP #"Z"
+                BEQ :1
+                CMP #"M"
+                BEQ :1
+                CMP #$8A            ; down arrow
+:1              RTS
+
+CHECK_LEFT      ENT
+                CMP #"J"
+                BEQ :1
+                CMP #$88            ; left arrow
+:1              RTS
+
+CHECK_RIGHT     ENT
+                CMP #"K"
+                BEQ :1
+                CMP #$95            ; right arrow
+:1              RTS
+
+CHECK_ENTER     ENT
+                CMP #" "
+                BEQ :1
+                CMP #$8D            ; <return>
+:1              RTS
+
+CHECK_CANCEL    ENT
+                CMP #"C"
+                BEQ :1
+                CMP #$9B            ; <escape>
+:1              RTS

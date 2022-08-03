@@ -1,37 +1,26 @@
 
-; DRAW_STRING
-;   include support for character name, other escapes
-;   support text box, auto linefeed
-;   support word break/wrap
-
-; (generalize shape drawing to support text and topviews?)
-; SET_SHAPE
-; DRAW_SHAPE (with and without shift?)
-; shape decompression?
-; topview shape support?
-
 ; (TEXT)   T,E,X,T,$8D
 ; (TEXT)+  T,E,X,T,$8D,$FF
 ; (TEXT)-  T,E,X,T
 ; (TEXT)=  T,E,X,T^$80
 
-; TODO: change these
-SCRATCH         =   $00
-SCRATCH1        =   $01
+;*** THESE ARE ALL USED FOR WORD-WRAP CASE ***
+WORD_DIV7       =   $31
+WORD_MOD7       =   $32
+WORD_INDEX      =   $33
 
-TEXT_PTR        =   $30
-TEXT_PTR_H      =   $31
-TEXT_INDEX      =   $32
+;-------------------------------------------------------------------------------
 
-; TODO: SHARE WITH ALL GRAPHICS?
-LEFT_DIV7       =   $33
-LEFT_MOD7       =   $34
-RIGHT_DIV7      =   $35
-MAX_DIV7        =   $37
+OP_SET_TEXT_HEIGHT
+                LDA (OP_PTR),Y
+                BNE :1
+                LDA #LineHeight
+:1              INY
+                STA TEXT_HEIGHT
+                STY OP_INDEX
+                RTS
 
-WORD_DIV7       =   $38
-WORD_MOD7       =   $39
-WORD_INDEX      =   $3A
+TEXT_HEIGHT     DB  LineHeight
 
 ;-------------------------------------------------------------------------------
 ; On entry:
@@ -42,26 +31,39 @@ WORD_INDEX      =   $3A
 ;   Y: Address of string (high)
 ;-------------------------------------------------------------------------------
 
-DRAW_TEXT       ENT
-                STX TEXT_PTR
-                STY TEXT_PTR_H
+; X: target X position
+DRAW_TEXTBUF    ENT
+                LDA DIV7,X
+                STA XCOORD
+                LDA MOD7,X
+                STA XSHIFT
+                LDX #<TEXT_BUFFER
+                LDY #>TEXT_BUFFER
 
+DRAW_TEXT       ENT
+                STX OP_PTR
+                STY OP_PTR_H
+                LDY #0
+                BEQ OP_TEXT     ; always
+
+OP_TEXT_AT      JSR OP_MOVE_TO
+OP_TEXT         STY OP_INDEX
                 LDA XCOORD
                 STA LEFT_DIV7
                 LDA XSHIFT
                 STA LEFT_MOD7
                 JSR TABLER
+                LDY OP_INDEX
 
-                LDY #0
-:NEXT_CHAR      LDA (TEXT_PTR),Y
+:NEXT_CHAR      LDA (OP_PTR),Y
                 BMI :SPECIAL_CHAR
                 INY
                 CMP #CharSpace
                 BEQ :1
-                STY TEXT_INDEX
+                STY OP_INDEX
                 JSR SET_LETTER
-                JSR DRAW_SHAPE
-                LDY TEXT_INDEX
+                JSR DRAW_CELL
+                LDY OP_INDEX
 :1              JSR ADVANCE
                 BNE :NEXT_CHAR      ; always
 
@@ -70,7 +72,7 @@ DRAW_TEXT       ENT
                 BEQ :DONE
                 CMP #CharEmpty
                 BEQ :NEXT_CHAR
-                STY TEXT_INDEX
+                STY OP_INDEX
                 CMP #CharLineBreak
                 BEQ :NEXT_LINE
                 CMP #CharInsert
@@ -88,10 +90,10 @@ DRAW_TEXT       ENT
                 BEQ :2
                 STX WORD_INDEX
                 JSR SET_LETTER
-                JSR DRAW_SHAPE
+                JSR DRAW_CELL
                 LDX WORD_INDEX
 :2              JSR ADVANCE
-                LDY TEXT_INDEX
+                LDY OP_INDEX
                 BNE :NEXT_INSERT    ; always
 
 :NEXT_LINE      LDA LEFT_DIV7
@@ -101,81 +103,95 @@ DRAW_TEXT       ENT
 
                 LDA YCOORD
                 CLC
-                ADC #LineHeight
+                ADC TEXT_HEIGHT
                 CMP #192-7
                 BCC :3
                 LDA #192-7
 :3              STA YCOORD
                 JSR TABLER
-                LDY TEXT_INDEX
+                LDY OP_INDEX
                 BNE :NEXT_CHAR      ; always
 
-:DONE           TYA
-                CLC
-                ADC TEXT_PTR
-                STA TEXT_PTR
-                BCC :4
-                INC TEXT_PTR_H
-:4              RTS
+:DONE           STY OP_INDEX
+                RTS
 
 ;-------------------------------------------------------------------------------
-; On entry:
-;   X: left in pixels
-;   Y: top in lines
-;   A: width in pixels
-;
-; On exit:
-;   LEFT_DIV7, LEFT_MOD7
-;   RIGHT_DIV7
-;
-; NOTE: Right edge of text box is only to the byte, not shift position.
-;-------------------------------------------------------------------------------
 
-SET_TEXTBOX     ENT
-                STY YCOORD
-                STA RIGHT_DIV7
-                LDA DIV7,X
-                STA LEFT_DIV7
-                LDA MOD7,X
-                STA LEFT_MOD7
-                TXA
-                CLC
-                ADC RIGHT_DIV7
+; X, Y, RIGHT (exclusive), BOTTOM (exclusive) in pixels/lines
+
+OP_SET_TEXTBOX_H
+                SEC
+                BCS OP_STB_CMN      ; always
+
+OP_SET_TEXTBOX  CLC
+OP_STB_CMN      LDA (OP_PTR),Y
+                INY
                 TAX
                 LDA DIV7,X
-                STA RIGHT_DIV7
+                STA LEFT_DIV7
+                STA XCOORD
+                LDA MOD7,X
+                STA LEFT_MOD7
+                STA XSHIFT
+                LDA (OP_PTR),Y
+                INY
+                STA TOP
+                STA YCOORD
+                LDA (OP_PTR),Y
+                INY
+                TAX
+                LDA (OP_PTR),Y
+                INY
+                STY OP_INDEX
+                STA BOTTOM
+                BCS :1
+                LDA DIV7,X
+                BCC :2              ; always
+:1              LDA DIV7HI,X
+:2              STA RIGHT_DIV7
+                LDA #0
+                STA RIGHT_MOD7
                 RTS
 
 ;-------------------------------------------------------------------------------
 ; On entry:
-;   SET_TEXTBOX called
+;   OP_SET_TEXTBOX called
 ;   X: Address of string (low)
 ;   Y: Address of string (high)
 ;-------------------------------------------------------------------------------
 
-WRAP_TEXTBOX    ENT
-                LDA #$38            ; SEC
-                BNE TEXTBOX_CMN     ; always
-
 DRAW_TEXTBOX    ENT
-                LDA #$18            ; CLC
+                STX OP_PTR
+                STY OP_PTR_H
+                LDY #0
+;                 BEQ OP_TEXT_IN      ; always
 
-TEXTBOX_CMN     STA WRAP_MOD
-                STX TEXT_PTR
-                STY TEXT_PTR_H
-                JSR FIRST_LINE
+; OP_TEXT_AT      JSR OP_MOVE_TO
+; OP_TEXT         LDA XCOORD
+;                 STA LEFT_DIV7
+;                 LDA XSHIFT
+;                 STA LEFT_MOD7
+;                 LDA #40
+;                 STA RIGHT_DIV7
+;                 LDA #192-7
+;                 STA BOTTOM
+OP_TEXT_IN      STY OP_INDEX
+                JSR TABLER
 
-:FIRST_WORD     LDY #0
-:NEXT_WORD      LDA XCOORD
+:NEXT_WORD      LDY OP_INDEX
+                LDA XCOORD
                 STA WORD_DIV7
                 LDA XSHIFT
                 STA WORD_MOD7
+
                 LDX #0
-:NEXT_CHAR      LDA (TEXT_PTR),Y
+:NEXT_CHAR      LDA (OP_PTR),Y
                 BMI :SPECIAL_CHAR
                 CMP #CharSpace
-                BEQ :BREAK_WORD
-                INY
+                BNE :0
+                CPX #0              ; leading space should not cause break
+                BNE :BREAK_WORD
+:0              INY
                 STA WORD_BUFFER,X
                 INX
                 PHA
@@ -183,17 +199,38 @@ TEXTBOX_CMN     STA WRAP_MOD
                 PLA
                 CMP #CharFirstSymbol
                 BCC :NEXT_CHAR
-:BREAK_WORD     STY TEXT_INDEX
+:BREAK_WORD     STY OP_INDEX
                 TXA
                 BEQ :DONE
                 LDA #$FF
                 STA WORD_BUFFER,X
 
                 LDA XCOORD
-                CMP MAX_DIV7
+                CMP RIGHT_DIV7
                 BCC :WORD_FITS
-                JSR NEXT_LINE
+                JSR :NEXT_LINE
                 JMP :DRAW_WORD
+
+:SPECIAL_CHAR   CMP #CharLineEnd
+                BEQ :BREAK_WORD
+                CMP #CharLineBreak
+                BEQ :BREAK_WORD
+                INY
+                CMP #CharEmpty
+                BEQ :NEXT_CHAR
+                STY OP_INDEX
+                CMP #CharInsert
+                BCS :START_INSERT
+                BCC :BREAK_WORD     ; always
+
+:FLUSH_TEXT     PLA
+                PLA
+:DONE           LDA (OP_PTR),Y
+                INY
+                CMP #CharLineEnd
+                BNE :DONE
+                STY OP_INDEX
+                RTS
 
 :WORD_FITS      LDA WORD_DIV7
                 STA XCOORD
@@ -207,85 +244,59 @@ TEXTBOX_CMN     STA WRAP_MOD
                 INY
                 STY WORD_INDEX
                 JSR SET_LETTER
-                JSR DRAW_SHAPE
+                JSR DRAW_CELL
                 JSR ADVANCE
                 LDY WORD_INDEX
                 BNE :1              ; always
 
-:TRIM_SPACE     LDY TEXT_INDEX
-:2              LDA (TEXT_PTR),Y
+:TRIM_SPACE     LDY OP_INDEX
+:2              LDA (OP_PTR),Y
+                CMP #CharLineBreak
+                BEQ :FORCE_BREAK
                 CMP #CharSpace
                 BNE :3
                 JSR ADVANCE
                 INY
                 BNE :2              ; always
 
-:3              LDA XCOORD
-                CMP MAX_DIV7
-                BCC :NEXT_WORD
-                STY TEXT_INDEX
-                JSR NEXT_LINE
-                JMP :FIRST_WORD
+:FORCE_BREAK    INY
+                STY OP_INDEX
+                BNE :33             ; always
 
-:SPECIAL_CHAR   INY
+:3              STY OP_INDEX
+                LDA XCOORD
+                CMP RIGHT_DIV7
+                BCC :4
+:33             JSR :NEXT_LINE
+:4              JMP :NEXT_WORD
+
+:START_INSERT   AND #CharInsertMask
+                TAY
+:NEXT_INSERT    LDA INSERT_BUFFER,Y
+                CMP #CharLineEnd
+                BEQ :INSERT_DONE
+                INY
                 CMP #CharEmpty
-                BEQ :NEXT_CHAR
-                BNE :BREAK_WORD
-                ; TODO: support #CharInsert here?
+                BEQ :NEXT_INSERT
+                STA WORD_BUFFER,X
+                JSR ADVANCE
+                INX
+                BNE :NEXT_INSERT    ; always
 
-:DONE           LDA TEXT_PTR
+:INSERT_DONE    LDY OP_INDEX
+                JMP :NEXT_CHAR
+
+:NEXT_LINE      LDA YCOORD
                 CLC
-                ADC TEXT_INDEX
-                STA TEXT_PTR
-                BCC :5
-                INC TEXT_PTR_H
-:5              RTS
-
-NEXT_LINE       LDA TEXT_PTR
-                CLC
-                ADC TEXT_INDEX
-                STA TEXT_PTR
-                BCC :1
-                INC TEXT_PTR_H
-:1              LDA #0
-                STA TEXT_INDEX
-
-                LDA YCOORD
-                CLC
-                ADC #LineHeight
-                CMP #192-7
-                BCC :2
-                LDA #192-7
-:2              STA YCOORD
-
-FIRST_LINE      LDA LEFT_DIV7
+                ADC TEXT_HEIGHT
+                CMP BOTTOM
+                BCS :FLUSH_TEXT
+                STA YCOORD
+                LDA LEFT_DIV7
                 STA XCOORD
                 LDA LEFT_MOD7
                 STA XSHIFT
-                JSR TABLER
-                LDA RIGHT_DIV7
-                STA MAX_DIV7
-WRAP_MOD        CLC
-                BCS SCAN_MAX_X
-                RTS
-
-SCAN_MAX_X      LDX #6
-:1              LDY LEFT_DIV7
-                INY
-:2              LDA TABLER_L,X
-                STA SCREENL
-                LDA TABLER_H,X
-                STA SCREENH
-                LDA (SCREENL),Y
-                BNE :3
-                INY
-                CPY MAX_DIV7
-                BCC :2
-                BCS :4              ; always
-:3              STY MAX_DIV7
-:4              DEX
-                BPL :1
-                RTS
+                JMP TABLER
 
 ;-------------------------------------------------------------------------------
 ; Move position right by one 7 pixel character
@@ -303,120 +314,18 @@ ADVANCE         DEC XSHIFT
                 STA XSHIFT
                 RTS                 ; always BNE
 
-;-------------------------------------------------------------------------------
-; Input:
-;   YCOORD: current Y position
-;
-; Output:
-;   TABLER_L,H: list of 7 hires line pointers
-;-------------------------------------------------------------------------------
-
-TABLER          LDY YCOORD
-                CPY TABLER_Y
-                BEQ :2
-                STY TABLER_Y
-                LDX #0
-:1              LDA LOBYTES,Y
-                STA TABLER_L,X
-                LDA HIBYTES,Y
-                STA TABLER_H,X
-                INY
-                INX
-                CPX #7
-                BNE :1
-:2              RTS
-
-TABLER_Y        DB  $FF
-TABLER_L        DS  7
-TABLER_H        DS  7
-
-;-------------------------------------------------------------------------------
-; Choose a letter of the font and set it as the current tile.
-;
-;   A: index of letter
-;-------------------------------------------------------------------------------
-
-SET_LETTER      LDX #<FONT
-                LDY #>FONT
-                ; fall through
-
-;-------------------------------------------------------------------------------
-; Compute pointer into indexed list of 7-byte tiles.
-;   Multiply by 7 using (index << 4) - index
-;
-; Input:
-;   X: low address of tile list
-;   Y: high address of tile list
-;   A: index of tile (assumed to be < #64)
-;
-; Output:
-;   SHAPE_SRC_MOD+1,2: pointer to selected tile
-;
-; Uses:
-;   SCRATCH, SCRATCH1
-;-------------------------------------------------------------------------------
-
-SET_SHAPE       STX SCRATCH1
-                STA SCRATCH
-                ASL
-                ASL                 ; (63 * 4 = 252)
-                ASL                 ; (63 * 8 > 255 ?)
-                BCC :1
-                INY
-                CLC
-:1              ADC SCRATCH1
-                BCC :2
-                INY
-:2              SEC
-                SBC SCRATCH
-                STA SHAPE_SRC_MOD+1
-                BCS :3
-                DEY
-:3              STY SHAPE_SRC_MOD+2
+; TODO: use this somewhere
+RETREAT         ;ENT
+                LDA XSHIFT
+                CMP #6
+                BEQ :1
+                DEC XCOORD
+;               CLC
+                ADC #1
+                STA XSHIFT
                 RTS
-
-;-------------------------------------------------------------------------------
-; Draw the shape either previously set with by SET_SHAPE or in CHAROUT.
-;
-; Input:
-;   XCOORD: current X byte column position (0 to #39)
-;   XSHIFT: current X right shift (0 to 6)
-;   TABLER_L,H: list of 7 hires line pointers
-;   SHAPE_SRC_MOD+1,2: pointer to source data
-;
-; Uses:
-;   SCREENL,H
-;   SCRATCH
-;-------------------------------------------------------------------------------
-
-DRAW_SHAPE      LDX #6
-DSLOOP1         LDA #0
-                STA SCRATCH
-                LDA TABLER_L,X
-                STA SCREENL
-                LDA TABLER_H,X
-                STA SCREENH
-SHAPE_SRC_MOD   LDA $FFFF,X
-                ; TODO: skip if 0?
-                LDY XSHIFT
-                BEQ :2
-                ASL A
-:1              ASL A
-                ROL SCRATCH
-                DEY
-                BNE :1
-                LSR A
-:2              LDY XCOORD
-                EOR (SCREENL),Y
-                STA (SCREENL),Y
-                LDA SCRATCH
-                BEQ :3
-                INY
-                EOR (SCREENL),Y
-                STA (SCREENL),Y
-:3              DEX
-                BPL DSLOOP1
-                SAME_PAGE_AS DSLOOP1
+:1              LDA #0
+                STA XSHIFT
                 RTS
 
 ;-------------------------------------------------------------------------------

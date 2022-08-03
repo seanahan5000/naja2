@@ -42,6 +42,7 @@ UNPACK_TO       ENT
                 BNE UNPACK_CMN2     ; always
 ;
 ; Decompress image to current screen, filling transparent with black
+; *** TODO: how common is this??? ***
 ;
 ; On entry:
 ;   X: data pointer low
@@ -92,7 +93,7 @@ UNPACK_CMN2     LDA (DATAL),Y
 
 :EXIT           LDA #$18            ; CLC
                 STA :SKIP_MOD
-                ; TODO: should this update DATAL/H with final address?
+                ; TODO: should this update DATAL/H with final address? YES! ***
                 RTS
 
 :NEXT_COLUMN    LDY CUR_COLUMN
