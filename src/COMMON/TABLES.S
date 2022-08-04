@@ -90,13 +90,13 @@ HIBYTES         ENT
                 HEX 23272B2F33373B3F
                 HEX 23272B2F33373B3F
 
-DIV7HI          ;ENT
+DIV7HI          ENT
                 HEX 242424
                 HEX 25252525252525
                 HEX 26262626262626
                 HEX 27272727272727
 
-HMASKS          ;ENT
+HMASKS          ENT
                 DB  %00000001
                 DB  %00000010
                 DB  %00000100
@@ -123,7 +123,7 @@ RIGHT_MASKS     DB  %01111110       ; NOTE: right masks are inclusive
 
                 DS  \,$EE           ; TODO: use these bytes
 
-DIV7            ;ENT
+DIV7            ENT
                 HEX 00000000000000
                 HEX 01010101010101
                 HEX 02020202020202
@@ -162,9 +162,9 @@ DIV7            ;ENT
                 HEX 23232323232323
                 HEX 24242424
 
-MOD7            ;ENT
+MOD7            ENT
                 HEX 00010203
-MOD7HI          ;ENT
+MOD7HI          ENT
                 HEX 040506
                 HEX 00010203040506
                 HEX 00010203040506

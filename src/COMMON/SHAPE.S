@@ -79,7 +79,9 @@ CELL_BUFFER     DS  7
 ;   TABLER_L,H: list of 7 hires line pointers
 ;-------------------------------------------------------------------------------
 
-TABLER          LDY YCOORD
+; TODO: make this private again once MAP.S stops using it
+TABLER          ENT
+                LDY YCOORD
                 CPY TABLER_Y
                 BEQ :2
                 STY TABLER_Y
@@ -123,7 +125,9 @@ SET_LETTER      LDX #<FONT
 ;
 ;-------------------------------------------------------------------------------
 
-SET_CELL        STX :LOW_MOD+1
+; NOTE: only public for HALLS/MAP.S to use
+SET_CELL        ENT
+                STX :LOW_MOD+1
                 STA :HIGH_MOD+1
                 ASL
                 ASL                 ; (63 * 4 = 252)
@@ -158,7 +162,9 @@ SET_CELL        STX :LOW_MOD+1
 
 SHIFT_BITS      =   LOCAL_TEMP
 
-DRAW_CELL       LDX #6
+; NOTE: only public for HALLS/MAP.S to use
+DRAW_CELL       ENT
+                LDX #6
 DCLOOP1         LDA #0
                 STA SHIFT_BITS
                 LDA TABLER_L,X

@@ -129,6 +129,20 @@ OP_VMOVE        LDA (OP_PTR),Y
                 STY OP_INDEX
                 RTS
 
+; On entry:
+;   X: x position
+;   Y: y position
+;
+; TODO: get rid of this once MAP.S stops using it
+;
+MOVE_TO         ENT
+                LDA DIV7,X
+                STA XCOORD
+                LDA MOD7,X
+                STA XSHIFT
+                STY YCOORD
+                RTS
+
 ;-------------------------------------------------------------------------------
 
 OP_IMAGE        LDA (OP_PTR),Y
@@ -374,6 +388,7 @@ OP_CLEAR        LDA (OP_PTR),Y
                 INX
 :BOTTOM_MOD     CPX #$FF
                 BNE :1
+                SAME_PAGE_AS :1
                 RTS
 
             DO 0
@@ -404,6 +419,7 @@ SWAP_AREA       LDA TOP
                 LDX TOP
                 CPX BOTTOM
                 BNE :1
+                SAME_PAGE_AS :1
                 PLA
                 STA TOP
                 RTS

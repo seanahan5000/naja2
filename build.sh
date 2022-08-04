@@ -24,6 +24,7 @@ fi
 #---------------------------------------
 
 $ASM COMMON ASM.COMMON.S  -lst $OBJ/COMMON.LST -ent $SRC/COMMON/COMMON.EXT.S
+$ASM HALLS  ASM.HALLS     -lst $OBJ/HALLS.LST
 $ASM ALIENS ASM.PICS      -lst $OBJ/ASM.PICS.LST
 
 $ASM TEST   TEST.COMMON.S -lst $OBJ/TEST.COMMON.LST

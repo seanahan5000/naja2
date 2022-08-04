@@ -62,22 +62,22 @@ CLR_LOOP        STA $2000,X
 
 ; TODO: how necessary is it for this to be fast?
 ;   (worth all the code?)
-MOVE_FROM_PAGE  ;ENT
+COPY_FROM_PAGE  ;ENT
                 LDA PAGE
                 EOR #$60
-                BNE MOV_COM     ; always
+                BNE COPY_COM    ; always
 
-MOVE_TO_PAGE    ;ENT
+COPY_TO_PAGE    ;ENT
                 LDA PAGE
-                BNE MOV_COM     ; always
+                BNE COPY_COM    ; always
 
-MOVE_TO_PAGE1   ;ENT
+COPY_TO_PAGE1   ;ENT
                 LDA #$20
-                BNE MOV_COM     ; always
+                BNE COPY_COM    ; always
 
-MOVE_TO_PAGE2   ;ENT
+COPY_TO_PAGE2   ;ENT
                 LDA #$40
-MOV_COM         CMP :LOOP2+5
+COPY_COM        CMP :LOOP2+5
                 BNE :SKIP1
                 LDX #3*63
                 ; TODO: faster to write an immediate instead of reading?
@@ -164,7 +164,7 @@ MOV_COM         CMP :LOOP2+5
 ; On Exit:
 ;   X,Y: unchanged
 ;
-WAIT            ;ENT
+WAIT            ENT
                 SEC
 :WAITA          PHA
 :WAITB          SBC #$01
@@ -175,7 +175,7 @@ WAIT            ;ENT
                 SAME_PAGE_AS :WAITA
                 RTS
 
-WAIT_KEY        ;ENT
+WAIT_KEY        ENT
                 SEC
 :WAITA          PHA
 :WAITB          BIT KEYBRD
