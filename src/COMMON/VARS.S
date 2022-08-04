@@ -64,7 +64,7 @@ DATPNTH         =   $4E
 ; PICT.S uses $50-$5F
 
 ; TODO: eventually move these down to $00-$03
-LOCAL_TEMP      =   $60         ; $60,$61,$62,$63
+LOCAL_TEMP      =   $70         ; $70,$71,$72,$73
 
 ; TODO: does this need to be exposed to callers?
 PAGE            =   $E6

@@ -44,7 +44,7 @@ XYDATAL         =   $0D
 XYDATAH         =   $0E
 
 ; NOTE: map code expects this to be (MAP_SIZE + 1) * 2 = minimum 36 bytes in size
-BLOCK_BUFFER    =   $8000       ; TODO: move this somewhere else
+BLOCK_BUFFER    =   $7F00       ; TODO: move this somewhere else
                                 ; TODO: how much space is needed?
 
 ; line drawing zpage

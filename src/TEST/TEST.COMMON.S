@@ -4,20 +4,20 @@
                 PUT /COMMON/VARS
                 PUT /COMMON/COMMON.EXT
 
-                ORG $6000
+                ORG $8000
 
 TEST            JSR INIT_RANDOM
                 JSR HGR
 
-                ; LDA #6
-                ; STA GROUP_SIZE
+                LDA #6
+                STA GROUP_SIZE
 
-                ; JSR DRAW_GRID
+                JSR DRAW_GRID
 
-                ; LDA #$42
-                ; JSR DRAW_STATS_BOX
+                LDA #$42
+                JSR DRAW_STATS_BOX
 
-                ; JSR ALIEN_DIRECTORY
+                JSR ALIEN_DIRECTORY
 
 HANG            JMP HANG
 
