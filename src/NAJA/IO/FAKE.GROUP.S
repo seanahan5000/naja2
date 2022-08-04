@@ -21,8 +21,8 @@
 				HEX	CC				;Upper Reflex
 				HEX	CC				;Lower Reflex
 				HEX	CC				;Intelligence
-				HEX	CC				;Electrical shielding
-				HEX	CC				;Physical shielding
+				HEX	10				;Electrical shielding
+				HEX	21				;Physical shielding
 				HEX	03				;Back slots
 				HEX	25				;XY
 
@@ -87,8 +87,8 @@
 				HEX	CC				;Upper Reflex
 				HEX	CC				;Lower Reflex
 				HEX	CC				;Intelligence
-				HEX	CC				;Electrical shielding
-				HEX	CC				;Physical shielding
+				HEX	12				;Electrical shielding
+				HEX	18				;Physical shielding
 				HEX	01				;Back slots
 				HEX	34				;XY
 
@@ -153,8 +153,8 @@
 				HEX	CC				;Upper Reflex
 				HEX	CC				;Lower Reflex
 				HEX	CC				;Intelligence
-				HEX	CC				;Electrical shielding
-				HEX	CC				;Physical shielding
+				HEX	21				;Electrical shielding
+				HEX	32				;Physical shielding
 				HEX	04				;Back slots
 				HEX	53				;XY
 
@@ -219,8 +219,8 @@
 				HEX	CC				;Upper Reflex
 				HEX	CC				;Lower Reflex
 				HEX	CC				;Intelligence
-				HEX	CC				;Electrical shielding
-				HEX	CC				;Physical shielding
+				HEX	09				;Electrical shielding
+				HEX	07				;Physical shielding
 				HEX	03				;Back slots
 				HEX	12				;XY
 
@@ -285,8 +285,8 @@
 				HEX	CC				;Upper Reflex
 				HEX	CC				;Lower Reflex
 				HEX	CC				;Intelligence
-				HEX	CC				;Electrical shielding
-				HEX	CC				;Physical shielding
+				HEX	30				;Electrical shielding
+				HEX	29				;Physical shielding
 				HEX	03				;Back slots
 				HEX	31				;XY
 
@@ -351,8 +351,8 @@
 				HEX	CC				;Upper Reflex
 				HEX	CC				;Lower Reflex
 				HEX	CC				;Intelligence
-				HEX	CC				;Electrical shielding
-				HEX	CC				;Physical shielding
+				HEX	20				;Electrical shielding
+				HEX	25				;Physical shielding
 				HEX	03				;Back slots
 				HEX	41				;XY
 

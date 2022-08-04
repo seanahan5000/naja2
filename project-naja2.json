@@ -3,10 +3,11 @@
   "projectName": "naja2",
   "startAddress": "0x6000",
   "bins": [
+    { "fileName": "naja2/NDOS.525", "loadAddress": "0x0400" },
     { "fileName": "naja2/COMMON", "loadAddress": "0x0800" },
     { "fileName": "naja2/TEST.COMMON", "loadAddress": "0x6000", "enabled": false },
     { "fileName": "naja2/HALLS", "loadAddress": "0x6000", "enabled": true },
-    { "fileName": "naja2/NDOS.525", "loadAddress": "0x0400" }
+    { "fileName": "naja2/FAKE.GROUP", "loadAddress": "0xBC80" }
   ],
   "lsts": [
     { "fileName": "naja2/TEST.COMMON.LST", "enabled": false },
