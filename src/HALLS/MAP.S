@@ -295,23 +295,17 @@ ROW_DONE        INC MAP_ROW
                 LDX #ARROW_X
                 LDY #ARROW_Y
                 JSR MOVE_TO
-                JSR TABLER
                 LDX #<ARROW_SHAPES
                 LDY #>ARROW_SHAPES
                 LDA MAP_DIR
                 ASL A
-                JSR SET_CELL
-                JSR DRAW_CELL
-                LDX #ARROW_X+7
-                LDY #ARROW_Y
-                JSR MOVE_TO
+                JSR DRAW_TILE_A
                 LDX #<ARROW_SHAPES
                 LDY #>ARROW_SHAPES
                 LDA MAP_DIR
                 SEC
                 ROL A
-                JSR SET_CELL
-                JMP DRAW_CELL
+                JMP DRAW_TILE_A
 
 :ANOTHER_ROW    JSR PULL_MAP_STATE      ; restore left map position
                 JSR SWAP_MAP_STATE      ; get center map position, put left on stack

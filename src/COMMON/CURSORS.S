@@ -1,21 +1,42 @@
 
-CURSOR_DATA     DB  %00000000
-                DB  %00001100
-                DB  %00011000
+; ARROWER = DRAW_ARROW
+
+; On entry:
+;   X: x position
+;   Y: y position
+
+DRAW_ARROW      ENT
+                JSR MOVE_TO
+                LDX #<:ARROW_TAIL
+                LDY #>:ARROW_TAIL
+                JSR DRAW_TILE
+                LDX #<:ARROW_HEAD
+                LDY #>:ARROW_HEAD
+                JMP DRAW_TILE
+
+:ARROW_TAIL     DB  %00000000
+                DB  %00000000
+                DB  %00000000
                 DB  %01111111
-                DB  %00011000
-                DB  %00001100
+                DB  %00000000
+                DB  %00000000
                 DB  %00000000
 
-                DB  %00000000
-                DB  %00011000
-                DB  %00001100
-                DB  %01111111
-                DB  %00001100
-                DB  %00011000
-                DB  %00000000
-
+:ARROW_HEAD     DB  %00000000
                 DB  %00000011
+                DB  %00000110
+                DB  %00011111
+                DB  %00000110
+                DB  %00000011
+                DB  %00000000
+
+DRAW_TRIANGLE   ENT
+                JSR MOVE_TO
+                LDX #<:TRIANGLE
+                LDY #>:TRIANGLE
+                JMP DRAW_TILE
+
+:TRIANGLE       DB  %00000011
                 DB  %00000111
                 DB  %00001111
                 DB  %00111111
@@ -23,7 +44,31 @@ CURSOR_DATA     DB  %00000000
                 DB  %00000111
                 DB  %00000011
 
-                DB  %01100000
+        do 0
+
+DRAW_BACK_ARROW JSR MOVE_TO
+                LDX #<:BACK_HEAD
+                LDY #>:BACK_HEAD
+                JSR DRAW_TILE
+                LDX #<FONT_DASH
+                LDY #>FONT_DASH
+                JMP DRAW_TILE
+
+:BACK_HEAD      DB  %00000000
+                DB  %00011000
+                DB  %00001100
+                DB  %01111111
+                DB  %00001100
+                DB  %00011000
+                DB  %00000000
+
+DRAW_BACK_TRI   ENT
+                JSR MOVE_TO
+                LDX #<:BACK_TRI
+                LDY #>:BACK_TRI
+                JMP DRAW_TILE
+
+:BACK_TRI       DB  %01100000
                 DB  %01110000
                 DB  %01111000
                 DB  %01111110
@@ -31,10 +76,17 @@ CURSOR_DATA     DB  %00000000
                 DB  %01110000
                 DB  %01100000
 
-                DB  %00000000
+DRAW_MARKER     ENT
+                JSR MOVE_TO
+                LDX #<:MARKER
+                LDY #>:MARKER
+                JMP DRAW_TILE
+
+:MARKER         DB  %00000000
                 DB  %00011111
                 DB  %00011111
                 DB  %00011111
                 DB  %00011111
                 DB  %00011111
                 DB  %00000000
+        fin

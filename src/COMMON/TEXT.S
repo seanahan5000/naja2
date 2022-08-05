@@ -59,12 +59,13 @@ OP_TEXT         STY OP_INDEX
                 BMI :SPECIAL_CHAR
                 INY
                 CMP #CharSpace
-                BEQ :1
+                BEQ :SKIP_SPACE1
                 STY OP_INDEX
-                JSR SET_LETTER
-                JSR DRAW_CELL
+                JSR DRAW_LETTER
                 LDY OP_INDEX
-:1              JSR ADVANCE
+                BNE :NEXT_CHAR      ; always
+
+:SKIP_SPACE1    JSR ADVANCE
                 BNE :NEXT_CHAR      ; always
 
 :SPECIAL_CHAR   INY
@@ -87,12 +88,14 @@ OP_TEXT         STY OP_INDEX
                 CMP #CharEmpty
                 BEQ :NEXT_INSERT
                 CMP #CharSpace
-                BEQ :2
+                BEQ :SKIP_SPACE2
                 STX WORD_INDEX
-                JSR SET_LETTER
-                JSR DRAW_CELL
+                JSR DRAW_LETTER
                 LDX WORD_INDEX
-:2              JSR ADVANCE
+                LDY OP_INDEX
+                BNE :NEXT_INSERT    ; always
+
+:SKIP_SPACE2    JSR ADVANCE
                 LDY OP_INDEX
                 BNE :NEXT_INSERT    ; always
 
@@ -243,9 +246,7 @@ OP_TEXT_IN      STY OP_INDEX
                 BMI :TRIM_SPACE
                 INY
                 STY WORD_INDEX
-                JSR SET_LETTER
-                JSR DRAW_CELL
-                JSR ADVANCE
+                JSR DRAW_LETTER
                 LDY WORD_INDEX
                 BNE :1              ; always
 

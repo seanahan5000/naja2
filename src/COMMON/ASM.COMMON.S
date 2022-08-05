@@ -11,7 +11,7 @@
 
                 DS  64              ;***
 
-                PUT SHAPE
+                PUT SHAPES
                 PUT TEXT
                 PUT FONT
                 PUT CURSORS
