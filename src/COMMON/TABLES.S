@@ -46,9 +46,8 @@ SET_PAGE        ENT
 :2              RTS
 
 HGR             ENT
-                LDA #$20
-                JSR SET_PAGE
-                JSR CLEAR_PAGE
+                JSR SET_PAGE1
+                JSR CLEAR_PAGE1
                 STA PRIMARY
                 STA NOMIXED
                 STA HIRES

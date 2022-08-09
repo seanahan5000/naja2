@@ -1,6 +1,4 @@
 
-; TODO: combined SET_CLEAR_PAGE1/2
-
 CLEAR_PAGE      ENT
                 LDA PAGE
                 BNE CLR_COM         ; always
@@ -60,103 +58,25 @@ CLR_LOOP        STA $2000,X
                 SAME_PAGE_AS CLR_LOOP
                 RTS
 
-; TODO: how necessary is it for this to be fast?
-;   (worth all the code?)
-COPY_FROM_PAGE  ;ENT
-                LDA PAGE
-                EOR #$60
-                BNE COPY_COM    ; always
-
-COPY_TO_PAGE    ;ENT
-                LDA PAGE
-                BNE COPY_COM    ; always
-
 COPY_TO_PAGE1   ;ENT
                 LDA #$20
                 BNE COPY_COM    ; always
-
 COPY_TO_PAGE2   ;ENT
                 LDA #$40
-COPY_COM        CMP :LOOP2+5
-                BNE :SKIP1
-                LDX #3*63
-                ; TODO: faster to write an immediate instead of reading?
-:LOOP1          LDA :LOOP2+2,X
+COPY_COM        STA :DST_MOD+2
                 EOR #$60
-                STA :LOOP2+2,X
-                DEX
-                DEX
-                DEX
-                BPL :LOOP1
-:SKIP1          LDX #$00
-:LOOP2          LDA $2000,X
-                STA $4000,X
-                LDA $2100,X
-                STA $4100,X
-                LDA $2200,X
-                STA $4200,X
-                LDA $2300,X
-                STA $4300,X
-                LDA $2400,X
-                STA $4400,X
-                LDA $2500,X
-                STA $4500,X
-                LDA $2600,X
-                STA $4600,X
-                LDA $2700,X
-                STA $4700,X
-                LDA $2800,X
-                STA $4800,X
-                LDA $2900,X
-                STA $4900,X
-                LDA $2A00,X
-                STA $4A00,X
-                LDA $2B00,X
-                STA $4B00,X
-                LDA $2C00,X
-                STA $4C00,X
-                LDA $2D00,X
-                STA $4D00,X
-                LDA $2E00,X
-                STA $4E00,X
-                LDA $2F00,X
-                STA $4F00,X
-                LDA $3000,X
-                STA $5000,X
-                LDA $3100,X
-                STA $5100,X
-                LDA $3200,X
-                STA $5200,X
-                LDA $3300,X
-                STA $5300,X
-                LDA $3400,X
-                STA $5400,X
-                LDA $3500,X
-                STA $5500,X
-                LDA $3600,X
-                STA $5600,X
-                LDA $3700,X
-                STA $5700,X
-                LDA $3800,X
-                STA $5800,X
-                LDA $3900,X
-                STA $5900,X
-                LDA $3A00,X
-                STA $5A00,X
-                LDA $3B00,X
-                STA $5B00,X
-                LDA $3C00,X
-                STA $5C00,X
-                LDA $3D00,X
-                STA $5D00,X
-                LDA $3E00,X
-                STA $5E00,X
-                LDA $3F00,X
-                STA $5F00,X
+                STA :SRC_MOD+2
+                LDY #32
+:1              LDX #0
+:SRC_MOD        LDA $2000,X
+:DST_MOD        STA $4000,X
                 INX
-                BEQ :EXIT
-                JMP :LOOP2
-:EXIT           RTS
+                BNE :SRC_MOD
+                INC :SRC_MOD+2
+                INC :DST_MOD+2
+                DEY
+                BNE :1
+                RTS
 ;
 ; On Entry:
 ;   A: wait value

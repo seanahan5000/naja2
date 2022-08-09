@@ -115,7 +115,7 @@ NEXT_LINE       LDY #MAP_LEFT_BYTE
                 LDX SCREEN_Y
                 LDA LOBYTES,X
                 STA SCREENL
-                LDA HIBYTES2,X
+                LDA HIBYTES,X
                 STA SCREENH
 
                 LDX #0

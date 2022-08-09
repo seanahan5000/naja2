@@ -2,212 +2,246 @@
 *                                                        *
 *              MOTHERSHIP/TRACC CAMP ROUTINE             *
 *                                                        *
-*                        02/21/87                        *
+*                Written 02/21/1987                      *
+*              Rewritten 08/06/2022                      *
 *                                                        *
 **********************************************************
 
-CAMPER			LDA	#$40
-				STA	PAGE
-				JSR	CLEAR2
-				JSR	SBOXER
-				JSR	MOVDOWN
-				JSR	HSWITCH
-				LDA	#$20
-				STA	PAGE
-				LDA	#VIOLET
-				STA	COLOR
-				LDY	#$03
-				JSR	LINER2
-				LDY	#$0D
-				JSR	TEXTER
+ENTER_CAMP      ENT
+                JSR DRAW_PICT
+                PictSetPage2
+                PictClearPage
+                PictCall DRAW_STATS_BOX
+                PictCall COPY_DOWN
+                PictSwap 0;191;40;121
+                PictSetPage1
+                PictSetViolet
+                PictRect $72;$21;$A6;$3F
+                PictTextAt 131;36;(MORE\nFLIP\nEXIT)
+                PictEnd
 
-				LDX	#<:STAT_DEF
-				LDY	#>:STAT_DEF
-				JSR	INIT_CURSOR
-				JSR	GETKEY
-				JMP	DESTINATION
+                LDX #<STATS_MENU
+                LDY #>STATS_MENU
+                JSR MENU_INIT
+                JSR MENU_SELECT
+                JMP MENU_TARGET
+
+; copy stats box from normal top-of-screen location to bottom of screen
+; TODO: generalize this if anything other than CAMP also does it
+
+DESTINL         =   LOCAL_TEMP+0
+DESTINH         =   LOCAL_TEMP+1
+
+COPY_DOWN       LDX #0
+:1              LDA LOBYTES,X
+                STA SCREENL
+                LDA HIBYTES,X
+                STA SCREENH
+                LDA LOBYTES+122,X
+                STA DESTINL
+                LDA HIBYTES+122,X
+                STA DESTINH
+                LDY #39
+:2              LDA (SCREENL),Y
+                STA (DESTINL),Y
+                DEY
+                BPL :2
+                INX
+                CPX #70
+                BNE :1
+                RTS
 
 *-------------------------------
-:STAT_DEF		DB	$02				;min 0, max 2
-				DB	$80				;start at 0, clear LEGALS
-				DW	:STAT_CURS
-				DW	:STAT_JUMPS
+STATS_MENU      DB  $02             ; min 0, max 2
+                DB  $80             ; start at 0, clear LEGALS
+                DW  :STATS_CURS
+                DW  :STATS_JUMPS
 
-:STAT_CURS		LDX	CURSOR
-				LDY	:YPNTS,X
-				LDX	#$75
-				JMP	ARROWER
-:YPNTS			DFB	$24,$2D,$36
+:STATS_CURS     LDY :YPNTS,X
+                LDX #$75
+                JMP DRAW_ARROW
 
-:STAT_JUMPS		DW	SMORE
-				DW	SFLIP
-				DW	SOUT
+:YPNTS          DFB $24,$2D,$36
+
+:STATS_JUMPS    DW  STATS_MORE
+                DW  STATS_FLIP
+                DW  STATS_EXIT
 *-------------------------------
 
-SOUT			LDY	#$0D
-				JSR	TEXTER
-				LDA	#BLACK1
-				STA	COLOR
-				LDY	#$03
-				JSR	LINER2
-				JSR	HTOGGLE
-				JSR	HSWITCH
-				JSR	HTOGGLE
-				JMP	RDKEY
+STATS_EXIT      JSR DRAW_PICT
+                PictClear $10;$21;$18;$40
+                PictSwap 0;122;40;192
+                PictEnd
+                ; JMP RDKEY
+                RTS
 
-SFLIP			JSR	DRAW_CURSOR
-				LDA	#$7C
-				STA	MODHEAD+1
-				JSR	EXCHNGE
-				JSR	EXFLIP
-				JSR	EXCHNGE
-				LDA	#$02
-				STA	MODHEAD+1
-				JSR	GETKEY2
-				JMP	DESTINATION
+STATS_FLIP      JSR DRAW_PICT
+                PictVMoveTo 124
+                PictEnd
+                JSR FLIP_STATS
+                JSR MENU_SELECT
+                JMP MENU_TARGET
 
-BYPOINT			DFB	$86,$8E,$96
-				DFB	$9E,$A6,$AE
-				DFB	$B6
+FORCE_CAMP      JSR SET_PAGE2       ; TODO: bring back SET_AND_CLEAR_PAGE2?
+                JSR CLEAR_PAGE
+                JSR DRAW_STATS_BOX
 
-EXCHNGE			LDY	#$06
-EX2				LDA	YPOINTS,Y
-				LDX	BYPOINT,Y
-				STA	BYPOINT,Y
-				TXA
-				STA	YPOINTS,Y
-				DEY
-				BPL	EX2
-				RTS
+STATS_MORE      LDA SHELL
+                BEQ :1
+                ; JSR SET_CAMPFILES
+:1
+				JSR DRAW_PICT
+                PictSetPage2
+                PictClear 0;121;40;192
+                PictCall CAMP_MENU_BOX
+                PictShowPage2
+                PictCopyToPage1
+                PictSetPage1
+                PictShowPage1
+                PictEnd
 
-FORCE_CAMP		LDA	#$40
-				STA	PAGE
-				JSR	CLEAR2
-				JSR	SBOXER
-SMORE			LDX	#$79
-:LOOP1			LDA	LOBYTES,X
-				STA	SCREENL
-				LDA	HIBYTES,X
-				ORA	#$40
-				STA	SCREENH
-				LDA	#$00
-				LDY	#$27
-:LOOP2			STA	(SCREENL),Y
-				DEY
-				BPL	:LOOP2
-				INX
-				CPX	#$C0
-				BNE	:LOOP1
-				LDA	#$40
-				STA	PAGE
-				LDA	#$60
-				STA	STOPPER
-				JSR	DOPTION
-				LDA	#$8D
-				STA	STOPPER
-				STA	SCNDARY
-				JSR	MOVETO1
-				LDA	#$20
-				STA	PAGE
-				LDA	#$05
-				BNE	STOPPER			;Always
+                LDA #$00            ; was #$05 because of DOWN2 below
+                BEQ COPTION			; always
 
-CAMP			ORA	#$80
-				STA	CCURPOS
+RECAMP			ORA	#$80
+				PHA
 				BIT	UNSTROB
-				JSR	CLEAR1
-				LDA	#$20
-				STA	PAGE
-				JSR	SBOXER
-DOPTION			LDY	#$07
-				JSR	TEXTER
+				JSR DRAW_PICT
+                PictSetPage1
+                PictClearPage
+                PictCall DRAW_STATS_BOX
+                PictCall CAMP_MENU_BOX
+                PictShowPage1
+                PictEnd
+				PLA
 
-				LDX	#BLUE
-				LDA	SHELL
-				BEQ	:SKIPA
-				LDX	#RED
-:SKIPA			STX	COLOR
+; NOTE: reentry point from several locations
+COPTION			ORA #$80
+                STA CCURPOS_MS
+                STA CCURPOS_TRACC
+                LDA SHELL
+                BNE :TRACC
+:MOTHER			LDX #<CAMP_MENU_MS
+                LDY #>CAMP_MENU_MS
+                BNE :COMMON			; always
+:TRACC			LDX #<CAMP_MENU_TRACC
+                LDY #>CAMP_MENU_TRACC
+:COMMON			JSR MENU_INIT
 
-				LDY	#$02
-				JSR	LINER2
-				LDA	CCURPOS
-STOPPER			STA	PRIMARY
-COPTION			ORA	#$80
-				STA	CCURPOS
-				LDX	#<:CAMP_DEF
-				LDY	#>:CAMP_DEF
-				JSR	INIT_CURSOR
-				JSR	DOWN2
-				LDY	CURSOR
-				JSR	CMARKER
-				LDA	SHELL
-				BEQ	:SKIPA
-				JSR	SET_CAMPFILES
-:SKIPA			JMP	DESTINATION
+; TODO: make it possible use <escape> to directly leave camp menu
+
+                JSR MENU_SELECT
+                JSR CAMP_MARKER
+:1              JMP MENU_TARGET
+
+CAMP_MENU_BOX   LDA SHELL
+				BNE :TRACC
+
+:MOTHER			JSR DRAW_PICT
+                PictSetBlue
+                PictRect $3A;$7C;$DC;$AE
+                PictTextAt 81;128;()-
+                USR (TRADE\n)-
+                USR (POOL_CREDITS\n)-
+                USR (INDIVIDUAL_STATISTICS\n)-
+                USR (FLIP_STATS_TABLE\n)-
+                USR (LEAVE)
+                PictEnd
+                RTS
+
+:TRACC			JSR DRAW_PICT
+                PictSetOrange
+                PictRect $3B;$7C;$DD;$B7
+                PictTextAt 81;128;()-
+                USR (TRADE\n)-
+                USR (POOL_CREDITS\n)-
+                USR (REFORMAT_GROUP\n)-
+                USR (INDIVIDUAL_STATISTICS\n)-
+                USR (FLIP_STATS_TABLE\n)-
+                USR (LEAVE)
+                PictEnd
+                RTS
+
+CAMP_MARKER     LDY CAMP_YPNTS,X
+                LDX #$46
+                JMP DRAW_MARKER
 
 *-------------------------------
-:CAMP_DEF		DB	$05
-CCURPOS			DB	$80
-				DW	:CAMP_CURS
-				DW	:CAMP_JUMPS
+CAMP_MENU_MS    DB  $04
+CCURPOS_MS      DB  $80
+                DW  CAMP_CURS
+                DW  :CAMP_JUMPS_MS
 
-:CAMP_JUMPS		DW	TRADE
-				DW	POOLER
-				DW	GOFORM
-				DW	GOISTAT
-				DW	GOFLOP
-				DW	LEAVE_CAMP
+:CAMP_JUMPS_MS  DW  TRADE
+                DW  POOLER
+                DW  GOISTAT
+                DW  GOFLOP
+                DW  GOLEAVE
 
-:CAMP_CURS		LDX	CURSOR
-				LDY	YPNTSB,X
-				LDX	#$43
-				JMP	ARROWER
-YPNTSB			DFB	$80,$89,$92
-				DFB	$9B,$A4,$AD
+CAMP_MENU_TRACC DB  $05
+CCURPOS_TRACC   DB  $80
+                DW  CAMP_CURS
+                DW  :CAMP_JUMPS_T
+
+:CAMP_JUMPS_T   DW  TRADE
+                DW  POOLER
+                DW  GOFORM
+                DW  GOISTAT
+                DW  GOFLOP
+                DW  GOLEAVE
+
+CAMP_CURS       LDY CAMP_YPNTS,X
+                LDX #$43
+                JMP DRAW_ARROW
+
+CAMP_YPNTS      DB  $80,$89,$92
+                DB  $9B,$A4,$AD
 *-------------------------------
 
-GOFLOP			JSR	EXFLIP
-				LDY	CURSOR
-				JSR	CMARKER
-				JSR	DRAW_CURSOR
-				JSR	GETKEY2
-COPT_COM		LDY	CURSOR
-				JSR	CMARKER
-				JMP	DESTINATION
+GOFLOP          JSR DRAW_PICT
+                PictVMoveTo 2
+                PictEnd
+                JSR FLIP_STATS
+                LDX CURSOR
+                JSR CAMP_MARKER
+                JSR MENU_SELECT
+COPT_COM        JSR CAMP_MARKER
+                JMP MENU_TARGET
 
-GOFORM			LDA	SHELL			;REFORMAT
-				BNE	:SKIPA
-				LDY	CURSOR
-				JSR	CMARKER
-				JSR	DOWN2
-				JMP	COPT_COM
-:SKIPA			JSR	LOAD_REFORM
+GOLEAVE			LDA	SHELL
+				BEQ EXIT_CAMP
+				; JSR LOOSE_ENDS
+EXIT_CAMP		JSR	DRAW_PICT
+				PictSetPage2
+				PictClearPage
+				PictCall DRAW_HALL
+				PictSetPage1
+				PictShowPage2
+				PictCopyToPage1
+				PictShowPage1
+				PictEnd
+				RTS
+				; JMP	RDKEY
+
+GOFORM			; JSR	LOAD_REFORM
 				JMP	REFORMAT
 
-LOAD_REFORM		LDA	CAMP_HERE
-				AND	#bit_RefRegCom
-				BNE	:EXIT
-				LDX	#cRefRegCom
-				JSR	SLOAD_FILE
-				LDA	CAMP_HERE
-				ORA	#bit_RefRegCom
-				STA	CAMP_HERE
-:EXIT			RTS
+; LOAD_REFORM		LDA	CAMP_HERE
+; 				AND	#bit_RefRegCom
+; 				BNE	:EXIT
+; 				LDX	#cRefRegCom
+; 				JSR	SLOAD_FILE
+; 				LDA	CAMP_HERE
+; 				ORA	#bit_RefRegCom
+; 				STA	CAMP_HERE
+; :EXIT			RTS
 
-LEAVE_CAMP		LDA	SHELL
-				BNE	LOOSE_ENDS
-GET_OUT			JSR	CLEAR2
-				LDA	#$40
-				STA	PAGE
-				LDA	#WHITE1
-				STA	COLOR
-				JSR	NOSCAN
-				LDA	#$20
-				STA	PAGE
-				STA	SCNDARY
-				JSR	MOVETO1
-				STA	PRIMARY
-				JMP	RDKEY
+            do 1
+TRADE           RTS
+POOLER          RTS
+GOISTAT         RTS
+            else
+
 LOOSE_ENDS
 *** Notify if any characters in group are critical
 				LDA	#$00
@@ -320,7 +354,7 @@ FILL_FRONT		JSR	RESET_CHRLIST
 				JMP	GOFORM
 *** Calculate max sight range based on robots max 2
 :SKIPA			JSR	CALC_SRANGE
-				JMP	GET_OUT
+				JMP	EXIT_CAMP
 
 DEAD_LOOKER		JSR	RESET_CHRLIST
 				LDX	#<FIND_DEAD
@@ -473,80 +507,6 @@ GRPSUB2			LDA	#$00
 				JSR	PRE_ARROW
 				JMP	GETKEY
 
-SBOXER			LDA	#GREEN
-				STA	COLOR
-				LDY	#$00
-				JSR	LINER2
-				LDA	#$42
-				STA	SELECT
-				LDA	#$02
-				STA	YPNT
-				JSR	HEADER
-				LDA	#$00
-				STA	COUNT
-NOTHRLN			TAY
-				LDA	YPOINTS,Y
-				STA	YPNT
-				TYA
-				JSR	STATLIN
-				INC	COUNT
-				LDA	COUNT
-				CMP	GRPNUMB
-				BNE	NOTHRLN
-				RTS
-
-HSWITCH			LDA	#$BF
-				STA	ALINE
-HLOOP1			LDX	ALINE
-				JSR	GET_SWAP
-				LDY	#$27
-HLOOP2			LDA	(DESTINL),Y
-				TAX
-				LDA	(SCREENL),Y
-				STA	(DESTINL),Y
-				TXA
-				STA	(SCREENL),Y
-				DEY
-				BPL	HLOOP2
-				LDA	ALINE
-MODPNT1			DEC	ALINE
-MODPNT2			CMP	#$79
-				BNE	HLOOP1
-				RTS
-
-HTOGGLE			LDA	MODPNT1
-				EOR	#$20
-				STA	MODPNT1
-				LDA	HSWITCH+1
-				LDX	MODPNT2+1
-				STX	HSWITCH+1
-				STA	MODPNT2+1
-				RTS
-
-MOVDOWN			LDA	#$00
-				STA	ALINE
-				LDA	#$7A
-				STA	BLINE
-MD2				LDY	ALINE
-				LDA	LOBYTES,Y
-				STA	SCREENL
-				LDA	HIBYTES,Y
-				ORA	#$40
-				STA	SCREENH
-				LDY	BLINE
-				LDA	LOBYTES,Y
-				STA	DESTINL
-				LDA	HIBYTES,Y
-				ORA	#$40
-				STA	DESTINH
-				JSR	LINMOVE
-				INC	ALINE
-				LDA	BLINE
-				INC	BLINE
-				CMP	#$BF
-				BNE	MD2
-				RTS
-
 POOLER			JSR	CLEAR2
 				LDA	#GREEN
 				STA	COLOR
@@ -601,13 +561,6 @@ POOLOUT			LDY	#$01
 				LDA	#$00
 				JMP	COPTION
 
-CMARKER			LDA	YPNTSB,Y
-				STA	YPNT
-				LDA	#$46
-				STA	XPNT
-				LDA	#$04
-				JMP	SPCHARS
-
 LINER2			JSR	BANK_2
 				TYA
 				ASL	A
@@ -639,113 +592,45 @@ GCURPOS			DB	$00
 				LDX	#$5A
 :SKIPA			JMP	ARROWER
 *-------------------------------
+			fin
 
-EXFLIP			LDA	#$00
-				STA	COUNT
-MODHEAD			LDA	#$02
-				STA	YPNT
-
-				LDA	SHELL
-				BNE	:SKIPA
-
-				JSR	DORS
-				LDA	SELECT
+; caller has already set Y position
+FLIP_STATS      LDA SELECT
+                LDX SHELL
+                BNE :1
+                AND #$03
+                STA SELECT_FLIP
+                EOR #$03
+                BPL :2				; always
+:1				STA SELECT_FLIP
+				EOR #$C3
+:2				PHA
+				LDA SELECT_FLIP
+				JSR STATS_HEADER2
+				PLA
 				PHA
-				EOR	#$03
-				STA	SELECT
-				JSR	DORS
-				JMP	:SKIPB
-
-:SKIPA			JSR	HEADER2
-				LDA	SELECT
+				JSR STATS_HEADER2
+                JSR DRAW_PICT
+                PictVMove 10
+                PictEnd
+                JSR FIRST_CHAR
+:3				LDA SELECT_FLIP
+				JSR STATS_LINE2
+				PLA
 				PHA
-				EOR	#$C3
-				STA	SELECT
-				JSR	HEADER2
+				JSR STATS_LINE2
+                JSR DRAW_PICT
+                PictVMove 8
+                PictEnd
+                JSR NEXT_CHAR
+                BCC :3
+                PLA
+                STA SELECT
+                RTS
 
-:SKIPB			PLA
-				STA	SELECT
-MORFLOP			LDA	COUNT
-				JSR	POINTIT
-				LDY	COUNT
-				LDA	YPOINTS,Y
-				STA	YPNT
-
-				LDA	SHELL
-				BNE	:SKIPA
-
-				JSR	PICDS
-				LDA	SELECT
-				PHA
-				EOR	#$03
-				STA	SELECT
-				JSR	PICDS
-				JMP	:SKIPB
-
-:SKIPA			JSR	STATL2
-				LDA	SELECT
-				PHA
-				EOR	#$C3
-				STA	SELECT
-				JSR	STATL2
-
-:SKIPB			PLA
-				STA	SELECT
-				INC	COUNT
-				LDA	COUNT
-				CMP	GRPNUMB
-				BNE	MORFLOP
-				LDA	SELECT
-				EOR	#$C3
-				STA	SELECT
-				RTS
-
-MOVE212			LDA	#$00
-				STA	LINENUM
-MLOOP1			LDX	LINENUM
-				JSR	GET_SWAP
-				LDY	#$0F
-MLOOP2			LDA	(SCREENL),Y
-				TAX
-				LDA	(DESTINL),Y
-				STA	(SCREENL),Y
-				TXA
-				STA	(DESTINL),Y
-				INY
-				CPY	#$28
-				BNE	MLOOP2
-				LDA	LINENUM
-				INC	LINENUM
-				CMP	#$4C
-				BNE	MLOOP1
-				RTS
-
-*-------------------------------
-
-GET_SCREEN		LDA	LOBYTES,X
-				STA	SCREENL
-				LDA	HIBYTES,X
-				ORA	PAGE
-				STA	SCREENH
-				RTS
-
-GET_SCRNDEST	JSR	GET_SCREEN
-				DEX
-GET_DESTIN		LDA	LOBYTES,X
-				STA	DESTINL
-				LDA	HIBYTES,X
-				ORA	PAGE
-				STA	DESTINH
-				RTS
-
-GET_SWAP		LDA	LOBYTES,X
-				STA	SCREENL
-				STA	DESTINL
-				LDA	HIBYTES,X
-				ORA	#$20
-				STA	SCREENH
-				EOR	#$60
-				STA	DESTINH
-				RTS
-
-*-------------------------------
+; NOTE: was in KEY.COMMONS.S
+YPOINTS			DFB	$0C,$14,$1C
+				DFB	$24,$2C,$34
+				DFB	$3C
+				DFB	$46,$58,$62
+				DFB	$6C

@@ -1,0 +1,12 @@
+
+* Quick fight mode versus "tactical" mode
+* Identifying aliens adds them to Alien Catalog
+    * May also add aliens by finding data cards, etc.
+* Remove per-character credits and pooling credits UI
+    * Keep pooled credits in game state
+* Make encounters more likely on never-visited map squares
+    * Less common once a square has been mapped
+* Change DAMAGE to HEALTH in stats (easier for player)
+* Make death/compressed characters mechanism optional
+    * Let player decide to be strict/not about death
+* Center status when flipping w/damage in stats box

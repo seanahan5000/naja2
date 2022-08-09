@@ -1,5 +1,6 @@
 
-DRAW_HALL       LDA #0
+DRAW_HALL       ENT
+                LDA #0
                 STA CUR_DEPTH
                 STA BLOCK_INDEX
 

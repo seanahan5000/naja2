@@ -23,6 +23,24 @@ TEMP_TOGGLE     =   $01
 
 ;-------------------------------------------------------------------------------
 
+; TODO: move this somewhere else?
+;
+; On entry:
+;   X: x position
+;   Y: y position
+;
+MOVE_TO         ENT
+                LDA DIV7,X
+                STA XCOORD
+                LDA MOD7,X
+                STA XSHIFT
+                ; fall through
+VMOVE_TO        ENT
+                STY YCOORD
+                RTS
+
+;-------------------------------------------------------------------------------
+
 DRAW_PICT       ENT
                 PLA
                 STA OP_PTR
@@ -39,6 +57,7 @@ DRAW_PICT       ENT
                 STA :OP_MOD+1
                 LDA OP_TABLE+1,X
                 STA :OP_MOD+2
+                STY OP_INDEX
 :OP_MOD         JSR $FFFF
                 ; TODO: use Y here instead of OP_INDEX?
                 LDA OP_PTR
@@ -74,10 +93,49 @@ OP_TABLE        DW  OP_SET_COLOR
                 DW  OP_TEXT_IN
                 DW  OP_IMAGE
                 DW  OP_CLEAR
+                DW  OP_SWAP
+                DW  SET_PAGE1       ; direct call
+                DW  SET_PAGE2       ; direct call
+                DW  OP_SHOW_PAGE1
+                DW  OP_SHOW_PAGE2
+                DW  CLEAR_PAGE      ; direct call
+                DW  COPY_TO_PAGE1   ; direct call
+                ; TODO: consider COPY_TO_PAGE2
+                DW  OP_CALL
 
-; TODO: OP_CALL to insert function calls mid-picture
+
+OP_SHOW_PAGE1   STA PRIMARY
+                RTS
+
+OP_SHOW_PAGE2   STA SCNDARY
+                RTS
+
+OP_CALL         LDA (OP_PTR),Y
+                STA :CALL_MOD+1
+                INY
+                LDA (OP_PTR),Y
+                STA :CALL_MOD+2
+                INY
+                STY OP_INDEX
+
+                LDA OP_PTR
+                PHA
+                LDA OP_PTR_H
+                PHA
+                LDA OP_INDEX
+                PHA
+:CALL_MOD       JSR $FFFF
+                PLA
+                STA OP_INDEX
+                PLA
+                STA OP_PTR_H
+                PLA
+                STA OP_PTR
+                RTS
 
 ;-------------------------------------------------------------------------------
+
+; TODO: expand these out
 
 OP_SET_COLOR    LDA (OP_PTR),Y
                 STA OP_COLOR        ; TODO: does this really need a zpage?
@@ -127,20 +185,6 @@ OP_VMOVE        LDA (OP_PTR),Y
                 ADC YCOORD
                 STA YCOORD
                 STY OP_INDEX
-                RTS
-
-; On entry:
-;   X: x position
-;   Y: y position
-;
-; TODO: get rid of this once MAP.S stops using it
-;
-MOVE_TO         ENT
-                LDA DIV7,X
-                STA XCOORD
-                LDA MOD7,X
-                STA XSHIFT
-                STY YCOORD
                 RTS
 
 ;-------------------------------------------------------------------------------
@@ -391,41 +435,63 @@ OP_CLEAR        LDA (OP_PTR),Y
                 SAME_PAGE_AS :1
                 RTS
 
-            DO 0
+;-------------------------------------------------------------------------------
 
-;*** support up and down ***
-SWAP_AREA       LDA TOP
-                PHA
+; Exchange an area of the screen between page 1 and 2
+;
+;   left byte
+;   top line
+;   right byte (exclusive)
+;   bottom line (exclusive)
+;
+; If top > bottom, transfer happens in reverse order.
+
+DESTINL         =   LOCAL_TEMP+0
+DESTINH         =   LOCAL_TEMP+1
+
+OP_SWAP         LDA (OP_PTR),Y
+                INY
+                STA :LEFT_MOD+1
+                LDA (OP_PTR),Y
+                INY
                 TAX
-:1              LDA LOBYTES,X
+                LDA (OP_PTR),Y
+                INY
+                STA :RIGHT_MOD+1
+                LDA (OP_PTR),Y
+                INY
+                STA BOTTOM
+                STY OP_INDEX
+
+                LDY #$E8            ; INX
+                CPX BOTTOM
+                BCC :1
+                LDY #$CA            ; DEX
+:1              STY :INX_MOD
+
+:2              LDA LOBYTES,X
                 STA SCREENL
                 STA DESTINL
                 LDA HIBYTES,X
                 STA SCREENH
                 EOR #$60
                 STA DESTINH
-                INX
+:INX_MOD        INX
                 STX TOP
-                LDY LEFT_DIV7
-:2              LDA (SCREENL),Y
+:LEFT_MOD       LDY #$FF
+:3              LDA (SCREENL),Y
                 TAX
                 LDA (DESTINL),Y
                 STA (SCREENL),Y
                 TXA
                 STA (DESTINL),Y
                 INY
-                CPY RIGHT_DIV7
-                BNE :2
+:RIGHT_MOD      CPY #$FF
+                BNE :3
                 LDX TOP
                 CPX BOTTOM
-                BNE :1
-                SAME_PAGE_AS :1
-                PLA
-                STA TOP
+                BNE :2
+                SAME_PAGE_AS :2
                 RTS
-
-MOVE_AREA
-
-            FIN
 
 ;-------------------------------------------------------------------------------

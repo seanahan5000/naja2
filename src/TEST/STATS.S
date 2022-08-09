@@ -1,8 +1,6 @@
 
 ; TODO: decide what to do with SELECT
-* another comment
 
-SBOXER          LDA #$42            ;*** temporary
 ;
 ; On entry:
 ;   A: stats box enables
@@ -11,7 +9,12 @@ SBOXER          LDA #$42            ;*** temporary
 ;       %00000010: show damage
 ;       %00000001: show status
 ;
-DRAW_STATS_BOX  PHA
+DRAW_STATS_BOX  ;ENT
+                LDA #$42
+                BNE DSB_CMN
+DRAW_STATS_BOX_XY ;ENT
+                LDA #$82
+DSB_CMN         PHA
                 JSR DRAW_PICT
                 PictSetGreen
                 PictRect $01;$00;$115;$44
@@ -20,7 +23,7 @@ DRAW_STATS_BOX  PHA
                 PictVMoveTo 2
                 PictEnd
                 PLA
-STATS_LINES     STA SELECT
+                STA SELECT
                 JSR STATS_HEADER
                 JSR DRAW_PICT
                 PictVMove 10
@@ -42,10 +45,13 @@ STATS_HEADER    JSR DRAW_PICT
                 PictHMoveTo 219
                 PictText (ENERGY)
                 PictEnd
-STATS_HEADER2   BIT SELECT          ; only used when flipping stats
+                LDA SELECT
+
+STATS_HEADER2   STA SELECT
+                BIT SELECT
                 BMI :XY
                 BVC :DAMSTAT
-                JSR DRAW_PICT
+:SHIELD         JSR DRAW_PICT
                 PictHMoveTo 105
                 PictText (EL)
                 PictHMoveTo 121
@@ -79,31 +85,29 @@ STATS_HEADER2   BIT SELECT          ; only used when flipping stats
 STATS_LINE      JSR PROFNAME_TO_TEXT
                 LDX #$10
                 JSR DRAW_TEXTBUF
-
                 JSR ENERGY_TO_TEXT
                 LDX #$C6
                 JSR DRAW_TEXTBUF
+                LDA SELECT
 
-STATS_LINE2     BIT SELECT          ; only used when flipping stats
+STATS_LINE2     STA SELECT
+                BIT SELECT
                 BMI :XY
                 BVC :DAMSTAT
 
-                LDY #Eshielding
+:SHIELD         LDY #Eshielding
                 JSR SHIELD_TO_TEXT
                 LDX #$69
                 JSR DRAW_TEXTBUF
-
                 LDY #Pshielding
                 JSR SHIELD_TO_TEXT
                 LDX #$79
                 JSR DRAW_TEXTBUF
-
                 JMP :DAMSTAT
 
-:XY             JSR XY_TO_TEXT
+:XY             JSR CPOS_TO_TEXT
                 LDX #$71
                 JSR DRAW_TEXTBUF
-
 :DAMSTAT        LDA SELECT
                 LSR
                 BCS :STATUS
@@ -174,9 +178,9 @@ GENIUS          USR (GENIUS)=
 ROBOT           USR (ROBOT)=
 NONE            USR (NONE)=
 
-XY_TO_TEXT      LDY #position
+CPOS_TO_TEXT    LDY #position
                 LDA (CHARDL),Y
-                PHA
+POS_TO_TEXT     PHA
                 LSR
                 LSR
                 LSR
@@ -394,93 +398,3 @@ ORN             USR (ORN)=
 STILICX         USR (STILICX)=
 XXTYS           USR (XXTYS)=
 DENEB           USR (DENEB)=
-
-
-        DO 0
-
-SFLIP           JSR DRAW_CURSOR
-                LDA #$7C
-                STA MODHEAD+1
-                JSR EXCHNGE
-                JSR EXFLIP
-                JSR EXCHNGE
-                LDA #$02
-                STA MODHEAD+1
-                JSR GETKEY2
-                JMP DESTINATION
-
-BYPOINT         DFB $86,$8E,$96
-                DFB $9E,$A6,$AE
-                DFB $B6
-
-EXCHNGE         LDY #$06
-EX2             LDA YPOINTS,Y
-                LDX BYPOINT,Y
-                STA BYPOINT,Y
-                TXA
-                STA YPOINTS,Y
-                DEY
-                BPL EX2
-                RTS
-
-EXFLIP          LDA #$00
-                STA COUNT
-MODHEAD         LDA #$02
-                STA YPNT
-
-                LDA SHELL           ; 0 == MOTHERSHIP
-                BNE :SKIPA
-
-                JSR DORS
-                LDA SELECT
-                PHA
-                EOR #$03
-                STA SELECT
-                JSR DORS
-                JMP :SKIPB
-
-:SKIPA          JSR HEADER2
-                LDA SELECT
-                PHA
-                EOR #$C3
-                STA SELECT
-                JSR HEADER2
-
-:SKIPB          PLA
-                STA SELECT
-
-MORFLOP         LDA COUNT
-                JSR POINTIT
-                LDY COUNT
-                LDA YPOINTS,Y
-                STA YPNT
-
-                LDA SHELL           ; 0 == MOTHERSHIP
-                BNE :SKIPA
-
-                JSR PICDS
-                LDA SELECT
-                PHA
-                EOR #$03
-                STA SELECT
-                JSR PICDS
-                JMP :SKIPB
-
-:SKIPA          JSR STATL2
-                LDA SELECT
-                PHA
-                EOR #$C3
-                STA SELECT
-                JSR STATL2
-
-:SKIPB          PLA
-                STA SELECT
-                INC COUNT
-                LDA COUNT
-                CMP GRPNUMB
-                BNE MORFLOP
-                LDA SELECT
-                EOR #$C3
-                STA SELECT
-                RTS
-            FIN

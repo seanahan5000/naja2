@@ -39,11 +39,18 @@ XCOORD          =   $48
 XSHIFT          =   $49
 YCOORD          =   $4A
 
+; HALLS use $50-$5F
+; HALLS use $60-$6A
 
 ; TODO: move these character-only vars
 SELECT          =   $90         ; only used in STATS.S -- get rid of
 CHARDL          =   $91
 CHARDH          =   $92
+XPNT            =   $93
+YPNT            =   $94
+CURSOR          =   $95
+COUNT           =   $96
+SELECT_FLIP     =   $96         ; only used in T.CAMP.S when flipping stats
 CHAR_INDEX      =   $97
 
 LOST_CHARS      =   $BC7D
@@ -52,7 +59,6 @@ GRPNUMB         =   $BC7F       ; number of living characters in group
 
 GROUP_SIZE      =   GRPNUMB
 ; TODO: move these character-only vars
-
 
 ;*** shape drawing
 XCOUNT          =   $4B
@@ -67,7 +73,10 @@ DATPNTH         =   $4E
 LOCAL_TEMP      =   $70         ; $70,$71,$72,$73
 
 ; TODO: does this need to be exposed to callers?
+COLOR           =   $E4
 PAGE            =   $E6
+
+; HALLS use $F0-$F7
 
 KEYBRD          =   $C000
 UNSTROB         =   $C010
@@ -77,10 +86,6 @@ NOMIXED         =   $C052
 PRIMARY         =   $C054
 SCNDARY         =   $C055
 HIRES           =   $C057
-
-; BLACK1          =   $00
-; WHITE1          =   $7F
-
 
 OpSetColor      =   0
 OpMoveTo        =   1
@@ -100,6 +105,16 @@ OpTextAt        =   14
 OpTextIn        =   15
 OpImage         =   16
 OpClear         =   17
+OpSwap          =   18
+
+OpSetPage1      =   19
+OpSetPage2      =   20
+OpShowPage1     =   21
+OpShowPage2     =   22
+OpClearPage     =   23
+OpCopyToPage1   =   24
+OpCall          =   25
+
 OpEnd           =   $FF
 
 ; TODO: OpCall to insert function calls mid-picture
@@ -222,6 +237,40 @@ PictImage       MAC
 PictClear       MAC
                 DB  OpClear
                 DB  ]1,]2,]3,]4
+                EOM
+
+PictSwap        MAC
+                DB  OpSwap
+                DB  ]1,]2,]3,]4
+                EOM
+
+PictSetPage1    MAC
+                DB  OpSetPage1
+                EOM
+
+PictSetPage2    MAC
+                DB  OpSetPage2
+                EOM
+
+PictShowPage1   MAC
+                DB  OpShowPage1
+                EOM
+
+PictShowPage2   MAC
+                DB  OpShowPage2
+                EOM
+
+PictClearPage   MAC
+                DB  OpClearPage
+                EOM
+
+PictCopyToPage1 MAC
+                DB  OpCopyToPage1
+                EOM
+
+PictCall        MAC
+                DB  OpCall
+                DW  ]1
                 EOM
 
 PictEnd         MAC

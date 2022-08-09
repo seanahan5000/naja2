@@ -1,16 +1,18 @@
 
 {
   "projectName": "naja2",
-  "startAddress": "0x8000",
+  "startAddress": "0x7400",
   "bins": [
     { "fileName": "naja2/NDOS.525", "loadAddress": "0x0400" },
     { "fileName": "naja2/COMMON", "loadAddress": "0x0800" },
     { "fileName": "naja2/HALLS", "loadAddress": "0x6000" },
-    { "fileName": "naja2/TEST.COMMON", "loadAddress": "0x8000" },
-    { "fileName": "naja2/FAKE.GROUP", "loadAddress": "0xBC80" }
+    { "fileName": "naja2/CONTROL", "loadAddress": "0x7400" },
+    { "fileName": "naja2/FAKE.GROUP", "loadAddress": "0xBC80" },
+    { "fileName": "naja2/CAMP.E000", "loadAddress": "0xE000" }
   ],
   "lsts": [
-    { "fileName": "naja2/TEST.COMMON.LST" },
+    { "fileName": "naja2/CONTROL.LST" },
+    { "fileName": "naja2/CAMP.LST" },
     { "fileName": "naja2/HALLS.LST" },
     { "fileName": "naja2/COMMON.LST" },
     { "fileName": "naja2/NDOS.525.LST" }

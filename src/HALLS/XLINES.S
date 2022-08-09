@@ -17,7 +17,7 @@ DRAW_VERT       LDA MOD_TABLE+0,Y   ; ORA/AND
 :DY_MOD         INX                 ; 2
 :1              LDA LOBYTES,X       ; 4
                 STA SCREENL         ; 3
-                LDA HIBYTES2,X      ; 4
+                LDA HIBYTES,X       ; 4
                 STA SCREENH         ; 3
                 LDA (SCREENL),Y     ; 5
 :ORA_MOD        ORA #$FF            ; 2
@@ -45,7 +45,7 @@ DRAW_VERT_CLIP  LDA MOD_TABLE+0,Y   ; ORA/AND
 :DY_MOD         INX                 ; 2
 :1              LDA LOBYTES,X       ; 4
                 STA SCREENL         ; 3
-                LDA HIBYTES2,X      ; 4
+                LDA HIBYTES,X       ; 4
                 STA SCREENH         ; 3
                 LDA (SCREENL),Y     ; 5
 :ORA_MOD        ORA #$FF            ; 2
@@ -98,7 +98,7 @@ DRAW_YDOM       CPY #$00
 :LOOP1          STA EL              ; 3
 :LOOP2          LDA LOBYTES,X       ; 4
                 STA SCREENL         ; 3
-                LDA HIBYTES2,X      ; 4
+                LDA HIBYTES,X       ; 4
                 STA SCREENH         ; 3
                 LDA (SCREENL),Y     ; 5
 :ORA_MOD        ORA HMASK           ; 2
@@ -154,7 +154,7 @@ DRAW_YDOM_CLIP  CPY #$00
 :LOOP1          STA EL              ; 3
 :LOOP2          LDA LOBYTES,X       ; 4
                 STA SCREENL         ; 3
-                LDA HIBYTES2,X      ; 4
+                LDA HIBYTES,X       ; 4
                 STA SCREENH         ; 3
                 LDA (SCREENL),Y     ; 5
 :ORA_MOD        ORA HMASK           ; 2
@@ -250,7 +250,7 @@ DRAW_XDOM_SHORT CPY #$00
 :DY_MOD         INX                 ;   2
                 LDA LOBYTES,X       ;   4
                 STA SCREENL         ;   3
-                LDA HIBYTES2,X      ;   4
+                LDA HIBYTES,X       ;   4
                 STA SCREENH         ;   3
 ;               SEC                 ;   2 (only needed for erase)
                 BCS :LOOP2          ;   3   always
@@ -314,7 +314,7 @@ DRAW_XDOM_SHORT_CLIP
 :DY_MOD         INX                 ;   2
                 LDA LOBYTES,X       ;   4
                 STA SCREENL         ;   3
-                LDA HIBYTES2,X      ;   4
+                LDA HIBYTES,X       ;   4
                 STA SCREENH         ;   3
                 BNE :LOOP2          ;   3   always
 
@@ -354,7 +354,7 @@ DRAW_HORZ       CPY #$00
 :CACHED         LDX YCRD
                 LDA LOBYTES,X
                 STA SCREENL
-                LDA HIBYTES2,X
+                LDA HIBYTES,X
                 STA SCREENH
                 LDY HNDX
                 LDX COUNTL
@@ -416,7 +416,7 @@ DRAW_HORZ_CLIP  CPY #$00
 :CACHED         LDX YCRD
                 LDA LOBYTES,X
                 STA SCREENL
-                LDA HIBYTES2,X
+                LDA HIBYTES,X
                 STA SCREENH
                 LDY HNDX
                 LDX COUNTL

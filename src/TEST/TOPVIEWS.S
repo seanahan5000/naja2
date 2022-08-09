@@ -1,5 +1,5 @@
 
-DRAW_GRID       ENT
+DRAW_GRID       ;ENT
                 JSR DRAW_PICT
                 PictSetGreen
                 PictRect $07;$47;$55;$B7
@@ -46,12 +46,12 @@ DRAW_GRID       ENT
                 BCC :4
                 RTS
 
-FROM11          ENT                 ; legacy name
-CHARPOS_TO_XY   ENT
-                LDY #position
-                LDA (CHARDL),Y
-FROM11B         ENT                 ; legacy name
-POS_TO_XY       ENT
+; FROM11          ;ENT                 ; legacy name
+; CHARPOS_TO_XY   ;ENT
+;                 LDY #position
+;                 LDA (CHARDL),Y
+; FROM11B         ;ENT                 ; legacy name
+POS_TO_XY       ;ENT
                 STA :MOD+1
                 LSR
                 LSR
@@ -73,6 +73,24 @@ DRAW_CHAR_TOPVIEW
                 LSR
                 LSR
                 LSR
+                PHA
+                LDY #position
+                LDA (CHARDL),Y
+                JSR POS_TO_XY
+                PLA
+
+; On entry:
+;   A: prof (already shifted down)
+;   X: grid X
+;   Y: grid Y
+
+TVIEWIT                             ; legacy name
+DRAW_TOPVIEW    PHA
+                LDA GRID_XPNTS,X
+                STA XCOORD
+                LDA GRID_YPNTS,Y
+                STA YCOORD
+                PLA
                 TAX
                 LDA TCHAR_OFFSETS,X
                 CLC
@@ -81,14 +99,6 @@ DRAW_CHAR_TOPVIEW
                 LDA #0
                 ADC #>TCHAR_DATA
                 STA DATPNTH
-
-                JSR CHARPOS_TO_XY
-
-                LDA GRID_XPNTS,X
-                STA XCOORD
-                LDA GRID_YPNTS,Y
-                STA YCOORD
-
                 LDX #2
                 LDY #2
                 JMP DRAW_SHAPE
@@ -160,7 +170,7 @@ TCHAR_ROB       DB  $38,$78,$08,$6F,$69,$69,$6F     ; robot
 ; On entry:
 ;   A: grid 11 position
 ;
-DRAW_GRID_CURSOR ENT
+DRAW_GRID_CURSOR ;ENT
                 LDX #<GRID_CURSOR
                 STX DATPNTL
                 LDY #>GRID_CURSOR
@@ -168,14 +178,13 @@ DRAW_GRID_CURSOR ENT
 
                 JSR POS_TO_XY
 
-                LDA GRID_XPNTS,X
-                SEC
-                SBC #1
-                STA XCOORD
                 LDA GRID_YPNTS,Y
                 CLC
                 ADC #8
                 STA YCOORD
+                LDY GRID_XPNTS,X
+                DEY
+                STY XCOORD
 
                 LDX #3
                 LDY #1

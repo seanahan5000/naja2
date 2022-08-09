@@ -12,8 +12,8 @@
 ;
 ; Does not set CHAR_INDEX for compatibility
 ;
-POINTIT         ENT                 ; legacy name
-SET_CHAR        ENT
+POINTIT         ;ENT                 ; legacy name
+SET_CHAR        ;ENT
                 CLC
                 ADC #1
                 LSR
@@ -33,7 +33,7 @@ SET_CHAR        ENT
 ;   CHAR_INDEX: 0
 ;   Other ZPAGE unchanged
 ;
-FIRST_CHAR      ENT
+FIRST_CHAR      ;ENT
                 LDA #$80
                 STA CHARDL
                 LDA #$BC
@@ -50,7 +50,7 @@ FIRST_CHAR      ENT
 ;   C=0: more characters remain
 ;   C=1: list complete
 ;
-NEXT_CHAR       ENT
+NEXT_CHAR       ;ENT
                 LDX CHAR_INDEX
                 INX
                 STX CHAR_INDEX

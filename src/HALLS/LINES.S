@@ -78,7 +78,7 @@ DRAW_SEGMENTS   STX LINE_PTR
                 STY YCRD
                 LDA LOBYTES,Y
                 STA SCREENL
-                LDA HIBYTES2,Y
+                LDA HIBYTES,Y
                 STA SCREENH
                 LDX DXL
                 STX XOL
@@ -443,7 +443,7 @@ DRAW_LINE       PHP
                 LDY YCRD            ; 3
                 LDA LOBYTES,Y       ; 4
                 STA SCREENL         ; 3
-                LDA HIBYTES2,Y      ; 4
+                LDA HIBYTES,Y       ; 4
                 STA SCREENH         ; 3
                 LDY HNDX            ; 3 (=25)
 
@@ -517,7 +517,7 @@ DRAW_CLIPPED    PHP
                 LDY YCRD            ; 3
                 LDA LOBYTES,Y       ; 4
                 STA SCREENL         ; 3
-                LDA HIBYTES2,Y      ; 4
+                LDA HIBYTES,Y       ; 4
                 STA SCREENH         ; 3
                 LDY HNDX            ; 3
 
@@ -615,7 +615,7 @@ ERASE_LINE      PHP
                 LDY YCRD            ; 3
                 LDA LOBYTES,Y       ; 4
                 STA SCREENL         ; 3
-                LDA HIBYTES2,Y      ; 4
+                LDA HIBYTES,Y       ; 4
                 STA SCREENH         ; 3
                 LDY HNDX            ; 3
 
@@ -696,7 +696,7 @@ ERASE_CLIPPED   PHP
                 LDY YCRD            ; 3
                 LDA LOBYTES,Y       ; 4
                 STA SCREENL         ; 3
-                LDA HIBYTES2,Y      ; 4
+                LDA HIBYTES,Y       ; 4
                 STA SCREENH         ; 3
                 LDY HNDX            ; 3
 

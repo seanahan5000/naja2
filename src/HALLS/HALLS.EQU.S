@@ -22,29 +22,31 @@ TEMP_PTR_H      =   $07
 DATA_TEMP1      =   $08
 DATA_TEMP2      =   $09
 
-MAP_SIZE        =   $30
-MAP_FACE        =   $31         ; must be sequential
-MAP_X           =   $32         ; must be sequential
-MAP_Y           =   $33         ; must be sequential
-MAP_DIR         =   $34         ; must be sequential
-MAP_PTR         =   $35         ; must be sequential
-MAP_PTR_H       =   $36         ; must be sequential
+                PUT VARS
+
+; MAP_SIZE        =   $30
+; MAP_FACE        =   $31         ; must be sequential
+; MAP_X           =   $32         ; must be sequential
+; MAP_Y           =   $33         ; must be sequential
+; MAP_DIR         =   $34         ; must be sequential
+; MAP_PTR         =   $35         ; must be sequential
+; MAP_PTR_H       =   $36         ; must be sequential
 ; TODO: do MAP_PTR_L/H really need permanent zpage?
 
 ; for hall scanning and drawing
-BLOCK_COUNT     =   $40
+BLOCK_COUNT     =   $66
 
 ; for hall drawing only
-BLOCK_INDEX     =   $41
-BLOCK_DATA      =   $42
-CUR_DEPTH       =   $43
-RANGE           =   $44
+BLOCK_INDEX     =   $67
+BLOCK_DATA      =   $68
+CUR_DEPTH       =   $69
+; RANGE           =   $F7
 
 XYDATAL         =   $0D
 XYDATAH         =   $0E
 
 ; NOTE: map code expects this to be (MAP_SIZE + 1) * 2 = minimum 36 bytes in size
-BLOCK_BUFFER    =   $7F00       ; TODO: move this somewhere else
+BLOCK_BUFFER    =   $7300       ; TODO: move this somewhere else
                                 ; TODO: how much space is needed?
 
 ; line drawing zpage
@@ -82,12 +84,9 @@ COUNTH          =   $1D
 ; SCREENL         =   $26
 ; SCREENH         =   $27
 
-COLOR           =   $E4
+; COLOR           =   $E4
 
 ; PAGE            =   $E6
-
-; TODO: remove this glue
-HIBYTES2        =   HIBYTES
 
 ; KEYBRD          =   $C000
 ; UNSTROB         =   $C010

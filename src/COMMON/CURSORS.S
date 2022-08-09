@@ -30,6 +30,20 @@ DRAW_ARROW      ENT
                 DB  %00000011
                 DB  %00000000
 
+DRAW_MARKER     ENT
+                JSR MOVE_TO
+                LDX #<:MARKER
+                LDY #>:MARKER
+                JMP DRAW_TILE
+
+:MARKER         DB  %00000000
+                DB  %00011111
+                DB  %00011111
+                DB  %00011111
+                DB  %00011111
+                DB  %00011111
+                DB  %00000000
+
 DRAW_TRIANGLE   ENT
                 JSR MOVE_TO
                 LDX #<:TRIANGLE
@@ -75,18 +89,4 @@ DRAW_BACK_TRI   ENT
                 DB  %01111000
                 DB  %01110000
                 DB  %01100000
-
-DRAW_MARKER     ENT
-                JSR MOVE_TO
-                LDX #<:MARKER
-                LDY #>:MARKER
-                JMP DRAW_TILE
-
-:MARKER         DB  %00000000
-                DB  %00011111
-                DB  %00011111
-                DB  %00011111
-                DB  %00011111
-                DB  %00011111
-                DB  %00000000
         fin

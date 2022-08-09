@@ -1,4 +1,5 @@
 
+        DO 0
 HALL_DRIVER     JSR INIT_RANDOM
                 JSR HGR
 
@@ -22,13 +23,20 @@ HALL_DRIVER     JSR INIT_RANDOM
 
                 JSR GET_NSEW
                 JSR DRAW_HALL           ; fall through
+        FIN
 
-READ_KEYS       JSR RANDOM
+HALL_SET_FILTER ENT
+                STX FILTER_MOD+1
+                STY FILTER_MOD+2
+                RTS
+
+HALL_KEYS       ENT
+                JSR RANDOM
                 LDA KEYBRD
-                BPL READ_KEYS
+                BPL HALL_KEYS
                 BIT UNSTROB
-                JSR FILTER_KEYS
-                BCS READ_KEYS
+FILTER_MOD      JSR FILTER_KEYS
+                BCS HALL_KEYS
                 JSR CHECK_UP
                 BEQ :FORWARD
                 JSR CHECK_DOWN
@@ -36,27 +44,27 @@ READ_KEYS       JSR RANDOM
                 JSR CHECK_RIGHT
                 BEQ :RIGHT
                 JSR CHECK_LEFT
-                BNE READ_KEYS           ; fall through
+                BNE HALL_KEYS           ; fall through
 
 :LEFT           JSR TURN_LEFT
                 JSR GET_NSEW
                 LDX #1
                 JSR FILTER_HALL
-                BCS READ_KEYS
+                BCS HALL_KEYS
                 BCC :REDRAW             ; always
 
 :RIGHT          JSR TURN_RIGHT
                 JSR GET_NSEW
                 LDX #1
                 JSR FILTER_HALL
-                BCS READ_KEYS
+                BCS HALL_KEYS
                 BCC :REDRAW             ; always
 
 :AROUND         JSR TURN_AROUND
                 JSR GET_NSEW
                 LDX #1
                 JSR FILTER_HALL
-                BCS READ_KEYS
+                BCS HALL_KEYS
                 BCC :REDRAW             ; always
 
 :FORWARD        LDA BLOCK_BUFFER
@@ -70,18 +78,18 @@ READ_KEYS       JSR RANDOM
                 JSR GET_NSEW
                 LDX #2
                 JSR FILTER_HALL
-                BCS READ_KEYS
+                BCS HALL_KEYS
 
 :REDRAW         JSR CLEAR_PAGE
                 JSR DRAW_HALL
-                JMP READ_KEYS
+                JMP HALL_KEYS
 
 :SCAN           JSR SCAN_HALL
                 JSR MARK_MAPPED
-                JMP READ_KEYS
+                JMP HALL_KEYS
 
 :STOP           JSR BLIP
-                JMP READ_KEYS
+                JMP HALL_KEYS
 
 BLIP            LDX #$50
 :1              STA CLICK
@@ -93,15 +101,14 @@ BLIP            LDX #$50
 
 ; TODO: make into hooks later
 
-FILTER_KEYS     CMP #"M"
-                BEQ GO_DRAW_MAP
-                CLC
+FILTER_KEYS     CLC
                 RTS
 
 FILTER_HALL     CLC
                 RTS
 
-GO_DRAW_MAP     JSR SET_PAGE2
+SHOW_MAP        ENT
+                JSR SET_PAGE2
                 JSR CLEAR_PAGE
                 JSR DRAW_MAP
                 STA SCNDARY
@@ -116,7 +123,8 @@ GO_DRAW_MAP     JSR SET_PAGE2
                 SEC
                 RTS
 
-GET_NSEW        JSR PUSH_MAP_STATE
+GET_NSEW        ENT
+                JSR PUSH_MAP_STATE
 
                 LDA #$00
                 STA BLOCK_COUNT
@@ -301,7 +309,8 @@ SWAP_MAP_STATE  LDX MAP_STATE_PTR
 MAP_STATE_PTR   DB  6*3
 MAP_STATE_STACK DS  6*3
 
-SET_MAP_DATA    STX MAP_PTR_MOD_L+1
+SET_MAP_DATA    ENT
+                STX MAP_PTR_MOD_L+1
                 STY MAP_PTR_MOD_H+1
                 STA MAP_SIZE
                 RTS
@@ -469,7 +478,7 @@ MOVE_FORWARD    LDX MAP_DIR
                 LDA FACE_TABLE,X
                 STA MAP_Y          ; fall through
 
-COMPUTE_MAP_PTR
+COMPUTE_MAP_PTR ENT
 MAP_PTR_MOD_L   LDA #$FF
                 STA TEMP_PTR
 MAP_PTR_MOD_H   LDA #$FF

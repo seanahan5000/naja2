@@ -23,13 +23,14 @@ fi
 # Assemble all source files
 #---------------------------------------
 
-$ASM COMMON ASM.COMMON.S  -lst $OBJ/COMMON.LST -ent $SRC/COMMON/COMMON.EXT.S
-$ASM HALLS  ASM.HALLS     -lst $OBJ/HALLS.LST
-$ASM ALIENS ASM.PICS      -lst $OBJ/ASM.PICS.LST
+$ASM COMMON ASM.COMMON  -lst $OBJ/COMMON.LST  -ent $SRC/COMMON/EXT.S
+$ASM HALLS  ASM.HALLS   -lst $OBJ/HALLS.LST   -ent $SRC/HALLS/EXT.S
+$ASM CAMP   ASM.CAMP    -lst $OBJ/CAMP.LST    -ent $SRC/CAMP/EXT.S
+$ASM ALIENS ASM.PICS    -lst $OBJ/PICS.LST
 
 $ASM NAJA/IO FAKE.GROUP.S
 
-$ASM TEST   TEST.COMMON.S -lst $OBJ/TEST.COMMON.LST
+$ASM TEST   TEST.CONTROL.S -lst $OBJ/CONTROL.LST
 
 #---------------------------------------
 # Build disk .nib images

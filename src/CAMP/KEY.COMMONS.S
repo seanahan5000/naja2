@@ -2,7 +2,7 @@
 * On entry:
 *   X,Y point to a data structure:
 *
-*   MinMax cursor position (byte)
+*   MinMax cursor position, inclusive (byte)
 *   Starting position (byte)
 *      If high bit set, clear out LEGALS for minmax range
 *   Address of cursor routine (word)
@@ -14,35 +14,20 @@
 *   DESTINATION set up with a jump to the address from
 *      destination table that corresponds with the cursor
 *   CURSOR holds the current position
+*	X holds CURSOR value
 
+; TODO: should this be used here?
+TEMP			=	LOCAL_TEMP
 
-DESTINATION		JMP	$FFFF
-INTERCEPT		JMP	$FFFF
-ERASE_CURSOR	JMP	$FFFF
-DRAW_CURSOR		JMP	$FFFF
-ARROWER			STX	XPNT
-				STY	YPNT
-				JMP	ACURSIT
-
-YPOINTS			DFB	$0C,$14,$1C
-				DFB	$24,$2C,$34
-				DFB	$3C
-				DFB	$46,$58,$62
-				DFB	$6C
-
-INIT_CURSOR		STX	TEMP
+MENU_INIT		;ENT
+; INIT_CURSOR		ENT					; legacy
+				STX	TEMP
 				STY	TEMP+1
 				LDY	#$00
 				LDA	(TEMP),Y
 				TAX
-				AND	#$0F
-				STA	MAXIMUM
-				TXA
-				LSR
-				LSR
-				LSR
-				LSR
-				STA	MINIMUM
+				INX					; convert to exclusive
+				STX	MAXIMUM
 				INY
 				LDA	(TEMP),Y
 				PHP
@@ -50,50 +35,53 @@ INIT_CURSOR		STX	TEMP
 				STA	CURSOR
 				INY
 				LDA	(TEMP),Y
-				STA	ERASE_CURSOR+1
-				STA	DRAW_CURSOR+1
+				STA	DCUR_MOD+1
 				INY
 				LDA	(TEMP),Y
-				STA	ERASE_CURSOR+2
-				STA	DRAW_CURSOR+2
+				STA	DCUR_MOD+2
 				INY
 				LDA	(TEMP),Y
-				STA	JUMP_TABLE1+1
-				STA	JUMP_TABLE2+1
+				STA	JUMP_MOD+1
 				INY
 				LDA	(TEMP),Y
-				STA	JUMP_TABLE1+2
-				STA	JUMP_TABLE2+2
+				STA	JUMP_MOD+2
 				PLP
-				BPL	:SKIPA
-				LDX	MINIMUM
-				LDA	#$00
-:LOOP1			STA	LEGALS,X
-				CPX	MAXIMUM
+				BPL	:2
+				LDX	#0
+				TXA
+:1   			STA	LEGALS,X
 				INX
-				BCC	:LOOP1
-:SKIPA			JSR	DOWN_SUB2
-				LDA	#<:EXIT
-				STA	INTERCEPT+1
-				LDA	#>:EXIT
-				STA	INTERCEPT+2
-:EXIT			RTS
+				CPX	MAXIMUM
+				BNE	:1
+:2				LDX CURSOR
+				JSR	DOWN_SUB2
+				LDX	#<DEFAULT_FILTER
+				LDY	#>DEFAULT_FILTER
+				; fall through
+MENU_SET_FILTER	;ENT
+				STX FILTER_MOD+1
+				STY FILTER_MOD+2
+DEFAULT_FILTER	RTS
 
 BLINK_LOOP		LDA	#$10
 				JSR	WAIT
 				LDA	#$F0
-				JSR	WAIT2
-				BMI	GETKEY2
+				JSR	WAIT_KEY
+				BMI	MENU_SELECT2
 				CLC
-				JSR	ERASE_CURSOR
+				JSR	BLINK_CURSOR	; blink erase
 				LDA	#$00
-				JSR	WAIT2
-GETKEY			CLC
-				JSR	DRAW_CURSOR
-GETKEY2			SEC
-				JSR	INTERCEPT
+				JSR	WAIT_KEY
+MENU_SELECT 	;ENT
+; GETKEY			ENT					; legacy
+				CLC
+				JSR	BLINK_CURSOR	; blink draw
+MENU_SELECT2	;ENT
+; GETKEY2			ENT					; legacy
+				SEC
+FILTER_MOD		JSR	$FFFF
 				BCC	BLINK_OUT
-				INC	RANDOM1
+				JSR RANDOM
 				LDA	KEYBRD
 				BPL	BLINK_LOOP
 				BIT	UNSTROB
@@ -102,51 +90,60 @@ GETKEY2			SEC
 				JSR	CHECK_DOWN
 				BEQ	DOWN
 				JSR	CHECK_ENTER
-				BNE	GETKEY2
-				LDA	CURSOR
+				BNE	MENU_SELECT2
+				JSR	DRAW_CURSOR		; erase
+
+				LDA CURSOR
 				ASL
-				TAY
-JUMP_TABLE1		LDA	$FFFF,Y
-				STA	DESTINATION+1
+				TAX
+				LDY #-2
+JUMP_MOD		LDA $FFFF,X
+				STA MENU_TARGET+1-254,Y
+				INX
 				INY
-JUMP_TABLE2		LDA	$FFFF,Y
-				STA	DESTINATION+2
-				SEC
-				JSR	ERASE_CURSOR
-				SEC
-BLINK_OUT		RTS
+				BMI JUMP_MOD
 
-UP				SEC
-				JSR	ERASE_CURSOR
-UP2				LDY	CURSOR
-				DEY
-				CPY	MINIMUM
-				BPL	:1
-				LDY	MAXIMUM
-:1				STY	CURSOR
-				LDA	LEGALS,Y
-				BNE	UP2
 				SEC
-				JSR	DRAW_CURSOR
-				JMP	GETKEY2
-
-DOWN			SEC
-				JSR	ERASE_CURSOR
-DOWN2			JSR	DOWN_SUB1
-				SEC
-				JSR	DRAW_CURSOR
-				JMP	GETKEY2
-
-DOWN_SUB1		LDA	CURSOR
-				INC	CURSOR
-				CMP	MAXIMUM
-				BNE	DOWN_SUB2
-				LDA	MINIMUM
-				STA	CURSOR
-DOWN_SUB2		LDY	CURSOR
-				LDA	LEGALS,Y
-				BNE	DOWN_SUB1
+BLINK_OUT		LDX CURSOR
 				RTS
 
-MINIMUM			DB	0
+UP				JSR	DRAW_CURSOR		; erase
+				LDX	CURSOR
+:1				TXA
+  				BNE :2
+				LDX MAXIMUM
+:2				DEX
+				LDA LEGALS,X
+				BNE :1
+				STX CURSOR
+				JSR	DRAW_CURSOR		; draw
+				JMP	MENU_SELECT2
+
+DOWN			JSR	DRAW_CURSOR		; erase
+_DOWN2			JSR	DOWN_SUB1		; DOWN2 was used by camp, why?
+				JSR	DRAW_CURSOR		; draw
+				JMP	MENU_SELECT2
+
+DOWN_SUB1		LDX	CURSOR
+DOWN_LOOP		INX
+				CPX	MAXIMUM
+				BNE	DOWN_SUB2
+				LDX #0
+DOWN_SUB2		LDA	LEGALS,X
+				BNE	DOWN_LOOP
+				STX CURSOR
+				RTS
+
+DRAW_CURSOR		SEC
+BLINK_CURSOR	LDX CURSOR
+DCUR_MOD		JMP $FFFF
+
+; DESTINATION							; legacy
+MENU_TARGET		JMP	$FFFF
+
 MAXIMUM			DB	0
+
+; found in SCAN.COMMONS.S
+LEGALS
+CHAR_LIST       DS  7,0
+                DS  9,0

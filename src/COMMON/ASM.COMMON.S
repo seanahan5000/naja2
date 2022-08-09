@@ -16,7 +16,7 @@
                 PUT FONT
                 PUT CURSORS
 
-                DS  32              ;***
+                DS  64              ;***
 
                 PUT UNPACK
 
