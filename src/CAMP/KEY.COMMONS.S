@@ -142,8 +142,3 @@ DCUR_MOD		JMP $FFFF
 MENU_TARGET		JMP	$FFFF
 
 MAXIMUM			DB	0
-
-; found in SCAN.COMMONS.S
-LEGALS
-CHAR_LIST       DS  7,0
-                DS  9,0

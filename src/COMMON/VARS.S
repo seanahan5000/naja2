@@ -12,6 +12,7 @@ CharA           =   11
 CharZ           =   36
 CharFirstSymbol =   37              ; first symbol after {0-9 A-Z}
 CharSlash       =   $2E
+CharColon       =   $2F
 CharEmpty       =   $EE
 CharLineBreak   =   $8B
 CharLineEnd     =   $8D
@@ -52,6 +53,8 @@ CURSOR          =   $95
 COUNT           =   $96
 SELECT_FLIP     =   $96         ; only used in T.CAMP.S when flipping stats
 CHAR_INDEX      =   $97
+
+SCRATCH_PAGE    =   $BB00       ; TODO: place somewhere else
 
 LOST_CHARS      =   $BC7D
 GRPCONT         =   $BC7E       ; number of characters, including dead/compressed?

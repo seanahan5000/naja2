@@ -72,7 +72,6 @@ STATS_EXIT      JSR DRAW_PICT
                 PictClear $10;$21;$18;$40
                 PictSwap 0;122;40;192
                 PictEnd
-                ; JMP RDKEY
                 RTS
 
 STATS_FLIP      JSR DRAW_PICT
@@ -100,12 +99,13 @@ STATS_MORE      LDA SHELL
                 PictShowPage1
                 PictEnd
 
-                LDA #$00            ; was #$05 because of DOWN2 below
-                BEQ COPTION			; always
+                LDA #0				; TRADE
+COPTION			ORA #$80
+                STA CCURPOS_MS
+                STA CCURPOS_TRACC
+                BMI CMENU			; always
 
-RECAMP			ORA	#$80
-				PHA
-				BIT	UNSTROB
+RECAMP			BIT	UNSTROB
 				JSR DRAW_PICT
                 PictSetPage1
                 PictClearPage
@@ -113,13 +113,8 @@ RECAMP			ORA	#$80
                 PictCall CAMP_MENU_BOX
                 PictShowPage1
                 PictEnd
-				PLA
 
-; NOTE: reentry point from several locations
-COPTION			ORA #$80
-                STA CCURPOS_MS
-                STA CCURPOS_TRACC
-                LDA SHELL
+CMENU         	LDA SHELL
                 BNE :TRACC
 :MOTHER			LDX #<CAMP_MENU_MS
                 LDY #>CAMP_MENU_MS
@@ -131,6 +126,10 @@ COPTION			ORA #$80
 ; TODO: make it possible use <escape> to directly leave camp menu
 
                 JSR MENU_SELECT
+                TXA
+                ORA #$80
+                STA CCURPOS_MS
+                STA CCURPOS_TRACC
                 JSR CAMP_MARKER
 :1              JMP MENU_TARGET
 
@@ -221,7 +220,6 @@ EXIT_CAMP		JSR	DRAW_PICT
 				PictShowPage1
 				PictEnd
 				RTS
-				; JMP	RDKEY
 
 GOFORM			; JSR	LOAD_REFORM
 				JMP	REFORMAT
@@ -236,12 +234,99 @@ GOFORM			; JSR	LOAD_REFORM
 ; 				STA	CAMP_HERE
 ; :EXIT			RTS
 
-            do 1
 TRADE           RTS
-POOLER          RTS
-GOISTAT         RTS
-            else
+POOLER			RTS
 
+GOISTAT			JSR DRAW_PICT
+				PictTextAt 16;70;(CANCEL)
+				PictTextAt 63;96;(INDIVIDUAL_STATS_FOR_WHOM?)
+				PictEnd
+				JSR	GRPSUB
+				LDA	CURSOR
+				CMP	#7
+				BEQ	:CANCEL
+				JSR	SET_CHAR
+				JSR	DRAW_CURSOR
+				JMP	DOSTATS
+
+:CANCEL			JSR DRAW_PICT
+                PictClear 2;70;8;77
+                PictClear 9;96;32;103
+                PictEnd
+                LDX #3				; ISTATS (TRACC)
+                LDA SHELL
+                BNE :1
+                DEX					; ISTATS (mother)
+:1				JSR	CAMP_MARKER
+                JMP	CMENU
+
+GRPSUB			JSR	RESET_CHRLIST
+GRPSUB2			LDA	#$00			; called from C.TRADE1.S
+				STA	GCURPOS
+				STA	LEGALS+7
+				JSR	PRE_ARROW
+				JMP	MENU_SELECT
+
+*-------------------------------
+PRE_ARROW		LDX	#<:PRE_DEF
+				LDY	#>:PRE_DEF
+				JMP	MENU_INIT
+
+:PRE_DEF		DB	$0A
+GCURPOS			DB	$00
+				DW	:PRE_CURS
+
+:PRE_CURS		LDY	YPOINTS,X
+				LDX	#$03
+				LDA	CURSOR
+				CMP	#$08
+				BCC	:1
+				LDX	#$5A
+:1				JMP	DRAW_ARROW
+
+; NOTE: was in KEY.COMMONS.S
+YPOINTS			DFB	$0C,$14,$1C
+				DFB	$24,$2C,$34
+				DFB	$3C
+				DFB	$46,$58,$62
+				DFB	$6C
+*-------------------------------
+
+; caller has already set Y position
+FLIP_STATS      LDA SELECT
+                LDX SHELL
+                BNE :1
+                AND #$03
+                STA SELECT_FLIP
+                EOR #$03
+                BPL :2				; always
+:1				STA SELECT_FLIP
+				EOR #$C3
+:2				PHA
+				LDA SELECT_FLIP
+				JSR STATS_HEADER2
+				PLA
+				PHA
+				JSR STATS_HEADER2
+                JSR DRAW_PICT
+                PictVMove 10
+                PictEnd
+                JSR FIRST_CHAR
+:3				LDA SELECT_FLIP
+				JSR STATS_LINE2
+				PLA
+				PHA
+				JSR STATS_LINE2
+                JSR DRAW_PICT
+                PictVMove 8
+                PictEnd
+                JSR NEXT_CHAR
+                BCC :3
+                PLA
+                STA SELECT
+                RTS
+
+            DO 0
 LOOSE_ENDS
 *** Notify if any characters in group are critical
 				LDA	#$00
@@ -483,37 +568,13 @@ CALC_SRANGE		JSR	RESET_CHRLIST
 :SKIPC			STA	MXRANGE
 				RTS
 
-
-GOISTAT			LDY	#$0E
-				JSR	TEXTER
-				JSR	GRPSUB
-				LDA	CURSOR
-				CMP	#$07
-				BNE	NOCANDO
-				LDY	#$0E
-				JSR	TEXTER
-				LDY	#$03
-				JSR	CMARKER
-				LDA	#$02
-				JMP	COPTION
-NOCANDO			JSR	POINTIT
-				JSR	DRAW_CURSOR
-				JMP	DOSTATS
-
-GRPSUB			JSR	RESET_CHRLIST
-GRPSUB2			LDA	#$00
-				STA	GCURPOS
-				STA	LEGALS+7
-				JSR	PRE_ARROW
-				JMP	GETKEY
-
 POOLER			JSR	CLEAR2
 				LDA	#GREEN
 				STA	COLOR
 				LDA	#$40
 				STA	PAGE
 				LDY	#$00
-				JSR	LINER2
+				JSR	LINER2			; green stats box
 				LDY	#$10
 				JSR	TEXTER
 				LDA	#$6E
@@ -560,77 +621,4 @@ POOLOUT			LDY	#$01
 				JSR	CMARKER
 				LDA	#$00
 				JMP	COPTION
-
-LINER2			JSR	BANK_2
-				TYA
-				ASL	A
-				TAY
-				LDA	LINES,Y
-				STA	POINTL
-				INY
-				LDA	LINES,Y
-				STA	POINTH
-				JSR	LINEOUT
-				JMP	BANK_1
-
-*-------------------------------
-PRE_ARROW		LDX	#<:PRE_DEF
-				LDY	#>:PRE_DEF
-				JMP	INIT_CURSOR
-
-:PRE_DEF		DB	$0A
-GCURPOS			DB	$00
-				DW	:PRE_CURS
-
-:PRE_CURS		LDY	CURSOR
-				LDA	YPOINTS,Y
-				TAY
-				LDX	#$03
-				LDA	CURSOR
-				CMP	#$08
-				BCC	:SKIPA
-				LDX	#$5A
-:SKIPA			JMP	ARROWER
-*-------------------------------
-			fin
-
-; caller has already set Y position
-FLIP_STATS      LDA SELECT
-                LDX SHELL
-                BNE :1
-                AND #$03
-                STA SELECT_FLIP
-                EOR #$03
-                BPL :2				; always
-:1				STA SELECT_FLIP
-				EOR #$C3
-:2				PHA
-				LDA SELECT_FLIP
-				JSR STATS_HEADER2
-				PLA
-				PHA
-				JSR STATS_HEADER2
-                JSR DRAW_PICT
-                PictVMove 10
-                PictEnd
-                JSR FIRST_CHAR
-:3				LDA SELECT_FLIP
-				JSR STATS_LINE2
-				PLA
-				PHA
-				JSR STATS_LINE2
-                JSR DRAW_PICT
-                PictVMove 8
-                PictEnd
-                JSR NEXT_CHAR
-                BCC :3
-                PLA
-                STA SELECT
-                RTS
-
-; NOTE: was in KEY.COMMONS.S
-YPOINTS			DFB	$0C,$14,$1C
-				DFB	$24,$2C,$34
-				DFB	$3C
-				DFB	$46,$58,$62
-				DFB	$6C
+			FIN

@@ -84,10 +84,10 @@ STATS_HEADER2   STA SELECT
 
 STATS_LINE      JSR PROFNAME_TO_TEXT
                 LDX #$10
-                JSR DRAW_TEXTBUF
+                JSR DRAW_TEXTBUF_X
                 JSR ENERGY_TO_TEXT
                 LDX #$C6
-                JSR DRAW_TEXTBUF
+                JSR DRAW_TEXTBUF_X
                 LDA SELECT
 
 STATS_LINE2     STA SELECT
@@ -98,16 +98,16 @@ STATS_LINE2     STA SELECT
 :SHIELD         LDY #Eshielding
                 JSR SHIELD_TO_TEXT
                 LDX #$69
-                JSR DRAW_TEXTBUF
+                JSR DRAW_TEXTBUF_X
                 LDY #Pshielding
                 JSR SHIELD_TO_TEXT
                 LDX #$79
-                JSR DRAW_TEXTBUF
+                JSR DRAW_TEXTBUF_X
                 JMP :DAMSTAT
 
 :XY             JSR CPOS_TO_TEXT
                 LDX #$71
-                JSR DRAW_TEXTBUF
+                JSR DRAW_TEXTBUF_X
 :DAMSTAT        LDA SELECT
                 LSR
                 BCS :STATUS
@@ -125,7 +125,7 @@ STATS_LINE2     STA SELECT
                 JMP :3
 :2              JSR STATUS_TO_TEXT
 :3              LDX #$8A
-                JMP DRAW_TEXTBUF
+                JMP DRAW_TEXTBUF_X
 
 PROFNAME_TO_TEXT LDY #profrace
                 LDA (CHARDL),Y
@@ -145,13 +145,42 @@ PROFNAME_TO_TEXT LDY #profrace
                 LDA #CharSpace
                 STA TEXT_BUFFER,X
                 INX
-                LDY #name
+                BNE NTT_CMN         ; always
+
+CNAME_TO_TEXT   LDX #0
+NTT_CMN         LDY #name
 :2              LDA (CHARDL),Y
                 STA TEXT_BUFFER,X
                 INX
                 INY
                 CPY #name+10
                 BNE :2
+                LDA #CharLineEnd
+                STA TEXT_BUFFER,X
+                RTS
+
+; NOTE: currently only used by C.ISTATS.S, so maybe move
+CPROF_TO_TEXT   LDY #profrace
+                LDA (CHARDL),Y
+                LSR
+                LSR
+                LSR
+                LSR
+                TAX
+                LDY PROF_OFFS,X
+                CPX #electromedic
+                BNE :1
+                LDY #EMEDIC-PROF_NAMES+4
+:1              LDX #0
+:2              LDA PROF_NAMES,Y
+                BMI :3
+                STA TEXT_BUFFER,X
+                INY
+                INX
+                BNE :2
+:3              AND #$7F
+                STA TEXT_BUFFER,X
+                INX
                 LDA #CharLineEnd
                 STA TEXT_BUFFER,X
                 RTS
@@ -210,11 +239,7 @@ DAMAGE_TO_TEXT  LDX #0
                 STA TEXT_BUFFER,X
                 INX
                 LDY #damagemax
-                LDA #2
-                JSR CHAR_DIGITS_L
-                LDA #CharLineEnd
-                STA TEXT_BUFFER,X
-                RTS
+                BNE CMN_TO_TEXT_L2  ; always
 
 ENERGY_TO_TEXT  LDX #0
                 LDY #energylev
@@ -225,7 +250,19 @@ ENERGY_TO_TEXT  LDX #0
                 INX
                 LDY #energymax
                 LDA #3
-                JSR CHAR_DIGITS_L
+                BNE CMN_TO_TEXT_L   ; always
+
+; NOTE: currently only used by C.ISTATS.S, so maybe move
+CEXP_TO_TEXT    LDY #experience
+                LDX #0
+                LDA #4
+                BNE CMN_TO_TEXT_L   ; always
+
+; NOTE: currently only used by C.ISTATS.S, so maybe move
+CLEVEL_TO_TEXT  LDY #level
+                LDX #0
+CMN_TO_TEXT_L2  LDA #2
+CMN_TO_TEXT_L   JSR CHAR_DIGITS_L
                 LDA #CharLineEnd
                 STA TEXT_BUFFER,X
                 RTS
@@ -298,27 +335,10 @@ STATUS_TO_TEXT  LDY #status
                 INX
                 BNE :2              ; always
 
-:FOUND_STATUS   LDY #0
-:3              DEX
-                BMI :FOUND_NAME
-:4              INY
-                LDA STATUS_NAMES-1,Y
-                BPL :4
-                BMI :3              ; always
-
-:FOUND_NAME     LDX #0
-:5              LDA STATUS_NAMES,Y
-                BMI :6
-                STA TEXT_BUFFER,X
-                INX
-                INY
-                BNE :5              ; always
-:6              AND #$7F
-                STA TEXT_BUFFER,X
-                INX
-                LDA #CharLineEnd
-                STA TEXT_BUFFER,X
-                RTS
+:FOUND_STATUS   TXA
+                LDX #<STATUS_NAMES
+                LDY #>STATUS_NAMES
+                JMP GET_IND_STRING
 
 MAJOR_STATUS    JSR BAD_STATUS
                 BCS :1
@@ -386,11 +406,13 @@ STATUS_NAMES    USR (HEALTHY)=
                 USR (CRITICAL)=
                 USR (RUN_DOWN)=
 
-RACE_OFFS       DB  HUMAN-RACE_NAMES
-                DB  ORN-RACE_NAMES
-                DB  STILICX-RACE_NAMES
-                DB  XXTYS-RACE_NAMES
-                DB  DENEB-RACE_NAMES
+; NOTE: currently only used by C.ISTATS.S, so maybe move
+CRACE_TO_TEXT   LDY #profrace
+                LDA (CHARDL),Y
+                AND #$0F
+                LDX #<RACE_NAMES
+                LDY #>RACE_NAMES
+                JMP GET_IND_STRING
 
 RACE_NAMES
 HUMAN           USR (HUMAN)=
@@ -398,3 +420,42 @@ ORN             USR (ORN)=
 STILICX         USR (STILICX)=
 XXTYS           USR (XXTYS)=
 DENEB           USR (DENEB)=
+
+
+; On entry:
+;   X: string list (low)
+;   Y: string list (high)
+;   A: string index
+;
+; On exit:
+;   TEXT_BUFFER: holding indexed string
+;   X: index of CharLineEnd
+;
+PTR             =   LOCAL_TEMP+0
+PTR_H           =   LOCAL_TEMP+1
+
+GET_IND_STRING  ENT
+                STX PTR
+                STY PTR_H
+                TAX
+                LDY #-1
+                BMI :2              ; always
+:1              INY
+                LDA (PTR),Y
+                BPL :1
+:2              DEX
+                BPL :1
+                INY
+                LDX #0
+:3              LDA (PTR),Y
+                BMI :4
+                STA TEXT_BUFFER,X
+                INX
+                INY
+                BNE :3              ; always
+:4              AND #$7F
+                STA TEXT_BUFFER,X
+                INX
+                LDA #CharLineEnd
+                STA TEXT_BUFFER,X
+                RTS

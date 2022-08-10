@@ -31,13 +31,21 @@ TEXT_HEIGHT     DB  LineHeight
 ;   Y: Address of string (high)
 ;-------------------------------------------------------------------------------
 
+DRAW_TEXTBUF_RET ENT
+                JSR DTB_CMN
+                JMP NEXT_LINE
+
 ; X: target X position
-DRAW_TEXTBUF    ENT
+; Y: target Y position
+DRAW_TEXTBUF_XY ENT
+                STY YCOORD
+; X: target X position
+DRAW_TEXTBUF_X  ENT
                 LDA DIV7,X
                 STA XCOORD
                 LDA MOD7,X
                 STA XSHIFT
-                LDX #<TEXT_BUFFER
+DTB_CMN         LDX #<TEXT_BUFFER
                 LDY #>TEXT_BUFFER
 
 DRAW_TEXT       ENT
@@ -99,24 +107,25 @@ OP_TEXT         STY OP_INDEX
                 LDY OP_INDEX
                 BNE :NEXT_INSERT    ; always
 
-:NEXT_LINE      LDA LEFT_DIV7
-                STA XCOORD
-                LDA LEFT_MOD7
-                STA XSHIFT
-
-                LDA YCOORD
-                CLC
-                ADC TEXT_HEIGHT
-                CMP #192-7
-                BCC :3
-                LDA #192-7
-:3              STA YCOORD
-                JSR TABLER
+:NEXT_LINE      JSR NEXT_LINE
                 LDY OP_INDEX
                 BNE :NEXT_CHAR      ; always
 
 :DONE           STY OP_INDEX
                 RTS
+
+NEXT_LINE       LDA LEFT_DIV7
+                STA XCOORD
+                LDA LEFT_MOD7
+                STA XSHIFT
+                LDA YCOORD
+                CLC
+                ADC TEXT_HEIGHT
+                CMP #192-7
+                BCC :1
+                LDA #192-7
+:1              STA YCOORD
+                JMP TABLER
 
 ;-------------------------------------------------------------------------------
 

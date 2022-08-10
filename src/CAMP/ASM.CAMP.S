@@ -33,11 +33,14 @@ RITHOLD         =   $CF
                 ORG $E000
                 PUT T.CAMP.S
                 PUT KEY.COMMONS.S
+                PUT SCAN.COMMONS.S
 
+                PUT C.ISTATS.S
                 PUT C.REFORMAT.S
                 PUT /TEST/TOPVIEWS
 
                 PUT /TEST/CHARACTERS
+                PUT /TEST/EQUIPMENT
                 PUT /TEST/STATS
 
 SHELL           DB  $1              ; TODO: move later

@@ -10,3 +10,4 @@
 * Make death/compressed characters mechanism optional
     * Let player decide to be strict/not about death
 * Center status when flipping w/damage in stats box
+* Always allow escape key to cancel/leave a screen
