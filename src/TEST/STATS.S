@@ -142,7 +142,7 @@ PROFNAME_TO_TEXT LDY #profrace
                 INX
                 CPX #3
                 BNE :1
-                LDA #CharSpace
+                LDA #TextSpace
                 STA TEXT_BUFFER,X
                 INX
                 BNE NTT_CMN         ; always
@@ -155,7 +155,7 @@ NTT_CMN         LDY #name
                 INY
                 CPY #name+10
                 BNE :2
-                LDA #CharLineEnd
+                LDA #TextLineEnd
                 STA TEXT_BUFFER,X
                 RTS
 
@@ -181,7 +181,7 @@ CPROF_TO_TEXT   LDY #profrace
 :3              AND #$7F
                 STA TEXT_BUFFER,X
                 INX
-                LDA #CharLineEnd
+                LDA #TextLineEnd
                 STA TEXT_BUFFER,X
                 RTS
 
@@ -218,16 +218,16 @@ POS_TO_TEXT     PHA
                 PLA
                 AND #$0F
                 CLC
-                ADC #CharA
+                ADC #TextA
                 STA TEXT_BUFFER+1
-                LDA #CharLineEnd
+                LDA #TextLineEnd
                 STA TEXT_BUFFER+2
                 RTS
 
 SHIELD_TO_TEXT  LDX #0
                 LDA #1
                 JSR CHAR_DIGITS_R
-                LDA #CharLineEnd
+                LDA #TextLineEnd
                 STA TEXT_BUFFER,X
                 RTS
 
@@ -235,7 +235,7 @@ DAMAGE_TO_TEXT  LDX #0
                 LDY #damagelev
                 LDA #2
                 JSR CHAR_DIGITS_R
-                LDA #CharSlash
+                LDA #TextSlash
                 STA TEXT_BUFFER,X
                 INX
                 LDY #damagemax
@@ -245,7 +245,7 @@ ENERGY_TO_TEXT  LDX #0
                 LDY #energylev
                 LDA #3
                 JSR CHAR_DIGITS_R
-                LDA #CharSlash
+                LDA #TextSlash
                 STA TEXT_BUFFER,X
                 INX
                 LDY #energymax
@@ -263,7 +263,7 @@ CLEVEL_TO_TEXT  LDY #level
                 LDX #0
 CMN_TO_TEXT_L2  LDA #2
 CMN_TO_TEXT_L   JSR CHAR_DIGITS_L
-                LDA #CharLineEnd
+                LDA #TextLineEnd
                 STA TEXT_BUFFER,X
                 RTS
 ;
@@ -280,10 +280,10 @@ START_INDEX     =   LOCAL_TEMP+1
 END_INDEX       =   LOCAL_TEMP+2
 
 CHAR_DIGITS_L   STA BYTE_COUNT
-                LDA #CharEmpty
+                LDA #TextEmpty
                 BNE CHAR_DIG_CMN    ; always
 CHAR_DIGITS_R   STA BYTE_COUNT
-                LDA #CharSpace
+                LDA #TextSpace
 CHAR_DIG_CMN    STA :FILL_MOD+1
                 STX START_INDEX
 :1              LDA (CHARDL),Y
@@ -429,7 +429,7 @@ DENEB           USR (DENEB)=
 ;
 ; On exit:
 ;   TEXT_BUFFER: holding indexed string
-;   X: index of CharLineEnd
+;   X: index of TextLineEnd
 ;
 PTR             =   LOCAL_TEMP+0
 PTR_H           =   LOCAL_TEMP+1
@@ -456,6 +456,6 @@ GET_IND_STRING  ENT
 :4              AND #$7F
                 STA TEXT_BUFFER,X
                 INX
-                LDA #CharLineEnd
+                LDA #TextLineEnd
                 STA TEXT_BUFFER,X
                 RTS

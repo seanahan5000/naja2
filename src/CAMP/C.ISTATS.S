@@ -240,7 +240,7 @@ RINFOUT			JSR DRAW_PICT
 				LDA	#$0B
 				STA	TEXT_BUFFER,X
 				INX
-:1				LDA	#CharLineEnd
+:1				LDA	#TextLineEnd
 				STA	TEXT_BUFFER,X
 :2				JSR DRAW_TEXTBUF_RET
 

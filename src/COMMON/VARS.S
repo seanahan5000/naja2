@@ -5,19 +5,19 @@ SAME_PAGE_AS    MAC
                 ERR >(*-1!]1)
                 EOM
 
-Char0           =   0
-Char9           =   9
-CharSpace       =   10
-CharA           =   11
-CharZ           =   36
-CharFirstSymbol =   37              ; first symbol after {0-9 A-Z}
-CharSlash       =   $2E
-CharColon       =   $2F
-CharEmpty       =   $EE
-CharLineBreak   =   $8B
-CharLineEnd     =   $8D
-CharInsert      =   $C0
-CharInsertMask  =   $3F
+Text0           =   0
+Text9           =   9
+TextSpace       =   10
+TextA           =   11
+TextZ           =   36
+TextFirstSymbol =   37              ; first symbol after {0-9 A-Z}
+TextSlash       =   $2E
+TextColon       =   $2F
+TextEmpty       =   $EE
+TextLineBreak   =   $8B
+TextLineEnd     =   $8D
+TextInsert      =   $C0
+TextInsertMask  =   $3F
 
 LineHeight      =   9
 

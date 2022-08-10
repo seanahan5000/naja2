@@ -66,7 +66,7 @@ OP_TEXT         STY OP_INDEX
 :NEXT_CHAR      LDA (OP_PTR),Y
                 BMI :SPECIAL_CHAR
                 INY
-                CMP #CharSpace
+                CMP #TextSpace
                 BEQ :SKIP_SPACE1
                 STY OP_INDEX
                 JSR DRAW_LETTER
@@ -77,25 +77,25 @@ OP_TEXT         STY OP_INDEX
                 BNE :NEXT_CHAR      ; always
 
 :SPECIAL_CHAR   INY
-                CMP #CharLineEnd
+                CMP #TextLineEnd
                 BEQ :DONE
-                CMP #CharEmpty
+                CMP #TextEmpty
                 BEQ :NEXT_CHAR
                 STY OP_INDEX
-                CMP #CharLineBreak
+                CMP #TextLineBreak
                 BEQ :NEXT_LINE
-                CMP #CharInsert
+                CMP #TextInsert
                 BCC :DONE
 
-                AND #CharInsertMask
+                AND #TextInsertMask
                 TAX
 :NEXT_INSERT    LDA INSERT_BUFFER,X
                 INX
-                CMP #CharLineEnd
+                CMP #TextLineEnd
                 BEQ :NEXT_CHAR
-                CMP #CharEmpty
+                CMP #TextEmpty
                 BEQ :NEXT_INSERT
-                CMP #CharSpace
+                CMP #TextSpace
                 BEQ :SKIP_SPACE2
                 STX WORD_INDEX
                 JSR DRAW_LETTER
@@ -199,7 +199,7 @@ OP_TEXT_IN      STY OP_INDEX
                 LDX #0
 :NEXT_CHAR      LDA (OP_PTR),Y
                 BMI :SPECIAL_CHAR
-                CMP #CharSpace
+                CMP #TextSpace
                 BNE :0
                 CPX #0              ; leading space should not cause break
                 BNE :BREAK_WORD
@@ -209,7 +209,7 @@ OP_TEXT_IN      STY OP_INDEX
                 PHA
                 JSR ADVANCE
                 PLA
-                CMP #CharFirstSymbol
+                CMP #TextFirstSymbol
                 BCC :NEXT_CHAR
 :BREAK_WORD     STY OP_INDEX
                 TXA
@@ -223,15 +223,15 @@ OP_TEXT_IN      STY OP_INDEX
                 JSR :NEXT_LINE
                 JMP :DRAW_WORD
 
-:SPECIAL_CHAR   CMP #CharLineEnd
+:SPECIAL_CHAR   CMP #TextLineEnd
                 BEQ :BREAK_WORD
-                CMP #CharLineBreak
+                CMP #TextLineBreak
                 BEQ :BREAK_WORD
                 INY
-                CMP #CharEmpty
+                CMP #TextEmpty
                 BEQ :NEXT_CHAR
                 STY OP_INDEX
-                CMP #CharInsert
+                CMP #TextInsert
                 BCS :START_INSERT
                 BCC :BREAK_WORD     ; always
 
@@ -239,7 +239,7 @@ OP_TEXT_IN      STY OP_INDEX
                 PLA
 :DONE           LDA (OP_PTR),Y
                 INY
-                CMP #CharLineEnd
+                CMP #TextLineEnd
                 BNE :DONE
                 STY OP_INDEX
                 RTS
@@ -261,9 +261,9 @@ OP_TEXT_IN      STY OP_INDEX
 
 :TRIM_SPACE     LDY OP_INDEX
 :2              LDA (OP_PTR),Y
-                CMP #CharLineBreak
+                CMP #TextLineBreak
                 BEQ :FORCE_BREAK
-                CMP #CharSpace
+                CMP #TextSpace
                 BNE :3
                 JSR ADVANCE
                 INY
@@ -280,13 +280,13 @@ OP_TEXT_IN      STY OP_INDEX
 :33             JSR :NEXT_LINE
 :4              JMP :NEXT_WORD
 
-:START_INSERT   AND #CharInsertMask
+:START_INSERT   AND #TextInsertMask
                 TAY
 :NEXT_INSERT    LDA INSERT_BUFFER,Y
-                CMP #CharLineEnd
+                CMP #TextLineEnd
                 BEQ :INSERT_DONE
                 INY
-                CMP #CharEmpty
+                CMP #TextEmpty
                 BEQ :NEXT_INSERT
                 STA WORD_BUFFER,X
                 JSR ADVANCE
