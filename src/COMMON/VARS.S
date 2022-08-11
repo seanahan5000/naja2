@@ -93,30 +93,31 @@ HIRES           =   $C057
 OpSetColor      =   0
 OpMoveTo        =   1
 OpHMoveTo       =   2
-OpVMoveTo       =   3
-OpVMove         =   4
-OpHLineTo       =   5
-OpHLineToHigh   =   6
-OpVLineTo       =   7
-OpRect          =   8
-OpRectHigh      =   9
-OpSetTextHeight =   10
-OpSetTextBox    =   11
-OpSetTextBoxHigh =  12
-OpText          =   13
-OpTextAt        =   14
-OpTextIn        =   15
-OpImage         =   16
-OpClear         =   17
-OpSwap          =   18
+OpHMoveToHigh   =   3
+OpVMoveTo       =   4
+OpVMove         =   5
+OpHLineTo       =   6
+OpHLineToHigh   =   7
+OpVLineTo       =   8
+OpRect          =   9
+OpRectHigh      =   10
+OpSetTextHeight =   11
+OpSetTextBox    =   12
+OpSetTextBoxHigh =  13
+OpText          =   14
+OpTextAt        =   15
+OpTextIn        =   16
+OpImage         =   17
+OpClear         =   18
+OpSwap          =   19
 
-OpSetPage1      =   19
-OpSetPage2      =   20
-OpShowPage1     =   21
-OpShowPage2     =   22
-OpClearPage     =   23
-OpCopyToPage1   =   24
-OpCall          =   25
+OpSetPage1      =   20
+OpSetPage2      =   21
+OpShowPage1     =   22
+OpShowPage2     =   23
+OpClearPage     =   24
+OpCopyToPage1   =   25
+OpCall          =   26
 
 OpEnd           =   $FF
 
@@ -153,7 +154,11 @@ PictSetBlue     MAC
                 EOM
 
 PictHMoveTo     MAC
-                DB  OpHMoveTo,]1
+            DO ]1/256
+                DB  OpHMoveToHigh,<]1
+            ELSE
+                DB  OpHMoveTo,<]1
+            FIN
 ]X              =   ]1
                 EOM
 

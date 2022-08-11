@@ -167,6 +167,7 @@ DRAW_TILE_A     ENT
                 JSR TABLER
                 JMP BLIT_TILE
 
+;-------------------------------------------------------------------------------
 ; On entry:
 ;   X: pointer to tile data (low)
 ;   Y: pointer to tile data (high)

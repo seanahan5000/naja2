@@ -138,10 +138,11 @@ CAMP_MENU_BOX   LDA SHELL
 
 :MOTHER			JSR DRAW_PICT
                 PictSetBlue
-                PictRect $3A;$7C;$DC;$AE
+                ; PictRect $3A;$7C;$DC;$AE
+                PictRect $3A;$7C;$DC;$A5
                 PictTextAt 81;128;()-
                 USR (TRADE\n)-
-                USR (POOL_CREDITS\n)-
+                ; USR (POOL_CREDITS\n)-
                 USR (INDIVIDUAL_STATISTICS\n)-
                 USR (FLIP_STATS_TABLE\n)-
                 USR (LEAVE)
@@ -150,10 +151,11 @@ CAMP_MENU_BOX   LDA SHELL
 
 :TRACC			JSR DRAW_PICT
                 PictSetOrange
-                PictRect $3B;$7C;$DD;$B7
+                ; PictRect $3B;$7C;$DD;$B7
+                PictRect $3B;$7C;$DD;$AE
                 PictTextAt 81;128;()-
                 USR (TRADE\n)-
-                USR (POOL_CREDITS\n)-
+                ; USR (POOL_CREDITS\n)-
                 USR (REFORMAT_GROUP\n)-
                 USR (INDIVIDUAL_STATISTICS\n)-
                 USR (FLIP_STATS_TABLE\n)-
@@ -166,24 +168,24 @@ CAMP_MARKER     LDY CAMP_YPNTS,X
                 JMP DRAW_MARKER
 
 *-------------------------------
-CAMP_MENU_MS    DB  $04
+CAMP_MENU_MS    DB  $03		;$04
 CCURPOS_MS      DB  $80
                 DW  CAMP_CURS
                 DW  :CAMP_JUMPS_MS
 
 :CAMP_JUMPS_MS  DW  TRADE
-                DW  POOLER
+                ; DW  POOLER
                 DW  GOISTAT
                 DW  GOFLOP
                 DW  GOLEAVE
 
-CAMP_MENU_TRACC DB  $05
+CAMP_MENU_TRACC DB  $04		;$05
 CCURPOS_TRACC   DB  $80
                 DW  CAMP_CURS
                 DW  :CAMP_JUMPS_T
 
 :CAMP_JUMPS_T   DW  TRADE
-                DW  POOLER
+                ; DW  POOLER
                 DW  GOFORM
                 DW  GOISTAT
                 DW  GOFLOP
@@ -235,7 +237,7 @@ GOFORM			; JSR	LOAD_REFORM
 ; :EXIT			RTS
 
 TRADE           RTS
-POOLER			RTS
+; POOLER			RTS
 
 GOISTAT			JSR DRAW_PICT
 				PictTextAt 16;70;(CANCEL)
@@ -568,57 +570,57 @@ CALC_SRANGE		JSR	RESET_CHRLIST
 :SKIPC			STA	MXRANGE
 				RTS
 
-POOLER			JSR	CLEAR2
-				LDA	#GREEN
-				STA	COLOR
-				LDA	#$40
-				STA	PAGE
-				LDY	#$00
-				JSR	LINER2			; green stats box
-				LDY	#$10
-				JSR	TEXTER
-				LDA	#$6E
-				STA	XPNT
-				JSR	RESET_CHLIST
-				LDA	#$00
-				STA	COUNT
-DRWCRED			TAY
-				LDA	LEGALS,Y
-				BNE	:SKIPA
-				LDA	YPOINTS,Y
-				STA	YPNT
-				TYA
-				JSR	POINTIT
-				JSR	CHAR_CREDOUT
-:SKIPA			INC	COUNT
-				LDA	COUNT
-				CMP	GRPNUMB
-				BNE	DRWCRED
-POSTOP			JSR	POOL_TO_TOTAL
-				LDA	#$46
-				STA	YPNT
-				JSR	TOTAL_CREDOUT
-				LDA	#$20
-				STA	PAGE
-				JSR	MOVE212
-				LDY	#$0C
-				JSR	TEXTER
-				LDA	#$00
-				STA	LEGALS+7
-				STA	GCURPOS
-				JSR	PRE_ARROW
-				BIT	UNSTROB
-				JSR	GETKEY
-				LDY	#$0C
-				JSR	TEXTER
-				JSR	MOVE212
-				LDA	CURSOR
-				CMP	#$07
-				BEQ	POOLOUT
-				LDA	CURSOR
-				JSR	POOL_TO_CHAR
-POOLOUT			LDY	#$01
-				JSR	CMARKER
-				LDA	#$00
-				JMP	COPTION
+; POOLER			JSR	CLEAR2
+; 				LDA	#GREEN
+; 				STA	COLOR
+; 				LDA	#$40
+; 				STA	PAGE
+; 				LDY	#$00
+; 				JSR	LINER2			; green stats box
+; 				LDY	#$10
+; 				JSR	TEXTER
+; 				LDA	#$6E
+; 				STA	XPNT
+; 				JSR	RESET_CHLIST
+; 				LDA	#$00
+; 				STA	COUNT
+; DRWCRED			TAY
+; 				LDA	LEGALS,Y
+; 				BNE	:SKIPA
+; 				LDA	YPOINTS,Y
+; 				STA	YPNT
+; 				TYA
+; 				JSR	POINTIT
+; 				JSR	CHAR_CREDOUT
+; :SKIPA			INC	COUNT
+; 				LDA	COUNT
+; 				CMP	GRPNUMB
+; 				BNE	DRWCRED
+; POSTOP			JSR	POOL_TO_TOTAL
+; 				LDA	#$46
+; 				STA	YPNT
+; 				JSR	TOTAL_CREDOUT
+; 				LDA	#$20
+; 				STA	PAGE
+; 				JSR	MOVE212
+; 				LDY	#$0C
+; 				JSR	TEXTER
+; 				LDA	#$00
+; 				STA	LEGALS+7
+; 				STA	GCURPOS
+; 				JSR	PRE_ARROW
+; 				BIT	UNSTROB
+; 				JSR	GETKEY
+; 				LDY	#$0C
+; 				JSR	TEXTER
+; 				JSR	MOVE212
+; 				LDA	CURSOR
+; 				CMP	#$07
+; 				BEQ	POOLOUT
+; 				LDA	CURSOR
+; 				JSR	POOL_TO_CHAR
+; POOLOUT			LDY	#$01
+; 				JSR	CMARKER
+; 				LDA	#$00
+; 				JMP	COPTION
 			FIN

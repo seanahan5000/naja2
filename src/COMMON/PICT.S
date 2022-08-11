@@ -18,6 +18,7 @@ LEFT_MASK       =   $5B
 RIGHT_MASK      =   $5C
 MAX_DIV7        =   $5F             ; TEXT-only
 
+; TODO: use LOCAL_TEMP
 TEMP_COLOR      =   $00
 TEMP_TOGGLE     =   $01
 
@@ -78,6 +79,7 @@ DRAW_PICT       ENT
 OP_TABLE        DW  OP_SET_COLOR
                 DW  OP_MOVE_TO
                 DW  OP_HMOVE_TO
+                DW  OP_HMOVE_TO_H
                 DW  OP_VMOVE_TO
                 DW  OP_VMOVE
                 DW  OP_HLINE_TO
@@ -157,7 +159,7 @@ OP_MOVE_TO      LDA (OP_PTR),Y
                 STA XCOORD
                 LDA MOD7,X
                 STA XSHIFT
-                LDA (OP_PTR),Y
+OP_VMOVE_TO     LDA (OP_PTR),Y
                 INY
                 STA YCOORD
                 STY OP_INDEX
@@ -173,9 +175,13 @@ OP_HMOVE_TO     LDA (OP_PTR),Y
                 STY OP_INDEX
                 RTS
 
-OP_VMOVE_TO     LDA (OP_PTR),Y
+OP_HMOVE_TO_H   LDA (OP_PTR),Y
                 INY
-                STA YCOORD
+                TAX
+                LDA DIV7HI,X
+                STA XCOORD
+                LDA MOD7HI,X
+                STA XSHIFT
                 STY OP_INDEX
                 RTS
 

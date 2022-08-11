@@ -309,7 +309,7 @@ OP_TEXT_IN      STY OP_INDEX
                 JMP TABLER
 
 ;-------------------------------------------------------------------------------
-; Move position right by one 7 pixel character
+; Move position right by one 6 pixel character
 ;
 ; On exit:
 ;   X,Y: Assumed unchanged
@@ -323,33 +323,5 @@ ADVANCE         DEC XSHIFT
 :1              LDA #6
                 STA XSHIFT
                 RTS                 ; always BNE
-
-; TODO: use this somewhere
-RETREAT         ;ENT
-                LDA XSHIFT
-                CMP #6
-                BEQ :1
-                DEC XCOORD
-;               CLC
-                ADC #1
-                STA XSHIFT
-                RTS
-:1              LDA #0
-                STA XSHIFT
-                RTS
-
-;-------------------------------------------------------------------------------
-; On entry:
-;   A: ASCII character
-;
-; On exit:
-;   A: Naja-format character
-;   C: Set if conversion succeeded
-;      Clear if conversion failed
-;
-FROM_ASCII      ;ENT
-                ; TODO: implement
-                SEC
-                RTS
 
 ;-------------------------------------------------------------------------------

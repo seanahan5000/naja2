@@ -9,5 +9,10 @@
 * Change DAMAGE to HEALTH in stats (easier for player)
 * Make death/compressed characters mechanism optional
     * Let player decide to be strict/not about death
-* Center status when flipping w/damage in stats box
 * Always allow escape key to cancel/leave a screen
+* Work total credits into some camp screen
+* Center status when flipping w/damage in stats box
+* Get rid of "flip stats" when possible
+    * XY information is not useful
+    * Maybe just blink status text
+* Make 'S' stats key also close out stats menu

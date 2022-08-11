@@ -96,11 +96,11 @@ STATS_LINE2     STA SELECT
                 BVC :DAMSTAT
 
 :SHIELD         LDY #Eshielding
-                JSR SHIELD_TO_TEXT
+                JSR CSTAT_TO_TEXT_R
                 LDX #$69
                 JSR DRAW_TEXTBUF_X
                 LDY #Pshielding
-                JSR SHIELD_TO_TEXT
+                JSR CSTAT_TO_TEXT_R
                 LDX #$79
                 JSR DRAW_TEXTBUF_X
                 JMP :DAMSTAT
@@ -195,6 +195,8 @@ PROF_OFFS       DB  WARRIOR-PROF_NAMES
                 DB  GENIUS-PROF_NAMES
                 DB  ROBOT-PROF_NAMES
 
+; TODO: Consider moving profession and race strings back into $200,
+;   assuming text insertion is removed.
 PROF_NAMES
 WARRIOR         USR (WARRIOR)=
 ANDROID         USR (ANDROID)=
@@ -224,18 +226,16 @@ POS_TO_TEXT     PHA
                 STA TEXT_BUFFER+2
                 RTS
 
-SHIELD_TO_TEXT  LDX #0
-                LDA #1
-                JSR CHAR_DIGITS_R
-                LDA #TextLineEnd
-                STA TEXT_BUFFER,X
-                RTS
-
+DAMAGE_TO_TEXT_L LDX #0
+                LDY #damagelev
+                LDA #2
+                JSR CHAR_DIGITS_L
+                JMP DTT_CMN
 DAMAGE_TO_TEXT  LDX #0
                 LDY #damagelev
                 LDA #2
                 JSR CHAR_DIGITS_R
-                LDA #TextSlash
+DTT_CMN         LDA #TextSlash
                 STA TEXT_BUFFER,X
                 INX
                 LDY #damagemax
@@ -257,6 +257,17 @@ CEXP_TO_TEXT    LDY #experience
                 LDX #0
                 LDA #4
                 BNE CMN_TO_TEXT_L   ; always
+
+CSTAT_TO_TEXT_L LDX #0
+                LDA #1
+                BNE CMN_TO_TEXT_L   ; always
+
+CSTAT_TO_TEXT_R LDX #0
+                LDA #1
+                JSR CHAR_DIGITS_R
+                LDA #TextLineEnd
+                STA TEXT_BUFFER,X
+                RTS
 
 ; NOTE: currently only used by C.ISTATS.S, so maybe move
 CLEVEL_TO_TEXT  LDY #level

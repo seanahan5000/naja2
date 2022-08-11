@@ -36,8 +36,7 @@ RITHOLD         =   $CF
                 PUT SCAN.COMMONS.S
 
                 PUT C.ISTATS.S
-                PUT C.REFORMAT.S
-                PUT /TEST/TOPVIEWS
+                PUT I.SEESTATS.S
 
                 PUT /TEST/CHARACTERS
                 PUT /TEST/EQUIPMENT
@@ -45,3 +44,8 @@ RITHOLD         =   $CF
 
 SHELL           DB  $1              ; TODO: move later
                 SAV CAMP.E000
+
+                ORG $8000
+                PUT C.REFORMAT.S
+                PUT /TEST/TOPVIEWS
+                SAV CAMP.8000

@@ -7,17 +7,15 @@
 
                 PUT TABLES
                 PUT UTILS
-                PUT PICT
 
                 DS  64              ;***
 
+                PUT PICT
+                PUT UNPACK
                 PUT SHAPES
                 PUT TEXT
+                PUT INPUT
                 PUT FONT
                 PUT CURSORS
-
-                DS  32              ;***
-
-                PUT UNPACK
 
                 SAV COMMON
