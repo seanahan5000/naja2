@@ -117,10 +117,8 @@ INPUT_CMN
                 RTS
 
 ANIMATE_CURSOR  DEC DELAYL
-                LDA DELAYL          ; not necessary, but keeps original timing
                 BNE :1
                 DEC DELAYH
-                LDA DELAYH          ; not necessary, but keeps original timing
                 BEQ :2
 :1              RTS
 

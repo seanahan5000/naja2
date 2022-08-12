@@ -47,7 +47,7 @@ DRAW_GRID       ;ENT
                 RTS
 
 ; FROM11          ;ENT                 ; legacy name
-; CHARPOS_TO_XY   ;ENT
+; CPOS_TO_XY      ;ENT
 ;                 LDY #position
 ;                 LDA (CHARDL),Y
 ; FROM11B         ;ENT                 ; legacy name
@@ -65,6 +65,32 @@ POS_TO_XY       ;ENT
                 AND #$0F
                 TAY
                 RTS
+
+; On entry:
+;   A: position in 11 format
+;
+; On exit:
+;   A: grid index 0 to 24
+;
+POS_TO_I25      JSR POS_TO_XY
+                TXA
+                CLC
+                ADC MUL5,Y
+                RTS
+
+MUL5            DB  0,5,10,15,20
+
+DIV5            DB  0,0,0,0,0
+                DB  1,1,1,1,1
+                DB  2,2,2,2,2
+                DB  3,3,3,3,3
+                DB  4,4,4,4,4
+
+MOD5            DB  0,1,2,3,4
+                DB  0,1,2,3,4
+                DB  0,1,2,3,4
+                DB  0,1,2,3,4
+                DB  0,1,2,3,4
 
 DRAW_CHAR_TOPVIEW
                 LDY #profrace
@@ -168,6 +194,18 @@ TCHAR_ROB       DB  $38,$78,$08,$6F,$69,$69,$6F     ; robot
                 DB  $08,$0F,$80
 ;
 ; On entry:
+;   X: grid 25 x position
+;   Y: grid 25 y position
+;
+DRAW_GRID_CURSOR_XY
+                LDA #<GRID_CURSOR
+                STA DATPNTL
+                LDA #>GRID_CURSOR
+                STA DATPNTH
+                BNE DGC_CMN         ; always
+
+;
+; On entry:
 ;   A: grid 11 position
 ;
 DRAW_GRID_CURSOR ;ENT
@@ -178,7 +216,7 @@ DRAW_GRID_CURSOR ;ENT
 
                 JSR POS_TO_XY
 
-                LDA GRID_YPNTS,Y
+DGC_CMN         LDA GRID_YPNTS,Y
                 CLC
                 ADC #8
                 STA YCOORD
