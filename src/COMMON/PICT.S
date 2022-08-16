@@ -98,18 +98,18 @@ OP_TABLE        DW  OP_SET_COLOR
                 DW  OP_SWAP
                 DW  SET_PAGE1       ; direct call
                 DW  SET_PAGE2       ; direct call
-                DW  OP_SHOW_PAGE1
-                DW  OP_SHOW_PAGE2
-                DW  CLEAR_PAGE      ; direct call
-                DW  COPY_TO_PAGE1   ; direct call
-                ; TODO: consider COPY_TO_PAGE2
+                DW  OP_SHOW_PAGE
+                DW  CLEAR_PAGE
+                DW  COPY_TO_PAGE    ; direct call
                 DW  OP_CALL
 
 
-OP_SHOW_PAGE1   STA PRIMARY
+OP_SHOW_PAGE    LDA PAGE
+                CMP #$40
+                BEQ :SHOW2
+:SHOW1          STA PRIMARY
                 RTS
-
-OP_SHOW_PAGE2   STA SCNDARY
+:SHOW2          STA SCNDARY
                 RTS
 
 OP_CALL         LDA (OP_PTR),Y
@@ -451,9 +451,6 @@ OP_CLEAR        LDA (OP_PTR),Y
 ;   bottom line (exclusive)
 ;
 ; If top > bottom, transfer happens in reverse order.
-
-DESTINL         =   LOCAL_TEMP+0
-DESTINH         =   LOCAL_TEMP+1
 
 OP_SWAP         LDA (OP_PTR),Y
                 INY

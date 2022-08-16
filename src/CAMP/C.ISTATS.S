@@ -32,7 +32,7 @@ DOSTATS			LDA	CURSOR
 				PictTextAt 198;125;(MOVE\nDROP\nUSE\nEXAMINE)
 				PictTextAt 180;162;(TRANSFER_ENERGY\nSEE_STATISTICS)
 				PictTextAt 180;181;(LEAVE)
-				PictShowPage2
+				PictShowPage
 				PictEnd
 
 				LDA	#$80

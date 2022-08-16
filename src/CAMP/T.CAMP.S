@@ -29,9 +29,6 @@ ENTER_CAMP      ENT
 ; copy stats box from normal top-of-screen location to bottom of screen
 ; TODO: generalize this if anything other than CAMP also does it
 
-DESTINL         =   LOCAL_TEMP+0
-DESTINH         =   LOCAL_TEMP+1
-
 COPY_DOWN       LDX #0
 :1              LDA LOBYTES,X
                 STA SCREENL
@@ -93,10 +90,10 @@ STATS_MORE      LDA SHELL
                 PictSetPage2
                 PictClear 0;121;40;192
                 PictCall CAMP_MENU_BOX
-                PictShowPage2
-                PictCopyToPage1
+                PictShowPage
                 PictSetPage1
-                PictShowPage1
+                PictCopyToPage
+                PictShowPage
                 PictEnd
 
                 LDA #0				; TRADE
@@ -111,7 +108,7 @@ RECAMP			BIT	UNSTROB
                 PictClearPage
                 PictCall DRAW_STATS_BOX
                 PictCall CAMP_MENU_BOX
-                PictShowPage1
+                PictShowPage
                 PictEnd
 
 CMENU         	LDA SHELL
@@ -168,24 +165,22 @@ CAMP_MARKER     LDY CAMP_YPNTS,X
                 JMP DRAW_MARKER
 
 *-------------------------------
-CAMP_MENU_MS    DB  $03		;$04
+CAMP_MENU_MS    DB  $03
 CCURPOS_MS      DB  $80
                 DW  CAMP_CURS
                 DW  :CAMP_JUMPS_MS
 
 :CAMP_JUMPS_MS  DW  TRADE
-                ; DW  POOLER
                 DW  GOISTAT
                 DW  GOFLOP
                 DW  GOLEAVE
 
-CAMP_MENU_TRACC DB  $04		;$05
+CAMP_MENU_TRACC DB  $04
 CCURPOS_TRACC   DB  $80
                 DW  CAMP_CURS
                 DW  :CAMP_JUMPS_T
 
 :CAMP_JUMPS_T   DW  TRADE
-                ; DW  POOLER
                 DW  GOFORM
                 DW  GOISTAT
                 DW  GOFLOP
@@ -216,14 +211,15 @@ EXIT_CAMP		JSR	DRAW_PICT
 				PictSetPage2
 				PictClearPage
 				PictCall DRAW_HALL
+				PictShowPage
 				PictSetPage1
-				PictShowPage2
-				PictCopyToPage1
-				PictShowPage1
+				PictCopyToPage
+				PictShowPage
 				PictEnd
 				RTS
 
 GOFORM			; JSR	LOAD_REFORM
+				JSR BANK_1
 				JMP	REFORMAT
 
 ; LOAD_REFORM		LDA	CAMP_HERE
@@ -236,14 +232,11 @@ GOFORM			; JSR	LOAD_REFORM
 ; 				STA	CAMP_HERE
 ; :EXIT			RTS
 
-TRADE           RTS
-; POOLER			RTS
-
 GOISTAT			JSR DRAW_PICT
 				PictTextAt 16;70;(CANCEL)
 				PictTextAt 63;96;(INDIVIDUAL_STATS_FOR_WHOM?)
 				PictEnd
-				JSR	GRPSUB
+				JSR	PICK_CHAR
 				LDA	CURSOR
 				CMP	#7
 				BEQ	:CANCEL
@@ -262,8 +255,8 @@ GOISTAT			JSR DRAW_PICT
 :1				JSR	CAMP_MARKER
                 JMP	CMENU
 
-GRPSUB			JSR	RESET_CHRLIST
-GRPSUB2			LDA	#$00			; called from C.TRADE1.S
+PICK_CHAR		JSR	RESET_CHRLIST
+				LDA	#$00
 				STA	GCURPOS
 				STA	LEGALS+7
 				JSR	PRE_ARROW
@@ -278,20 +271,25 @@ PRE_ARROW		LDX	#<:PRE_DEF
 GCURPOS			DB	$00
 				DW	:PRE_CURS
 
+;*** SOME OF THIS LOGIC MIGHT NOT BE NEEDED
+	;*** TRADE NO LONGER ASKS TO TRADE CREDITS
 :PRE_CURS		LDY	YPOINTS,X
 				LDX	#$03
-				LDA	CURSOR
-				CMP	#$08
-				BCC	:1
-				LDX	#$5A
-:1				JMP	DRAW_ARROW
+				; LDA	CURSOR
+				; CMP	#$08
+				; BCC	:1
+				; LDX	#$5A
+; :1
+				JMP	DRAW_ARROW
 
 ; NOTE: was in KEY.COMMONS.S
 YPOINTS			DFB	$0C,$14,$1C
 				DFB	$24,$2C,$34
 				DFB	$3C
-				DFB	$46,$58,$62
-				DFB	$6C
+				DFB	$46					; cancel
+
+	;*** ARE THESE USED (OUTSIDE OF TRADE?)
+				; DFB $58,$62,$6C
 *-------------------------------
 
 ; caller has already set Y position
@@ -569,58 +567,4 @@ CALC_SRANGE		JSR	RESET_CHRLIST
 				STA	SRANGE
 :SKIPC			STA	MXRANGE
 				RTS
-
-; POOLER			JSR	CLEAR2
-; 				LDA	#GREEN
-; 				STA	COLOR
-; 				LDA	#$40
-; 				STA	PAGE
-; 				LDY	#$00
-; 				JSR	LINER2			; green stats box
-; 				LDY	#$10
-; 				JSR	TEXTER
-; 				LDA	#$6E
-; 				STA	XPNT
-; 				JSR	RESET_CHLIST
-; 				LDA	#$00
-; 				STA	COUNT
-; DRWCRED			TAY
-; 				LDA	LEGALS,Y
-; 				BNE	:SKIPA
-; 				LDA	YPOINTS,Y
-; 				STA	YPNT
-; 				TYA
-; 				JSR	POINTIT
-; 				JSR	CHAR_CREDOUT
-; :SKIPA			INC	COUNT
-; 				LDA	COUNT
-; 				CMP	GRPNUMB
-; 				BNE	DRWCRED
-; POSTOP			JSR	POOL_TO_TOTAL
-; 				LDA	#$46
-; 				STA	YPNT
-; 				JSR	TOTAL_CREDOUT
-; 				LDA	#$20
-; 				STA	PAGE
-; 				JSR	MOVE212
-; 				LDY	#$0C
-; 				JSR	TEXTER
-; 				LDA	#$00
-; 				STA	LEGALS+7
-; 				STA	GCURPOS
-; 				JSR	PRE_ARROW
-; 				BIT	UNSTROB
-; 				JSR	GETKEY
-; 				LDY	#$0C
-; 				JSR	TEXTER
-; 				JSR	MOVE212
-; 				LDA	CURSOR
-; 				CMP	#$07
-; 				BEQ	POOLOUT
-; 				LDA	CURSOR
-; 				JSR	POOL_TO_CHAR
-; POOLOUT			LDY	#$01
-; 				JSR	CMARKER
-; 				LDA	#$00
-; 				JMP	COPTION
 			FIN

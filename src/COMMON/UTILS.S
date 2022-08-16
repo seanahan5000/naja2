@@ -58,11 +58,14 @@ CLR_LOOP        STA $2000,X
                 SAME_PAGE_AS CLR_LOOP
                 RTS
 
-COPY_TO_PAGE1   ;ENT
-                LDA #$20
-                BNE COPY_COM    ; always
-COPY_TO_PAGE2   ;ENT
-                LDA #$40
+COPY_TO_PAGE    ;ENT
+                LDA PAGE
+;                 BNE COPY_COM    ; always
+; COPY_TO_PAGE1   ;ENT
+;                 LDA #$20
+;                 BNE COPY_COM    ; always
+; COPY_TO_PAGE2   ;ENT
+;                 LDA #$40
 COPY_COM        STA :DST_MOD+2
                 EOR #$60
                 STA :SRC_MOD+2

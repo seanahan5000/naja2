@@ -28,6 +28,8 @@ INSERT_BUFFER   =   TEXT_BUFFER+$C0
 
 SCREENL         =   $26
 SCREENH         =   $27
+DESTINL         =   $28
+DESTINH         =   $29
 
 ; UNPACK.S uses $30-$3F
 ; TEXT.S uses $31-$33
@@ -113,11 +115,10 @@ OpSwap          =   19
 
 OpSetPage1      =   20
 OpSetPage2      =   21
-OpShowPage1     =   22
-OpShowPage2     =   23
-OpClearPage     =   24
-OpCopyToPage1   =   25
-OpCall          =   26
+OpShowPage      =   22
+OpClearPage     =   23
+OpCopyToPage    =   24
+OpCall          =   25
 
 OpEnd           =   $FF
 
@@ -260,20 +261,16 @@ PictSetPage2    MAC
                 DB  OpSetPage2
                 EOM
 
-PictShowPage1   MAC
-                DB  OpShowPage1
-                EOM
-
-PictShowPage2   MAC
-                DB  OpShowPage2
+PictShowPage    MAC
+                DB  OpShowPage
                 EOM
 
 PictClearPage   MAC
                 DB  OpClearPage
                 EOM
 
-PictCopyToPage1 MAC
-                DB  OpCopyToPage1
+PictCopyToPage  MAC
+                DB  OpCopyToPage
                 EOM
 
 PictCall        MAC
