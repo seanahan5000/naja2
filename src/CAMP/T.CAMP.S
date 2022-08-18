@@ -170,7 +170,7 @@ CCURPOS_MS      DB  $80
                 DW  CAMP_CURS
                 DW  :CAMP_JUMPS_MS
 
-:CAMP_JUMPS_MS  DW  TRADE
+:CAMP_JUMPS_MS  DW  TO_TRADE
                 DW  GOISTAT
                 DW  GOFLOP
                 DW  GOLEAVE
@@ -180,7 +180,7 @@ CCURPOS_TRACC   DB  $80
                 DW  CAMP_CURS
                 DW  :CAMP_JUMPS_T
 
-:CAMP_JUMPS_T   DW  TRADE
+:CAMP_JUMPS_T   DW  TO_TRADE
                 DW  GOFORM
                 DW  GOISTAT
                 DW  GOFLOP
@@ -194,6 +194,9 @@ CAMP_YPNTS      DB  $80,$89,$92
                 DB  $9B,$A4,$AD
 *-------------------------------
 
+TO_TRADE		JSR BANK_1
+				JMP TRADE
+
 GOFLOP          JSR DRAW_PICT
                 PictVMoveTo 2
                 PictEnd
@@ -201,7 +204,7 @@ GOFLOP          JSR DRAW_PICT
                 LDX CURSOR
                 JSR CAMP_MARKER
                 JSR MENU_SELECT
-COPT_COM        JSR CAMP_MARKER
+		        JSR CAMP_MARKER
                 JMP MENU_TARGET
 
 GOLEAVE			LDA	SHELL
@@ -248,11 +251,11 @@ GOISTAT			JSR DRAW_PICT
                 PictClear 2;70;8;77
                 PictClear 9;96;32;103
                 PictEnd
-                LDX #3				; ISTATS (TRACC)
-                LDA SHELL
-                BNE :1
-                DEX					; ISTATS (mother)
-:1				JSR	CAMP_MARKER
+                ; TODO: clean this up after switch to JSR MENU_SELECT
+                LDA CCURPOS_MS
+                AND #$7F
+                TAX
+				JSR CAMP_MARKER
                 JMP	CMENU
 
 PICK_CHAR		JSR	RESET_CHRLIST

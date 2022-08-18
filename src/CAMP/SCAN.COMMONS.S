@@ -94,8 +94,6 @@ CSCAN_NOTPROF	LDX	#<CCALL_NOTPROF
 				LDY	#>CCALL_NOTPROF
 				BNE	CSCAN_COMMON	;Always
 
-		DO 0
-
 *-------------------------------
 * Eliminate characters that DON'T
 *   match prof*16, race, X*16 or
@@ -135,8 +133,6 @@ CSCAN_NOTDEAD	LDX	#<CCALL_NOTDEAD
 				LDY	#>CCALL_NOTDEAD
 				BNE	CSCAN_COMMON	;Always
 
-		FIN
-
 CCALL_NOTPROF	LDY	#profrace
 				EOR	(CHARDL),Y
 				LDX	#$01
@@ -145,8 +141,6 @@ CCALL_NOTPROF	LDY	#profrace
 				DEX
 :SKIPA			TXA
 				RTS
-
-		DO 0
 
 CCALL_PRFRACE	LDY	#profrace
 				BNE	MERGE			;Always
@@ -395,11 +389,6 @@ ESCAN_HANDBCK	LDA	#$FF
 				STA	EQUIP_LIST+program
 				JMP	EPICK_ONE
 
-
-********************************
-				DS	25				;FREE SPACE
-********************************
-
 *-------------------------------
 * Eliminate miscellaneous
 *   illegal slots
@@ -445,7 +434,6 @@ ESCAN_RGTPROF	LDX	#<ECALL_RGTPROF
 				JMP	EPICK_ONE
 
 
-
 ECALL_RGTPROF	INY
 				INY
 				INY
@@ -487,4 +475,3 @@ ECALL_IDENTED	LDA	(CHARDL),Y
 ECALL_OPESLOT	LDA	(CHARDL),Y
 				EOR	#$FF
 				RTS
-		FIN

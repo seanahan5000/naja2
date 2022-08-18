@@ -5,26 +5,34 @@
                 PUT /HALLS/VARS
                 PUT /HALLS/EXT
 
-                ; C.REFORMAT.S uses $C0-$C9
+                ; C.REFORMAT uses $C0-$C9
 
                 ORG $E000
-                PUT T.CAMP.S
-                PUT KEY.COMMONS.S
-                PUT SCAN.COMMONS.S
+                PUT T.CAMP
+                PUT KEY.COMMONS
+                PUT SCAN.COMMONS
+                PUT CAMP.COMMONS
 
-                PUT C.ISTATS.S
-                PUT I.SEESTATS.S
+                PUT C.ISTATS
+                PUT I.SEESTATS
 
                 PUT /TEST/CHARACTERS
                 PUT /TEST/EQUIPMENT
                 PUT /TEST/STATS
-                PUT C.TRADE.S
+
+; TODO: get from ENRGY.COMMONS.S
+; "profession usable" table
+PROUSAB         DB  $01,$02,$04
+                DB  $08,$10,$FF
+                DB  $40,$80,$20
+
+; TODO: hook this in
+LESS_PERCENT    RTS
 
 ; TODO: move later
-CALC_ALL        RTS
-                ; JSR CALC_STATS
-                ; JSR CALC_SHIELDIN
-                ; JMP CALC_POWRUSE
+CALC_ALL        JSR CALC_STATS
+                JSR CALC_SHIELDIN
+                JMP CALC_POWRUSE
 
 ; TODO: move later
 ; NOTE: these are swapped from original Naja code
@@ -41,6 +49,12 @@ SHELL           DB  $1              ; TODO: move later
 
                 ORG $D000
                 PUT /TEST/TOPVIEWS
-                PUT C.REFORMAT.S
+                PUT C.REFORMAT
+                ;*** NEEDS BANK_1 CALL ***
+                PUT C.TRADE
                 SAV CAMP.D000.M1
 
+                ORG $D000
+                ;*** NEEDS BANK_2 CALL ***
+                PUT I.MOVER
+                SAV CAMP.D000.M2
