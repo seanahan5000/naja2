@@ -5,7 +5,7 @@ SEESTAT			JSR	DRAW_PICT
 				PictRect $A5;$00;$115;$BF
 				PictTextAt 171;54;()-
 				USR	(STATUS:\n)-
-				USR	(DAMAGE:\n)-
+				USR	(HEALTH:\n)-
 				USR	(SHIELD:_E-___P-\n)-
 				USR	(CREDIT:)
 				PictTextAt 204;95;(ENERGY)
@@ -38,11 +38,10 @@ SEESTAT			JSR	DRAW_PICT
 				PictMoveTo $DB;$36
 				PictEnd
 
-				JSR STATUS_TO_TEXT
+				JSR CSTATUS_TO_TEXT
 				JSR DRAW_TEXTBUF_RET
 
-				; TODO: change this to HEALTH
-				JSR DAMAGE_TO_TEXT_L
+				JSR HEALTH_TO_TEXT_L
 				JSR DRAW_TEXTBUF_RET
 
 				LDY	#Eshielding
@@ -102,16 +101,16 @@ NEXSTAT			STX COUNT
 				STA (CHARDL),Y
 
 				JSR DRAW_PICT
-				PictSwap $17;$32;$28;$B4
+				PictSwap $17;$32;$28;$B3
+				PictSetPage2
 				PictEnd
 				BIT	UNSTROB
-				JSR SET_PAGE2
 				LDX	#<:STAT_DEF
 				LDY	#>:STAT_DEF
 				JSR	MENU_INIT
 				JSR	MENU_SELECT
 				JSR DRAW_PICT
-				PictSwap $17;$B3;$28;$31
+				PictSwap $17;$B3;$28;$32
 				PictEnd
 				LDX	#5
 				JSR	IMARKER
@@ -124,8 +123,8 @@ NEXSTAT			STX COUNT
 				DB	organic
 
 *-------------------------------
-:STAT_DEF		DB	$00
-				DB	$80
+:STAT_DEF		DB	$81
+				DB	$00
 				DW	:STAT_CURS
 
 :STAT_CURS		LDX	#$A7

@@ -2,9 +2,9 @@
 * On entry:
 *   X,Y point to a data structure:
 *
-*   MinMax cursor position, inclusive (byte)
-*   Starting position (byte)
+*   Max cursor position, exclusive (byte)
 *      If high bit set, clear out LEGALS for minmax range
+*   Starting position (byte)
 *   Address of cursor routine (word)
 *   Address of destination table (word) optional
 *
@@ -25,13 +25,11 @@ MENU_INIT		;ENT
 				STY	TEMP+1
 				LDY	#$00
 				LDA	(TEMP),Y
-				TAX
-				INX					; convert to exclusive
-				STX	MAXIMUM
-				INY
-				LDA	(TEMP),Y
 				PHP
 				AND	#%01111111
+				STA	MAXIMUM
+				INY
+				LDA	(TEMP),Y
 				STA	CURSOR
 				INY
 				LDA	(TEMP),Y
@@ -91,7 +89,7 @@ FILTER_MOD		JSR	$FFFF
 				BEQ	DOWN
 				JSR	CHECK_ENTER
 				BNE	MENU_SELECT2
-				JSR	DRAW_CURSOR		; erase
+				JSR	MENU_DRAW_CURSOR	; erase
 
 				LDA CURSOR
 				ASL
@@ -107,7 +105,7 @@ JUMP_MOD		LDA $FFFF,X
 BLINK_OUT		LDX CURSOR
 				RTS
 
-UP				JSR	DRAW_CURSOR		; erase
+UP				JSR	MENU_DRAW_CURSOR	; erase
 				LDX	CURSOR
 :1				TXA
   				BNE :2
@@ -116,13 +114,13 @@ UP				JSR	DRAW_CURSOR		; erase
 				LDA LEGALS,X
 				BNE :1
 				STX CURSOR
-				JSR	DRAW_CURSOR		; draw
+				JSR	MENU_DRAW_CURSOR	; draw
 				JMP	MENU_SELECT2
 
-DOWN			JSR	DRAW_CURSOR		; erase
+DOWN			JSR	MENU_DRAW_CURSOR	; erase
 MENU_SELECT_NEXT ENT
 				JSR	DOWN_SUB1
-				JSR	DRAW_CURSOR		; draw
+				JSR	MENU_DRAW_CURSOR	; draw
 				JMP	MENU_SELECT2
 
 DOWN_SUB1		LDX	CURSOR
@@ -135,7 +133,8 @@ DOWN_SUB2		LDA	LEGALS,X
 				STX CURSOR
 				RTS
 
-DRAW_CURSOR		SEC
+MENU_DRAW_CURSOR ENT
+				SEC
 BLINK_CURSOR	LDX CURSOR
 DCUR_MOD		JMP $FFFF
 

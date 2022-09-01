@@ -72,7 +72,7 @@ STATS_HEADER2   STA SELECT
 
 :DAMAGE         JSR DRAW_PICT
                 PictHMoveTo 147
-                PictText (DAMAGE)
+                PictText (HEALTH)
                 PictEnd
                 RTS
 
@@ -121,9 +121,9 @@ STATS_LINE2     STA SELECT
 
 :STATUS         JSR MAJOR_STATUS
                 BCC :2
-:1              JSR DAMAGE_TO_TEXT
+:1              JSR HEALTH_TO_TEXT
                 JMP :3
-:2              JSR STATUS_TO_TEXT
+:2              JSR CSTATUS_TO_TEXT
 :3              LDX #$8A
                 JMP DRAW_TEXTBUF_X
 
@@ -158,6 +158,26 @@ NTT_CMN         LDY #name
                 LDA #TextLineEnd
                 STA TEXT_BUFFER,X
                 RTS
+
+
+TRIM_NAME       ENT
+                JSR CNAME_TO_TEXT
+:1              LDA TEXT_BUFFER-1,X
+                CMP #TextSpace
+                BNE :2
+                DEX
+                BPL :1
+:2              LDA #TextLineEnd
+                STA TEXT_BUFFER,X
+                RTS
+
+DRAW_TRIMMED_NAME ENT
+                JSR TRIM_NAME
+                JMP DRAW_TEXTBUF
+
+WRAP_TRIMMED_NAME ENT
+                JSR TRIM_NAME
+                JMP WRAP_TEXTBUF
 
 ; NOTE: currently only used by C.ISTATS.S, so maybe move
 CPROF_TO_TEXT   LDY #profrace
@@ -226,26 +246,80 @@ POS_TO_TEXT     PHA
                 STA TEXT_BUFFER+2
                 RTS
 
-DAMAGE_TO_TEXT_L LDX #0
+; TODO: could be greatly simplified when damage reversed to health
+HEALTH_TO_TEXT_L
+                LDA #TextEmpty
+                BNE HTT_CMN             ; always
+HEALTH_TO_TEXT  LDA #TextSpace
+HTT_CMN         STA :FILL_MOD+1
+                LDX #0
+                SED
+                SEC
+                LDY #damagemax+1
+                LDA (CHARDL),Y
+                LDY #damagelev+1
+                SBC (CHARDL),Y
+                PHA
+                PHA
+                LDY #damagemax
+                LDA (CHARDL),Y
                 LDY #damagelev
-                LDA #2
-                JSR CHAR_DIGITS_L
-                JMP DTT_CMN
-DAMAGE_TO_TEXT  LDX #0
-                LDY #damagelev
-                LDA #2
-                JSR CHAR_DIGITS_R
-DTT_CMN         LDA #TextSlash
+                SBC (CHARDL),Y
+                CLD
+:1              PHA
+                LSR
+                LSR
+                LSR
+                LSR
+                STA TEXT_BUFFER,X
+                INX
+                PLA
+                AND #$0F
+                STA TEXT_BUFFER,X
+                PLA
+                INX
+                CPX #4
+                BNE :1
+                LDX #0
+:2              LDA TEXT_BUFFER,X
+                BNE :3
+:FILL_MOD       LDA #$FF
+                STA TEXT_BUFFER,X
+                INX
+                CPX #3
+                BNE :2
+:3              LDX #4
+                LDA #TextSlash
                 STA TEXT_BUFFER,X
                 INX
                 LDY #damagemax
                 BNE CMN_TO_TEXT_L2  ; always
 
+; HEALTH_TO_TEXT_L LDX #0
+;                 LDY #healthlev
+;                 LDA #2
+;                 JSR CHAR_DIGITS_L
+;                 JMP DTT_CMN
+; HEALTH_TO_TEXT  LDX #0
+;                 LDY #healthlev
+;                 LDA #2
+;                 JSR CHAR_DIGITS_R
+; DTT_CMN         LDA #TextSlash
+;                 STA TEXT_BUFFER,X
+;                 INX
+;                 LDY #healthmax
+;                 BNE CMN_TO_TEXT_L2  ; always
+
+ENERGY_TO_TEXT_L LDX #0
+                LDY #energylev
+                LDA #3
+                JSR CHAR_DIGITS_L
+                JMP ETT_CMN
 ENERGY_TO_TEXT  LDX #0
                 LDY #energylev
                 LDA #3
                 JSR CHAR_DIGITS_R
-                LDA #TextSlash
+ETT_CMN         LDA #TextSlash
                 STA TEXT_BUFFER,X
                 INX
                 LDY #energymax
@@ -326,9 +400,9 @@ CHAR_DIG_CMN    STA :FILL_MOD+1
                 INX
                 RTS
 
-STATUS_TO_TEXT  LDY #status
+CSTATUS_TO_TEXT LDY #status
                 LDA (CHARDL),Y
-                TAX
+STATUS_TO_TEXT  TAX
                 AND #critical
                 BNE :1
                 TXA
@@ -433,6 +507,8 @@ XXTYS           USR (XXTYS)=
 DENEB           USR (DENEB)=
 
 
+; TODO: move to common utilities
+;
 ; On entry:
 ;   X: string list (low)
 ;   Y: string list (high)

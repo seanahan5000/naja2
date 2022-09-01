@@ -214,7 +214,7 @@ TBLINK          LDX #<TRADE_CDEF
                 JSR MENU_INIT
                 JMP MENU_SELECT
 *-------------------------------
-TRADE_CDEF      DB  $0A
+TRADE_CDEF      DB  $0B
                 DB  $00
                 DW  :CURSIT
 

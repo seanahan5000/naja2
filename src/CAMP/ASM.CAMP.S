@@ -9,30 +9,18 @@
 
                 ORG $E000
                 PUT T.CAMP
+                PUT MISC.COMMONS
                 PUT KEY.COMMONS
                 PUT SCAN.COMMONS
+                PUT DRAIN.INFLICT
+                PUT ENRGY.COMMONS
+                PUT ENUSE.TABLES
                 PUT CAMP.COMMONS
 
                 PUT C.ISTATS
                 PUT I.SEESTATS
-
-                PUT /TEST/CHARACTERS
-                PUT /TEST/EQUIPMENT
-                PUT /TEST/STATS
-
-; TODO: get from ENRGY.COMMONS.S
-; "profession usable" table
-PROUSAB         DB  $01,$02,$04
-                DB  $08,$10,$FF
-                DB  $40,$80,$20
-
-; TODO: hook this in
-LESS_PERCENT    RTS
-
-; TODO: move later
-CALC_ALL        JSR CALC_STATS
-                JSR CALC_SHIELDIN
-                JMP CALC_POWRUSE
+                PUT I.TRANSFER      ;***
+                PUT I.REGENERATE    ;***
 
 ; TODO: move later
 ; NOTE: these are swapped from original Naja code
@@ -50,11 +38,19 @@ SHELL           DB  $1              ; TODO: move later
                 ORG $D000
                 PUT /TEST/TOPVIEWS
                 PUT C.REFORMAT
-                ;*** NEEDS BANK_1 CALL ***
                 PUT C.TRADE
                 SAV CAMP.D000.M1
 
                 ORG $D000
-                ;*** NEEDS BANK_2 CALL ***
-                PUT I.MOVER
+                PUT I.MOVE
+                PUT I.USE           ; must be in same back as I.MOVER
+                PUT I.EXAMINE       ; must be in same back as I.MOVER
+                PUT I.COMPRESS      ;***
                 SAV CAMP.D000.M2
+
+                ORG $9000
+                PUT /TEST/CHARACTERS
+                PUT /TEST/EQUIPMENT
+                PUT /TEST/STATS
+                PUT I.DIAGNOSE
+                SAV CAMP.9000

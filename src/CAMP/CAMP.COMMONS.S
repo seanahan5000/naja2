@@ -4,6 +4,10 @@ ARMOR_USE_P		=	$0234			;0.234 (*** FAKE)
 EXO_PROT_E		=	$50				;50%
 EXO_PROT_P		=	$75				;75%
 
+CALC_ALL        JSR CALC_STATS
+                JSR CALC_SHIELDIN
+                ; JMP CALC_POWRUSE
+                ; fall through
 
 ********************************
 ***
@@ -574,7 +578,6 @@ HOLD_LWREFLEX	DB	$00				;*    in this order
 HOLD_INTELLIG	DB	$00				;*
 HOLD_STATUS		DB	$00
 
-
 PROGRAM_BASE	LDY	#e15_PROGRAM+1
 				LDA	(CHARDL),Y
 				AND	#%01111111
@@ -715,60 +718,9 @@ CORESPS			DB	e1_HEAD			;0
 				DB	e15_PROGRAM		;E 14
 				DB	e16_UNUSED		;F 15
 
-*-----------------------------------------
-* On Entry:
-*   X: Slot number of equipment to remove
-*-----------------------------------------
-
-REMOVE_ITEM		LDY	#profrace		;Used to be REMOVE
+SET_BROKEN		LDY	#status
 				LDA	(CHARDL),Y
-				STA	TEMP
-				LDY	CORESPS,X
-				CPX	#armor
-				BCS	NORMAL
-				CPX	#slot
-				BEQ	NORMAL
-				BCC	DOUBLE
-				CPX	#uplft
-				BCS	HANDS
-				LDY	#back
-				LDA	(CHARDL),Y
-				TAY
-				INY
-				LDA	CORESPS,Y
-				CLC
-				ADC	#$04
-				STA	TEMP
-				LDY	CORESPS,X
-				BNE	:SKIPB			;Always
-:LOOP1			LDA	(CHARDL),Y
-				DEY
-				DEY
-				DEY
-				DEY
+				AND	#%11000000
+				ORA	#broken
 				STA	(CHARDL),Y
-				INY
-:SKIPB			INY
-				INY
-				INY
-				INY
-				CPY	TEMP
-				BNE	:LOOP1
-				DEY
-				DEY
-				DEY
-				DEY
-				BNE	NORMAL			;Always
-HANDS			LDA	TEMP
-				BPL	NORMAL
-				TXA
-				LSR
-				BCS	NORMAL
-DOUBLE			JSR	NORMAL
-NORMAL			LDX	#3
-				LDA	#$FF
-:LOOP1			STA	(CHARDL),Y
-				INY
-				DEX
-				BPL	:LOOP1
-				RTS
+				JMP	CALC_ALL

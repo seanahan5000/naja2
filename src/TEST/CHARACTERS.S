@@ -12,8 +12,7 @@
 ;
 ; Does not set CHAR_INDEX for compatibility
 ;
-POINTIT         ;ENT                 ; legacy name
-SET_CHAR        ;ENT
+SET_CHAR        ENT
                 CLC
                 ADC #1
                 LSR
@@ -33,7 +32,7 @@ SET_CHAR        ;ENT
 ;   CHAR_INDEX: 0
 ;   Other ZPAGE unchanged
 ;
-FIRST_CHAR      ;ENT
+FIRST_CHAR      ENT
                 LDA #$80
                 STA CHARDL
                 LDA #$BC
@@ -50,7 +49,7 @@ FIRST_CHAR      ;ENT
 ;   C=0: more characters remain
 ;   C=1: list complete
 ;
-NEXT_CHAR       ;ENT
+NEXT_CHAR       ENT
                 LDX CHAR_INDEX
                 INX
                 STX CHAR_INDEX
@@ -62,3 +61,63 @@ NEXT_CHAR       ;ENT
                 BNE :1
                 INC CHARDH
 :1              RTS
+;
+; On entry:
+;   CHARDL/H pointing at possible cybernate
+;
+; On exit:
+;   CHARDL/H pointing at robot, if found
+;   A: robot character index or $FF if not found
+;   N: BMI/BPL of A value
+;
+FIND_ROBOT      LDY #profrace
+                LDA (CHARDL),Y
+                AND #$F0
+                CMP #cybernate*16
+                BNE :2
+                LDY #disklocation
+                LDA (CHARDL),Y
+                STA :MOD+1
+                JSR FIRST_CHAR
+:1              LDY #robotcyblink
+                LDA (CHARDL),Y
+:MOD            CMP #$FF
+                BEQ :3
+                JSR NEXT_CHAR
+                BCC :1
+:2              LDA #$FF
+                RTS
+:3              LDA CHAR_INDEX
+                RTS
+
+;*** COMBINE THIS AND BE DONE ***
+BREAK_ROBOT     LDY #status
+                LDA (CHARDL),Y
+                AND #%11000000
+                ORA #broken
+                STA (CHARDL),Y
+                RTS
+;
+; On entry:
+;   A: index of character to be hidden
+;
+HIDE_MEMBER     STA CHAR_INDEX
+                JSR SET_CHAR
+:1              LDA CHARDL
+                STA DESTINL
+                LDA CHARDH
+                STA DESTINH
+                JSR NEXT_CHAR
+                BCS :3
+                LDY #$7F
+:2              LDA (CHARDL),Y
+                TAX
+                LDA (DESTINL),Y
+                STA (CHARDL),Y
+                TXA
+                STA (DESTINL),Y
+                DEY
+                BPL :2
+                BMI :1                  ; always
+:3              DEC GRPNUMB
+                RTS

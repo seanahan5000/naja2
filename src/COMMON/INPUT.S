@@ -3,7 +3,7 @@ LineLength      =   $27             ; default maximum length of line of characte
 CursorSpeed     =   $1001           ; cursor animation speed
 
 MAX_TEXT        =   $05
-INPUT_INDEX     =   $0F
+INPUT_INDEX     =   $0F             ; TODO: move someplace safer?
 CURSOR_CYCLE    =   $14
 DELAYL          =   $15
 DELAYH          =   $17

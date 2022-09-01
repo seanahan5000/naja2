@@ -83,7 +83,7 @@ NOCANCL			LDA	MCURSOR
 				LDA	CURHOLD
 				CMP	#$0E
 				BEQ	PROGMOV
-				BNE	CSAME1			;Always
+				BNE	CSAME1				; always
 PROGMOV			LDY	MCURSOR
 				CPY	#$0E
 				BNE	:SKIPA
@@ -234,6 +234,10 @@ PICDROP			JSR	RESET_EQLIST
 				BPL	:LOOP1
 				RTS
 
+DRAW_USE_WHICH 	JSR DRAW_PICT
+				PictTextAt 177;63;(USE)
+				PictEnd
+				JMP WHICH_CMN
 DRAW_MOVE_WHICH JSR DRAW_PICT
 				PictTextAt 174;63;(MOVE)
 				PictEnd
@@ -251,14 +255,14 @@ PRESUB			JSR DRAW_PICT
 				PictSetGreen
 				PictMoveTo 171;50
 				PictLineTo 271;50
-				PictMoveTo 171;103
-				PictLineTo 271;103
+				PictMoveTo 171;104
+				PictLineTo 271;104
 				PictTextAt 201;84;(C>ANCEL)
 				PictEnd
 				JMP	CURSIT2
 
 MCLEAR_MID		JSR DRAW_PICT
-				PictClear 24;50;39;104
+				PictClear 24;50;39;105
 				PictEnd
 				RTS
 
@@ -690,6 +694,7 @@ CBLINK			LDA	#$10
 				LDA	#$00
 				JSR	WAIT_KEY
 				JSR	CURSIT2
+; NOTE: also called by I.USE.S
 COMNKEY			LDA	KEYBRD
 				BPL	CBLINK
 CKEYHIT			BIT	UNSTROB
@@ -931,6 +936,7 @@ CURSIT2			LDX	MCURSOR
 				LDX	#$39
 				JMP DRAW_TRIANGLE
 
+; NOTE: also used by I.USE.S -- consider moving
 SETVTAB			JSR	RESET_EQLIST
 				LDY	#14
 				BIT	CRFLAG

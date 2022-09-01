@@ -1,7 +1,12 @@
-DOSTATS			LDA	CURSOR
-				STA	LEFT1
 
-				JSR DRAW_PICT
+; valid for all I.XXX.S source files
+ISOURCE_CHAR	=	$C0
+ITARGET_CHAR	=	$C1
+
+DOSTATS			LDA	CURSOR
+				STA	ISOURCE_CHAR
+
+RESTATS			JSR DRAW_PICT
 				PictSetPage2
 				PictClearPage
 				PictSetGreen
@@ -35,37 +40,35 @@ DOSTATS			LDA	CURSOR
 				PictShowPage
 				PictEnd
 
-				LDA	#$80
+				LDA	#0
 				STA	ICURPOS
 IMENU			LDX	#<ISTAT_MENU
 				LDY	#>ISTAT_MENU
 				JSR	MENU_INIT
 				JSR MENU_SELECT
-				TXA
-				PHA
-				ORA #$80
-				STA ICURPOS
+				STX ICURPOS
 				JSR	IMARKER
 				JSR MENU_TARGET
-				PLA
-				STA CURSOR
-				TAX
+				LDX ICURPOS
 				JSR	IMARKER
+				LDA ISOURCE_CHAR
+				JSR SET_CHAR
 				JMP IMENU
 
+; TODO: zpage maybe?
 CRFLAG			DB	$00
 
 *-------------------------------
-ISTAT_MENU		DB	$06
-ICURPOS			DB	$80
+ISTAT_MENU		DB	$87
+ICURPOS			DB	$00
 				DW	:ISTAT_CURS
 				DW	:ISTAT_JUMPS
 
 :ISTAT_JUMPS	DW	TO_MOVER
 				DW	TO_DROPPER
-				DW	GETUSER
-				DW	EXAMINE
-				DW	GETRANS
+				DW	TO_USE
+				DW	TO_EXAMINE
+				DW	TO_TRANSFER
 				DW	SEESTAT
 				DW	TO_RECAMP
 
@@ -81,53 +84,49 @@ TO_DROPPER		JSR BANK_2
 
 TO_RECAMP		PLA
 				PLA
-				PLA
 				JMP RECAMP
 
-GETUSER
-EXAMINE
-GETRANS			RTS
+TO_USE          LDA SHELL
+                BNE :CAN_USE
+				JSR DRAW_PICT
+				PictSetGreen
+				PictMoveTo $AB;$32
+				PictLineTo $10F;$32
+				PictMoveTo $AB;$67
+				PictLineTo $10F;$67
+		        PictTextAt 177;63;(NOT_ALLOWED_IN)
+                PictTextAt 189;72;(MOTHERSHIP)
+                PictTextAt 198;84;(<SPACE>)
+				PictEnd
+                BIT UNSTROB
+:KEYLOOP        LDA KEYBRD
+                BPL :KEYLOOP
+                BIT UNSTROB
+                JSR CHECK_ENTER
+                BNE :KEYLOOP
+                JSR DRAW_PICT
+                PictClear 24;50;39;104
+                PictEnd
+:GO_BACK        RTS
 
-		DO 0
-GETUSER			LDA	SHELL
-				BNE	CAN_USE
-				LDA	#GREEN
-				JSR	USE_SUB
-				BIT	UNSTROB
-:LOOP1			LDA	KEYBRD
-				BPL	:LOOP1
-				BIT	UNSTROB
-				JSR	CHECK_ENTER
-				BNE	:LOOP1
-				LDA	#BLACK1
-				JSR	USE_SUB
-GO_SKIP			JSR	IMARKER
-				DEC	CURSOR
-GO_COM			JSR	DOWN2
-				JSR	IMARKER
-				JMP	DESTINATION
-CAN_USE			LDY	#status
-				LDA	(CHARDL),Y
-				CMP	#dead
-				BEQ	GO_SKIP
-				JMP	USER
-USE_SUB			STA	COLOR
-				LDY	#$09
-				JSR	LINER
-				LDY	#$14
-				JMP	TEXTER
+:CAN_USE        LDY #status
+                LDA (CHARDL),Y
+                CMP #dead
+                BEQ :GO_BACK
+				JSR BANK_2
+				JMP USER
 
-GETRANS			LDY	#profrace
+TO_EXAMINE		JSR BANK_2
+				JMP EXAMINE
+
+TO_TRANSFER		LDY	#profrace
 				LDA	(CHARDL),Y
 				AND	#$F0
-				CMP	#$30
-				BNE	NOJUICY
-				JMP	TRANSFR
+				CMP	#juicer*16
+				BNE	:NOJUICER
+				JMP	TRANSFER
+:NOJUICER		RTS
 
-NOJUICY			JSR	IMARKER
-				LDA	#$03
-				JMP	RDOPTN
-		FIN
 ; On entry:
 ;	X: CURSOR
 ;
@@ -151,25 +150,7 @@ XY_SUB			LDY	:YPNTS,X
 				DB	$98,$A2,$AB
 				DB	$B5
 
-PUTGNRL			JSR DRAW_PICT
-				PictTextAt 171;4;(NAME:\nRACE:\nPROF:\nLEVL:\nEXPR:)
-				PictMoveTo $CC;4
-				PictEnd
-
-				JSR CNAME_TO_TEXT
-				JSR DRAW_TEXTBUF_RET
-
-				JSR CRACE_TO_TEXT
-				JSR DRAW_TEXTBUF_RET
-
-				JSR CPROF_TO_TEXT
-				JSR DRAW_TEXTBUF_RET
-
-				JSR CLEVEL_TO_TEXT
-				JSR DRAW_TEXTBUF_RET
-
-				JSR CEXP_TO_TEXT
-				JMP DRAW_TEXTBUF_RET
+;-------------------------------------------------------------------------------
 
 STUFOUT			JSR	DRAW_PICT
 				PictTextAt 42;0;(HEAD)
@@ -232,53 +213,31 @@ STUFOUT			JSR	DRAW_PICT
 				PictEnd
 				RTS
 
-RINFOUT			JSR DRAW_PICT
-				PictTextAt 171;4;(NAME:\nPROF:\nLEVL:\nOWNR:)
+EPLINES			DFB	$09,$11,$6B
+				DFB	$73,$7B,$83
+				DFB	$2A,$32,$3A
+				DFB	$42,$4A,$52
+				DFB	$9C,$B5
+
+PUTGNRL			JSR DRAW_PICT
+				PictTextAt 171;4;(NAME:\nRACE:\nPROF:\nLEVL:\nEXPR:)
 				PictMoveTo $CC;4
 				PictEnd
 
 				JSR CNAME_TO_TEXT
 				JSR DRAW_TEXTBUF_RET
 
+				JSR CRACE_TO_TEXT
+				JSR DRAW_TEXTBUF_RET
+
 				JSR CPROF_TO_TEXT
 				JSR DRAW_TEXTBUF_RET
 
-				LDX #0
-				LDY	#e15_PROGRAM+1
-				LDA	(CHARDL),Y
-				AND	#$08
-				BNE	:1
 				JSR CLEVEL_TO_TEXT
-				LDY	#e15_PROGRAM+1
-				LDA	(CHARDL),Y
-				BPL	:2
-				LDA	#$0B
-				STA	TEXT_BUFFER,X
-				INX
-:1				LDA	#TextLineEnd
-				STA	TEXT_BUFFER,X
-:2				JSR DRAW_TEXTBUF_RET
-
-				; find the owner cybernate linked to this robot
-				LDY	#robotcyblink
-				LDA	(CHARDL),Y
-				PHA
-				LDX #0
-:3				TXA
-				JSR	SET_CHAR
-				PLA
-				PHA
-				LDY	#disklocation
-				CMP	(CHARDL),Y
-				BEQ	:4
-				INX
-				BNE	:3
-:4				PLA
-				JSR CNAME_TO_TEXT
 				JSR DRAW_TEXTBUF_RET
 
-				LDA	LEFT1
-				JMP	SET_CHAR
+				JSR CEXP_TO_TEXT
+				JMP DRAW_TEXTBUF_RET
 
 RSTUFER			LDY	#e1_HEAD
 				LDA	(CHARDL),Y
@@ -324,10 +283,11 @@ RSTUFER			LDY	#e1_HEAD
 
 				JSR DRAW_PICT
 				PictTextAt 42;33;(ARMS)
+				;*** could use line breaks (with line height 8) ***
 				PictTextAt 44;42;(L:)
-				PictTextAt 50;50;(:)
+				PictTextAt 44;50;(_:)
 				PictTextAt 44;58;(R:)
-				PictTextAt 50;66;(:)
+				PictTextAt 44;66;(_:)
 				PictEnd
 
 				LDX #0
@@ -365,14 +325,56 @@ RSTUFER			LDY	#e1_HEAD
 				USR(TETRA-LEG)=
 				USR(BI-LEG)=
 
-EPLINES			DFB	$09,$11,$6B
-				DFB	$73,$7B,$83
-				DFB	$2A,$32,$3A
-				DFB	$42,$4A,$52
-				DFB	$9C,$B5
+RINFOUT			JSR DRAW_PICT
+				PictTextAt 171;4;(NAME:\nPROF:\nLEVL:\nOWNR:)
+				PictMoveTo $CC;4
+				PictEnd
 
-LEFT1			DB	$00
-; RIGHT1		DB	$00
+				JSR CNAME_TO_TEXT
+				JSR DRAW_TEXTBUF_RET
+
+				JSR CPROF_TO_TEXT
+				JSR DRAW_TEXTBUF_RET
+
+				LDX #0
+				LDY	#e15_PROGRAM+1
+				LDA	(CHARDL),Y
+				AND	#$08
+				BNE	:1
+				JSR CLEVEL_TO_TEXT
+				LDY	#e15_PROGRAM+1
+				LDA	(CHARDL),Y
+				BPL	:2
+				LDA	#$0B
+				STA	TEXT_BUFFER,X
+				INX
+:1				LDA	#TextLineEnd
+				STA	TEXT_BUFFER,X
+:2				JSR DRAW_TEXTBUF_RET
+
+				; find the owner cybernate linked to this robot
+				;*** move this the CHARACTER.S?
+				LDY	#robotcyblink
+				LDA	(CHARDL),Y
+				PHA
+				LDX #0
+:3				TXA
+				JSR	SET_CHAR
+				PLA
+				PHA
+				LDY	#disklocation
+				CMP	(CHARDL),Y
+				BEQ	:4
+				INX
+				BNE	:3
+:4				PLA
+				JSR CNAME_TO_TEXT
+				JSR DRAW_TEXTBUF_RET
+
+				LDA	ISOURCE_CHAR
+				JMP	SET_CHAR
+
+; TODO: put these in $D000 banks?
 
 CHAR_IMAGE      DB  $00,$05,$06,$BB
                 HEX 80008940607058585C955858707060604000A54060709701
@@ -410,3 +412,5 @@ ROBOT_IMAGE     DB  $00,$1F,$09,$A0
                 HEX 1D1F3F358D057F01007C07358D3F0303010303019F0A469F
                 HEX 0A4C9D00FD890189030700E5EC008D403F60601F0099FEB6
                 HEX EE1C1E07677F7E7D00FEC4EE9705000100FEC6
+
+;-------------------------------------------------------------------------------

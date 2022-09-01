@@ -47,7 +47,7 @@ SET_PAGE        ENT
 
 HGR             ENT
                 JSR SET_PAGE1
-                JSR CLEAR_PAGE1
+                JSR CLEAR_PAGE
                 STA PRIMARY
                 STA NOMIXED
                 STA HIRES

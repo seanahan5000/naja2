@@ -13,7 +13,7 @@ ENTER_CAMP      ENT
                 PictClearPage
                 PictCall DRAW_STATS_BOX
                 PictCall COPY_DOWN
-                PictSwap 0;191;40;121
+                PictSwap 0;191;40;122
                 PictSetPage1
                 PictSetViolet
                 PictRect $72;$21;$A6;$3F
@@ -30,27 +30,20 @@ ENTER_CAMP      ENT
 ; TODO: generalize this if anything other than CAMP also does it
 
 COPY_DOWN       LDX #0
-:1              LDA LOBYTES,X
-                STA SCREENL
-                LDA HIBYTES,X
-                STA SCREENH
+:1              JSR SET_SOURCE_LINE
                 LDA LOBYTES+122,X
                 STA DESTINL
                 LDA HIBYTES+122,X
                 STA DESTINH
-                LDY #39
-:2              LDA (SCREENL),Y
-                STA (DESTINL),Y
-                DEY
-                BPL :2
+                JSR COPY_FULL_LINE
                 INX
                 CPX #70
                 BNE :1
                 RTS
 
 *-------------------------------
-STATS_MENU      DB  $02             ; min 0, max 2
-                DB  $80             ; start at 0, clear LEGALS
+STATS_MENU      DB  $83             ; min 0, max 2, clear LEGALS
+                DB  $00
                 DW  :STATS_CURS
                 DW  :STATS_JUMPS
 
@@ -67,7 +60,7 @@ STATS_MENU      DB  $02             ; min 0, max 2
 
 STATS_EXIT      JSR DRAW_PICT
                 PictClear $10;$21;$18;$40
-                PictSwap 0;122;40;192
+                PictSwap 0;122;40;191
                 PictEnd
                 RTS
 
@@ -97,10 +90,9 @@ STATS_MORE      LDA SHELL
                 PictEnd
 
                 LDA #0				; TRADE
-COPTION			ORA #$80
-                STA CCURPOS_MS
+COPTION			STA CCURPOS_MS
                 STA CCURPOS_TRACC
-                BMI CMENU			; always
+                BPL CMENU			; always
 
 RECAMP			BIT	UNSTROB
 				JSR DRAW_PICT
@@ -123,10 +115,8 @@ CMENU         	LDA SHELL
 ; TODO: make it possible use <escape> to directly leave camp menu
 
                 JSR MENU_SELECT
-                TXA
-                ORA #$80
-                STA CCURPOS_MS
-                STA CCURPOS_TRACC
+                STX CCURPOS_MS
+                STX CCURPOS_TRACC
                 JSR CAMP_MARKER
 :1              JMP MENU_TARGET
 
@@ -165,24 +155,24 @@ CAMP_MARKER     LDY CAMP_YPNTS,X
                 JMP DRAW_MARKER
 
 *-------------------------------
-CAMP_MENU_MS    DB  $03
-CCURPOS_MS      DB  $80
+CAMP_MENU_MS    DB  $84
+CCURPOS_MS      DB  $00
                 DW  CAMP_CURS
                 DW  :CAMP_JUMPS_MS
 
 :CAMP_JUMPS_MS  DW  TO_TRADE
-                DW  GOISTAT
+                DW  TO_ISTATS
                 DW  GOFLOP
                 DW  GOLEAVE
 
-CAMP_MENU_TRACC DB  $04
-CCURPOS_TRACC   DB  $80
+CAMP_MENU_TRACC DB  $85
+CCURPOS_TRACC   DB  $00
                 DW  CAMP_CURS
                 DW  :CAMP_JUMPS_T
 
 :CAMP_JUMPS_T   DW  TO_TRADE
-                DW  GOFORM
-                DW  GOISTAT
+                DW  TO_REFORMAT
+                DW  TO_ISTATS
                 DW  GOFLOP
                 DW  GOLEAVE
 
@@ -221,11 +211,12 @@ EXIT_CAMP		JSR	DRAW_PICT
 				PictEnd
 				RTS
 
-GOFORM			; JSR	LOAD_REFORM
+TO_REFORMAT
+				; JSR	LOAD_REFORM
 				JSR BANK_1
 				JMP	REFORMAT
 
-; LOAD_REFORM		LDA	CAMP_HERE
+; LOAD_REFORM	LDA	CAMP_HERE
 ; 				AND	#bit_RefRegCom
 ; 				BNE	:EXIT
 ; 				LDX	#cRefRegCom
@@ -235,16 +226,16 @@ GOFORM			; JSR	LOAD_REFORM
 ; 				STA	CAMP_HERE
 ; :EXIT			RTS
 
-GOISTAT			JSR DRAW_PICT
+TO_ISTATS		JSR DRAW_PICT
 				PictTextAt 16;70;(CANCEL)
 				PictTextAt 63;96;(INDIVIDUAL_STATS_FOR_WHOM?)
 				PictEnd
 				JSR	PICK_CHAR
-				LDA	CURSOR
-				CMP	#7
+				CPX #7
 				BEQ	:CANCEL
+				TXA
 				JSR	SET_CHAR
-				JSR	DRAW_CURSOR
+				JSR	MENU_DRAW_CURSOR
 				JMP	DOSTATS
 
 :CANCEL			JSR DRAW_PICT
@@ -252,37 +243,27 @@ GOISTAT			JSR DRAW_PICT
                 PictClear 9;96;32;103
                 PictEnd
                 ; TODO: clean this up after switch to JSR MENU_SELECT
-                LDA CCURPOS_MS
-                AND #$7F
-                TAX
+                LDX CCURPOS_MS
 				JSR CAMP_MARKER
                 JMP	CMENU
 
 PICK_CHAR		JSR	RESET_CHRLIST
-				LDA	#$00
-				STA	GCURPOS
-				STA	LEGALS+7
 				JSR	PRE_ARROW
 				JMP	MENU_SELECT
 
 *-------------------------------
-PRE_ARROW		LDX	#<:PRE_DEF
+PRE_ARROW		LDA #$00
+				STA LEGALS+7
+				LDX	#<:PRE_DEF
 				LDY	#>:PRE_DEF
 				JMP	MENU_INIT
 
-:PRE_DEF		DB	$0A
-GCURPOS			DB	$00
+:PRE_DEF		DB	$0B
+				DB	$00
 				DW	:PRE_CURS
 
-;*** SOME OF THIS LOGIC MIGHT NOT BE NEEDED
-	;*** TRADE NO LONGER ASKS TO TRADE CREDITS
 :PRE_CURS		LDY	YPOINTS,X
 				LDX	#$03
-				; LDA	CURSOR
-				; CMP	#$08
-				; BCC	:1
-				; LDX	#$5A
-; :1
 				JMP	DRAW_ARROW
 
 ; NOTE: was in KEY.COMMONS.S
@@ -290,9 +271,6 @@ YPOINTS			DFB	$0C,$14,$1C
 				DFB	$24,$2C,$34
 				DFB	$3C
 				DFB	$46					; cancel
-
-	;*** ARE THESE USED (OUTSIDE OF TRADE?)
-				; DFB $58,$62,$6C
 *-------------------------------
 
 ; caller has already set Y position
@@ -302,7 +280,7 @@ FLIP_STATS      LDA SELECT
                 AND #$03
                 STA SELECT_FLIP
                 EOR #$03
-                BPL :2				; always
+                BPL :2					; always
 :1				STA SELECT_FLIP
 				EOR #$C3
 :2				PHA

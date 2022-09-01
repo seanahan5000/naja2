@@ -6,25 +6,28 @@ SAME_PAGE_AS    MAC
                 EOM
 
 Text0           =   0
+Text1           =   1
 Text9           =   9
 TextSpace       =   10
 TextA           =   11
 TextZ           =   36
 TextFirstSymbol =   37              ; first symbol after {0-9 A-Z}
+TextDash        =   $2C
+TextPeriod      =   $2D
 TextSlash       =   $2E
 TextColon       =   $2F
+TextLT          =   $30
+TextGT          =   $32
+TextQuestion    =   $33
 TextEmpty       =   $EE
 TextLineBreak   =   $8B
 TextLineEnd     =   $8D
-TextInsert      =   $C0
-TextInsertMask  =   $3F
 
-LineHeight      =   9
+TextLineHeight  =   9
 
 TEXT_BUFFER     =   $0200
 TEXTBUF         =   TEXT_BUFFER     ; for back-compat
 WORD_BUFFER     =   TEXT_BUFFER+$A0
-INSERT_BUFFER   =   TEXT_BUFFER+$C0
 
 SCREENL         =   $26
 SCREENH         =   $27
@@ -111,18 +114,17 @@ OpTextAt        =   15
 OpTextIn        =   16
 OpImage         =   17
 OpClear         =   18
-OpSwap          =   19
+OpCopyTo        =   19
+OpSwap          =   20
 
-OpSetPage1      =   20
-OpSetPage2      =   21
-OpShowPage      =   22
-OpClearPage     =   23
-OpCopyToPage    =   24
-OpCall          =   25
+OpSetPage1      =   21
+OpSetPage2      =   22
+OpShowPage      =   23
+OpClearPage     =   24
+OpCopyToPage    =   25
+OpCall          =   26
 
 OpEnd           =   $FF
-
-; TODO: OpCall to insert function calls mid-picture
 
 OpColorBlack1   =   0
 OpColorGreen    =   1
@@ -144,6 +146,10 @@ PictSetGreen    MAC
 
 PictSetViolet   MAC
                 DB  OpSetColor,OpColorViolet
+                EOM
+
+PictSetWhite1   MAC
+                DB  OpSetColor,OpColorWhite1
                 EOM
 
 PictSetOrange   MAC
@@ -245,6 +251,11 @@ PictImage       MAC
 ; NOTE: external dependencies on this format
 PictClear       MAC
                 DB  OpClear
+                DB  ]1,]2,]3,]4
+                EOM
+
+PictCopyTo      MAC
+                DB  OpCopyTo
                 DB  ]1,]2,]3,]4
                 EOM
 

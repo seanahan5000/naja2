@@ -12,6 +12,9 @@
                 DS  64              ;***
 
                 PUT PICT
+
+                DS 32               ;***
+
                 PUT UNPACK
                 PUT SHAPES
                 PUT TEXT

@@ -1,15 +1,7 @@
 
 CLEAR_PAGE      ENT
                 LDA PAGE
-                BNE CLR_COM         ; always
-
-CLEAR_PAGE1     ENT
-                LDA #$20
-                BNE CLR_COM         ; always
-
-CLEAR_PAGE2     ENT
-                LDA #$40
-CLR_COM         CMP CLR_LOOP+2
+                CMP CLR_LOOP+2
                 BEQ :SKIP1
                 LDX #3*31
 :LOOP1          LDA CLR_LOOP+2,X
@@ -60,13 +52,7 @@ CLR_LOOP        STA $2000,X
 
 COPY_TO_PAGE    ;ENT
                 LDA PAGE
-;                 BNE COPY_COM    ; always
-; COPY_TO_PAGE1   ;ENT
-;                 LDA #$20
-;                 BNE COPY_COM    ; always
-; COPY_TO_PAGE2   ;ENT
-;                 LDA #$40
-COPY_COM        STA :DST_MOD+2
+                STA :DST_MOD+2
                 EOR #$60
                 STA :SRC_MOD+2
                 LDY #32
@@ -203,3 +189,12 @@ CHECK_CANCEL    ENT
                 BEQ :1
                 CMP #$9B            ; <escape>
 :1              RTS
+
+GET_SPACE_ENTER ENT
+                BIT UNSTROB
+:1              LDA KEYBRD
+                BPL :1
+                BIT UNSTROB
+                JSR CHECK_ENTER
+                BNE :1
+                RTS

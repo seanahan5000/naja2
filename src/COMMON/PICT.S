@@ -28,6 +28,21 @@ TEMP_TOGGLE     =   $01
 ;
 ; On entry:
 ;   X: x position
+;
+; On exit:
+;   X: x position
+;   Y: y position
+;
+HMOVE_TO        ENT
+                LDY YCOORD
+                ; fall through
+;
+; On entry:
+;   X: x position
+;   Y: y position
+;
+; On exit:
+;   X: x position
 ;   Y: y position
 ;
 MOVE_TO         ENT
@@ -95,6 +110,7 @@ OP_TABLE        DW  OP_SET_COLOR
                 DW  OP_TEXT_IN
                 DW  OP_IMAGE
                 DW  OP_CLEAR
+                DW  OP_COPY_TO
                 DW  OP_SWAP
                 DW  SET_PAGE1       ; direct call
                 DW  SET_PAGE2       ; direct call
@@ -441,14 +457,58 @@ OP_CLEAR        LDA (OP_PTR),Y
                 SAME_PAGE_AS :1
                 RTS
 
-;-------------------------------------------------------------------------------
 
-; Exchange an area of the screen between page 1 and 2
+;-------------------------------------------------------------------------------
+;
+; Copy an area of the screen to current page, from opposite page.
+;   Unlike OP_SWAP, only top-to-bottom copy is supported here
 ;
 ;   left byte
 ;   top line
 ;   right byte (exclusive)
 ;   bottom line (exclusive)
+
+OP_COPY_TO      LDA (OP_PTR),Y
+                INY
+                STA :LEFT_MOD+1
+                LDA (OP_PTR),Y
+                INY
+                TAX
+                LDA (OP_PTR),Y
+                INY
+                STA :RIGHT_MOD+1
+                LDA (OP_PTR),Y
+                INY
+                STA BOTTOM
+                STY OP_INDEX
+
+:1              LDA LOBYTES,X
+                STA DESTINL
+                STA SCREENL
+                LDA HIBYTES,X
+                STA DESTINH
+                EOR #$60
+                STA SCREENH
+:LEFT_MOD       LDY #$FF
+:2              LDA (SCREENL),Y
+                STA (DESTINL),Y
+                INY
+:RIGHT_MOD      CPY #$FF
+                BNE :2
+                INX
+                CPX BOTTOM
+                BNE :1
+                SAME_PAGE_AS :1
+                RTS
+
+;-------------------------------------------------------------------------------
+;
+; Exchange an area of the screen between page 1 and 2
+;
+;   left byte
+;   top line (INCLUSIVE)
+;   right byte (exclusive)
+;   bottom line (INCLUSIVE)
 ;
 ; If top > bottom, transfer happens in reverse order.
 
@@ -466,12 +526,14 @@ OP_SWAP         LDA (OP_PTR),Y
                 STA BOTTOM
                 STY OP_INDEX
 
-                LDY #$E8            ; INX
+                LDY #$E8                ; INX
                 CPX BOTTOM
                 BCC :1
-                LDY #$CA            ; DEX
+                LDY #$CA                ; DEX
 :1              STY :INX_MOD
+                BNE :2                  ; always
 
+:INX_MOD        INX
 :2              LDA LOBYTES,X
                 STA SCREENL
                 STA DESTINL
@@ -479,7 +541,6 @@ OP_SWAP         LDA (OP_PTR),Y
                 STA SCREENH
                 EOR #$60
                 STA DESTINH
-:INX_MOD        INX
                 STX TOP
 :LEFT_MOD       LDY #$FF
 :3              LDA (SCREENL),Y
@@ -493,8 +554,8 @@ OP_SWAP         LDA (OP_PTR),Y
                 BNE :3
                 LDX TOP
                 CPX BOTTOM
-                BNE :2
-                SAME_PAGE_AS :2
+                BNE :INX_MOD
+                SAME_PAGE_AS :INX_MOD
                 RTS
 
 ;-------------------------------------------------------------------------------

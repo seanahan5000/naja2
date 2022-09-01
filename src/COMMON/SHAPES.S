@@ -65,7 +65,7 @@ NEXT_TCOL       LDY #0
                 BNE NEXT_TLINE
                 RTS
 
-; TODO: move this?
+; TODO: move this? maybe to page $02?
 TILE_BUFFER     DS  7
 
 ;-------------------------------------------------------------------------------
@@ -92,7 +92,7 @@ TABLER          LDY YCOORD
 :2              RTS
 
 TABLER_Y        DB  $FF
-; TODO: move these?
+; TODO: move these? maybe to page $02?
 TABLER_L        DS  7
 TABLER_H        DS  7
 

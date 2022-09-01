@@ -12,7 +12,7 @@
 
                 JSR INIT_RANDOM
                 JSR SET_PAGE1
-                JSR CLEAR_PAGE1
+                JSR CLEAR_PAGE
 
                 STA $C05F           ;Clear double hires
                 STA $C05A           ;Disable VBL interupt

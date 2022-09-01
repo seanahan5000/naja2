@@ -11,16 +11,23 @@ WORD_INDEX      =   $33
 
 ;-------------------------------------------------------------------------------
 
+SET_TEXT_HEIGHT ENT
+                TAX
+                BNE :1
+                LDA #TextLineHeight
+:1              STA TEXT_HEIGHT
+                RTS
+
 OP_SET_TEXT_HEIGHT
                 LDA (OP_PTR),Y
                 BNE :1
-                LDA #LineHeight
+                LDA #TextLineHeight
 :1              INY
                 STA TEXT_HEIGHT
                 STY OP_INDEX
                 RTS
 
-TEXT_HEIGHT     DB  LineHeight
+TEXT_HEIGHT     DB  TextLineHeight
 
 ;-------------------------------------------------------------------------------
 ; On entry:
@@ -32,7 +39,7 @@ TEXT_HEIGHT     DB  LineHeight
 ;-------------------------------------------------------------------------------
 
 DRAW_TEXTBUF_RET ENT
-                JSR DTB_CMN
+                JSR DRAW_TEXTBUF
                 JMP NEXT_LINE
 
 ; X: target X position
@@ -45,9 +52,9 @@ DRAW_TEXTBUF_X  ENT
                 STA XCOORD
                 LDA MOD7,X
                 STA XSHIFT
-DTB_CMN         LDX #<TEXT_BUFFER
+DRAW_TEXTBUF    ENT
+                LDX #<TEXT_BUFFER
                 LDY #>TEXT_BUFFER
-
 DRAW_TEXT       ENT
                 STX OP_PTR
                 STY OP_PTR_H
@@ -83,29 +90,7 @@ OP_TEXT         STY OP_INDEX
                 BEQ :NEXT_CHAR
                 STY OP_INDEX
                 CMP #TextLineBreak
-                BEQ :NEXT_LINE
-                CMP #TextInsert
-                BCC :DONE
-
-                AND #TextInsertMask
-                TAX
-:NEXT_INSERT    LDA INSERT_BUFFER,X
-                INX
-                CMP #TextLineEnd
-                BEQ :NEXT_CHAR
-                CMP #TextEmpty
-                BEQ :NEXT_INSERT
-                CMP #TextSpace
-                BEQ :SKIP_SPACE2
-                STX WORD_INDEX
-                JSR DRAW_LETTER
-                LDX WORD_INDEX
-                LDY OP_INDEX
-                BNE :NEXT_INSERT    ; always
-
-:SKIP_SPACE2    JSR ADVANCE
-                LDY OP_INDEX
-                BNE :NEXT_INSERT    ; always
+                BNE :DONE               ; always
 
 :NEXT_LINE      JSR NEXT_LINE
                 LDY OP_INDEX
@@ -172,6 +157,10 @@ OP_STB_CMN      LDA (OP_PTR),Y
 ;   Y: Address of string (high)
 ;-------------------------------------------------------------------------------
 
+WRAP_TEXTBUF    ENT
+                LDX #<TEXT_BUFFER
+                LDY #>TEXT_BUFFER
+
 DRAW_TEXTBOX    ENT
                 STX OP_PTR
                 STY OP_PTR_H
@@ -231,9 +220,7 @@ OP_TEXT_IN      STY OP_INDEX
                 CMP #TextEmpty
                 BEQ :NEXT_CHAR
                 STY OP_INDEX
-                CMP #TextInsert
-                BCS :START_INSERT
-                BCC :BREAK_WORD     ; always
+                BNE :BREAK_WORD         ; always
 
 :FLUSH_TEXT     PLA
                 PLA
@@ -279,22 +266,6 @@ OP_TEXT_IN      STY OP_INDEX
                 BCC :4
 :33             JSR :NEXT_LINE
 :4              JMP :NEXT_WORD
-
-:START_INSERT   AND #TextInsertMask
-                TAY
-:NEXT_INSERT    LDA INSERT_BUFFER,Y
-                CMP #TextLineEnd
-                BEQ :INSERT_DONE
-                INY
-                CMP #TextEmpty
-                BEQ :NEXT_INSERT
-                STA WORD_BUFFER,X
-                JSR ADVANCE
-                INX
-                BNE :NEXT_INSERT    ; always
-
-:INSERT_DONE    LDY OP_INDEX
-                JMP :NEXT_CHAR
 
 :NEXT_LINE      LDA YCOORD
                 CLC
