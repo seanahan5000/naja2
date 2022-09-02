@@ -184,6 +184,63 @@ INFLICTER		STX	TEMP
 				CLC
 :EXIT			RTS
 
+*---------------------------------------------------------
+* On Entry:
+*   X = Heal amount low
+*   Y = Heal amount high
+*
+* On Exit:
+*	Damage level updated
+*	Critical status possibly removed
+
+; TODO: generalize to match INFLICTER api?
+
+HEALER			STX	TEMP
+				STY	TEMP+1
+
+				LDY #damagelev+1
+				SEC
+				SED
+				LDA (CHARDL),Y
+				SBC TEMP
+				STA TEMP
+				DEY
+				LDA (CHARDL),Y
+				SBC TEMP+1
+				STA TEMP+1
+				CLD
+				BCC :CLAMP0
+
+				LDY	#damagemax+1
+				LDA (CHARDL),Y
+				SEC
+				SBC TEMP
+				TAX
+				DEY
+				LDA (CHARDL),Y
+				SBC TEMP+1
+				BNE :EXIT
+				CPX	#critical_amnt+1
+				BCC	:EXIT
+
+:CLEAR_CRIT		LDY	#status
+				LDA	(CHARDL),Y
+				AND	#%10111111
+				STA	(CHARDL),Y
+
+:CLAMP0			LDA #0
+				STA TEMP
+				STA TEMP+1
+
+:EXIT			LDY #damagelev+1
+				LDA TEMP
+				STA (CHARDL),Y
+				DEY
+				LDA TEMP+1
+				STA (CHARDL),Y
+				CLD
+				JMP	CALC_ALL
+
 ; TODO: use zpage to reduce code size
 NEW_STATUS		DB	0
 OLD_STATUS		DB	0

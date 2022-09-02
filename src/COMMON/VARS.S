@@ -106,23 +106,25 @@ OpHLineToHigh   =   7
 OpVLineTo       =   8
 OpRect          =   9
 OpRectHigh      =   10
-OpSetTextHeight =   11
-OpSetTextBox    =   12
-OpSetTextBoxHigh =  13
-OpText          =   14
-OpTextAt        =   15
-OpTextIn        =   16
-OpImage         =   17
-OpClear         =   18
-OpCopyTo        =   19
-OpSwap          =   20
+OpFillRect      =   11
+OpFillRectHigh  =   12
+OpSetTextHeight =   13
+OpSetTextBox    =   14
+OpSetTextBoxHigh =  15
+OpText          =   16
+OpTextAt        =   17
+OpTextIn        =   18
+OpImage         =   19
+OpClear         =   20
+OpCopyTo        =   21
+OpSwap          =   22
 
-OpSetPage1      =   21
-OpSetPage2      =   22
-OpShowPage      =   23
-OpClearPage     =   24
-OpCopyToPage    =   25
-OpCall          =   26
+OpSetPage1      =   23
+OpSetPage2      =   24
+OpShowPage      =   25
+OpClearPage     =   26
+OpCopyToPage    =   27
+OpCall          =   28
 
 OpEnd           =   $FF
 
@@ -205,6 +207,15 @@ PictRect        MAC
                 DB  OpRectHigh
             ELSE
                 DB  OpRect
+            FIN
+                DB  ]1,]2,<]3,]4
+                EOM
+
+PictFillRect    MAC
+            DO ]3/256
+                DB  OpFillRectHigh
+            ELSE
+                DB  OpFillRect
             FIN
                 DB  ]1,]2,<]3,]4
                 EOM

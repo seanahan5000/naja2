@@ -8,9 +8,6 @@
                 PUT TABLES
                 PUT UTILS
                 PUT BLIT
-
-                DS  64              ;***
-
                 PUT PICT
 
                 DS 32               ;***

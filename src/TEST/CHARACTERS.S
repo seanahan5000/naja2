@@ -89,14 +89,6 @@ FIND_ROBOT      LDY #profrace
                 RTS
 :3              LDA CHAR_INDEX
                 RTS
-
-;*** COMBINE THIS AND BE DONE ***
-BREAK_ROBOT     LDY #status
-                LDA (CHARDL),Y
-                AND #%11000000
-                ORA #broken
-                STA (CHARDL),Y
-                RTS
 ;
 ; On entry:
 ;   A: index of character to be hidden

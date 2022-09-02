@@ -414,3 +414,49 @@ ROBOT_IMAGE     DB  $00,$1F,$09,$A0
                 HEX EE1C1E07677F7E7D00FEC4EE9705000100FEC6
 
 ;-------------------------------------------------------------------------------
+
+; used by I.COMPRESS, I.REGENERATE, I.TRANSFER, and I.USE
+
+BIG_STATS_BOX	LDA #$42
+				STA SELECT
+
+				JSR DRAW_PICT
+                PictClear 24;50;39;51
+				PictSetPage1
+				PictClearPage
+				PictRect $01;$00;$115;$4F
+				PictMoveTo $01;$0A
+				PictLineTo $115;$0A
+				PictVMoveTo 2
+				PictCall STATS_HEADER
+                PictVMove 10
+				PictEnd
+
+                JSR FIRST_CHAR
+:1              JSR STATS_LINE
+                JSR DRAW_PICT
+                PictVMove 8
+                PictEnd
+                JSR NEXT_CHAR
+                BCC :1
+
+				JSR DRAW_PICT
+				PictTextAt 16;70;(CANCEL)
+				PictSetPage2
+				PictSwap $00;$00;$28;$50
+				PictMoveTo $AB;$68
+				PictLineTo $10F;$68
+				PictEnd
+
+				JSR RESET_CHRLIST
+				LDA	#$00
+				STA	LEGALS+7
+				RTS
+
+HIDE_BIG_STATS  JSR DRAW_PICT
+                PictClear 24;80;39;105
+                PictSwap $00;$50;$28;$00
+                PictEnd
+                RTS
+
+;-------------------------------------------------------------------------------

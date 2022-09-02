@@ -20,7 +20,7 @@
                 PUT C.ISTATS
                 PUT I.SEESTATS
                 PUT I.TRANSFER      ;***
-                PUT I.REGENERATE    ;***
+                PUT I.REGENERATE    ; must be in same bank as I.TRANSFER
 
 ; TODO: move later
 ; NOTE: these are swapped from original Naja code
@@ -43,8 +43,8 @@ SHELL           DB  $1              ; TODO: move later
 
                 ORG $D000
                 PUT I.MOVE
-                PUT I.USE           ; must be in same back as I.MOVER
-                PUT I.EXAMINE       ; must be in same back as I.MOVER
+                PUT I.USE           ; must be in same bank as I.MOVER
+                PUT I.EXAMINE       ; must be in same bank as I.MOVER
                 PUT I.COMPRESS      ;***
                 SAV CAMP.D000.M2
 

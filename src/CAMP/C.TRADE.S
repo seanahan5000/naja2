@@ -23,6 +23,16 @@ BEGLINE         =   $07
 
 *-------------------------------
 
+                DUMMY SCRATCH_PAGE
+LVISIBL         DS  11
+RVISIBL         DS  11
+TLINTABL        DS  11
+LINTABR         DS  11
+BUFFERL         DS  8
+BUFFERS         DS  4
+TANSWER         DS  4
+                DEND
+
 TRADE           JSR DRAW_PICT
                 PictTextAt 16;70;(CANCEL)
                 PictTextAt 86;88;(TRADE_FROM_WHO?)
@@ -779,13 +789,3 @@ TRADE_MARKERS   LDX tSMAN
 TRADE_MARKER    LDY YPOINTS,X
                 LDX #$06
                 JMP DRAW_MARKER
-
-                DUMMY SCRATCH_PAGE
-LVISIBL         DS  11
-RVISIBL         DS  11
-TLINTABL        DS  11
-LINTABR         DS  11
-BUFFERL         DS  8
-BUFFERS         DS  4
-TANSWER         DS  4
-                DEND

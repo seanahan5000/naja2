@@ -102,6 +102,8 @@ OP_TABLE        DW  OP_SET_COLOR
                 DW  OP_VLINE_TO
                 DW  OP_RECT
                 DW  OP_RECT_H
+                DW  OP_FILLRECT
+                DW  OP_FILLRECT_H
                 DW  OP_SET_TEXT_HEIGHT
                 DW  OP_SET_TEXTBOX
                 DW  OP_SET_TEXTBOX_H
@@ -222,9 +224,18 @@ OP_IMAGE        LDA (OP_PTR),Y
 
 ;-------------------------------------------------------------------------------
 
-OP_RECT_H       SEC
-                BCS OP_RECT_CMN     ; always
+OP_FILLRECT_H   SEC
+                DB  $24                 ; BIT ZPAGE
+OP_FILLRECT     CLC
+                LDA #$38                ; SEC
+                STA FILLRECT_MOD
+                JSR OP_RECT_CMN
+                LDA #$18                ; CLC
+                STA FILLRECT_MOD
+                RTS
 
+OP_RECT_H       SEC
+                DB  $24                 ; BIT ZPAGE
 OP_RECT         CLC
 OP_RECT_CMN     LDA (OP_PTR),Y
                 INY
@@ -246,7 +257,7 @@ OP_RECT_CMN     LDA (OP_PTR),Y
                 BCS :1
                 LDY DIV7,X
                 LDA MOD7,X
-                BCC :2              ; always
+                BCC :2                  ; always
 :1              LDY DIV7HI,X
                 LDA MOD7HI,X
 :2              STY RIGHT_DIV7
@@ -266,7 +277,8 @@ DO_RECT         LDX OP_COLOR
                 STA AND_MASK
 
                 LDX TOP
-:2              LDA LOBYTES,X
+RECT_LOOP       STX TOP
+                LDA LOBYTES,X
                 STA SCREENL
                 LDA HIBYTES,X
                 STA SCREENH
@@ -307,10 +319,14 @@ DO_RECT         LDX OP_COLOR
 
                 LDX TOP
                 CPX BOTTOM
-                BEQ :DONE
-                INX
+                BNE :6
+                RTS
 
-:6              LDA LOBYTES,X
+:6              INX
+FILLRECT_MOD    CLC
+                BCS RECT_LOOP
+
+:7              LDA LOBYTES,X
                 STA SCREENL
                 LDA HIBYTES,X
                 STA SCREENH
@@ -329,11 +345,8 @@ DO_RECT         LDX OP_COLOR
 
                 INX
                 CPX BOTTOM
-                BNE :6
-                STX TOP
-                BEQ :2              ; always
-
-:DONE           RTS
+                BNE :7
+                BEQ RECT_LOOP       ; always
 
 ; TODO: move these into TABLES.S???
 COLOR_TABLE     DB  $00,$2A,$55,$7F
