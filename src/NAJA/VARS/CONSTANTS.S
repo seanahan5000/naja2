@@ -157,15 +157,6 @@ eq_stateffect	=	%00000100
 eq_faulty		=	%00000010
 eq_hands12		=	%00000001
 
-BLACK1			=	$00
-GREEN			=	$2A
-VIOLET			=	$55
-WHITE1			=	$7F
-BLACK2			=	$80
-RED				=	$AA				;Also ORANGE
-BLUE			=	$D5
-WHITE2			=	$FF
-
 side_MS			=	0
             do ORIGINAL
 side_T1         =   1

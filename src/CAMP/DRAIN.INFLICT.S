@@ -86,6 +86,45 @@ DRAIN_MERGE		LDY	#status
 ; TODO: use zpage to reduce code size
 DRAIN_AMOUNT	DB	$00,$00,$00
 
+; Set energy level to a specific value
+;
+; On entry:
+;
+;	X: address of energy level low
+;	Y: address of energy level high
+;
+SET_ENERGY_LEVEL
+				STX :MOD+1
+				STY :MOD+2
+				LDX #2
+				LDY #energylev+2
+:MOD			LDA $FFFF,X
+				STA (CHARDL),Y
+				DEY
+				DEX
+				BPL :MOD
+				; fall through
+
+ENERGY_CHANGED	LDY	#status
+				LDA	(CHARDL),Y
+				AND	#%01111111			; clear rundown
+				STA	(CHARDL),Y
+				LDY #energylev+2
+				LDX #2
+:1				LDA (CHARDL),Y
+				BNE :2
+				DEY
+				DEX
+				BPL :1
+				BMI :3					; always
+:2				LDY	#status
+				LDA	(CHARDL),Y
+				ORA	#rundown			; set rundown
+				STA	(CHARDL),Y
+:3				; TODO: check for change in rundown status
+				;	and skip this if no change
+				RTS
+
 *---------------------------------------------------------
 * On Entry:
 *   X = Infliction amount low
@@ -184,61 +223,51 @@ INFLICTER		STX	TEMP
 				CLC
 :EXIT			RTS
 
-*---------------------------------------------------------
-* On Entry:
-*   X = Heal amount low
-*   Y = Heal amount high
-*
-* On Exit:
-*	Damage level updated
-*	Critical status possibly removed
-
-; TODO: generalize to match INFLICTER api?
-
-HEALER			STX	TEMP
-				STY	TEMP+1
-
+; set damage to a specific level
+;
+; On entry:
+;	X = damage level low
+;	Y = damage level high
+;
+SET_DAMAGE_LEVEL
+				TYA
+				PHA
 				LDY #damagelev+1
+				TXA
+				STA (CHARDL),Y
+				DEY
+				PLA
+				STA (CHARDL),Y
+				; fall through
+
+; update critical status
+DAMAGE_CHANGED	LDY	#status
+				LDA	(CHARDL),Y
+				AND	#%10111111			; clear critical
+				STA	(CHARDL),Y
+				LDY #damagemax
+				LDA (CHARDL),Y
+				PHA
+				INY
+				LDA (CHARDL),Y
 				SEC
 				SED
-				LDA (CHARDL),Y
-				SBC TEMP
-				STA TEMP
-				DEY
-				LDA (CHARDL),Y
-				SBC TEMP+1
-				STA TEMP+1
-				CLD
-				BCC :CLAMP0
-
-				LDY	#damagemax+1
-				LDA (CHARDL),Y
-				SEC
-				SBC TEMP
+				LDY #damagelev+1
+				SBC (CHARDL),Y
 				TAX
 				DEY
-				LDA (CHARDL),Y
-				SBC TEMP+1
-				BNE :EXIT
+				PLA
+				SBC (CHARDL),Y
+				BNE :NOCRIT
 				CPX	#critical_amnt+1
-				BCC	:EXIT
-
-:CLEAR_CRIT		LDY	#status
+				BCS :NOCRIT
+				LDY	#status
 				LDA	(CHARDL),Y
-				AND	#%10111111
+				ORA #critical			; set critical
 				STA	(CHARDL),Y
-
-:CLAMP0			LDA #0
-				STA TEMP
-				STA TEMP+1
-
-:EXIT			LDY #damagelev+1
-				LDA TEMP
-				STA (CHARDL),Y
-				DEY
-				LDA TEMP+1
-				STA (CHARDL),Y
-				CLD
+:NOCRIT			CLD
+				; TODO: check for change in critical status
+				;	and skip this if no change
 				JMP	CALC_ALL
 
 ; TODO: use zpage to reduce code size

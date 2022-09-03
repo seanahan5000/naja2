@@ -112,16 +112,15 @@ RBLINK          LDA #$10
 
 :ENTER			LDA ITARGET_CHAR
                 JSR SET_CHAR
-                LDY DVAL+0
                 LDX DVAL+1
-                JSR HEALER
+                LDY DVAL+0
+                JSR SET_DAMAGE_LEVEL
 
 				LDA ISOURCE_CHAR
                 JSR SET_CHAR
-				LDX	#<EVAL
-				LDY	#>EVAL
-				SEC
-				JSR	DRAINER_MAIN
+                LDX #<EVAL
+                LDY #>EVAL
+                JSR SET_ENERGY_LEVEL
 
 :CANCEL			JSR DRAW_PICT
 				PictClear 27;51;34;58

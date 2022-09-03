@@ -35,22 +35,22 @@ BANK_2          LDA $C08B
 SHELL           DB  $1              ; TODO: move later
                 SAV CAMP.E000
 
-                ORG $D000
-                PUT /TEST/TOPVIEWS
-                PUT C.REFORMAT
+                ORG $D000           ; bank 1
                 PUT C.TRADE
+                PUT C.REFORMAT
                 SAV CAMP.D000.M1
 
-                ORG $D000
+                ORG $D000           ; bank 2
                 PUT I.MOVE
-                PUT I.USE           ; must be in same bank as I.MOVER
-                PUT I.EXAMINE       ; must be in same bank as I.MOVER
-                PUT I.COMPRESS      ;***
+                PUT I.USE           ; must be in same bank as I.MOVE
+                PUT I.EXAMINE       ; must be in same bank as I.MOVE
+                PUT I.COMPRESS
                 SAV CAMP.D000.M2
 
                 ORG $9000
                 PUT /TEST/CHARACTERS
                 PUT /TEST/EQUIPMENT
                 PUT /TEST/STATS
+                PUT /TEST/TOPVIEWS
                 PUT I.DIAGNOSE
                 SAV CAMP.9000
