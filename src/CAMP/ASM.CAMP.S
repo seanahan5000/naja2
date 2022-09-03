@@ -5,8 +5,6 @@
                 PUT /HALLS/VARS
                 PUT /HALLS/EXT
 
-                ; C.REFORMAT uses $C0-$C9
-
                 ORG $E000
                 PUT T.CAMP
                 PUT MISC.COMMONS

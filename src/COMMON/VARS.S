@@ -86,6 +86,18 @@ PAGE            =   $E6
 
 ; HALLS use $F0-$F7
 
+                DUMMY $BC80
+                ; ALIENS_ID (136 bits?)
+                ; MAP_VISITED
+CHAR_0          DS  $80             ; $BC80
+CHAR_1          DS  $80
+CHAR_2          DS  $80
+CHAR_3          DS  $80
+CHAR_4          DS  $80
+CHAR_5          DS  $80
+CHAR_6          DS  $80
+                DEND
+
 KEYBRD          =   $C000
 UNSTROB         =   $C010
 CLICK           =   $C030

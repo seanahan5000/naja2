@@ -28,8 +28,7 @@ $ASM HALLS  ASM.HALLS   -lst $OBJ/HALLS.LST   -ent $SRC/HALLS/EXT.S
 $ASM CAMP   ASM.CAMP    -lst $OBJ/CAMP.LST    -ent $SRC/CAMP/EXT.S
 $ASM ALIENS ASM.PICS    -lst $OBJ/PICS.LST
 
-$ASM NAJA/IO FAKE.GROUP.S
-
+$ASM TEST   GAME.STATE.S
 $ASM TEST   TEST.CONTROL.S -lst $OBJ/CONTROL.LST
 
 #---------------------------------------
