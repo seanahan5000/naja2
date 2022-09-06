@@ -23,9 +23,10 @@ fi
 # Assemble all source files
 #---------------------------------------
 
-$ASM COMMON ASM.COMMON  -lst $OBJ/COMMON.LST  -ent $SRC/COMMON/EXT.S
-$ASM HALLS  ASM.HALLS   -lst $OBJ/HALLS.LST   -ent $SRC/HALLS/EXT.S
-$ASM CAMP   ASM.CAMP    -lst $OBJ/CAMP.LST    -ent $SRC/CAMP/EXT.S
+$ASM NDOS   NDOS.525    -lst $OBJ/NDOS.525.LST
+$ASM COMMON ASM.COMMON  -lst $OBJ/COMMON.LST   -ent $SRC/COMMON/EXT.S
+$ASM HALLS  ASM.HALLS   -lst $OBJ/HALLS.LST    -ent $SRC/HALLS/EXT.S
+$ASM CAMP   ASM.CAMP    -lst $OBJ/CAMP.LST     -ent $SRC/CAMP/EXT.S
 $ASM ALIENS ASM.PICS    -lst $OBJ/PICS.LST
 
 $ASM TEST   GAME.STATE.S
