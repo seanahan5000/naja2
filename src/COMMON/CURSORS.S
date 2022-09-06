@@ -76,7 +76,6 @@ DRAW_TRIANGLE   ENT
                 DB  %00000011
 
         do 0
-
 DRAW_BACK_TRI   ENT
                 JSR MOVE_TO
                 LDX #<:BACK_TRI

@@ -91,6 +91,7 @@ TABLER          LDY YCOORD
                 BNE :1
 :2              RTS
 
+; this gets reset when the page changes
 TABLER_Y        DB  $FF
 ; TODO: move these? maybe to page $02?
 TABLER_L        DS  7

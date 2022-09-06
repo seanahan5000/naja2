@@ -37,6 +37,8 @@ SET_PAGE        ENT
                 LDA HIBYTES
                 CMP PAGE
                 BEQ :2
+                LDA #$FF
+                STA TABLER_Y
                 LDX #192
 :1              LDA HIBYTES-1,X
                 EOR #$60
