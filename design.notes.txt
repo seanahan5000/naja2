@@ -2,11 +2,12 @@
 * Quick fight mode versus "tactical" mode
 * Identifying aliens adds them to Alien Catalog
     * May also add aliens by finding data cards, etc.
-* Remove per-character credits and pooling credits UI
+    * Could start with a few common aliens already identified
+x Remove per-character credits and pooling credits UI
     * Keep pooled credits in game state
 * Make encounters more likely on never-visited map squares
     * Less common once a square has been mapped
-* Change DAMAGE to HEALTH in stats (easier for player)
+x Change DAMAGE to HEALTH in stats (easier for player)
 * Make death/compressed characters mechanism optional
     * Let player decide to be strict/not about death
 * Always allow escape key to cancel/leave a screen
@@ -16,3 +17,4 @@
     * XY information is not useful
     * Maybe just blink status text
 * Make 'S' stats key also close out stats menu
+* Scroll through individuals in camp with <- and -> arrows

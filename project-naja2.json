@@ -7,7 +7,7 @@
     { "fileName": "naja2/COMMON", "loadAddress": "0x0800" },
     { "fileName": "naja2/HALLS", "loadAddress": "0x6000" },
     { "fileName": "naja2/CONTROL", "loadAddress": "0x7400" },
-    { "fileName": "naja2/GAME.STATE", "loadAddress": "0xBC80" },
+    { "fileName": "naja2/GAME.STATE", "loadAddress": "0xBC00" },
     { "fileName": "naja2/CAMP.9000", "loadAddress": "0x9000" },
     { "fileName": "naja2/CAMP.D000.M1", "loadAddress": "0xD000", "bank": 1 },
     { "fileName": "naja2/CAMP.D000.M2", "loadAddress": "0xD000", "bank": 2 },

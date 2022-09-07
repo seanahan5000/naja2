@@ -4,7 +4,22 @@
 
 ; uninitialized buffer space before game state?
 
-                ORG $BC80
+                ORG $BC00
+
+KNOWN_ALIENS_12 HEX FFFFFF      ; 72 bits
+                HEX FFFFFF
+                HEX FFFFFF
+
+KNOWN_ALIENS_345                ; 65 of 72 bits
+                HEX FFFFFF
+                HEX FFFFFF
+                HEX FFFF80
+
+                DS  107
+
+LOST_CHARS      DB  0           ; $BC7D
+GRPCONT         DB  6           ; $BC7E ; number of characters, including dead/compressed?
+GRPNUMB         DB  6           ; $BC7F ; number of living characters in group
 
 CHAR_0          USR (BLASTER___)-
                 DFB healthy         ;healthy

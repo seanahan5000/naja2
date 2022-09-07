@@ -34,8 +34,8 @@
                 ; LDA #0
                 ; STA SHELL
 
-                LDA #6
-                STA GROUP_SIZE
+                ; LDA #6
+                ; STA GROUP_SIZE
 
                 LDX #<MAP_DATA
                 LDY #>MAP_DATA
@@ -83,7 +83,7 @@
                 SEC
                 RTS
 
-:GO_ALIEN       JSR ALIEN_DIRECTORY
+:GO_ALIEN       JSR IDENTIFIED_ALIENS
                 SEC
                 RTS
 

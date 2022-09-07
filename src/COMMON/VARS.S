@@ -59,15 +59,6 @@ COUNT           =   $96
 SELECT_FLIP     =   $96         ; only used in T.CAMP.S when flipping stats
 CHAR_INDEX      =   $97
 
-SCRATCH_PAGE    =   $BB00       ; TODO: place somewhere else
-
-LOST_CHARS      =   $BC7D
-GRPCONT         =   $BC7E       ; number of characters, including dead/compressed?
-GRPNUMB         =   $BC7F       ; number of living characters in group
-
-GROUP_SIZE      =   GRPNUMB
-; TODO: move these character-only vars
-
 ;*** shape drawing
 XCOUNT          =   $4B
 YCOUNT          =   $4C
@@ -86,10 +77,21 @@ PAGE            =   $E6
 
 ; HALLS use $F0-$F7
 
-                DUMMY $BC80
-                ; ALIENS_ID (136 bits?)
+SCRATCH_PAGE    =   $BB00       ; TODO: place somewhere else
+
+                DUMMY $BC00
                 ; MAP_VISITED
-CHAR_0          DS  $80             ; $BC80
+
+KNOWN_ALIENS_12  DS 9           ; 72 bits
+KNOWN_ALIENS_345 DS 9           ; 65 of 72 bits
+KNOWN_ALIENS_END
+
+                DS  107
+LOST_CHARS      DS  1           ; $BC7D
+GRPCONT         DS  1           ; $BC7E ; number of characters, including dead/compressed?
+GRPNUMB         DS  1           ; $BC7F ; number of living characters in group
+
+CHAR_0          DS  $80         ; $BC80
 CHAR_1          DS  $80
 CHAR_2          DS  $80
 CHAR_3          DS  $80
@@ -97,6 +99,9 @@ CHAR_4          DS  $80
 CHAR_5          DS  $80
 CHAR_6          DS  $80
                 DEND
+
+GROUP_SIZE      =   GRPNUMB
+; TODO: move these character-only vars
 
 KEYBRD          =   $C000
 UNSTROB         =   $C010
