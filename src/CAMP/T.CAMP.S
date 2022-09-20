@@ -310,18 +310,15 @@ FLIP_STATS      LDA SELECT
             DO 0
 LOOSE_ENDS
 *** Notify if any characters in group are critical
-				LDA	#$00
-				STA	COUNT
-:LOOP1			JSR	POINTIT
-				LDY	#status
+				JSR FIRST_CHAR
+:LOOP1			LDY	#status
 				LDA	(CHARDL),Y
 				AND	#critical
 				BNE	:SKIPA
-				INC	COUNT
-				LDA	COUNT
-				CMP	GRPNUMB
-				BNE	:LOOP1
-				BEQ	LOOK_FOR_DEAD	;Always
+				JSR NEXT_CHAR
+				BCC :LOOP1
+				BCS	LOOK_FOR_DEAD		; always
+
 :SKIPA			LDX	#<CRIT_BOX
 				LDY	#>CRIT_BOX
 				JSR	INIT_BOX
@@ -333,24 +330,25 @@ LOOSE_ENDS
 				LDA	#$20
 				STA	PAGE
 :LOOP2			JSR	CLEAR_INSIDE
-				JSR	BANK_2
 				LDX	#<TCRITCAMP+3
 				LDY	#>TCRITCAMP+3
 				JSR	FLUSH_NAME
-				JSR	BANK_1
+
 				LDY	#$11
 				JSR	TEXTER
+; TCRITCAMP		PLOTAT	64;89;(XXXXXXXXXX_NEEDS_MEDICAL)
+; 				PLOTAT	64;97;(ATTENTION...QUICK!)+
+
 				JSR	SPACE_KEY
-:LOOP3			INC	COUNT
-				LDA	COUNT
-				CMP	GRPNUMB
-				BEQ	:SKIPC
-				JSR	POINTIT
+
+:LOOP3			JSR NEXT_CHAR
+				BCS :SKIPC
 				LDY	#status
 				LDA	(CHARDL),Y
 				AND	#critical
 				BEQ	:LOOP3
-				BNE	:LOOP2			;Always
+				BNE	:LOOP2				; always
+
 :SKIPC			JSR	SWAP_BOX
 *** Ask them to verify that they want to leave character/s
 ***   that are dead
@@ -365,8 +363,14 @@ LOOK_FOR_DEAD	JSR	DEAD_LOOKER
 				STA	PAGE
 				JSR	CLEAR_OUTSIDE
 				JSR	DRAW_BOX
+
 				LDY	#$12
 				JSR	TEXTER
+; TDEADCAMP		PLOTAT	40;81;(DEAD_CADETS_AND_BROKEN_ROBOTS_THAT)
+; 				PLOTAT	40;89;(ARE_LEFT_BEHIND,_UNCOMPRESSED_WILL)
+; 				PLOTAT	40;97;(BE_UNRECOVERABLE.__ARE_YOU_SURE)
+; 				PLOTAT	40;105;(YOU_WANT_TO_LEAVE?_)+
+
 				JSR	SWAP_BOX
 				LDA	#$20
 				STA	PAGE
@@ -377,6 +381,7 @@ LOOK_FOR_DEAD	JSR	DEAD_LOOKER
 				JSR	CMARKER
 				LDA	#$04
 				JMP	COPTION
+
 *** Take dead characters out of the group if verified
 TAKE_DEAD		JSR	SWAP_BOX
 :LOOP1			LDA	GRPNUMB
@@ -393,7 +398,7 @@ TAKE_DEAD		JSR	SWAP_BOX
 				BEQ	:LOOP1
 				TXA
 				PHA
-				JSR	POINTIT
+				JSR	SET_CHAR
 				JSR	RETURN_DCARDS
 				LDY	#status
 				LDA	#intracc
@@ -401,6 +406,7 @@ TAKE_DEAD		JSR	SWAP_BOX
 				PLA
 				JSR	HIDE_MEMBER
 				JMP	:LOOP1
+
 *** If all members are dead, force into dead group routine
 ALL_DEAD		LDA	GRPNUMB
 				BNE	FILL_FRONT
@@ -411,6 +417,7 @@ ALL_DEAD		LDA	GRPNUMB
 				LDX	#fDeadGroup
 				JSR	SLOAD_FILE
 				JMP	$8000
+
 *** Check for someone in front row, if not, force into reformat
 FILL_FRONT		JSR	RESET_CHRLIST
 				LDA	#$05			;Front Row
@@ -418,6 +425,7 @@ FILL_FRONT		JSR	RESET_CHRLIST
 				INX
 				BNE	:SKIPA
 				JMP	GOFORM
+
 *** Calculate max sight range based on robots max 2
 :SKIPA			JSR	CALC_SRANGE
 				JMP	EXIT_CAMP
@@ -539,7 +547,7 @@ CALC_SRANGE		JSR	RESET_CHRLIST
 				INX
 				BNE	:LOOP1			;Always
 :SKIPA			TXA
-				JSR	POINTIT
+				JSR	SET_CHAR
 				LDY	#e1_HEAD
 				LDA	(CHARDL),Y
 				AND	#%00000111

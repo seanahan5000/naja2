@@ -53,7 +53,7 @@
                 JSR COMPUTE_MAP_PTR
 
                 JSR RESTORE_MAPPED
-                JSR MARK_MAPPED         ; force current position mapped
+                JSR MARK_MAPPED         ; force current position as mapped
 
                 LDA #6
                 STA RANGE

@@ -1,17 +1,18 @@
 
-NameBoxTopY     =   11
+NameBoxTopY     =   11+3
 
-MaxNameListCount =  13                  ; max window height in names
-NameListMidIndex =  MaxNameListCount/2
+MaxNameListCount =  12                  ; max window height in names
+NameListMidIndex =  5
 NameListTopY     =  NameBoxTopY+8       ; in lines
 NameListBottomY  =  MaxNameListCount*9+NameListTopY-1
+NameListLeftX    =  15
 
 NameBoxBottomY  =   NameListBottomY+6
 
-ImageCornerWidth  = 22
+ImageCornerWidth  = 23
 ImageCornerLeft   = 40-ImageCornerWidth
 ImageCornerTop    = 1
-ImageCornerHeight = 153
+ImageCornerHeight = 150
 
 STRACK          =   $B1
 SSTOREH         =   $B2
@@ -61,14 +62,20 @@ ALIEN_BASE_345  =   $0100
 ALIEN_DESC_12   =   $0200
 ALIEN_DESC_345  =   $0210
 
+                DUMMY SCRATCH_PAGE
+ALIGNMENT       DS  72
+                DEND
+
 ; TODO: Use typing to fast-scroll to alien? (just first letter? ignore quote)
 ; - page up and page down?
 ; - alphabetize names?
 ; - maybe pre-alphabetize?
 ; - loop list around?
+; - show x/n count
+; - vertically center description text
 
 IDENTIFIED_ALIENS
-                LDA #0
+                LDA #1
                 STA ALIEN_SET
 
                 ; TODO: eventually not needed
@@ -164,6 +171,7 @@ AMAIN_LOOP      LDX ALIEN_STATE
                 LDX #state_drawn
                 STX DESC_STATE
 
+;*** reuse input from abort check ***
 AKEY_LOOP       LDA KEYBRD
                 BPL AKEY_LOOP
                 BIT UNSTROB
@@ -228,7 +236,11 @@ ON_FULLSCREEN   JSR DRAW_PICT
                 PictEnd
                 RTS
 
-ON_UP           LDX CURSOR_LINE
+ON_UP
+                LDA PBUTTON0            ; open-apple
+                BMI :PAGE_UP
+
+                LDX CURSOR_LINE
                 DEX
                 BMI :1
                 CPX #NameListMidIndex
@@ -262,7 +274,14 @@ ON_UP           LDX CURSOR_LINE
                 SEC
                 RTS
 
-ON_DOWN         LDX CURSOR_LINE
+:PAGE_UP        CLC
+                RTS
+
+ON_DOWN
+                LDA PBUTTON0            ; open-apple
+                BMI :PAGE_DOWN
+
+                LDX CURSOR_LINE
                 INX
                 CPX #NameListMidIndex+1
                 BCC :1
@@ -300,6 +319,9 @@ ON_DOWN         LDX CURSOR_LINE
                 SEC
                 RTS
 
+:PAGE_DOWN      CLC
+                RTS
+
 COMPOSITE_EMPTY JSR DRAW_PICT
                 PictSetPage2
                 PictClearPage
@@ -315,24 +337,23 @@ COMPOSITE_ALIEN JSR DRAW_PICT
                 ;*** abort?
 
                 JSR DRAW_PICT
-                PictClear 0;0;17;NameBoxBottomY+12
-                PictClear 0;153;40;192
+                PictClear 0;0;17;151
+                PictClear 0;151;40;192
                 PictEnd
                 ; fall through
 
 COMPOSITE_CMN   JSR DRAW_PICT
-                PictTextAt 10;NameBoxTopY-9;(IDENTIFIED_ALIENS)
-                PictSetViolet
-                PictRect 4;NameBoxTopY;116;NameBoxBottomY
+                PictTextAt 9;4;(IDENTIFIED_ALIENS)
                 PictSetGreen
-                PictRect 3;154;277;191
+                PictRect 3;0;115;149
+                PictRect 3;152;277;191
                 PictEnd
 
                 LDA KNOWN_COUNT
                 BEQ :1
 
                 JSR DRAW_PICT
-                PictTextAt 4;NameBoxBottomY+3;(FULL_SCREEN_<SPACE>)
+                PictTextAt 6;140;(FULLSCREEN_<SPACE>)
                 PictEnd
 
                 JSR DRAW_ALIEN_NAMES
@@ -447,6 +468,8 @@ DOWN_ARROW      DB  %01111111
 ;   Y: unchanged
 ;   C: 1 when abort should happen
 ;
+;*** check for page up/down ***
+;*** capture input and use in input loop ***
 SHOULD_ABORT    PHA
                 LDA KEYBRD
                 BPL :NO_ABORT
@@ -555,6 +578,7 @@ CLEAR_DESC      JSR DRAW_PICT
                 PictEnd
                 RTS
 
+; NOTE: assumes READ_VECTOR does not use LOCAL_TEMPs
 OFFSET_L        =   LOCAL_TEMP+0
 OFFSET_H        =   LOCAL_TEMP+1
 BYTE_COUNT      =   LOCAL_TEMP+2
@@ -653,19 +677,20 @@ LOAD_DESC       LDX KNOWN_INDEX
 
 DRAW_DESC       JSR DRAW_PICT
                 PictSetPage2
-                PictClear $01;155;$27;191
-                PictSetTextBox 7;156;277;191
-                PictEnd
-                JSR LOAD_DESC
-                JSR WRAP_TEXTBUF
+                PictClear $01;153;$27;191
+                PictSetTextBox 7;155;277;191
 
                 ; PictTextIn (THIS_IS_A_TEST_OF_THE_EMERGENCY_BROADCAST_SYSTEM._THIS_IS_ONLY_A_TEST.)
                 ; PictTextIn (_THIS_IS_A_TEST_OF_THE_EMERGENCY_BROADCAST_SYSTEM._THIS_IS_ONLY_A_TEST.)
                 ; PictTextIn (_THIS_IS_A_TEST_OF_THE_EMERGENCY_BROADCAST_SYSTEM._THIS_IS_ONLY_A_TEST.)
 
+                PictEnd
+                JSR LOAD_DESC
+                JSR WRAP_TEXTBUF
+
                 JSR DRAW_PICT
                 PictSetPage1
-                PictCopyTo 1;156;39;190
+                PictCopyTo 1;155;39;190
                 PictEnd
                 RTS
 
@@ -727,6 +752,18 @@ LOAD_ALIEN      LDX KNOWN_INDEX
                 INY
 :4              PLA
                 JSR READ_VECTOR
+
+                ; stuff #$FF at end of compressed data
+                LDA END_OFFSET_H
+                SEC
+                SBC START_OFFSET_H
+                CLC
+                ADC #>DATA_TABLE
+                STA :MOD+2
+                LDX END_OFFSET_L
+                LDA #$FF
+:MOD            STA DATA_TABLE,X
+
                 ;*** ONCE PER SECTOR ***
                 JMP SHOULD_ABORT
 
@@ -735,7 +772,25 @@ POSITION_ALIEN  LDA #$FF                ; START_OFFSET_L
                 LDA #>DATA_TABLE
                 STA PPIC_H
 
-                LDY #0
+                LDY #2
+                LDX KNOWN_INDEX
+                LDA ALIGNMENT,X
+                BEQ :0
+                BPL :00
+
+                ; align left in window
+                LDX #ImageCornerLeft
+                BNE :2                  ; always
+
+                ; align right in window
+:00             LDA #40
+                SEC
+                SBC (PPIC),Y
+                TAX
+                BNE :2                  ; always
+
+                ; center in window
+:0              LDY #0
                 LDA (PPIC),Y
                 AND #$01
                 STA XCOORD
@@ -745,25 +800,28 @@ POSITION_ALIEN  LDA #$FF                ; START_OFFSET_L
                 SEC
                 SBC (PPIC),Y
                 BCC :1
-                ADC #0
-                LSR A
+                LSR
                 CLC
-:1              ADC #ImageCornerLeft
-                BPL :2
-                LDA #0               ; special case full width (THROWER)
-:2              AND #$FE
-                ORA XCOORD
+                ADC #ImageCornerLeft
                 TAX
+                EOR XCOORD
+                AND #1
+                BEQ :2
+                INX
+                BNE :2                  ; always
+
+:1          ;   CLC
+                ADC #ImageCornerLeft
+                TAX
+                EOR XCOORD
+                AND #1
+                BEQ :2
+                DEX
+:2              TXA
                 CLC
                 ADC (PPIC),Y
                 STA ALIEN_RIGHT
-                CMP #41
-                BCC :22
-                DEX
-                DEX
-                DEC ALIEN_RIGHT
-                DEC ALIEN_RIGHT
-:22             STX XCOORD
+                STX XCOORD
                 STX ALIEN_LEFT
                 LDA #0
                 STA XSHIFT
@@ -773,11 +831,12 @@ POSITION_ALIEN  LDA #$FF                ; START_OFFSET_L
                 SEC
                 SBC (PPIC),Y
                 BCC :3
-                LSR A
+                LSR
                 CLC
 :3              ADC #ImageCornerTop
                 BPL :4
-                LDA #ImageCornerTop     ; special case full height (THROWER)
+                ;**** fix so thrower is at top but not all others ***
+                LDA #ImageCornerTop-1   ; special case full height (THROWER)
 :4              STA YCOORD
                 STA ALIEN_TOP
                 CLC
@@ -787,7 +846,9 @@ POSITION_ALIEN  LDA #$FF                ; START_OFFSET_L
 
 DRAW_ALIEN      LDX PPIC
                 LDY PPIC_H
-                JMP UNPACK_TO
+                JSR UNPACK_TO
+                ;*** CHECK FOR CHAINING ***
+                RTS
 
 DRAW_NAME_CURSOR
                 LDX CURSOR_LINE
@@ -812,12 +873,28 @@ DRAW_ALIEN_NAME TXA
                 PHA
                 CLC
                 ADC WINDOW_TOP_ALIEN
+                PHA
                 JSR GET_ALIEN_NAME
-
+                PLA
+                TAX
+                LDY #-1
+                LDA TEXT_BUFFER+0
+                CMP #TextLT
+                BEQ :1
+                INY
+                INY
+                CMP #TextGT
+                BEQ :1
+                DEY
+                BEQ :2                  ; always
+:1              LDA #TextEmpty
+                STA TEXT_BUFFER+0
+:2              TYA
+                STA ALIGNMENT,X
                 PLA
                 TAX
                 LDY ALIEN_NAME_LINES,X
-                LDX #9+7
+                LDX #NameListLeftX
                 JMP DRAW_TEXTBUF_XY
 
 ALIEN_NAME_LINES
@@ -833,5 +910,4 @@ ALIEN_NAME_LINES
                 DB  9*9+NameListTopY
                 DB  10*9+NameListTopY
                 DB  11*9+NameListTopY
-                DB  12*9+NameListTopY
-                ERR 13-MaxNameListCount
+                ERR 12-MaxNameListCount

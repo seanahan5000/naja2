@@ -10,7 +10,7 @@
                 PUT BLIT
                 PUT PICT
 
-                DS 32               ;***
+                DS 24               ;***
 
                 PUT UNPACK
                 PUT SHAPES

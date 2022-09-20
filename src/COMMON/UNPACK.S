@@ -21,6 +21,7 @@ HIGH_BIT        =   $39
 SRCL            =   $3A
 SRCH            =   $3B
 SRC_LINE        =   $3C
+UFLAGS          =   $3D
 
 ;
 ; Decompress image to current screen at XCOORD,YCOORD
@@ -38,8 +39,8 @@ UNPACK_TO       ENT
                 LDA YCOORD
                 STA START_LINE
                 LDY #2
-                LDX #$18            ; CLC
-                BNE UNPACK_CMN2     ; always
+                LDX #$00            ; no-fill, no-chain
+                BEQ UNPACK_CMN2     ; always
 ;
 ; Decompress image to current screen, filling transparent with black
 ; *** TODO: how common is this??? ***
@@ -49,8 +50,10 @@ UNPACK_TO       ENT
 ;   Y: data pointer high
 ;
 UNPACK_FILL     ENT
-                LDA #$38            ; SEC
+                LDA #$C0            ; fill, chain
                 BNE UNPACK_CMN1     ; always
+
+UNPACK_DONE     RTS
 ;
 ; Decompress image to current screen with transparency
 ;
@@ -59,12 +62,13 @@ UNPACK_FILL     ENT
 ;   Y: data pointer high
 ;
 UNPACK          ENT
-                LDA #$18            ; CLC
+                LDA #$40            ; no-fill, chain
 UNPACK_CMN1     STX DATAL
                 STY DATAH
                 TAX
                 LDY #0
-                LDA (DATAL),Y
+UNPACK_NEXT     LDA (DATAL),Y
+                BMI UNPACK_DONE
                 STA START_COLUMN
                 INY
                 LDA (DATAL),Y
@@ -82,25 +86,26 @@ UNPACK_CMN2     LDA (DATAL),Y
                 INY
                 STY DATA_INDEX
 
-                STX :SKIP_MOD
+                STX UFLAGS
 
                 LDY START_COLUMN
                 STY CUR_COLUMN
 
                 LDA #$00
                 STA HIGH_BIT
-                BEQ :START_COLUMN   ; always
+                BEQ :START_COLUMN       ; always
 
-:EXIT           LDA #$18            ; CLC
-                STA :SKIP_MOD
-                ; TODO: should this update DATAL/H with final address? YES! ***
-                RTS
+:NEXT_CHUNK     BIT UFLAGS
+                BVC UNPACK_DONE
+                LDY DATA_INDEX
+                LDX UFLAGS
+                BVS UNPACK_NEXT         ; always
 
 :NEXT_COLUMN    LDY CUR_COLUMN
                 INY
                 STY CUR_COLUMN
                 CPY END_COLUMN
-                BEQ :EXIT
+                BEQ :NEXT_CHUNK
 
 :START_COLUMN   LDX START_LINE
 
@@ -136,8 +141,8 @@ UNPACK_CMN2     LDA (DATAL),Y
                 BCS :NOSKIP
                 BEQ :FLIP_HIGH
 
-:SKIP_MOD       CLC
-                BCS :OPAQUE
+                BIT UFLAGS
+                BMI :OPAQUE
 
 :TRANSPARENT    STX TEMP_LINE
                 ADC TEMP_LINE

@@ -1,4 +1,6 @@
 
+ThickWalls      =   1
+
 SCREEN_Y        =   $11
 CELL_Y          =   $12
 MAP_ROW         =   $13
@@ -30,13 +32,22 @@ WEST_DOOR       =   (DOOR * 64)
 WEST_WALL       =   (WALL * 64)
 
 MAP_TOP_LINE    =   6
+        do ThickWalls
+MAP_LEFT_BYTE   =   1
+MAP_WIDTH_CELLS =   19
+        else
 MAP_LEFT_BYTE   =   2
-CELL_HEIGHT     =   13
 MAP_WIDTH_CELLS =   18
+        fin
+CELL_HEIGHT     =   13
 MAP_HEIGHT_CELLS =  14
 MAX_MAP_SIZE    =   17
 
+        do ThickWalls
+ARROW_X         =   MAP_LEFT_BYTE+8*14+7
+        else
 ARROW_X         =   MAP_LEFT_BYTE+8*14
+        fin
 ARROW_Y         =   MAP_HEIGHT_CELLS/2*CELL_HEIGHT+MAP_TOP_LINE+4
 
 BLOCK_BUFFER2   =   BLOCK_BUFFER+MAP_WIDTH_CELLS+2
@@ -56,6 +67,7 @@ ARROW_SHAPES    DB  $00,$00,$00,$40,$60,$70,$00     ; up arrow
 ; TODO:
 ; - option to scroll UDLR in map using arrow keys?
 ; - option to rotate to direction faced?
+; - option to rotate use cmd-arrow keys?
 
 DRAW_MAP        JSR PUSH_MAP_STATE      ; save actual map position
 
@@ -107,9 +119,15 @@ DRAW_MAP        JSR PUSH_MAP_STATE      ; save actual map position
                 STA MAP_ROW
                 JMP FIRST_ROW
 
-NEXT_ROW        LDA #-1
+NEXT_ROW
+        do ThickWalls
+                LDA #0
+                STA CELL_Y
+        else
+                LDA #-1
                 STA CELL_Y
                 DEC SCREEN_Y            ; up one line for overlap
+        fin
 
 NEXT_LINE       LDY #MAP_LEFT_BYTE
                 LDX SCREEN_Y
@@ -128,12 +146,23 @@ NEXT_CELL       LDA BLOCK_BUFFER+1,X
                 LDA BLOCK_DATA
                 AND #MAPPED_MASK
                 BNE :11
+        do ThickWalls
+                LDA #$54
+                STA FILL0_BITS
+                LDA #$2A
+                STA FILL1_BITS
+        else
                 LDA #$28
                 STA FILL0_BITS
                 LDA #$55
                 STA FILL1_BITS
+        fin
 :11
                 LDA CELL_Y
+        do ThickWalls
+                CMP #3
+                BCS :WEST_EDGE
+        else
                 BMI :NORTH_OVERLAP
                 BEQ :NORTH_EDGE
                 BNE :WEST_EDGE          ; always
@@ -150,6 +179,7 @@ NEXT_CELL       LDA BLOCK_BUFFER+1,X
 
 :22             INY
                 JMP :CELL_DONE2
+        fin
 
 :NORTH_EDGE     LDA BLOCK_DATA
                 AND #BOTH_MAPPED_MASKS
@@ -164,25 +194,61 @@ NEXT_CELL       LDA BLOCK_BUFFER+1,X
                 CMP #NORTH_WALL
                 BEQ :NORTH_WALL
 
-:NORTH_DOOR     LDA #$6A
+:NORTH_DOOR
+        do ThickWalls
+                LDA #$15
+                STA (SCREENL),Y
+                INY
+                LDA #$20
+        else
+                LDA #$6A
                 STA (SCREENL),Y
                 INY
                 LDA #$5F
+        fin
                 STA (SCREENL),Y
-                BNE :CELL_DONE2         ; always
+                JMP :CELL_DONE2
 
-:NORTH_WALL     LDA #$2A
+:NORTH_WALL
+        do ThickWalls
+                LDA #$55
+                STA (SCREENL),Y
+                INY
+                LDA #$2A
+        else
+                LDA #$2A
                 STA (SCREENL),Y
                 INY
                 LDA #$55
+        fin
                 STA (SCREENL),Y
                 BNE :CELL_DONE2         ; always
 
-:NORTH_FACE     LDA #$52
+:NORTH_FACE
+        do ThickWalls
+                LDA CELL_Y
+                CMP #2
+                BCS :222
+
+                LDA #$65
+                STA (SCREENL),Y
+                INY
+                LDA #$27
+                STA (SCREENL),Y
+                BNE :CELL_DONE2         ; always
+
+:222            LDA #$05
+                STA (SCREENL),Y
+                INY
+                LDA #$20
+                STA (SCREENL),Y
+        else
+                LDA #$52
                 STA (SCREENL),Y
                 INY
                 LDA #$2A
                 STA (SCREENL),Y
+        fin
                 BNE :CELL_DONE2         ; always
 
 :NORTH_OPEN     LDA BLOCK_BUFFER+1-1,X
@@ -216,27 +282,49 @@ NEXT_CELL       LDA BLOCK_BUFFER+1,X
                 BEQ :WEST_WALL
 
 :WEST_DOOR      LDA CELL_Y
+        do ThickWalls
+                CMP #4
+                BCC :WEST_WALL
+                CMP #12
+                BCS :WEST_WALL
+                LDA #$02
+        else
                 CMP #3
                 BCC :WEST_WALL
                 CMP #11
                 BCS :WEST_WALL
                 LDA #$07
+        fin
                 BNE :WRITE_CELL         ; always
 
 :WEST_OPEN      LDA BLOCK_DATA
                 AND #MAPPED_MASK
                 BNE :44
 
-:WEST_WALL      LDA #$02
+:WEST_WALL
+        do ThickWalls
+                LDA #$05
+        else
+                LDA #$02
+        fin
                 BNE :WRITE_CELL         ; always
 
 :WEST_FACE      LDA CELL_Y
+        do ThickWalls
+                CMP #5
+                BCC :44
+                CMP #11
+                BCS :44
+                LDA #$03
+                BNE :WRITE_CELL         ; always
+        else
                 CMP #2
                 BCC :44
                 CMP #12
                 BCS :44
                 LDA #$04
                 BNE :WRITE_CELL         ; always
+        fin
 :44             LDA #$00
 :WRITE_CELL     ORA FILL0_BITS
                 STA (SCREENL),Y
@@ -260,13 +348,24 @@ NEXT_CELL       LDA BLOCK_BUFFER+1,X
 
 :NORTH_DOOR1    DEY
                 DEY
-:NORTH_DOOR_N   LDA #$60
+:NORTH_DOOR_N
+        do ThickWalls
+                LDA #$25
+                ; ORA (SCREENL),Y
+                STA (SCREENL),Y
+                INY
+                LDA #$15
+                ; ORA (SCREENL),Y
+                STA (SCREENL),Y
+        else
+                LDA #$60
                 ORA (SCREENL),Y
                 STA (SCREENL),Y
                 INY
                 LDA #$1F
                 ORA (SCREENL),Y
                 STA (SCREENL),Y
+        fin
                 INY
 
 :NOT_LINE1      INX
@@ -408,7 +507,11 @@ FIRST_ROW       LDA #0
                 EOR (MAP_PTR),Y         ; reinsert mapped bit
 
 :5              STA BLOCK_BUFFER+1,X
+        do ThickWalls
+                CPX #MAP_WIDTH_CELLS-1
+        else
                 CPX MAP_SIZE
+        fin
                 BNE :1
                 JMP NEXT_ROW
 ;
