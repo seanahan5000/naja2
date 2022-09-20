@@ -59,7 +59,7 @@ DRAW_TEXT       ENT
                 STX OP_PTR
                 STY OP_PTR_H
                 LDY #0
-                BEQ OP_TEXT     ; always
+                BEQ OP_TEXT             ; always
 
 OP_TEXT_AT      JSR OP_MOVE_TO
 OP_TEXT         STY OP_INDEX
@@ -78,10 +78,10 @@ OP_TEXT         STY OP_INDEX
                 STY OP_INDEX
                 JSR DRAW_LETTER
                 LDY OP_INDEX
-                BNE :NEXT_CHAR      ; always
+                BNE :NEXT_CHAR          ; always
 
 :SKIP_SPACE1    JSR ADVANCE
-                BNE :NEXT_CHAR      ; always
+                BNE :NEXT_CHAR          ; always
 
 :SPECIAL_CHAR   INY
                 CMP #TextLineEnd
@@ -94,7 +94,7 @@ OP_TEXT         STY OP_INDEX
 
 :NEXT_LINE      JSR NEXT_LINE
                 LDY OP_INDEX
-                BNE :NEXT_CHAR      ; always
+                BNE :NEXT_CHAR          ; always
 
 :DONE           STY OP_INDEX
                 RTS
@@ -118,7 +118,7 @@ NEXT_LINE       LDA LEFT_DIV7
 
 OP_SET_TEXTBOX_H
                 SEC
-                BCS OP_STB_CMN      ; always
+                BCS OP_STB_CMN          ; always
 
 OP_SET_TEXTBOX  CLC
 OP_STB_CMN      LDA (OP_PTR),Y
@@ -143,7 +143,7 @@ OP_STB_CMN      LDA (OP_PTR),Y
                 STA BOTTOM
                 BCS :1
                 LDA DIV7,X
-                BCC :2              ; always
+                BCC :2                  ; always
 :1              LDA DIV7HI,X
 :2              STA RIGHT_DIV7
                 LDA #0
@@ -165,17 +165,7 @@ DRAW_TEXTBOX    ENT
                 STX OP_PTR
                 STY OP_PTR_H
                 LDY #0
-;                 BEQ OP_TEXT_IN      ; always
 
-; OP_TEXT_AT      JSR OP_MOVE_TO
-; OP_TEXT         LDA XCOORD
-;                 STA LEFT_DIV7
-;                 LDA XSHIFT
-;                 STA LEFT_MOD7
-;                 LDA #40
-;                 STA RIGHT_DIV7
-;                 LDA #192-7
-;                 STA BOTTOM
 OP_TEXT_IN      STY OP_INDEX
                 JSR TABLER
 
@@ -190,7 +180,7 @@ OP_TEXT_IN      STY OP_INDEX
                 BMI :SPECIAL_CHAR
                 CMP #TextSpace
                 BNE :0
-                CPX #0              ; leading space should not cause break
+                CPX #0                  ; leading space should not cause break
                 BNE :BREAK_WORD
 :0              INY
                 STA WORD_BUFFER,X
@@ -244,7 +234,7 @@ OP_TEXT_IN      STY OP_INDEX
                 STY WORD_INDEX
                 JSR DRAW_LETTER
                 LDY WORD_INDEX
-                BNE :1              ; always
+                BNE :1                  ; always
 
 :TRIM_SPACE     LDY OP_INDEX
 :2              LDA (OP_PTR),Y
@@ -254,11 +244,11 @@ OP_TEXT_IN      STY OP_INDEX
                 BNE :3
                 JSR ADVANCE
                 INY
-                BNE :2              ; always
+                BNE :2                  ; always
 
 :FORCE_BREAK    INY
                 STY OP_INDEX
-                BNE :33             ; always
+                BNE :33                 ; always
 
 :3              STY OP_INDEX
                 LDA XCOORD
@@ -290,9 +280,56 @@ OP_TEXT_IN      STY OP_INDEX
 ADVANCE         DEC XSHIFT
                 BMI :1
                 INC XCOORD
-                RTS                 ; always BNE
+                RTS                     ; always BNE
 :1              LDA #6
                 STA XSHIFT
-                RTS                 ; always BNE
+                RTS                     ; always BNE
+
+;-------------------------------------------------------------------------------
+; Find a high-bit-terminated string in a list by index
+;
+; On entry:
+;   X: string list (low)
+;   Y: string list (high)
+;   A: string index
+;
+; On exit:
+;   TEXT_BUFFER: holding indexed string
+;   X: index of TextLineEnd
+;
+PTR             =   LOCAL_TEMP+0
+PTR_H           =   LOCAL_TEMP+1
+
+GET_IND_STRING  ENT
+                STX PTR
+                STY PTR_H
+                TAX
+                BEQ :4
+:1              LDY #-1
+:2              INY
+                LDA (PTR),Y
+                BPL :2
+                TYA
+                SEC                 ; +1
+                ADC PTR
+                STA PTR
+                BCC :3
+                INC PTR_H
+:3              DEX
+                BNE :1
+:4              LDY #0
+;               LDX #0
+:5              LDA (PTR),Y
+                BMI :6
+                STA TEXT_BUFFER,X
+                INX
+                INY
+                BNE :5              ; always
+:6              AND #$7F
+                STA TEXT_BUFFER,X
+                INX
+                LDA #TextLineEnd
+                STA TEXT_BUFFER,X
+                RTS
 
 ;-------------------------------------------------------------------------------

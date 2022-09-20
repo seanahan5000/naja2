@@ -4,7 +4,19 @@
 
 ; uninitialized buffer space before game state?
 
-                ORG $BC00
+                ORG $BB00
+
+; TODO: map visited bits
+; 17: 217 bytes
+; 15: 169 bytes
+; 13: 127 bytes
+; 11:  91 bytes
+;  9:  61 bytes
+;   = 665 bytes
+; TODO: make this handle more than just shell 17
+MAP_VISITED     DS  217,$FF
+
+                DS 39
 
 KNOWN_ALIENS_12 HEX FFFFFF      ; 72 bits
                 HEX FFFFFF

@@ -45,8 +45,17 @@ XCOORD          =   $48
 XSHIFT          =   $49
 YCOORD          =   $4A
 
+;*** shape drawing
+XCOUNT          =   $4B
+YCOUNT          =   $4C
+DATPNTL         =   $4D
+DATPNTH         =   $4E
+;*** shape drawing
+
 ; HALLS use $50-$5F
 ; HALLS use $60-$6A
+
+; PICT.S uses $50-$5F
 
 ; TODO: move these character-only vars
 SELECT          =   $90         ; only used in STATS.S -- get rid of
@@ -59,15 +68,6 @@ COUNT           =   $96
 SELECT_FLIP     =   $96         ; only used in T.CAMP.S when flipping stats
 CHAR_INDEX      =   $97
 
-;*** shape drawing
-XCOUNT          =   $4B
-YCOUNT          =   $4C
-DATPNTL         =   $4D
-DATPNTH         =   $4E
-;*** shape drawing
-
-; PICT.S uses $50-$5F
-
 ; TODO: eventually move these down to $00-$03
 LOCAL_TEMP      =   $70         ; $70,$71,$72,$73
 
@@ -79,8 +79,11 @@ PAGE            =   $E6
 
 SCRATCH_PAGE    =   $BB00       ; TODO: place somewhere else
 
-                DUMMY $BC00
-                ; MAP_VISITED
+                DUMMY $BB00
+
+MAP_VISITED     DS  217;,$FF
+
+                DS 39
 
 KNOWN_ALIENS_12  DS 9           ; 72 bits
 KNOWN_ALIENS_345 DS 9           ; 65 of 72 bits
@@ -111,6 +114,7 @@ NOMIXED         =   $C052
 PRIMARY         =   $C054
 SCNDARY         =   $C055
 HIRES           =   $C057
+PBUTTON0        =   $C061               ; open-apple
 
 OpSetColor      =   0
 OpMoveTo        =   1
@@ -154,7 +158,6 @@ OpColorOrange   =   5
 OpColorBlue     =   6
 OpColorWhite2   =   7
 
-;*** SEPARATE OPCODE/SINGLE BYTE FOR EACH OF THESE ***
 PictSetBlack1   MAC
                 DB  OpSetColor,OpColorBlack1
                 EOM

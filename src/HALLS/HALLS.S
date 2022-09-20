@@ -315,7 +315,8 @@ SET_MAP_DATA    ENT
                 STA MAP_SIZE
                 RTS
 
-MARK_MAPPED     LDY MAP_X
+MARK_MAPPED     ENT
+                LDY MAP_X
                 LDA (MAP_PTR),Y
                 ORA #MAPPED_MASK
                 STA (MAP_PTR),Y

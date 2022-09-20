@@ -1,5 +1,6 @@
 
 * Quick fight mode versus "tactical" mode
+* Consider 6 instead of 7 group members, for balancing purposes
 * Identifying aliens adds them to Alien Catalog
     * May also add aliens by finding data cards, etc.
     * Could start with a few common aliens already identified
@@ -18,3 +19,5 @@ x Change DAMAGE to HEALTH in stats (easier for player)
     * Maybe just blink status text
 * Make 'S' stats key also close out stats menu
 * Scroll through individuals in camp with <- and -> arrows
+* Better alien masking when drawing over tunnels
+    * Trade having fewer aliens for better masking information

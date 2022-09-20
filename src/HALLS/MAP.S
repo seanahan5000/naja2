@@ -12,8 +12,8 @@ MAPPED_BITS     =   $17
 FILL0_BITS      =   $18
 FILL1_BITS      =   $19
 
-MAPPED_MASK     =  %00000001            ; assumed to be low bit
-PREV_MAPPED_MASK =  %00000010           ; assumed to be next bit up
+MAPPED_MASK       = %00000001           ; assumed to be low bit
+PREV_MAPPED_MASK  = %00000010           ; assumed to be next bit up
 BOTH_MAPPED_MASKS = %00000011
 
 NORTH_MASK      =   %00110000
@@ -295,16 +295,14 @@ ROW_DONE        INC MAP_ROW
                 LDX #ARROW_X
                 LDY #ARROW_Y
                 JSR MOVE_TO
-                LDX #<ARROW_SHAPES
-                LDY #>ARROW_SHAPES
                 LDA MAP_DIR
                 ASL A
-                JSR DRAW_TILE_A
-                LDX #<ARROW_SHAPES
-                LDY #>ARROW_SHAPES
+                JSR :DRAW_ARROW
                 LDA MAP_DIR
                 SEC
                 ROL A
+:DRAW_ARROW     LDX #<ARROW_SHAPES
+                LDY #>ARROW_SHAPES
                 JMP DRAW_TILE_A
 
 :ANOTHER_ROW    JSR PULL_MAP_STATE      ; restore left map position
@@ -417,7 +415,8 @@ FIRST_ROW       LDA #0
 ; Extract all mapped bits from map data into a
 ;   contiguous buffer of just those bits.
 ;
-SAVE_MAPPED     JSR PUSH_MAP_STATE
+SAVE_MAPPED     ENT
+                JSR PUSH_MAP_STATE
                 LDA #0
                 STA MAPPED_INDEX
                 STA MAP_FACE
@@ -434,7 +433,7 @@ SAVE_MAPPED     JSR PUSH_MAP_STATE
                 DEX
                 BNE :SAME_BYTE
                 LDX MAPPED_INDEX
-                STA MAPPED_BUFFER,X
+                STA MAP_VISITED,X
                 INX
                 STX MAPPED_INDEX
                 LDX #8
@@ -452,14 +451,15 @@ SAVE_MAPPED     JSR PUSH_MAP_STATE
                 BNE :FLUSH
                 LDX MAPPED_INDEX
                 LDA MAPPED_BITS
-                STA MAPPED_BUFFER,X
+                STA MAP_VISITED,X
                 INX
                 STX MAPPED_INDEX
 :EXIT           JMP PULL_MAP_STATE
 ;
 ; Insert saved mapped bits from contiguous buffer into map data.
 ;
-RESTORE_MAPPED  JSR PUSH_MAP_STATE
+RESTORE_MAPPED  ENT
+                JSR PUSH_MAP_STATE
                 LDA #0
                 STA MAPPED_INDEX
                 STA MAP_FACE
@@ -467,7 +467,7 @@ RESTORE_MAPPED  JSR PUSH_MAP_STATE
                 STA MAP_Y
                 JSR COMPUTE_MAP_PTR
                 LDX #8
-                LDA MAPPED_BUFFER
+                LDA MAP_VISITED
                 STA MAPPED_BITS
 :NEXT_ROW       LDY #0
 :NEXT_COLUMN    LDA (MAP_PTR),Y
@@ -479,7 +479,7 @@ RESTORE_MAPPED  JSR PUSH_MAP_STATE
                 BNE :SAME_BYTE
                 INC MAPPED_INDEX
                 LDX MAPPED_INDEX
-                LDA MAPPED_BUFFER,X
+                LDA MAP_VISITED,X
                 STA MAPPED_BITS
                 LDX #8
 :SAME_BYTE      INY
@@ -519,7 +519,3 @@ ADVANCE_ROW     INC MAP_Y
                 RTS
 :MAP_DONE       SEC
                 RTS
-
-; TODO: move this
-MAPPED_BUFFER   DS  217 ;,$FF
-

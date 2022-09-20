@@ -21,11 +21,13 @@ DISK_SIDE       =   $B3
 READ_VECTOR     =   $0406
 ON_OFF_FLAG     =   $07F8
 
-OFFSET_BUFFER   =   $9000
-ALIEN_COUNT     =   $9000
-OFFSET_TABLE    =   $9001
-KNOWN_LIST      =   $9100
-DATA_TABLE      =   $9200
+NAME_BUFFER     =   $A000
+DESC_BUFFER     =   $A500
+OFFSET_BUFFER   =   $A700
+ALIEN_COUNT     =   $A700
+OFFSET_TABLE    =   $A701
+KNOWN_LIST      =   $A800
+DATA_TABLE      =   $A900
 
 KNOWN_INDEX     =   $C0
 KNOWN_COUNT     =   $C1
@@ -43,7 +45,7 @@ DESC_STATE      =   $C4
 PPIC            =   $C5
 PPIC_H          =   $C6
 
-; $C7
+DESC_BASE       =   $C7
 ; $C8
 ; $C9
 ; $CA
@@ -53,24 +55,36 @@ CURSOR_LINE     =   $CD                 ; index from 0 to WINDOW_HEIGHT-1
 INDEX           =   $CE
 ARROWS_VISIBLE  =   $CF
 
-ALIEN_BASE_12   =   $0000           ; 12
-ALIEN_BASE_345  =   $0100           ;  345
+ALIEN_BASE_12   =   $0000
+ALIEN_BASE_345  =   $0100
+
+ALIEN_DESC_12   =   $0200
+ALIEN_DESC_345  =   $0210
 
 ; TODO: Use typing to fast-scroll to alien? (just first letter? ignore quote)
 ; - page up and page down?
 ; - alphabetize names?
 ; - maybe pre-alphabetize?
 ; - loop list around?
-; - load names from disk
 
 IDENTIFIED_ALIENS
                 LDA #0
                 STA ALIEN_SET
 
+                ; TODO: eventually not needed
+                LDA #$00
+                STA DISK_SIDE
+
+                LDA #$FF
+                STA DESC_BASE
+
                 LDA #state_missing
                 STA DESC_STATE
                 LDA #state_overflow
                 STA ALIEN_STATE
+
+                JSR LOAD_NAMES
+                ;*** leave drive spinning ***
 
                 JSR LOAD_OFFSETS
                 ;*** leave drive spinning ***
@@ -140,10 +154,11 @@ AMAIN_LOOP      LDX ALIEN_STATE
                 ;*** CHECK FOR ABORT?
                 JMP :7
 
-:NO_OVERFLOW    JSR DRAW_ALIEN
+:NO_OVERFLOW
+;*** draw offscreen even when compositing not required ***
+                JSR DRAW_ALIEN
                 JSR SHOULD_ABORT
                 BCS AKEY_LOOP
-
 :7
                 JSR DRAW_DESC
                 LDX #state_drawn
@@ -455,9 +470,41 @@ SHOULD_ABORT    PHA
                 PLA
                 RTS
 
-LOAD_OFFSETS    LDA #$00
-                STA DISK_SIDE
-                LDA #>OFFSET_BUFFER
+LOAD_NAMES      LDA #>NAME_BUFFER
+                STA SSTOREH
+                LDA #%00000000          ; spin up/down
+                STA ON_OFF_FLAG
+                LDX #<ALIEN_DESC_12
+                LDY #>ALIEN_DESC_12
+                LDA ALIEN_SET
+                BEQ :1
+                LDX #<ALIEN_DESC_345
+                LDY #>ALIEN_DESC_345
+:1              LDA #5                  ; 5 sectors
+; TODO: could be dropped to 4 if one name is removed from ALIEN.DESC.12
+                JSR READ_VECTOR
+
+                LDX NAME_BUFFER+0
+                INX                     ; skip DATA_END_xx offset
+                TXA
+                ASL
+                SEC                     ; skip count byte
+                ADC #<NAME_BUFFER
+                STA NAMES_MODA+1
+                LDA #>NAME_BUFFER
+                ADC #0
+                STA NAMES_MODB+1
+                RTS
+;
+; On entry:
+;   A: alien index
+;
+GET_ALIEN_NAME
+NAMES_MODA      LDX #$FF
+NAMES_MODB      LDY #$FF
+                JMP GET_IND_STRING
+
+LOAD_OFFSETS    LDA #>OFFSET_BUFFER
                 STA SSTOREH
                 LDA #%00000000          ; spin up/down
                 STA ON_OFF_FLAG
@@ -508,13 +555,115 @@ CLEAR_DESC      JSR DRAW_PICT
                 PictEnd
                 RTS
 
+OFFSET_L        =   LOCAL_TEMP+0
+OFFSET_H        =   LOCAL_TEMP+1
+BYTE_COUNT      =   LOCAL_TEMP+2
+
+LOAD_DESC       LDX KNOWN_INDEX
+                LDA KNOWN_LIST,X
+                ASL
+                TAY
+                LDA NAME_BUFFER+1,Y
+                STA OFFSET_L
+                LDA NAME_BUFFER+2,Y
+                STA OFFSET_H
+                LDA NAME_BUFFER+3,Y
+                SEC
+                SBC OFFSET_L
+                STA BYTE_COUNT
+
+                LDA OFFSET_H
+                SEC
+                SBC DESC_BASE
+                BEQ :NO_LOAD
+                TAX
+                BCC :SHIFT_DOWN
+                DEX
+                BNE :COPY2
+
+                ; shift down and load into top half
+                LDX #0
+:1              LDA DESC_BUFFER+$100,X
+                STA DESC_BUFFER,X
+                INX
+                BNE :1
+                LDA #>DESC_BUFFER+$100
+                STA SSTOREH
+                INC DESC_BASE
+                SEC
+                LDA #1                  ; one sector
+                BNE :COMMON             ; always
+
+                ; shift up and load into bottom half
+:SHIFT_DOWN     INX
+                BNE :COPY2
+                LDX #0
+:2              LDA DESC_BUFFER,X
+                STA DESC_BUFFER+$100,X
+                INX
+                BNE :2
+                LDA #>DESC_BUFFER
+                STA SSTOREH
+                DEC DESC_BASE
+                CLC
+                LDA #1                  ; one sector
+                BNE :COMMON             ; always
+
+                ; fill desc buffer with two sectors
+:COPY2          LDA #>DESC_BUFFER
+                STA SSTOREH
+                LDA OFFSET_H
+                STA DESC_BASE
+                CLC
+                LDA #2                  ; two sectors
+
+:COMMON         PHA
+                LDX #<ALIEN_DESC_12
+                LDY #>ALIEN_DESC_12
+                LDA ALIEN_SET
+                BEQ :3
+                LDX #<ALIEN_DESC_345
+                LDY #>ALIEN_DESC_345
+:3              TXA
+                ; carry clear/set above
+                ADC DESC_BASE
+                TAX
+                BCC :4
+                INY
+:4              PLA
+                JSR READ_VECTOR
+
+:NO_LOAD        LDA OFFSET_H
+                SEC
+                SBC DESC_BASE
+                CLC
+                ADC #>DESC_BUFFER
+                STA OFFSET_H
+
+                LDY #0
+:5              LDA (OFFSET_L),Y
+                STA TEXT_BUFFER,Y
+                INY
+                CPY BYTE_COUNT
+                BNE :5
+
+                LDA #TextLineEnd
+                STA TEXT_BUFFER,Y
+                RTS
+
 DRAW_DESC       JSR DRAW_PICT
                 PictSetPage2
                 PictClear $01;155;$27;191
                 PictSetTextBox 7;156;277;191
-                PictTextIn (THIS_IS_A_TEST_OF_THE_EMERGENCY_BROADCAST_SYSTEM._THIS_IS_ONLY_A_TEST.)
-                PictTextIn (_THIS_IS_A_TEST_OF_THE_EMERGENCY_BROADCAST_SYSTEM._THIS_IS_ONLY_A_TEST.)
-                PictTextIn (_THIS_IS_A_TEST_OF_THE_EMERGENCY_BROADCAST_SYSTEM._THIS_IS_ONLY_A_TEST.)
+                PictEnd
+                JSR LOAD_DESC
+                JSR WRAP_TEXTBUF
+
+                ; PictTextIn (THIS_IS_A_TEST_OF_THE_EMERGENCY_BROADCAST_SYSTEM._THIS_IS_ONLY_A_TEST.)
+                ; PictTextIn (_THIS_IS_A_TEST_OF_THE_EMERGENCY_BROADCAST_SYSTEM._THIS_IS_ONLY_A_TEST.)
+                ; PictTextIn (_THIS_IS_A_TEST_OF_THE_EMERGENCY_BROADCAST_SYSTEM._THIS_IS_ONLY_A_TEST.)
+
+                JSR DRAW_PICT
                 PictSetPage1
                 PictCopyTo 1;156;39;190
                 PictEnd
@@ -669,8 +818,7 @@ DRAW_ALIEN_NAME TXA
                 TAX
                 LDY ALIEN_NAME_LINES,X
                 LDX #9+7
-                JSR DRAW_TEXTBUF_XY
-                RTS
+                JMP DRAW_TEXTBUF_XY
 
 ALIEN_NAME_LINES
                 DB  0*9+NameListTopY
@@ -687,187 +835,3 @@ ALIEN_NAME_LINES
                 DB  11*9+NameListTopY
                 DB  12*9+NameListTopY
                 ERR 13-MaxNameListCount
-;
-; On entry:
-;   A: alien index
-;
-PTR             =   LOCAL_TEMP+0
-PTR_H           =   LOCAL_TEMP+1
-
-GET_ALIEN_NAME  TAX
-                LDA KNOWN_LIST,X
-                LDX #0
-                STX PTR_H
-:1              ASL
-                ROL PTR_H
-                INX
-                CPX #4
-                BNE :1
-                STA PTR
-
-                LDA #<ALIEN_NAMES_12
-                LDY #>ALIEN_NAMES_12
-                LDX ALIEN_SET
-                BEQ :2
-                LDA #<ALIEN_NAMES_345
-                LDY #>ALIEN_NAMES_345
-:2              CLC
-                ADC PTR
-                STA PTR
-                TYA
-                ADC PTR_H
-                STA PTR_H
-
-                LDY #0
-:3              LDA (PTR),Y
-                STA TEXT_BUFFER,Y
-                INY
-                CPY #16
-                BNE :3
-
-:4              DEY
-                LDA TEXT_BUFFER,Y
-                CMP #TextSpace
-                BEQ :4
-                LDA #TextLineEnd
-                STA TEXT_BUFFER+1,Y
-                RTS
-
-ALIEN_NAMES_12  USR ("AIR_SWIMMER"___)-     ; AIR_SWIMMER
-                USR (ARMORED_ALIEN___)-     ; ARMOR_ALIEN
-                USR ("BARACKADE"_____)-     ; BARACKADER
-                USR (WINGED_"BUG-EYE")-     ; BIRD_INSECT
-                USR (AIMTAK_AMPHIBIAN)-     ; BLOW_DART
-                USR (PSILOTIS_PEDETUM)-     ; BRANCHES
-                USR ("FROWNER"_______)-     ; BTWN_LEGS
-                USR (JUNGLE_SWINGER__)-     ; CEIL_SWINGER
-                USR (TANDEM_TENTICLES)-     ; CEILING_FAN
-                USR ("BLAST_CLAPPER"_)-     ; CLAPPER
-                USR ("LOOP_HEAD"_____)-     ; CLUBBER
-                USR (ANKAA_STRANGLER_)-     ; CONSTRICTOR
-                USR (LANTHOSER_______)-     ; CROSS_BOW
-                USR ("DIZZY"_________)-     ; DIZZY
-                USR ("FINGERS"_______)-     ; FINGERS
-                USR (K-60_FIRE_UNIT__)-     ; FIRE_MAN
-                USR (FROBOT__________)-     ; FROG_BOT
-                USR ("SHOVELER"______)-     ; FURNACE
-                USR (ORGANISM_CLOUD__)-     ; GAS_CLOUD
-                USR (MPC3_ROBOT______)-     ; HANGING_BOT
-                USR (VEGAN_WARRIOR___)-     ; HOLSTER
-                USR (GRUNTER_PACK_DOG)-     ; HORNED_DOG
-                USR (ULLDA_NICH______)-     ; IN_WEB
-                USR (WORKER_INSECT___)-     ; INSECT1         ;Duplicated
-                USR (LEASHED_GRUNTER_)-     ; LEASHED_DOGS
-                USR (POISONOUS_PEST__)-     ; LITTLE_BUG
-                USR (SPICA_V_FIGHTER_)-     ; LITTLE_PLANES
-                USR (ADHARAN_LIZARD__)-     ; LIZARD
-                USR (LONG_ARMED_EPE__)-     ; LONG_ARM
-                USR (METAL_MITES_____)-     ; METAL_MITES
-                USR ("OILER"_________)-     ; OILER
-                USR (AMOEBOID________)-     ; OMEBA
-                USR (MONOPTIC_HOPPER_)-     ; ONE_EYE
-                USR (PARTICLE_MAN____)-     ; PARTICLE_MAN
-                USR (RIGELIAN_SNIPER_)-     ; PEEKER
-                USR (BURROWING_TAAN__)-     ; PER_ALIEN
-                USR ("DRAGON_FLY"____)-     ; PINK_WINGS
-                USR (BETA_CENTAURIAN_)-     ; PLATFORM
-                USR (POINTY_HEAD_____)-     ; POINTY_HEAD
-                USR (PROBE_DROID_____)-     ; PROBOT
-                USR (MEERN_MUTATION__)-     ; RAG_ALIEN
-                USR (MEERN_MUTATION__)-     ; RAG_SWORD
-                USR (REPAIR_UNIT_1000)-     ; REPAIR_UNIT
-                USR (ROBIEN_BRAIN____)-     ; ROBIEN
-                USR (ROBOTROID_______)-     ; ROBOT
-                USR (RUUIK'S_SOLDIER_)-     ; RUUIKS_MEN
-                USR (SCAVENGER_______)-     ; SCAVENGER
-                USR (SHIELDED_OOMAR__)-     ; SHIELD
-                USR ("HEXICLAW"______)-     ; SIX_ARM
-                USR ("SNOOZER"_______)-     ; SLEEPY
-                USR (SLICER_SPHERE___)-     ; SLICER
-                USR (MUTANT_INSECTOID)-     ; SNOUT
-                USR ("SUBZERO"_______)-     ; SNOW_JOB
-                USR (SPACE_MAN_______)-     ; SPACE_MAN
-                USR (FLYING_SAUCER___)-     ; SPACE_SHIP
-                USR (NUNKI_BLUE_DEVIL)-     ; SPOOL_ALIEN
-                USR (SPOOR_PLANT_____)-     ; SPOOR_PLANT
-                USR ("SQUINTER"______)-     ; SQUINTER
-                USR (SCEPTARIAN______)-     ; STAFF
-                USR (NUNKI_STARBEAST_)-     ; STARBURST
-                USR (????????????????)-     ; STICKY
-                USR ("STINKY"________)-     ; STINKY
-                USR (ACRUXITE________)-     ; STRINGY_HAND
-                USR (TENTICLES_______)-     ; TENTICLE
-                USR (PROTOTYPE_2000-7)-     ; TREADED_BOT
-                USR (UNKNOWN_PLANT___)-     ; TREE_ALIEN
-                USR (ELATION_TRAITOR_)-     ; TRUNK
-                USR ("TWISTER"_______)-     ; TWISTER
-                USR (ENERGY_UNLOADER_)-     ; UNLOADER
-                USR (MOIKLER_________)-     ; WATER_TOWER
-                USR (ROLLER_ALIEN____)-     ; WIERD_ALIEN
-                USR (PHASE_WORM______)-     ; WORMS
-
-ALIEN_NAMES_345 USR (ACID_SPITTER____)-     ; ACID_SPITTER
-                USR (PORTABLE_AIRLOCK)-     ; AIRLOCK
-                USR (TALUMA_AND_MOUNT)-     ; ALIEN_ON
-                USR (ANTICIPATOR_____)-     ; ANTISIPATOR
-                USR (ATOM_ARRANGER___)-     ; ATOM_SHIFTER
-                USR (PLASMANOID______)-     ; BLACK_ALIEN
-                USR (CARNIVORE_______)-     ; CARNIVORE
-                USR (CENTAURIAN_ROBOT)-     ; CENTAUR
-                USR (ENCEPHALOID_____)-     ; CLOAKED_ALIEN
-                USR (COOLING_UNIT____)-     ; COOLER
-                USR (NAJA_MIND_SLAVE_)-     ; CORE_ALIEN
-                USR (TRIPED_IV_ROBOT_)-     ; CYLINDER_BOT
-                USR (ION_DIODE_ROBOT_)-     ; DIODE_ROBOT
-                USR (STATION_DRILLER_)-     ; DRILLER
-                USR (DUALTRONIC_ROBOT)-     ; DUAL_HEAD
-                USR (SOLICIAN________)-     ; EARS
-                USR (VEGAN_EXPLODER__)-     ; EXPLODE
-                USR (PSEUDOMORT______)-     ; FAKER
-                USR (MECHANICO_450___)-     ; FOUR_SWORDS
-                USR (TRACC_FUNGUS____)-     ; FUNGUS
-                USR (TRANSPARENT_____)-     ; GLASS_GUY
-                USR (INFRA-FLOURINOID)-     ; GLOWER
-                USR (BLAST_BREATHER__)-     ; GODZILLA
-                USR (CEREBROMORPH____)-     ; GREEN_HEAD
-                USR (PUDDLE_CREATURE_)-     ; GREEN_PUDDLE
-                USR (ADHARAN_GREMLIN_)-     ; GREMLIN
-                USR (THERMAL_UNIT____)-     ; HEATER
-                USR (HAMELER_HOT_HEAD)-     ; HOT_HEAD
-                USR (INFORMER________)-     ; INFORMER
-                USR (FIGHTER_INSECT__)-     ; INSECT2         ;Duplicated
-                USR (INVERSION_ALIEN_)-     ; INVERSE
-                USR (INVISIBLE_ALIEN_)-     ; INVISIBLE
-                USR (INTRUDER_MISSILE)-     ; KAMAKAZE
-                USR (SPECTRAMITE_____)-     ; LIGHT_ALIEN
-                USR (LITTLE_MEN______)-     ; LITTLE_MEN
-                USR (MAGNETIC_SWEEPER)-     ; MAGNET
-                USR ("MISER"_________)-     ; MISER
-                USR (ASYMMETRIC_ALIEN)-     ; ONE_ARM_BLOB
-                USR (PHASOID_________)-     ; PHASOID
-                USR ("GASSER"________)-     ; POISON_SUIT
-                USR (MEM-PLACER_ROBOT)-     ; PROG_CHANGER
-                USR ("SPIKE"_________)-     ; PUNKER
-                USR (QUEEN_INSECT____)-     ; QUEEN_INSECT
-                USR (SNARC___________)-     ; RABBIT_EARS
-                USR ("SPEEDO"________)-     ; REFLEX_ALIEN
-                USR (RICOCHET_MISSILE)-     ; RICOCHET
-                USR (EBKAL'EE________)-     ; ROBED_SELLER
-                USR (ALIEN_ASSASSIN__)-     ; RUNNING_BOT
-                USR ("SCREECHER"_____)-     ; SCREAMER
-                USR (ZETOC___________)-     ; SEVEN_CLAWS
-                USR ("SHARP_SHOOTER"_)-     ; SHARP_SHOOTER
-                USR (SHIFTER_________)-     ; SHIFTER
-                USR (SPARKLE_________)-     ; SPARKLES
-                USR (SLIME_CREATURE__)-     ; SWAMP_THING
-                USR (BETEIGUESEN_____)-     ; TAILFIGHTER
-                USR (TANGIBLE_GAS____)-     ; TANGIBLE_GAS
-                USR (MAN_IN_LEVITATOR)-     ; TANK_HUMAN
-                USR ("BLINKER"_______)-     ; TELEPORTER
-                USR ("MAULER"________)-     ; TF_BAIT
-                USR ("THROWER"_______)-     ; THROWER
-                USR (TIME_WARP_______)-     ; TIME_WARP
-                USR (OKKAR_MARSUPIAL_)-     ; TREE_HANGER
-                USR (WANDERIN_THOUGHT)-     ; WANDERING
-                USR (WEBBED_PARASITE_)-     ; WEB_THING
-                USR (AIR_CIRCULATOR__)-     ; WIND_TUNNEL

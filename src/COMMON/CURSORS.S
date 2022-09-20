@@ -1,6 +1,3 @@
-
-; ARROWER = DRAW_ARROW
-
 ; On entry:
 ;   X: x position
 ;   Y: y position

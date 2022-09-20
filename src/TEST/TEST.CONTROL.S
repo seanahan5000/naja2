@@ -52,8 +52,8 @@
                 STA MAP_DIR
                 JSR COMPUTE_MAP_PTR
 
-                ; JSR RESTORE_MAPPED
-                ; JSR MARK_MAPPED
+                JSR RESTORE_MAPPED
+                JSR MARK_MAPPED         ; force current position mapped
 
                 LDA #6
                 STA RANGE
