@@ -13,24 +13,21 @@ RESTATS			JSR DRAW_PICT
 				PictRect $A5;$00;$115;$BF
 				PictEnd
 
-				LDY	#profrace
-				LDA	(CHARDL),Y
-				AND	#$F0
-				STA	CRFLAG
-				BPL	:CHARACTER
+				JSR IS_ROBOT
+				BCS :ROBOT
 
-:ROBOT			LDX	#<ROBOT_IMAGE
-				LDY	#>ROBOT_IMAGE
-				JSR UNPACK
-				JSR	RSTUFER
-				JSR	RINFOUT
+:CHARACTER		JSR DRAW_PICT
+				PictImage CHAR_IMAGE
+				PictEnd
+				JSR	DRAW_CHAR_EQUIP
+				JSR	DRAW_CHAR_INFO
 				JMP	:COMMON
 
-:CHARACTER		LDX	#<CHAR_IMAGE
-				LDY	#>CHAR_IMAGE
-				JSR UNPACK
-				JSR	STUFOUT
-				JSR	PUTGNRL
+:ROBOT			JSR DRAW_PICT
+				PictImage ROBOT_IMAGE
+				PictEnd
+				JSR	DRAW_ROBO_EQUIP
+				JSR	DRAW_ROBO_INFO
 
 :COMMON			JSR DRAW_PICT
 				PictTextAt 171;116;(EQUIPMENT_OPTIONS)
@@ -40,11 +37,16 @@ RESTATS			JSR DRAW_PICT
 				PictShowPage
 				PictEnd
 
+; TODO: draw arrow instructions
+
 				LDA	#0
 				STA	ICURPOS
 IMENU			LDX	#<ISTAT_MENU
 				LDY	#>ISTAT_MENU
 				JSR	MENU_INIT
+				LDX #<ISTAT_FILTER
+				LDY #>ISTAT_FILTER
+				JSR MENU_SET_FILTER
 				JSR MENU_SELECT
 				STX ICURPOS
 				JSR	IMARKER
@@ -54,9 +56,6 @@ IMENU			LDX	#<ISTAT_MENU
 				LDA ISOURCE_CHAR
 				JSR SET_CHAR
 				JMP IMENU
-
-; TODO: zpage maybe?
-CRFLAG			DB	$00
 
 *-------------------------------
 ISTAT_MENU		DB	$87
@@ -74,6 +73,30 @@ ICURPOS			DB	$00
 
 :ISTAT_CURS		JSR	XY_SUB
 				JMP	DRAW_ARROW
+*-------------------------------
+
+ISTAT_FILTER	LDA KEYBRD
+				JSR CHECK_LEFT
+				CLC
+				BEQ :LEFT_RIGHT
+				JSR CHECK_RIGHT
+				SEC
+				BEQ :LEFT_RIGHT
+;				SEC						; set to continue
+				RTS
+
+:LEFT_RIGHT		PLA
+				PLA
+				BIT UNSTROB
+				PHP
+				JSR MENU_DRAW_CURSOR
+				PLP
+				BCS :1
+				JSR DO_PREV_CHAR
+				JMP IMENU
+:1				JSR DO_NEXT_CHAR
+				JMP IMENU
+
 *-------------------------------
 
 TO_MOVER		JSR BANK_2
@@ -152,7 +175,199 @@ XY_SUB			LDY	:YPNTS,X
 
 ;-------------------------------------------------------------------------------
 
-STUFOUT			JSR	DRAW_PICT
+;*** TEST WITH CONSECUTIVE ROBOTS? ***
+
+;*** Clear entire character area ***
+;	PictClear 0;0;23;192
+
+;*** ALSO, CHANGE BETWEEN DENEB AND NOT ***
+
+OLD_PROFRACE	=	LOCAL_TEMP+0		;*** MAYBE NOT TEMP ***
+
+CHECK_PROFRACE	LDA #$00
+				STA OLD_PROFRACE
+				JSR :CHECK_SUB
+				LDA ITARGET_CHAR
+				JSR SET_CHAR
+				JSR :CHECK_SUB
+				LDA ISOURCE_CHAR
+				JMP SET_CHAR
+
+:CHECK_SUB		LDY #profrace
+				LDA (CHARDL),Y
+				AND #$8F
+				CMP #deneb
+				BNE :1
+				ORA #$40
+:1				AND #$C0
+				EOR OLD_PROFRACE
+				STA OLD_PROFRACE
+				RTS
+
+DO_NEXT_CHAR	LDX ISOURCE_CHAR
+				INX
+				CPX GROUP_SIZE
+				BNE :1
+				LDX #0
+:1				STX ITARGET_CHAR
+				CPX ISOURCE_CHAR
+				BEQ :99
+
+				JSR CHECK_PROFRACE
+				LDA OLD_PROFRACE
+				; BMI :FULL_REDRAW
+
+				JSR CLEAR_ITEMS
+
+				; if D/ND changed
+					; clear hand labels
+
+				LDA ITARGET_CHAR
+				STA ISOURCE_CHAR
+				JSR SET_CHAR
+
+				; if D/ND changed
+					; redraw hand labels
+				JSR DRAW_ITEMS
+
+				JSR REDRAW_INFO
+				JSR SCROLL_INFO_LEFT
+
+				;*** POSSIBLY UPDATE FULL STATS ***
+				;*** UPDATE EQUIPMENT ***
+				;*** POSSIBLY CHANGE CHAR/ROBOT GRAPHIC ***
+
+:99				RTS
+
+DO_PREV_CHAR	LDX ISOURCE_CHAR
+				BNE :1
+				LDX GROUP_SIZE
+:1				DEX
+				STX ITARGET_CHAR
+				CPX ISOURCE_CHAR
+				BEQ :99
+
+				; LDY #profrace
+				; LDA (CHARDL),Y
+				; STA OLD_PROFRACE
+
+				JSR CLEAR_ITEMS
+				;*** MAYBE CLEAR FULL STATS ***
+
+				LDA ITARGET_CHAR
+				STA ISOURCE_CHAR
+				JSR SET_CHAR
+				JSR REDRAW_INFO
+				JSR SCROLL_INFO_RIGHT
+				JSR DRAW_ITEMS
+				;*** POSSIBLY UPDATE FULL STATS ***
+				;*** UPDATE EQUIPMENT ***
+				;*** POSSIBLY CHANGE CHAR/ROBOT GRAPHIC ***
+
+:99				RTS
+
+CLEAR_ITEMS		JSR IS_ROBOT
+				BCS	:1
+				JMP CLEAR_CHAR_ITEMS
+:1				JMP CLEAR_ROBO_ITEMS
+
+DRAW_ITEMS		JSR IS_ROBOT
+				BCS	:1
+				JMP DRAW_CHAR_ITEMS
+:1				JMP DRAW_ROBO_ITEMS
+
+REDRAW_INFO		JSR DRAW_PICT
+				PictSetPage1
+				PictClear 29;4;39;47
+				PictCall DRAW_CHAR_VALS
+				PictSetPage2
+				PictEnd
+				RTS
+
+; CLEAR_IND_STATS	JSR DRAW_PICT
+; 				PictClear 31;54;39;88		; status/shield
+; 				PictClear 26;104;38;111		; energy
+; 				PictClear 36;118;38;170		; 1 byte stats
+; 				PictEnd
+; 				RTS
+
+FROM_Y			=	LOCAL_TEMP+0
+
+SCROLL_INFO_LEFT
+				LDY #29
+:1				STY FROM_Y
+
+				LDX #4
+:2				LDA LOBYTES,X
+				STA SCREENL
+				STA DESTINL
+				LDA HIBYTES,X
+				STA SCREENH
+				EOR #$60
+				STA DESTINH
+
+				LDY #30
+:3				LDA (SCREENL),Y
+				DEY
+				STA (SCREENL),Y
+				INY
+				INY
+				CPY #39
+				BNE :3
+
+				LDY FROM_Y
+				LDA (DESTINL),Y
+				LDY #38
+				STA (SCREENL),Y
+				INX
+				CPX #47
+				BNE :2
+
+				LDY FROM_Y
+				INY
+				CPY #39
+				BNE :1
+				RTS
+
+SCROLL_INFO_RIGHT
+				LDY #38
+:1				STY FROM_Y
+
+				LDX #4
+:2				LDA LOBYTES,X
+				STA SCREENL
+				STA DESTINL
+				LDA HIBYTES,X
+				STA SCREENH
+				EOR #$60
+				STA DESTINH
+
+				LDY #37
+:3				LDA (SCREENL),Y
+				INY
+				STA (SCREENL),Y
+				DEY
+				DEY
+				CPY #28
+				BNE :3
+
+				LDY FROM_Y
+				LDA (DESTINL),Y
+				LDY #29
+				STA (SCREENL),Y
+				INX
+				CPX #47
+				BNE :2
+
+				LDY FROM_Y
+				DEY
+				CPY #28
+				BNE :1
+				RTS
+
+;-------------------------------------------------------------------------------
+
+DRAW_CHAR_EQUIP	JSR	DRAW_PICT
 				PictTextAt 42;0;(HEAD)
 				PictTextAt 50;9;(:)
 				PictTextAt 50;17;(:)
@@ -170,8 +385,8 @@ STUFOUT			JSR	DRAW_PICT
 				BEQ :2
 				TAX
 :1				STX :TEXT_MOD+1
-				LDY EPLINES+6-1,X
-				LDX #$2C
+				LDY CEQUIP_LINES+6-1,X
+				LDX #38+6
 				JSR MOVE_TO
 				JSR DRAW_PICT
 :TEXT_MOD		PictText (1:)
@@ -180,20 +395,6 @@ STUFOUT			JSR	DRAW_PICT
 				DEX
 				BNE :1
 :2
-				; draw equipment by index
-				LDX #0
-:3				STX COUNT
-				TXA
-				JSR	EQUIP_IND_TO_TEXT
-				LDX COUNT
-				LDY EPLINES,X
-				LDX #$42
-				JSR DRAW_TEXTBUF_XY
-				LDX COUNT
-				INX
-				CPX #$0E
-				BNE :3
-
 				LDY	#profrace
 				LDA	(CHARDL),Y
 				AND	#$0F
@@ -204,23 +405,62 @@ STUFOUT			JSR	DRAW_PICT
 				PictTextAt 38;107;(_L:)
 				PictTextAt 38;115;(_R:)
 				PictEnd
-				RTS
+				JMP DRAW_CHAR_ITEMS
 
 :DENEB			JSR	DRAW_PICT
 				PictSetTextHeight 8
 				PictTextAt 38;107;(UL:\nUR:\nLL:\nLR:)
 				PictSetTextHeight 0
 				PictEnd
+				; fall through
+
+DRAW_CHAR_ITEMS	LDX #0
+:1				STX COUNT
+				TXA
+				JSR	EQUIP_IND_TO_TEXT
+				LDX COUNT
+				LDY CEQUIP_LINES,X
+				LDX #66
+				JSR DRAW_TEXTBUF_XY
+				LDX COUNT
+				INX
+				CPX #14
+				BNE :1
 				RTS
 
-EPLINES			DFB	$09,$11,$6B
-				DFB	$73,$7B,$83
-				DFB	$2A,$32,$3A
-				DFB	$42,$4A,$52
-				DFB	$9C,$B5
+CLEAR_CHAR_ITEMS
+				LDX #0
+:1				STX COUNT
+				LDA CEQUIP_LINES,X
+				STA :MODY1
+				CLC
+				ADC #7
+				STA :MODY2
+				JSR	DRAW_PICT
+				DB OpClear
+				DB 9
+:MODY1			DB $FF
+				DB 23
+:MODY2			DB $FF
+				PictEnd
+				LDX COUNT
+				INX
+				CPX #14
+				BNE :1
+				RTS
 
-PUTGNRL			JSR DRAW_PICT
+CEQUIP_LINES	DB	$09,$11,$6B
+				DB	$73,$7B,$83
+				DB	$2A,$32,$3A
+				DB	$42,$4A,$52
+				DB	$9C,$B5
+
+DRAW_CHAR_INFO	JSR DRAW_PICT
 				PictTextAt 171;4;(NAME:\nRACE:\nPROF:\nLEVL:\nEXPR:)
+				PictEnd
+				; fall through
+
+DRAW_CHAR_VALS	JSR DRAW_PICT
 				PictMoveTo $CC;4
 				PictEnd
 
@@ -239,12 +479,7 @@ PUTGNRL			JSR DRAW_PICT
 				JSR CEXP_TO_TEXT
 				JMP DRAW_TEXTBUF_RET
 
-RSTUFER			LDY	#e1_HEAD
-				LDA	(CHARDL),Y
-				AND	#%00000111
-				STA :RANGE_MOD
-
-				LDX #9
+DRAW_ROBO_EQUIP	LDX #9
 				LDY	#e1_HEAD
 				LDA	(CHARDL),Y
 				BPL	:NOWITH
@@ -254,33 +489,8 @@ RSTUFER			LDY	#e1_HEAD
 				LDX #0
 :NOWITH			STX :VMOVE_MOD+2
 				JSR DRAW_PICT
-				PictHMoveTo 26
 :VMOVE_MOD		PictTextAt 26;9;(HEAD:)
-				PictHMoveTo 66
-				PictText (<SIGHT_RANGE-)-
-:RANGE_MOD		USR	(_>)
-
-				PictTextAt 42;104;(BACK)
-				PictTextAt 50;113;(:)
-				PictTextAt 42;128;(PROGRAM)
-				PictTextAt 50;137;(:)
-				PictTextAt 42;152;(MOVEMENT_TYPE)
-				PictTextAt 50;161;(:)
 				PictEnd
-
-				LDY	#e1_HEAD
-				LDA	(CHARDL),Y
-				AND	#%00011000
-				LSR
-				LSR
-				LSR
-				LDX #<:RTREAD_NAMES
-				LDY #>:RTREAD_NAMES
-				JSR GET_IND_STRING
-				LDX #66
-				LDY #161
-				JSR DRAW_TEXTBUF_XY
-
 				JSR DRAW_PICT
 				PictTextAt 42;33;(ARMS)
 				;*** could use line breaks (with line height 8) ***
@@ -288,6 +498,27 @@ RSTUFER			LDY	#e1_HEAD
 				PictTextAt 44;50;(_:)
 				PictTextAt 44;58;(R:)
 				PictTextAt 44;66;(_:)
+				PictTextAt 42;104;(BACK)
+				PictTextAt 50;113;(:)
+				PictTextAt 42;128;(PROGRAM)
+				PictTextAt 50;137;(:)
+				PictTextAt 42;152;(MOVEMENT_TYPE)
+				PictTextAt 50;161;(:)
+				PictEnd
+				; fall through
+
+DRAW_ROBO_ITEMS LDX #9
+				LDY	#e1_HEAD
+				LDA	(CHARDL),Y
+				BPL :NOWITH
+				LDX #0
+:NOWITH			STX :VMOVE_MOD+2
+				AND	#%00000111
+				STA :RANGE_MOD
+				JSR DRAW_PICT
+				PictHMoveTo 26
+:VMOVE_MOD		PictTextAt 66;9;(<SIGHT_RANGE-)-
+:RANGE_MOD		USR	(_>)
 				PictEnd
 
 				LDX #0
@@ -295,14 +526,26 @@ RSTUFER			LDY	#e1_HEAD
 				LDY :IND_TABLE,X
 				JSR	CEQUIP_TO_TEXT
 				LDX COUNT
-				LDY :Y_TABLE,X
-				LDX #$42
+				LDY REQUIP_LINES,X
+				LDX #66
 				JSR DRAW_TEXTBUF_XY
 				LDX COUNT
 				INX
 				CPX #7
 				BNE :1
-				RTS
+
+				LDY	#e1_HEAD
+				LDA	(CHARDL),Y
+				AND	#%00011000
+				LSR
+				LSR
+				LSR
+				LDX #<RTREAD_NAMES
+				LDY #>RTREAD_NAMES
+				JSR GET_IND_STRING
+				LDX #66
+				LDY REQUIP_LINES+7
+				JMP DRAW_TEXTBUF_XY
 
 :IND_TABLE		DB	e2_SLOT
 				DB	e3_UPLFT
@@ -312,21 +555,47 @@ RSTUFER			LDY	#e1_HEAD
 				DB	e7_BACK1
 				DB	e15_PROGRAM
 
-:Y_TABLE		DB	9
+CLEAR_ROBO_ITEMS
+				LDX #0
+:1				STX COUNT
+				LDA REQUIP_LINES,X
+				STA :MODY1
+				CLC
+				ADC #7
+				STA :MODY2
+				JSR	DRAW_PICT
+				DB OpClear
+				DB 9
+:MODY1			DB $FF
+				DB 23
+:MODY2			DB $FF
+				PictEnd
+				LDX COUNT
+				INX
+				CPX #8
+				BNE :1
+				RTS
+
+REQUIP_LINES	DB	9
 				DB	42
 				DB	50
 				DB	58
 				DB	64
 				DB	113
 				DB	137
+				DB  161					; movement type
 
-:RTREAD_NAMES	USR(TREAD)=
+RTREAD_NAMES	USR(TREAD)=
 				USR(LEVITATOR)=
 				USR(TETRA-LEG)=
 				USR(BI-LEG)=
 
-RINFOUT			JSR DRAW_PICT
+DRAW_ROBO_INFO	JSR DRAW_PICT
 				PictTextAt 171;4;(NAME:\nPROF:\nLEVL:\nOWNR:)
+				PictEnd
+				; fall through
+
+DRAW_ROBO_VALS	JSR DRAW_PICT
 				PictMoveTo $CC;4
 				PictEnd
 
@@ -353,7 +622,7 @@ RINFOUT			JSR DRAW_PICT
 :2				JSR DRAW_TEXTBUF_RET
 
 				; find the owner cybernate linked to this robot
-				;*** move this the CHARACTER.S?
+				;*** move this to CHARACTER.S?
 				LDY	#robotcyblink
 				LDA	(CHARDL),Y
 				PHA

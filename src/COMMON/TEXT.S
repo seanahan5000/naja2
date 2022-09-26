@@ -300,6 +300,7 @@ ADVANCE         DEC XSHIFT
 PTR             =   LOCAL_TEMP+0
 PTR_H           =   LOCAL_TEMP+1
 
+; TODO: consider putting pointer on the stack
 GET_IND_STRING  ENT
                 STX PTR
                 STY PTR_H

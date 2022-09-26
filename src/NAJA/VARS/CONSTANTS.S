@@ -17,7 +17,7 @@ physician		=	4
 mutant			=	5
 electromedic	=	6
 genius			=	7
-robot			=	8
+robot			=	8               ; assumed to be high bit in profrace
 
 healthy			=	$00				;00 00 0000
 dead			=	$01				;00 00 0001

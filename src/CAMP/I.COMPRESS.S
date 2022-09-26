@@ -122,12 +122,16 @@ SGENTER			JSR	HIDE_BIG_STATS
 				STA	(CHARDL),Y
 				STA	ETABLE+3
 				JSR	EQUIP1
+
+				LDY #profrace
+				LDA (CHARDL),Y
+				PHA
 				LDX	CMPHOLD
 				LDY	CHARLIN,X
-				BIT	CRFLAG
-				BPL	:2
+				PLA
+				BPL :2
 				LDY	ROBOLIN,X
-:2				LDX	#$42
+:2				LDX	#66
                 JSR DRAW_TEXTBUF_XY
 				SEC
 				JSR	CALL_DRAIN

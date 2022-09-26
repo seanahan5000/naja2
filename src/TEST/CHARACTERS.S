@@ -113,3 +113,17 @@ HIDE_MEMBER     STA CHAR_INDEX
                 BMI :1                  ; always
 :3              DEC GRPNUMB
                 RTS
+;
+; On entry:
+;   CHARDL/H pointing at possible robot
+;
+; On exit:
+;   X: unchanged
+;   SEC: is robot
+;   CLC: is not robot
+;
+IS_ROBOT        ENT
+                LDY #profrace
+                LDA (CHARDL),Y
+                ASL
+                RTS
