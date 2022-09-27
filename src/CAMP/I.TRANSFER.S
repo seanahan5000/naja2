@@ -32,7 +32,7 @@ RT_START        STX ITARGET_CHAR
                 PictClear 0;49;40;50
                 PictEnd
 
-                LDA ITARGET_CHAR
+RT_START2       LDA ITARGET_CHAR
                 JSR SET_CHAR
                 LDY #14
                 JSR VMOVE_TO
@@ -43,10 +43,6 @@ RT_START        STX ITARGET_CHAR
                 LDY #38
                 JSR VMOVE_TO
                 JSR STATS_LINE
-
-                JSR DRAW_PICT
-                PictTextAt 195;51;(C>ANCEL)
-                PictEnd
 
                 LDA #>ENEW1
                 STA PNEW+1
@@ -59,10 +55,9 @@ RT_START        STX ITARGET_CHAR
                 STA ETEXT2,X
                 DEX
                 BPL :2
-
                 RTS
 
-TRANSFER		JSR	BIG_STATS_BOX
+FROMJ_TRANSFER	JSR	BIG_STATS_BOX
 
 				JSR DRAW_PICT
 				PictTextAt 177;84;(TRANSFER_ENERGY)
@@ -83,9 +78,27 @@ TRANSFER		JSR	BIG_STATS_BOX
                 JMP HIDE_BIG_STATS      ; return back to C.ISTATS.S
 
 :NO_CANCEL      JSR RT_START
+                JMP TRANSFER_CMN
 
-				JSR DRAW_PICT
+TOJ_TRANSFER    JSR DRAW_PICT
+                PictSetPage1
+                PictClear 0;0;39;50
+                PictSetGreen
+                PictRect 1;0;$115;48
+                PictMoveTo $01;$0A
+                PictLineTo $115;$0A
+                PictVMoveTo 2
+                PictCall STATS_HEADER
+                PictEnd
+                JSR RT_START2
+                JSR DRAW_PICT
+                PictSwap 0;0;40;49
+                PictSetPage2
+                PictEnd
+
+TRANSFER_CMN    JSR DRAW_PICT
 				PictTextAt 48;26;(ENERGY_TRANSFER_AMOUNT:)
+                PictTextAt 195;51;(C>ANCEL)
 				PictEnd
 
                 LDA ITARGET_CHAR

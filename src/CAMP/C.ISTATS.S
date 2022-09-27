@@ -146,9 +146,26 @@ TO_TRANSFER		LDY	#profrace
 				AND	#$F0
 				CMP	#juicer*16
 				BNE	:NOJUICER
-				JMP	TRANSFER
-:NOJUICER		RTS
+				JMP	FROMJ_TRANSFER
 
+:NOJUICER		JSR FIRST_CHAR
+:1				LDY #profrace
+				LDA (CHARDL),Y
+				AND #$F0
+				CMP #juicer*16
+				BEQ :2
+				JSR NEXT_CHAR
+				BCC :1
+				RTS
+:2				LDA ISOURCE_CHAR
+				STA ITARGET_CHAR
+				LDA CHAR_INDEX
+				STA ISOURCE_CHAR
+				JSR TOJ_TRANSFER
+				LDA ITARGET_CHAR
+				STA ISOURCE_CHAR
+				RTS
+;
 ; On entry:
 ;	X: CURSOR
 ;

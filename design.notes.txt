@@ -18,6 +18,6 @@ x Change DAMAGE to HEALTH in stats (easier for player)
     * XY information is not useful
     * Maybe just blink status text
 * Make 'S' stats key also close out stats menu
-* Scroll through individuals in camp with <- and -> arrows
+X Scroll through individuals in camp with <- and -> arrows
 * Better alien masking when drawing over tunnels
     * Trade having fewer aliens for better masking information
