@@ -6,7 +6,7 @@ SEESTAT			JSR	DRAW_PICT
 				PictTextAt 171;54;()-
 				USR	(STATUS:\n)-
 				USR	(HEALTH:\n)-
-				USR	(SHIELD:_E-___P-\n)-
+				USR	(SHIELD:\n)-
 				USR	(CREDIT:)
 				PictTextAt 204;95;(ENERGY)
 				PictTextAt 171;118;()-
@@ -34,15 +34,63 @@ SEESTAT			JSR	DRAW_PICT
 
 				PictMoveTo 171;$B1
 				PictLineTo 271;$B1
-
-				PictMoveTo $DB;$36
 				PictEnd
+
+				JSR DRAW_STATS_VALS
+
+				JSR DRAW_PICT
+				PictSwap $17;$32;$28;$B3
+				PictSetPage2
+				PictEnd
+				BIT	UNSTROB
+IMENU_SEE		LDX	#<STAT_DEF
+				LDY	#>STAT_DEF
+				JSR	MENU_INIT
+				LDA #1
+				STA STATS_VISIBLE
+				LDX #<ISTAT_FILTER
+				LDY #>ISTAT_FILTER
+				JSR MENU_SET_FILTER
+				JSR	MENU_SELECT
+				JSR DRAW_PICT
+				PictSetPage1
+				PictCopyToPage
+				PictShowPage
+				PictEnd
+				PLA
+				PLA
+				JMP	RESTATS
+
+STAT_LIST		DB	intelligence
+				DB	strength
+				DB	upreflex
+				DB	lwreflex
+				DB	organic
+
+*-------------------------------
+STAT_DEF		DB	$81
+				DB	$00
+				DW	:STAT_CURS
+
+:STAT_CURS		LDX	#$A7
+				LDY	#$B5
+				JMP	DRAW_ARROW
+*-------------------------------
+
+DRAW_STATS_VALS LDX #$DB
+				LDY #$36
+				JSR MOVE_TO
 
 				JSR CSTATUS_TO_TEXT
 				JSR DRAW_TEXTBUF_RET
 
 				JSR HEALTH_TO_TEXT_L
 				JSR DRAW_TEXTBUF_RET
+
+				JSR DRAW_PICT
+				PictTextAt 219;72;(E-___P-\n)
+				PictVMoveTo 72
+				PictEnd
 
 				LDY	#Eshielding
 				JSR CSTAT_TO_TEXT_L
@@ -76,7 +124,7 @@ SEESTAT			JSR	DRAW_PICT
 				JSR MOVE_TO
 				LDX #0
 NEXSTAT			STX COUNT
-				LDY	:STAT_LIST,X
+				LDY	STAT_LIST,X
 				JSR CSTAT_TO_TEXT_R
 				JSR DRAW_TEXTBUF_RET
 				LDX COUNT
@@ -99,35 +147,6 @@ NEXSTAT			STX COUNT
 				LDY	#organic
 				LDA COUNT
 				STA (CHARDL),Y
+				RTS
 
-				JSR DRAW_PICT
-				PictSwap $17;$32;$28;$B3
-				PictSetPage2
-				PictEnd
-				BIT	UNSTROB
-				LDX	#<:STAT_DEF
-				LDY	#>:STAT_DEF
-				JSR	MENU_INIT
-				JSR	MENU_SELECT
-				JSR DRAW_PICT
-				PictSwap $17;$B3;$28;$32
-				PictEnd
-				LDX	#5
-				JSR	IMARKER
-				JMP	IMENU
-
-:STAT_LIST		DB	intelligence
-				DB	strength
-				DB	upreflex
-				DB	lwreflex
-				DB	organic
-
-*-------------------------------
-:STAT_DEF		DB	$81
-				DB	$00
-				DW	:STAT_CURS
-
-:STAT_CURS		LDX	#$A7
-				LDY	#$B5
-				JMP	DRAW_ARROW
-*-------------------------------
+;-------------------------------------------------------------------------------

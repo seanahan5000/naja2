@@ -3,47 +3,41 @@
 ISOURCE_CHAR	=	$C0
 ITARGET_CHAR	=	$C1
 
+DIRECTION		=	$C3
+PROFRACE_CHANGE	=	$C4
+STATS_VISIBLE	=	$C5
+
 DOSTATS			LDA	CURSOR
 				STA	ISOURCE_CHAR
+				LDA	#0
+				STA	ICURPOS
 
 RESTATS			JSR DRAW_PICT
 				PictSetPage2
 				PictClearPage
 				PictSetGreen
 				PictRect $A5;$00;$115;$BF
-				PictEnd
-
-				JSR IS_ROBOT
-				BCS :ROBOT
-
-:CHARACTER		JSR DRAW_PICT
-				PictImage CHAR_IMAGE
-				PictEnd
-				JSR	DRAW_CHAR_EQUIP
-				JSR	DRAW_CHAR_INFO
-				JMP	:COMMON
-
-:ROBOT			JSR DRAW_PICT
-				PictImage ROBOT_IMAGE
-				PictEnd
-				JSR	DRAW_ROBO_EQUIP
-				JSR	DRAW_ROBO_INFO
-
-:COMMON			JSR DRAW_PICT
+				PictCall DRAW_CHAR_ROBO
 				PictTextAt 171;116;(EQUIPMENT_OPTIONS)
-				PictTextAt 198;125;(MOVE\nDROP\nUSE\nEXAMINE)
-				PictTextAt 180;162;(TRANSFER_ENERGY\nSEE_STATISTICS)
+				PictTextAt 198;125;()-
+				USR (MOVE\n)-
+				USR (DROP\n)-
+				USR (USE\n)-
+				USR (EXAMINE)
+				PictTextAt 180;162;()-
+				USR (TRANSFER_ENERGY\n)-
+				USR (SEE_STATISTICS)
 				PictTextAt 180;181;(LEAVE)
 				PictShowPage
 				PictEnd
 
 ; TODO: draw arrow instructions
 
-				LDA	#0
-				STA	ICURPOS
 IMENU			LDX	#<ISTAT_MENU
 				LDY	#>ISTAT_MENU
 				JSR	MENU_INIT
+				LDA #0
+				STA STATS_VISIBLE
 				LDX #<ISTAT_FILTER
 				LDY #>ISTAT_FILTER
 				JSR MENU_SET_FILTER
@@ -93,9 +87,14 @@ ISTAT_FILTER	LDA KEYBRD
 				PLP
 				BCS :1
 				JSR DO_PREV_CHAR
-				JMP IMENU
+				JMP :2
 :1				JSR DO_NEXT_CHAR
+:2				PLA
+				PLA
+				LDA STATS_VISIBLE
+				BNE :3
 				JMP IMENU
+:3				JMP IMENU_SEE
 
 *-------------------------------
 
@@ -175,17 +174,78 @@ XY_SUB			LDY	:YPNTS,X
 
 ;-------------------------------------------------------------------------------
 
-;*** TEST WITH CONSECUTIVE ROBOTS? ***
+DO_NEXT_CHAR	LDX ISOURCE_CHAR
+				INX
+				CPX GROUP_SIZE
+				BNE :1
+				LDX #0
+:1				STX ITARGET_CHAR
+				LDA #1
+				CPX ISOURCE_CHAR
+				BNE PREV_NEXT_CMN
+				RTS
 
-;*** Clear entire character area ***
-;	PictClear 0;0;23;192
+DO_PREV_CHAR	LDX ISOURCE_CHAR
+				BNE :1
+				LDX GROUP_SIZE
+:1				DEX
+				STX ITARGET_CHAR
+				LDA #-1
+				CPX ISOURCE_CHAR
+				BNE PREV_NEXT_CMN
+				RTS
 
-;*** ALSO, CHANGE BETWEEN DENEB AND NOT ***
+PREV_NEXT_CMN	STA DIRECTION
+				JSR CHECK_PROFRACE
+				JSR CLEAR_ITEMS
 
-OLD_PROFRACE	=	LOCAL_TEMP+0		;*** MAYBE NOT TEMP ***
+				LDA STATS_VISIBLE
+				BEQ :1
+				JSR DRAW_PICT
+				PictClear 31;54;39;88		; status/shield
+				PictClear 26;104;38;111		; energy
+				PictClear 36;118;38;170		; 1 byte stats
+				PictEnd
+:1
+				BIT PROFRACE_CHANGE
+				BMI :2
+				BVC :2
+				JSR DRAW_PICT
+				PictClear 5;107;8;138
+				PictEnd
+:2
+				LDA ITARGET_CHAR
+				STA ISOURCE_CHAR
+				JSR SET_CHAR
+
+				BIT PROFRACE_CHANGE
+				BMI :3
+				BVC :3
+				JSR DRAW_HAND_LABELS
+:3
+				JSR REDRAW_INFO
+				JSR SCROLL_INFO
+
+				LDA PROFRACE_CHANGE
+				BMI :4
+				JSR DRAW_ITEMS
+				JMP :5
+
+:4				JSR DRAW_PICT
+				PictSetPage1
+				PictClearPage
+				PictCall DRAW_CHAR_ROBO
+				PictSetPage2
+				PictCopyTo 0;0;23;192
+				PictEnd
+
+:5				LDA STATS_VISIBLE
+				BEQ :6
+				JSR DRAW_STATS_VALS
+:6				RTS
 
 CHECK_PROFRACE	LDA #$00
-				STA OLD_PROFRACE
+				STA PROFRACE_CHANGE
 				JSR :CHECK_SUB
 				LDA ITARGET_CHAR
 				JSR SET_CHAR
@@ -200,101 +260,24 @@ CHECK_PROFRACE	LDA #$00
 				BNE :1
 				ORA #$40
 :1				AND #$C0
-				EOR OLD_PROFRACE
-				STA OLD_PROFRACE
+				EOR PROFRACE_CHANGE
+				STA PROFRACE_CHANGE
 				RTS
-
-DO_NEXT_CHAR	LDX ISOURCE_CHAR
-				INX
-				CPX GROUP_SIZE
-				BNE :1
-				LDX #0
-:1				STX ITARGET_CHAR
-				CPX ISOURCE_CHAR
-				BEQ :99
-
-				JSR CHECK_PROFRACE
-				LDA OLD_PROFRACE
-				; BMI :FULL_REDRAW
-
-				JSR CLEAR_ITEMS
-
-				; if D/ND changed
-					; clear hand labels
-
-				LDA ITARGET_CHAR
-				STA ISOURCE_CHAR
-				JSR SET_CHAR
-
-				; if D/ND changed
-					; redraw hand labels
-				JSR DRAW_ITEMS
-
-				JSR REDRAW_INFO
-				JSR SCROLL_INFO_LEFT
-
-				;*** POSSIBLY UPDATE FULL STATS ***
-				;*** UPDATE EQUIPMENT ***
-				;*** POSSIBLY CHANGE CHAR/ROBOT GRAPHIC ***
-
-:99				RTS
-
-DO_PREV_CHAR	LDX ISOURCE_CHAR
-				BNE :1
-				LDX GROUP_SIZE
-:1				DEX
-				STX ITARGET_CHAR
-				CPX ISOURCE_CHAR
-				BEQ :99
-
-				; LDY #profrace
-				; LDA (CHARDL),Y
-				; STA OLD_PROFRACE
-
-				JSR CLEAR_ITEMS
-				;*** MAYBE CLEAR FULL STATS ***
-
-				LDA ITARGET_CHAR
-				STA ISOURCE_CHAR
-				JSR SET_CHAR
-				JSR REDRAW_INFO
-				JSR SCROLL_INFO_RIGHT
-				JSR DRAW_ITEMS
-				;*** POSSIBLY UPDATE FULL STATS ***
-				;*** UPDATE EQUIPMENT ***
-				;*** POSSIBLY CHANGE CHAR/ROBOT GRAPHIC ***
-
-:99				RTS
-
-CLEAR_ITEMS		JSR IS_ROBOT
-				BCS	:1
-				JMP CLEAR_CHAR_ITEMS
-:1				JMP CLEAR_ROBO_ITEMS
-
-DRAW_ITEMS		JSR IS_ROBOT
-				BCS	:1
-				JMP DRAW_CHAR_ITEMS
-:1				JMP DRAW_ROBO_ITEMS
 
 REDRAW_INFO		JSR DRAW_PICT
 				PictSetPage1
-				PictClear 29;4;39;47
-				PictCall DRAW_CHAR_VALS
+				PictClear 24;4;39;47
+				PictCall DRAW_INFO
 				PictSetPage2
 				PictEnd
 				RTS
 
-; CLEAR_IND_STATS	JSR DRAW_PICT
-; 				PictClear 31;54;39;88		; status/shield
-; 				PictClear 26;104;38;111		; energy
-; 				PictClear 36;118;38;170		; 1 byte stats
-; 				PictEnd
-; 				RTS
-
 FROM_Y			=	LOCAL_TEMP+0
 
-SCROLL_INFO_LEFT
-				LDY #29
+SCROLL_INFO		LDA DIRECTION
+				BMI SCROLL_RIGHT
+
+SCROLL_LEFT		LDY #24
 :1				STY FROM_Y
 
 				LDX #4
@@ -306,7 +289,7 @@ SCROLL_INFO_LEFT
 				EOR #$60
 				STA DESTINH
 
-				LDY #30
+				LDY #25
 :3				LDA (SCREENL),Y
 				DEY
 				STA (SCREENL),Y
@@ -329,8 +312,7 @@ SCROLL_INFO_LEFT
 				BNE :1
 				RTS
 
-SCROLL_INFO_RIGHT
-				LDY #38
+SCROLL_RIGHT	LDY #38
 :1				STY FROM_Y
 
 				LDX #4
@@ -348,12 +330,12 @@ SCROLL_INFO_RIGHT
 				STA (SCREENL),Y
 				DEY
 				DEY
-				CPY #28
+				CPY #23
 				BNE :3
 
 				LDY FROM_Y
 				LDA (DESTINL),Y
-				LDY #29
+				LDY #24
 				STA (SCREENL),Y
 				INX
 				CPX #47
@@ -361,11 +343,30 @@ SCROLL_INFO_RIGHT
 
 				LDY FROM_Y
 				DEY
-				CPY #28
+				CPY #23
 				BNE :1
 				RTS
 
 ;-------------------------------------------------------------------------------
+
+DRAW_CHAR_ROBO	JSR IS_ROBOT
+				BCS :ROBOT
+
+:CHARACTER		JSR DRAW_PICT
+				PictImage CHAR_IMAGE
+				PictEnd
+				JSR	DRAW_CHAR_EQUIP
+				JMP	DRAW_CHAR_INFO
+
+:ROBOT			JSR DRAW_PICT
+				PictImage ROBOT_IMAGE
+				PictEnd
+				JSR	DRAW_ROBO_EQUIP
+				JMP	DRAW_ROBO_INFO
+
+DRAW_ITEMS		JSR IS_ROBOT
+				BCC	DRAW_CHAR_ITEMS
+				JMP DRAW_ROBO_ITEMS
 
 DRAW_CHAR_EQUIP	JSR	DRAW_PICT
 				PictTextAt 42;0;(HEAD)
@@ -394,24 +395,7 @@ DRAW_CHAR_EQUIP	JSR	DRAW_PICT
 				LDX :TEXT_MOD+1
 				DEX
 				BNE :1
-:2
-				LDY	#profrace
-				LDA	(CHARDL),Y
-				AND	#$0F
-				CMP	#deneb
-				BEQ	:DENEB
-
-				JSR	DRAW_PICT
-				PictTextAt 38;107;(_L:)
-				PictTextAt 38;115;(_R:)
-				PictEnd
-				JMP DRAW_CHAR_ITEMS
-
-:DENEB			JSR	DRAW_PICT
-				PictSetTextHeight 8
-				PictTextAt 38;107;(UL:\nUR:\nLL:\nLR:)
-				PictSetTextHeight 0
-				PictEnd
+:2				JSR DRAW_HAND_LABELS
 				; fall through
 
 DRAW_CHAR_ITEMS	LDX #0
@@ -427,6 +411,30 @@ DRAW_CHAR_ITEMS	LDX #0
 				CPX #14
 				BNE :1
 				RTS
+
+DRAW_HAND_LABELS
+				LDY	#profrace
+				LDA	(CHARDL),Y
+				AND	#$0F
+				CMP	#deneb
+				BEQ	:DENEB
+
+				JSR	DRAW_PICT
+				PictTextAt 38;107;(_L:)
+				PictTextAt 38;115;(_R:)
+				PictEnd
+				RTS
+
+:DENEB			JSR	DRAW_PICT
+				PictSetTextHeight 8
+				PictTextAt 38;107;(UL:\nUR:\nLL:\nLR:)
+				PictSetTextHeight 0
+				PictEnd
+				RTS
+
+CLEAR_ITEMS		JSR IS_ROBOT
+				BCC	CLEAR_CHAR_ITEMS
+				JMP CLEAR_ROBO_ITEMS
 
 CLEAR_CHAR_ITEMS
 				LDX #0
@@ -455,12 +463,17 @@ CEQUIP_LINES	DB	$09,$11,$6B
 				DB	$42,$4A,$52
 				DB	$9C,$B5
 
-DRAW_CHAR_INFO	JSR DRAW_PICT
-				PictTextAt 171;4;(NAME:\nRACE:\nPROF:\nLEVL:\nEXPR:)
-				PictEnd
-				; fall through
+DRAW_INFO		JSR IS_ROBOT
+				BCC DRAW_CHAR_INFO
+				JMP DRAW_ROBO_INFO
 
-DRAW_CHAR_VALS	JSR DRAW_PICT
+DRAW_CHAR_INFO	JSR DRAW_PICT
+				PictTextAt 171;4;()-
+				USR(NAME:\n)-
+				USR(RACE:\n)-
+				USR(PROF:\n)-
+				USR(LEVL:\n)-
+				USR(EXPR:)
 				PictMoveTo $CC;4
 				PictEnd
 
@@ -591,11 +604,11 @@ RTREAD_NAMES	USR(TREAD)=
 				USR(BI-LEG)=
 
 DRAW_ROBO_INFO	JSR DRAW_PICT
-				PictTextAt 171;4;(NAME:\nPROF:\nLEVL:\nOWNR:)
-				PictEnd
-				; fall through
-
-DRAW_ROBO_VALS	JSR DRAW_PICT
+				PictTextAt 171;4;()-
+				USR(NAME:\n)-
+				USR(PROF:\n)-
+				USR(LEVL:\n)-
+				USR(OWNR:)
 				PictMoveTo $CC;4
 				PictEnd
 
