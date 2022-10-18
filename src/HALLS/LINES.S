@@ -91,7 +91,7 @@ DRAW_SEGMENTS   STX LINE_PTR
 :1              LDA DIV7HI,X
                 LDY MOD7HI,X
 :2              STA HNDX
-                LDA HMASKS,Y
+                LDA BIT_TABLE,Y
                 STA HMASK
                 BNE :NEXT           ; always
 

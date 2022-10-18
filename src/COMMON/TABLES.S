@@ -29,7 +29,7 @@ LOBYTES         ENT
 
 SET_PAGE2       ENT
                 LDA #$40
-                BNE SET_PAGE        ; always
+                BNE SET_PAGE            ; always
 SET_PAGE1       ENT
                 LDA #$20
 SET_PAGE        ENT
@@ -97,7 +97,7 @@ DIV7HI          ENT
                 HEX 26262626262626
                 HEX 27272727272727
 
-HMASKS          ENT
+BIT_TABLE       ENT                     ; must be low to high
                 DB  %00000001
                 DB  %00000010
                 DB  %00000100
@@ -105,6 +105,9 @@ HMASKS          ENT
                 DB  %00010000
                 DB  %00100000
                 DB  %01000000
+                DB  %10000000
+
+; TODO: consider bit MASK_TABLE too
 
 LEFT_MASKS      DB  %00000000
                 DB  %00000001
@@ -114,7 +117,7 @@ LEFT_MASKS      DB  %00000000
                 DB  %00011111
                 DB  %00111111
 
-RIGHT_MASKS     DB  %01111110       ; NOTE: right masks are inclusive
+RIGHT_MASKS     DB  %01111110           ; NOTE: right masks are inclusive
                 DB  %01111100
                 DB  %01111000
                 DB  %01110000
@@ -122,7 +125,7 @@ RIGHT_MASKS     DB  %01111110       ; NOTE: right masks are inclusive
                 DB  %01000000
                 DB  %00000000
 
-                DS  \,$EE           ; TODO: use these bytes
+                DS  \,$EE               ; TODO: use these bytes
 
 DIV7            ENT
                 HEX 00000000000000

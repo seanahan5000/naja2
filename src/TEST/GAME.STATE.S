@@ -14,7 +14,7 @@
 ;  9:  61 bytes
 ;   = 665 bytes
 ; TODO: make this handle more than just shell 17
-MAP_VISITED     DS  217,$FF
+MAP_VISITED     DS  217,$FF     ; cleared by default
 
                 DS 39
 
@@ -27,7 +27,14 @@ KNOWN_ALIENS_345                ; 65 of 72 bits
                 HEX FFFFFF
                 HEX FFFF80
 
-                DS  107
+ENCOUNTER_SPAWNS
+                HEX 00000000    ; 32 bits per shell, for now
+                HEX 00000000
+                HEX 00000000
+                HEX 00000000
+                HEX 00000000
+
+                DS  87
 
 LOST_CHARS      DB  0           ; $BC7D
 GRPCONT         DB  6           ; $BC7E ; number of characters, including dead/compressed?

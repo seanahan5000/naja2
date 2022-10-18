@@ -32,7 +32,8 @@
                 ; LDA #side_MS
                 ; STA DISK_SIDE
                 ; LDA #0
-                ; STA SHELL
+                LDA #1
+                STA SHELL
 
                 ; LDA #6
                 ; STA GROUP_SIZE
@@ -58,15 +59,23 @@
                 LDA #6
                 STA RANGE
 
+                LDX #<:KEY_FILTER
+                LDY #>:KEY_FILTER
+                JSR SET_KEY_FILTER
+
                 LDX #<:HALL_FILTER
                 LDY #>:HALL_FILTER
-                JSR HALL_SET_FILTER
+                JSR SET_HALL_FILTER
 
                 JSR GET_NSEW
                 JSR DRAW_HALL
                 JMP HALL_KEYS
 
-:HALL_FILTER    CMP #"S"
+:HALL_FILTER    JSR DISPATCH
+                CLC
+                RTS
+
+:KEY_FILTER     CMP #"S"
                 BEQ :GO_CAMP
                 CMP #"M"
                 BEQ :GO_MAP
@@ -87,7 +96,29 @@
                 SEC
                 RTS
 
-                PUT MAP17
-                PUT ALIEN.ID
+SHELL           DB  $00                 ; TODO: move this someplace real
 
+BIG_MAP         =   1
+                PUT DISPATCH
+                PUT MAP17
+
+ELEVATOR_123    RTS
+ELEVATOR_FAR    RTS
+SHIP_SOUND      RTS
+GREEN_NET       RTS
+AIRLOCK         RTS
+VIEWPORT        RTS
+ROTATE          RTS
+IN_ONE_WAY      RTS
+DOOR_SIGN       RTS
+DATACARD_COMP   RTS
+WEAPON_FOUND    RTS
+KING_RUUIK      RTS
+KILROY          RTS
+IS_DOOR         RTS
+NOT_DOOR        RTS
+ORB_GUARD       RTS
+ORB_PEDESTAL    RTS
+
+                PUT ALIEN.ID
                 SAV CONTROL

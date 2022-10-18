@@ -25,17 +25,12 @@ HALL_DRIVER     JSR INIT_RANDOM
                 JSR DRAW_HALL           ; fall through
         FIN
 
-HALL_SET_FILTER ENT
-                STX FILTER_MOD+1
-                STY FILTER_MOD+2
-                RTS
-
 HALL_KEYS       ENT
                 JSR RANDOM
                 LDA KEYBRD
                 BPL HALL_KEYS
                 BIT UNSTROB
-FILTER_MOD      JSR FILTER_KEYS
+                JSR FILTER_KEYS
                 BCS HALL_KEYS
                 JSR CHECK_UP
                 BEQ :FORWARD
@@ -46,21 +41,24 @@ FILTER_MOD      JSR FILTER_KEYS
                 JSR CHECK_LEFT
                 BNE HALL_KEYS           ; fall through
 
-:LEFT           JSR TURN_LEFT
+:LEFT           JSR SAVE_MAP_POS
+                JSR TURN_LEFT
                 JSR GET_NSEW
                 LDX #1
                 JSR FILTER_HALL
                 BCS HALL_KEYS
                 BCC :REDRAW             ; always
 
-:RIGHT          JSR TURN_RIGHT
+:RIGHT          JSR SAVE_MAP_POS
+                JSR TURN_RIGHT
                 JSR GET_NSEW
                 LDX #1
                 JSR FILTER_HALL
                 BCS HALL_KEYS
                 BCC :REDRAW             ; always
 
-:AROUND         JSR TURN_AROUND
+:AROUND         JSR SAVE_MAP_POS
+                JSR TURN_AROUND
                 JSR GET_NSEW
                 LDX #1
                 JSR FILTER_HALL
@@ -73,6 +71,7 @@ FILTER_MOD      JSR FILTER_KEYS
                 BEQ :SCAN
                 CMP #FRONT_WALL
                 BEQ :STOP
+                JSR SAVE_MAP_POS
                 JSR MOVE_FORWARD
                 JSR MARK_MAPPED
                 JSR GET_NSEW
@@ -84,7 +83,8 @@ FILTER_MOD      JSR FILTER_KEYS
                 JSR DRAW_HALL
                 JMP HALL_KEYS
 
-:SCAN           JSR SCAN_HALL
+:SCAN           JSR SAVE_MAP_POS
+                JSR SCAN_HALL
                 JSR MARK_MAPPED
                 JMP HALL_KEYS
 
@@ -99,12 +99,21 @@ BLIP            LDX #$50
                 BNE :1
                 RTS
 
-; TODO: make into hooks later
-
-FILTER_KEYS     CLC
+SET_KEY_FILTER  ENT
+                STX FILTER_KEYS+1
+                STY FILTER_KEYS+2
                 RTS
 
-FILTER_HALL     CLC
+FILTER_KEYS     JMP DEFAULT_FILTER
+
+SET_HALL_FILTER ENT
+                STX FILTER_HALL+1
+                STY FILTER_HALL+2
+                RTS
+
+FILTER_HALL     JMP DEFAULT_FILTER
+
+DEFAULT_FILTER  CLC
                 RTS
 
 SHOW_MAP        ENT
@@ -308,6 +317,29 @@ SWAP_MAP_STATE  LDX MAP_STATE_PTR
 
 MAP_STATE_PTR   DB  6*3
 MAP_STATE_STACK DS  6*3
+;
+; Save/restore MAP_FACE through MAP_PTR_H, separate from
+;   state stack.  Used for backing up when running from fight.
+; TODO: consider using a random location nearby
+;
+SAVE_MAP_POS    LDX #0
+:1              LDA MAP_FACE,X
+                STA SAVED_MAP_POS,X
+                INX
+                CPX #6
+                BNE :1
+                RTS
+
+RESTORE_MAP_POS LDX #0
+:1              LDA SAVED_MAP_POS,X
+                STA MAP_FACE,X
+                INX
+                CPX #6
+                BNE :1
+                RTS
+
+;*** put this some place that survives load/store? ***
+SAVED_MAP_POS   DS  6
 
 SET_MAP_DATA    ENT
                 STX MAP_PTR_MOD_L+1

@@ -292,7 +292,7 @@ RECT_LOOP       STX TOP
                 STA (SCREENL),Y
 :3              LDA TEMP_COLOR
                 AND #$80
-                ORA HMASKS,X
+                ORA BIT_TABLE,X
                 STA LEFT_MASK
 
                 LDA TEMP_COLOR
@@ -314,7 +314,7 @@ RECT_LOOP       STX TOP
                 PLA
                 STA TEMP_COLOR
                 AND #$80
-                ORA HMASKS,X
+                ORA BIT_TABLE,X
                 STA RIGHT_MASK
 
                 LDX TOP
@@ -420,7 +420,7 @@ OP_VLINE_TO     LDA (OP_PTR),Y
                 STA AND_MASK
                 EOR #$FF
                 LDY XSHIFT
-                ORA HMASKS,Y
+                ORA BIT_TABLE,Y
                 STA LEFT_MASK
 
                 LDY XCOORD

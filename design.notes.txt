@@ -21,3 +21,4 @@ x Change DAMAGE to HEALTH in stats (easier for player)
 X Scroll through individuals in camp with <- and -> arrows
 * Better alien masking when drawing over tunnels
     * Trade having fewer aliens for better masking information
+* Cube on its corner rotating around orb (see portugal picture)

@@ -81,7 +81,7 @@ SCRATCH_PAGE    =   $BB00       ; TODO: place somewhere else
 
                 DUMMY $BB00
 
-MAP_VISITED     DS  217;,$FF
+MAP_VISITED     DS  217
 
                 DS 39
 
@@ -89,7 +89,10 @@ KNOWN_ALIENS_12  DS 9           ; 72 bits
 KNOWN_ALIENS_345 DS 9           ; 65 of 72 bits
 KNOWN_ALIENS_END
 
-                DS  107
+ENCOUNTER_SPAWNS DS 20          ; 5 shells * 4 bytes
+
+                DS  87
+
 LOST_CHARS      DS  1           ; $BC7D
 GRPCONT         DS  1           ; $BC7E ; number of characters, including dead/compressed?
 GRPNUMB         DS  1           ; $BC7F ; number of living characters in group
