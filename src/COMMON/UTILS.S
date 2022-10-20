@@ -178,6 +178,19 @@ CHECK_RIGHT     ENT
                 CMP #$95            ; right arrow
 :1              RTS
 
+CHECK_MOVE      ENT
+                JSR CHECK_UP
+                BNE CHECK_TURN
+                RTS
+
+CHECK_TURN      ENT
+                JSR CHECK_LEFT
+                BEQ :1
+                JSR CHECK_RIGHT
+                BEQ :1
+                JSR CHECK_DOWN
+:1              RTS
+
 CHECK_ENTER     ENT
                 CMP #" "
                 BEQ :1

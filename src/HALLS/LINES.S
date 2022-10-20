@@ -26,7 +26,8 @@ PREV_XY         LDA XYDATAL
 ;   A: count of segments clipped
 ;   Z: zero status of clipped segment count
 ;
-DRAW_SEGMENTS   STX LINE_PTR
+DRAW_SEGMENTS   ENT
+                STX LINE_PTR
                 STY LINE_PTRH
                 LDA #0
                 STA CLIP_ENABLE

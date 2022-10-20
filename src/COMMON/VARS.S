@@ -76,8 +76,9 @@ COLOR           =   $E4
 PAGE            =   $E6
 
 ; HALLS use $F0-$F7
+; TODO: move contents of HALLS/VARS.S here
 
-SCRATCH_PAGE    =   $BB00       ; TODO: place somewhere else
+SCRATCH_PAGE    =   $BA00       ; TODO: place somewhere else
 
                 DUMMY $BB00
 

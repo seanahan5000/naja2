@@ -102,8 +102,8 @@ BIG_MAP         =   1
                 PUT DISPATCH
                 PUT MAP17
 
-ELEVATOR_123    RTS
-ELEVATOR_FAR    RTS
+; ELEVATOR_123    RTS
+; ELEVATOR_FAR    RTS
 SHIP_SOUND      RTS
 GREEN_NET       RTS
 AIRLOCK         RTS
@@ -121,4 +121,5 @@ ORB_GUARD       RTS
 ORB_PEDESTAL    RTS
 
                 PUT ALIEN.ID
+                PUT ELEVATOR
                 SAV CONTROL

@@ -1,4 +1,6 @@
 
+; TODO: get rid of this and move into COMMON/VARS.S
+
 MAP_SIZE        =   $F0
 MAP_FACE        =   $F1         ; must be sequential
 MAP_X           =   $F2         ; must be sequential

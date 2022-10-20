@@ -9,9 +9,6 @@
                 PUT UTILS
                 PUT BLIT
                 PUT PICT
-
-                DS 24               ;***
-
                 PUT UNPACK
                 PUT SHAPES
                 PUT TEXT

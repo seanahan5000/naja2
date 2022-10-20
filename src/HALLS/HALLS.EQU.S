@@ -22,17 +22,6 @@ TEMP_PTR_H      =   $07
 DATA_TEMP1      =   $08
 DATA_TEMP2      =   $09
 
-                PUT VARS
-
-; MAP_SIZE        =   $30
-; MAP_FACE        =   $31         ; must be sequential
-; MAP_X           =   $32         ; must be sequential
-; MAP_Y           =   $33         ; must be sequential
-; MAP_DIR         =   $34         ; must be sequential
-; MAP_PTR         =   $35         ; must be sequential
-; MAP_PTR_H       =   $36         ; must be sequential
-; TODO: do MAP_PTR_L/H really need permanent zpage?
-
 ; for hall scanning and drawing
 BLOCK_COUNT     =   $66
 
