@@ -9,7 +9,6 @@
 
                 EXP OFF
                 PUT /NAJA/VARS/CONSTANTS
-                PUT /HALLS/HALLS.EQU
 
 CrossHeight     =   37
 ScrollDY        =   5
@@ -23,39 +22,13 @@ ON_LINE         =   $C3
 OFF_LINE        =   $C4
 COPY_COUNT      =   $C5
 
-; TODO: split this back into resident and loaded pieces
+ELEVATOR_MOD    DB  modElevator
 
-ELEVATOR_FAR    JSR DRAW_PICT
-                PictSetPage2
-                PictClearPage
-                PictCall DRAW_HALL
-                PictSetBlack1
-                PictMoveTo $66;$74
-                PictLineTo $AE;$74
-                PictSetWhite1
-                PictRect $6D;$62;$A7;$86
-                PictCall DRAW_DIAGS_FAR
-                PictShowPage
-                PictSetPage1
-                PictCopyToPage
-                PictShowPage
-                PictEnd
-:1              BIT UNSTROB
-:2              LDA KEYBRD
-                BPL :2
-                JSR CHECK_MOVE
-                BNE :1
-                CLC
-                RTS
-
-ELEVATOR_123    LDA #0
-                BEQ ELEVATOR_CMN        ; always
-ELEVATOR_345    LDA #1
 ELEVATOR_CMN    STA FLAG_345
-
                 JSR DRAW_PICT
                 PictSetPage2
                 PictClearPage
+                PictCall GET_NSEW
                 PictCall DRAW_HALL
                 PictSetBlack1
                 PictMoveTo $45;$66
@@ -98,7 +71,7 @@ ELEVATOR_CMN    STA FLAG_345
                 BPL :KEY_LOOP
                 JSR CHECK_TURN
                 BNE :4
-                CLC
+                SEC
                 RTS
 
 :4              BIT UNSTROB
@@ -233,32 +206,6 @@ MIDDLER
 ;                 DB  $00,$00,$1B
 ;                 DB  $D8,$FF,$C0
 
-
-DRAW_DIAGS_FAR  LDX #<DIAG_DATA_FAR
-                LDY #>DIAG_DATA_FAR
-                BNE DRAW_DIAGS_CMN      ; always
-DRAW_DIAGS_CLOSE
-                LDX #<DIAG_DATA_CLOSE
-                LDY #>DIAG_DATA_CLOSE
-DRAW_DIAGS_CMN  STX XYDATAL
-                STY XYDATAH
-                LDX #<diagonals
-                LDY #>diagonals
-                JMP DRAW_SEGMENTS
-
-diagonals       DB  ORD_B, ORD_E
-                DB  ORD_A, ORD_F
-                DB  ORD_B, ORD_G
-                DB  ORD_MOVE
-                DB  ORD_C, ORD_E
-                DB  ORD_D, ORD_F
-                DB  ORD_C, ORD_G
-                DB  ORD_STOP
-
-;                    A   B   C   D   E   F   G
-DIAG_DATA_FAR   DB  $65,$6D,$A7,$AF,$62,$74,$86
-DIAG_DATA_CLOSE DB  $44,$4F,$C8,$D3,$41,$66,$89
-
 FLAG_345        DB  $00
 DEST_SHELL      DB  $00
 
@@ -289,7 +236,7 @@ COPY_CROSS      LDA #<CROSS_BEGIN
 
 LOAD_SHELL      LDX DEST_SHELL
                 LDA DISK_SIDES-1,X
-                STA DISK_SIDE
+                JSR SET_DISK_SIDE
             do 0
 ; Load control file based on DEST_SHELL
 ;   and file table in camp
@@ -300,10 +247,10 @@ LOAD_SHELL      LDX DEST_SHELL
                 JSR SLOAD_FILE
 
                 LDX #$03
-:LOOP5          LDA SHELL_INFO,X
+:1              LDA SHELL_INFO,X
                 STA MAPSPOT,X
                 DEX
-                BPL :LOOP5
+                BPL :1
             fin
                 RTS
 

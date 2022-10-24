@@ -21,6 +21,12 @@ x Change DAMAGE to HEALTH in stats (easier for player)
 X Scroll through individuals in camp with <- and -> arrows
 * Better alien masking when drawing over tunnels
     * Trade having fewer aliens for better masking information
+* Turn off mapping in dark areas
+* Some type of mapping interference to force hand-mapping temporarily
 * Cube on its corner rotating around orb (see portugal picture)
 * Crafting? Raw-materials?
 * Equipment buffs?
+* More puzzles?
+    * Puzzle of unlocking portable airlocks to access area
+
+

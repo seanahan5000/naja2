@@ -82,15 +82,12 @@ DIAGNOSE        JSR BIG_STATS_BOX
 :NO_CANCEL      STX ITARGET_CHAR
                 LDA #$00
 DIAG_MERGE      PHA                     ; called from KILLED_HIM
-                ; LDA CAMP_HERE
-                ; AND #bit_Diagnose
-                ; BNE :SKIPA
-                ; LDX #cDiagnose
-                ; JSR SLOAD_FILE
-                ; LDA CAMP_HERE
-                ; ORA #bit_Diagnose
-                ; STA CAMP_HERE
-:SKIPA          PLA
+                LDA DIAGNOSE_MOD        ; TODO: used common/fixed address
+                CMP #modDiagnose
+                BEQ :1
+                LDX #fileDiagnose
+                JSR LOAD_FILE
+:1              PLA
                 JSR DIAGNOSER
                 PLA
                 PLA

@@ -1,17 +1,25 @@
-				TR	ON
+
+                EXP OFF
+
+SAME_PAGE_AS    MAC
+                ERR >(*-1!]1)
+                EOM
+
 *==================================
 *
 * NDOS (Naja Disk Operating System)
 *    for 5.25 inch Disk ][ disks
 *
 *==================================
-				LST	OFF
 
 NEW_DOS			=	1				;***
 
 STRACK			=	$B1
 SSTOREH			=	$B2
 DISK_SIDE		=	$B3
+
+FILES			=	$B4
+FILESH			=	$B5
 
 MOTCNTL			=	$B8
 MOTCNTH			=	$B9
@@ -27,9 +35,6 @@ PTR1			=	MOTCNTL			;and PTR1+1
 *NUM_DRIVES = $3C0 ;0 or 1
 *SLOT_X0 = $3C1
 *EXTRA_64K = $3C2
-
-UN_WRITE_PRO	=	$1FFA
-ASK_VECTOR		=	$1FFD
 
 BUFFER1			=	$0200
 BUFFER2			=	$0300
@@ -67,7 +72,7 @@ READ_VECTOR		JMP	READ_SECTORS
 *    0 = BOOT, 1 = UNUSED
 *    2 = TRACC 17,15,  3 = TRACC 13,11,9
 *    4 = FIGHT 17,15,  5 = FIGHT 13,11,9
-				
+
 READ_ADDRESS	LDX	SLOT_X0
 				LDY	#$F0
 				STY	HOLDA
@@ -75,24 +80,24 @@ READ_ADDRESS	LDX	SLOT_X0
 				BNE	:1
 				INC	HOLDA
 				BEQ	:ERROR
-				
+
 :1				LDA	READER,X
 				BPL	:1
 :RETRY2			CMP	#$D5
 				BNE	:RETRY1
 				NOP
-				
+
 :2				LDA	READER,X
 				BPL	:2
 				CMP	#$AA
 				BNE	:RETRY2
 				LDY	#3
-				
+
 :3				LDA	READER,X
 				BPL	:3
 				CMP	#$96
 				BNE	:RETRY2
-				
+
 				LDA	#$00
 :4				STA	HOLDB			; clear checksum
 :5				LDA	READER,X
@@ -108,18 +113,18 @@ READ_ADDRESS	LDX	SLOT_X0
 				BPL	:4
 				TAY
 				BNE	:ERROR			; bad checksum
-				
+
 :7				LDA	READER,X
 				BPL	:7
 				CMP	#$DE
 				BNE	:ERROR
 				NOP
-				
+
 :8				LDA	READER,X
 				BPL	:8
 				CMP	#$AA
 				BNE	:ERROR
-				
+
 				LDX	SECTOR_FOUND
 				LDA	INTERLEAVE,X	; physical to logical
 				EOR	SECTOR
@@ -127,12 +132,12 @@ READ_ADDRESS	LDX	SLOT_X0
 				BNE	READ_ADDRESS
 :SUCCESS		CLC
 				RTS
-				
+
 :ERROR			SEC
 				RTS
-				
+
 			else	; NEW_DOS = 0
-			
+
 *** D_HEAD1,SIDE CODE,D_HEAD2,TRACK (5+5),SECTOR (5+5)
 *** SIDE CODE = 11111AAA where AAA = SIDE+1
 *    0 = BOOT, 1 = UNUSED
@@ -199,7 +204,6 @@ ERROR			SEC
 				RTS
 			fin	; NEW_DOS = 0
 
-
 READ_DATA		LDX	SLOT_X0
 				LDY	#$20
 ERRCNT			DEY
@@ -237,7 +241,6 @@ LOOP5			LDY	READER,X
 				BNE	CHECK3
 LOOP6			LDY	READER,X
 				BPL	LOOP6
-				EOR	EOVALUE
 				CMP	CODETAB,Y
 				BNE	ERROR2
 				CLC
@@ -262,6 +265,7 @@ DENIBLR
 				INY
 				CPY	HOLDA
 				BNE	:LOOP2
+				SAME_PAGE_AS :LOOP1
 				LDX	BANK
 *** HIT BANK SWITCH HERE IF NEEDED
 				RTS
@@ -275,9 +279,8 @@ DENIBLR
 * SSTOREL = DESTINATION ADDRESS (LOW)
 * SSTOREH = DESTINATION ADDRESS (HIGH)
 
-READ_SECTORS	STA	SECOUNT
-				TXA
-				AND	#%00001111
+READ_SECTORS	TXA
+				AND	#$0F
 				STA	SECHOLD
 				STX	STRACK
 				TYA
@@ -287,6 +290,7 @@ READ_SECTORS	STA	SECOUNT
 				DEX
 				BNE	:LOOP0
 
+READ_SECTORS2							;*** RENAME?
 *SEI
 				NOP					;Remove when SEI put in
 
@@ -348,7 +352,8 @@ TURN_OFF		LDX	SLOT_X0
 				STA	DRIVOFF,X
 RETURN			RTS
 
-WRITE_PRO		JSR	GET_FAST_SIDE	;This routine assumes that
+CHECK_WRITPRO	ENT
+				JSR	GET_FAST_SIDE	;This routine assumes that
 :LOOP1			LDX	SLOT_X0			;   drive is up to speed on entry
 				LDA	$C08D,X
 				LDA	LATCHIN,X
@@ -385,7 +390,7 @@ GET_SLOW_SIDE	LDX	#0
 				BEQ	GOT_THE_SIDE
 :SKIPB			JSR	TURN_OFF
 				LDA	DISK_SIDE
-				JSR	ASK_VECTOR		;Ask for side
+				JSR	ASK_FOR_SIDE
 				JMP	GET_SLOW_SIDE
 
 				NOP					;FREE SPACE
@@ -506,7 +511,7 @@ CODETAB			=	*-$96
 				DB	$39,$3A,$3B
 				DB	$3C,$3D,$3E
 				DB	$3F
-				
+
 INTERLEAVE		DB	$00,$08,$01,$09,$02,$0A,$03,$0B
 				DB	$04,$0C,$05,$0D,$06,$0E,$07,$0F
 			else
@@ -606,6 +611,7 @@ DELOOP			DEX
 NOCARRY			SEC
 				SBC	#$01
 				BNE	DELAYER
+				SAME_PAGE_AS DELAYER
 				RTS
 
 DELAYS2			DB	$70,$2C,$26
@@ -617,6 +623,91 @@ DELAYS			DB	$01,$30,$28
 				DB	$24,$20,$1E
 				DB	$1D,$1C,$1C
 				DB	$1C,$1C,$1C
+;
+; On entry:
+;	X: file hook address low
+;	Y: file hook address high
+;
+SET_FILE_HOOK	ENT
+				STX TO_FILE_HOOK+1
+				STY TO_FILE_HOOK+2
+				RTS
+
+UN_WRITE_PRO	SEC
+				BCS TO_FILE_HOOK		; always
+ASK_FOR_SIDE	CLC
+TO_FILE_HOOK	JMP	DEFAULT_HOOK		; modified
+DEFAULT_HOOK	RTS
+;
+; On entry:
+;	A: new disk side
+;
+; On exit:
+;	X: unchanged
+;	Y: unchanged
+;
+SET_DISK_SIDE	ENT
+				STA DISK_SIDE
+				RTS
+;
+; On entry:
+;	X: file table address low
+;	Y: file table address high
+;
+SET_FILE_TABLE	ENT
+				STX FILES
+				STY FILESH
+				RTS
+;
+; On entry:
+;	X: file index
+;
+LOAD_FILE       ENT
+				LDA #%00000000      ; was SLOAD_FILE
+                BEQ LOAD_FILE_CMN   ; always
+_LOAD_FILE      ENT
+				LDA #%10000000      ; was FLOAD_FILE
+                BNE LOAD_FILE_CMN   ; always
+LOAD_FILE_      ENT
+				LDA #%01000000      ; was SLOADER_FILE
+                BNE LOAD_FILE_CMN   ; always
+_LOAD_FILE_     ENT
+				LDA #%11000000      ; was FLOADER_FILE
+LOAD_FILE_CMN	STA ON_OFF_FLAG
+				TXA
+				ASL
+				ASL
+				TAY
+				LDA (FILES),Y
+				STA STRACK
+				INY
+				LDA (FILES),Y
+				STA SECHOLD
+				INY
+				LDA (FILES),Y
+				STA SECOUNT
+				INY
+				LDA (FILES),Y
+				STA SSTOREH
+				JMP READ_SECTORS2
+
+SET_LOAD_ADDR	ENT
+				STY SSTOREH
+				STA SECOUNT
+				RTS
+
+LOAD_DATA       ENT
+				LDA #%00000000      ; was SLOAD
+                BEQ LOAD_DATA_CMN   ; always
+_LOAD_DATA      ENT
+				LDA #%10000000      ; was FLOAD
+                BNE LOAD_DATA_CMN   ; always
+LOAD_DATA_      ENT
+				LDA #%01000000      ; was SLOADER
+                BNE LOAD_DATA_CMN   ; always
+_LOAD_DATA_     ENT
+				LDA #%11000000      ; was FLOADER
+LOAD_DATA_CMN	JMP READ_SECTORS
 
 TRACK			DS	1
 SECTOR			DS	1
@@ -645,12 +736,10 @@ EXTRA_64K		DB	$00				;TEMP***
 				DS	$800-8-*
 
 ON_OFF_FLAG		DS	1
-EOVALUE			DB	$00
+EOVALUE			DB	$00					; TODO: remove, obsolete
 LAST1			DB	$00
 SSTOREL			DB	$00
 BANK			DB	$00				;0 OR 1 ???
-
-CHECK_WRITPRO	JMP	WRITE_PRO
 
 				SAV	NDOS.525
 

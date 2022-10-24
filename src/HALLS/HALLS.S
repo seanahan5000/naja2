@@ -84,9 +84,13 @@ HALL_KEYS       ENT
                 JMP HALL_KEYS
 
 :SCAN           JSR SAVE_MAP_POS
-                JSR SCAN_HALL
+                JSR MOVE_FORWARD
                 JSR MARK_MAPPED
-                JMP HALL_KEYS
+                LDX #3
+                JSR FILTER_HALL
+                BCS :1
+                JSR SCAN_HALL
+:1              JMP HALL_KEYS
 
 :STOP           JSR BLIP
                 JMP HALL_KEYS

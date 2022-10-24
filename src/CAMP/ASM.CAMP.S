@@ -5,6 +5,8 @@
                 PUT /HALLS/VARS
                 PUT /HALLS/EXT
 
+                PUT /NDOS/EXT
+
                 ORG $E000
                 PUT T.CAMP
                 PUT MISC.COMMONS
@@ -17,17 +19,16 @@
 
                 PUT C.ISTATS
                 PUT I.SEESTATS
-                PUT I.TRANSFER      ;***
+                PUT I.TRANSFER
                 PUT I.REGENERATE    ; must be in same bank as I.TRANSFER
 
 ; TODO: move later
-; NOTE: these are swapped from original Naja code
-BANK_1          LDA $C083
-                LDA $C083
+BANK_1          LDA $C08B
+                LDA $C08B
                 RTS
 
-BANK_2          LDA $C08B
-                LDA $C08B
+BANK_2          LDA $C083
+                LDA $C083
                 RTS
 
 SHELL           DB  $1              ; TODO: move later
@@ -36,6 +37,7 @@ SHELL           DB  $1              ; TODO: move later
                 ORG $D000           ; bank 1
                 PUT C.TRADE
                 PUT C.REFORMAT
+                PUT TOPVIEWS
                 SAV CAMP.D000.M1
 
                 ORG $D000           ; bank 2
@@ -43,12 +45,15 @@ SHELL           DB  $1              ; TODO: move later
                 PUT I.USE           ; must be in same bank as I.MOVE
                 PUT I.EXAMINE       ; must be in same bank as I.MOVE
                 PUT I.COMPRESS
+                PUT C.ISTATS.DATA
                 SAV CAMP.D000.M2
 
                 ORG $9000
                 PUT /TEST/CHARACTERS
                 PUT /TEST/EQUIPMENT
                 PUT /TEST/STATS
-                PUT /TEST/TOPVIEWS
-                PUT I.DIAGNOSE
                 SAV CAMP.9000
+
+                ORG $A000
+                PUT I.DIAGNOSE
+                SAV DIAGNOSE

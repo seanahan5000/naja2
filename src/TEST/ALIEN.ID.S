@@ -14,21 +14,14 @@ ImageCornerLeft   = 40-ImageCornerWidth
 ImageCornerTop    = 1
 ImageCornerHeight = 150
 
-STRACK          =   $B1
-SSTOREH         =   $B2
-DISK_SIDE       =   $B3
-
-; TODO: switch to ENT-derived symbols
-READ_VECTOR     =   $0406
-ON_OFF_FLAG     =   $07F8
-
-NAME_BUFFER     =   $A000
-DESC_BUFFER     =   $A500
-OFFSET_BUFFER   =   $A700
-ALIEN_COUNT     =   $A700
-OFFSET_TABLE    =   $A701
-KNOWN_LIST      =   $A800
-DATA_TABLE      =   $A900
+; TODO: use DUMMY after code
+NAME_BUFFER     =   $A800
+DESC_BUFFER     =   $AD00
+OFFSET_BUFFER   =   $AF00
+ALIEN_COUNT     =   $AF00
+OFFSET_TABLE    =   $AF01
+KNOWN_LIST      =   $B000
+DATA_TABLE      =   $B100
 
 KNOWN_INDEX     =   $C0
 KNOWN_COUNT     =   $C1
@@ -47,20 +40,22 @@ PPIC            =   $C5
 PPIC_H          =   $C6
 
 DESC_BASE       =   $C7
-; $C8
-; $C9
-; $CA
-WINDOW_TOP_ALIEN =  $CB                 ; alien index
-WINDOW_HEIGHT   =   $CC                 ; <= MaxNameListCount
-CURSOR_LINE     =   $CD                 ; index from 0 to WINDOW_HEIGHT-1
-INDEX           =   $CE
-ARROWS_VISIBLE  =   $CF
+WINDOW_TOP_ALIEN =  $C8                 ; alien index
+WINDOW_HEIGHT   =   $C9                 ; <= MaxNameListCount
+CURSOR_LINE     =   $CA                 ; index from 0 to WINDOW_HEIGHT-1
+INDEX           =   $CB
+ARROWS_VISIBLE  =   $CC
 
-ALIEN_BASE_12   =   $0000
-ALIEN_BASE_345  =   $0100
+; used by LOAD_DESC and LOAD_ALIEN
+OFFSET_L        =   $CD
+OFFSET_H        =   $CE
+BYTE_COUNT      =   $CF
 
-ALIEN_DESC_12   =   $0200
-ALIEN_DESC_345  =   $0210
+AlienBase12TS   =   $000
+AlienBase345TS  =   $0B0
+
+AlienDesc12TS   =   $170
+AlienDesc345TS  =   $180
 
                 DUMMY SCRATCH_PAGE
 ALIGNMENT       DS  72
@@ -74,13 +69,11 @@ ALIGNMENT       DS  72
 ; - show x/n count
 ; - vertically center description text
 
+ALIEN_ID_MOD    DB  modAlienId
+
 IDENTIFIED_ALIENS
                 LDA #1
                 STA ALIEN_SET
-
-                ; TODO: eventually not needed
-                LDA #$00
-                STA DISK_SIDE
 
                 LDA #$FF
                 STA DESC_BASE
@@ -493,19 +486,17 @@ SHOULD_ABORT    PHA
                 PLA
                 RTS
 
-LOAD_NAMES      LDA #>NAME_BUFFER
-                STA SSTOREH
-                LDA #%00000000          ; spin up/down
-                STA ON_OFF_FLAG
-                LDX #<ALIEN_DESC_12
-                LDY #>ALIEN_DESC_12
+LOAD_NAMES      LDY #>NAME_BUFFER
+; TODO: could be dropped to 4 if one name is removed from ALIEN.DESC.12
+                LDA #5                  ; 5 sectors
+                JSR SET_LOAD_ADDR
+                LDX #<AlienDesc12TS
+                LDY #>AlienDesc12TS
                 LDA ALIEN_SET
                 BEQ :1
-                LDX #<ALIEN_DESC_345
-                LDY #>ALIEN_DESC_345
-:1              LDA #5                  ; 5 sectors
-; TODO: could be dropped to 4 if one name is removed from ALIEN.DESC.12
-                JSR READ_VECTOR
+                LDX #<AlienDesc345TS
+                LDY #>AlienDesc345TS
+:1              JSR LOAD_DATA           ; spin up/down
 
                 LDX NAME_BUFFER+0
                 INX                     ; skip DATA_END_xx offset
@@ -527,18 +518,16 @@ NAMES_MODA      LDX #$FF
 NAMES_MODB      LDY #$FF
                 JMP GET_IND_STRING
 
-LOAD_OFFSETS    LDA #>OFFSET_BUFFER
-                STA SSTOREH
-                LDA #%00000000          ; spin up/down
-                STA ON_OFF_FLAG
-                LDX #<ALIEN_BASE_12
-                LDY #>ALIEN_BASE_12
+LOAD_OFFSETS    LDY #>OFFSET_BUFFER
+                LDA #1                  ; one sector
+                JSR SET_LOAD_ADDR
+                LDX #<AlienBase12TS
+                LDY #>AlienBase12TS
                 LDA ALIEN_SET
                 BEQ :1
-                LDX #<ALIEN_BASE_345
-                LDY #>ALIEN_BASE_345
-:1              LDA #1                  ; one sector
-                JMP READ_VECTOR
+                LDX #<AlienBase345TS
+                LDY #>AlienBase345TS
+:1              JMP LOAD_DATA           ; spin up/down
 
 BUILD_KNOWN_LIST
                 LDX #KNOWN_ALIENS_12-KNOWN_ALIENS_12
@@ -578,11 +567,6 @@ CLEAR_DESC      JSR DRAW_PICT
                 PictEnd
                 RTS
 
-; NOTE: assumes READ_VECTOR does not use LOCAL_TEMPs
-OFFSET_L        =   LOCAL_TEMP+0
-OFFSET_H        =   LOCAL_TEMP+1
-BYTE_COUNT      =   LOCAL_TEMP+2
-
 LOAD_DESC       LDX KNOWN_INDEX
                 LDA KNOWN_LIST,X
                 ASL
@@ -611,11 +595,11 @@ LOAD_DESC       LDX KNOWN_INDEX
                 STA DESC_BUFFER,X
                 INX
                 BNE :1
-                LDA #>DESC_BUFFER+$100
-                STA SSTOREH
+                LDY #>DESC_BUFFER+$100
+                LDA #1                  ; one sector
+                JSR SET_LOAD_ADDR
                 INC DESC_BASE
                 SEC
-                LDA #1                  ; one sector
                 BNE :COMMON             ; always
 
                 ; shift up and load into bottom half
@@ -626,36 +610,34 @@ LOAD_DESC       LDX KNOWN_INDEX
                 STA DESC_BUFFER+$100,X
                 INX
                 BNE :2
-                LDA #>DESC_BUFFER
-                STA SSTOREH
+                LDY #>DESC_BUFFER
+                LDA #1                  ; one sector
+                JSR SET_LOAD_ADDR
                 DEC DESC_BASE
                 CLC
-                LDA #1                  ; one sector
                 BNE :COMMON             ; always
 
                 ; fill desc buffer with two sectors
-:COPY2          LDA #>DESC_BUFFER
-                STA SSTOREH
+:COPY2          LDY #>DESC_BUFFER
+                LDA #2                  ; two sectors
+                JSR SET_LOAD_ADDR
                 LDA OFFSET_H
                 STA DESC_BASE
                 CLC
-                LDA #2                  ; two sectors
 
-:COMMON         PHA
-                LDX #<ALIEN_DESC_12
-                LDY #>ALIEN_DESC_12
+:COMMON         LDX #<AlienDesc12TS
+                LDY #>AlienDesc12TS
                 LDA ALIEN_SET
                 BEQ :3
-                LDX #<ALIEN_DESC_345
-                LDY #>ALIEN_DESC_345
+                LDX #<AlienDesc345TS
+                LDY #>AlienDesc345TS
 :3              TXA
                 ; carry clear/set above
                 ADC DESC_BASE
                 TAX
                 BCC :4
                 INY
-:4              PLA
-                JSR READ_VECTOR
+:4              JSR LOAD_DATA           ; spin up/down for now
 
 :NO_LOAD        LDA OFFSET_H
                 SEC
@@ -707,9 +689,9 @@ ALIEN_BOTTOM    DB  $00
                 PictEnd
                 RTS
 
-START_OFFSET_H  =   LOCAL_TEMP+0
-END_OFFSET_L    =   LOCAL_TEMP+1
-END_OFFSET_H    =   LOCAL_TEMP+2
+START_OFFSET_H  =   BYTE_COUNT
+END_OFFSET_L    =   OFFSET_L
+END_OFFSET_H    =   OFFSET_H
 
 LOAD_ALIEN      LDX KNOWN_INDEX
                 LDA KNOWN_LIST,X
@@ -725,11 +707,6 @@ LOAD_ALIEN      LDX KNOWN_INDEX
                 LDA OFFSET_TABLE+3,X
                 STA END_OFFSET_H
 
-                LDA #>DATA_TABLE
-                STA SSTOREH
-                LDA #%00000000          ; spin up/down
-                STA ON_OFF_FLAG
-
                 LDX END_OFFSET_H
                 LDA END_OFFSET_L
                 BEQ :2
@@ -737,21 +714,21 @@ LOAD_ALIEN      LDX KNOWN_INDEX
 :2              TXA
                 SEC
                 SBC START_OFFSET_H
-                PHA                     ; SECTOR COUNT
+                LDY #>DATA_TABLE
+                JSR SET_LOAD_ADDR
 
-                LDY #>ALIEN_BASE_12     ; T/S base high
-                LDA #<ALIEN_BASE_12     ; T/S base low
+                LDA #<AlienBase12TS
+                LDY #>AlienBase12TS
                 LDX ALIEN_SET
                 BEQ :3
-                LDY #>ALIEN_BASE_345    ; T/S base high
-                LDA #<ALIEN_BASE_345    ; T/S base low
+                LDA #<AlienBase345TS
+                LDY #>AlienBase345TS
 :3              CLC
                 ADC START_OFFSET_H
                 TAX
                 BCC :4
                 INY
-:4              PLA
-                JSR READ_VECTOR
+:4              JSR LOAD_DATA           ; spin up/down
 
                 ; stuff #$FF at end of compressed data
                 LDA END_OFFSET_H

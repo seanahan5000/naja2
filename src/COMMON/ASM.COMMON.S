@@ -1,6 +1,8 @@
 
                 EXP OFF
 
+                PUT /NAJA/VARS/CONSTANTS
+
                 ORG $0800
 
                 PUT VARS
@@ -15,5 +17,8 @@
                 PUT INPUT
                 PUT FONT
                 PUT CURSORS
+
+                ; TODO: move this from COMMON
+                PUT FILES
 
                 SAV COMMON

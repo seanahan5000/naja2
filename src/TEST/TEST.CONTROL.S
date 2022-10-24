@@ -8,6 +8,8 @@
                 ; PUT /CAMP/VARS
                 PUT /CAMP/EXT
 
+                PUT /NDOS/EXT
+
                 ORG $7400
 
                 JSR INIT_RANDOM
@@ -15,8 +17,8 @@
                 JSR CLEAR_PAGE
 
                 STA $C05F           ;Clear double hires
-                STA $C05A           ;Disable VBL interupt
-                STA $C058           ;Disable mouse interupts
+                STA $C05A           ;Disable VBL interrupt
+                STA $C058           ;Disable mouse interrupts
                 STA $C00E           ;Normal character set
                 STA $C00C           ;40 column
                 STA $C008           ;Use main pages 0,1
@@ -29,11 +31,22 @@
                 STA $C08B           ;read/write $D000-$FFFF, BANK 1
                 STA $C08B
 
+                LDA #side_T1
+                JSR SET_DISK_SIDE
+
                 ; LDA #side_MS
                 ; STA DISK_SIDE
                 ; LDA #0
                 LDA #1
                 STA SHELL
+
+                LDX #<FILE_HOOK
+                LDY #>FILE_HOOK
+                JSR SET_FILE_HOOK
+
+                LDX #<FILE_TABLE
+                LDY #>FILE_TABLE
+                JSR SET_FILE_TABLE
 
                 ; LDA #6
                 ; STA GROUP_SIZE
@@ -63,17 +76,13 @@
                 LDY #>:KEY_FILTER
                 JSR SET_KEY_FILTER
 
-                LDX #<:HALL_FILTER
-                LDY #>:HALL_FILTER
+                LDX #<DISPATCH
+                LDY #>DISPATCH
                 JSR SET_HALL_FILTER
 
                 JSR GET_NSEW
                 JSR DRAW_HALL
                 JMP HALL_KEYS
-
-:HALL_FILTER    JSR DISPATCH
-                CLC
-                RTS
 
 :KEY_FILTER     CMP #"S"
                 BEQ :GO_CAMP
@@ -92,7 +101,12 @@
                 SEC
                 RTS
 
-:GO_ALIEN       JSR IDENTIFIED_ALIENS
+:GO_ALIEN       LDA ALIEN_ID_MOD        ; TODO: used common/fixed address
+                CMP #modAlienId
+                BEQ :1
+                LDX #fileAlienId
+                JSR LOAD_FILE
+:1              JSR IDENTIFIED_ALIENS
                 SEC
                 RTS
 
@@ -102,24 +116,35 @@ BIG_MAP         =   1
                 PUT DISPATCH
                 PUT MAP17
 
-; ELEVATOR_123    RTS
-; ELEVATOR_FAR    RTS
-SHIP_SOUND      RTS
-GREEN_NET       RTS
-AIRLOCK         RTS
-VIEWPORT        RTS
-ROTATE          RTS
-IN_ONE_WAY      RTS
-DOOR_SIGN       RTS
-DATACARD_COMP   RTS
-WEAPON_FOUND    RTS
-KING_RUUIK      RTS
-KILROY          RTS
-IS_DOOR         RTS
-NOT_DOOR        RTS
-ORB_GUARD       RTS
-ORB_PEDESTAL    RTS
+SHIP_SOUND
+GREEN_NET
+AIRLOCK
+VIEWPORT
+ROTATE
+IN_ONE_WAY
+DOOR_SIGN
+DATACARD_COMP
+WEAPON_FOUND
+KING_RUUIK
+KILROY
+IS_DOOR
+NOT_DOOR
+ORB_GUARD
+ORB_PEDESTAL
+                CLC
+                RTS
 
-                PUT ALIEN.ID
-                PUT ELEVATOR
+FILE_TABLE      DB  $19,$00,$0E,$A0     ; 0 - diagnose
+                DB  $1A,$00,$06,$A0     ; 1 - alien.id
+                DB  $1A,$08,$08,$A0     ; 2 - elevator
+
+                PUT LOAD.ELEVATOR
                 SAV CONTROL
+
+                ORG $A000
+                PUT ALIEN.ID
+                SAV ALIEN.ID
+
+                ORG $A000
+                PUT ELEVATOR
+                SAV ELEVATOR

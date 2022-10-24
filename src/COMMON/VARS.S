@@ -71,6 +71,8 @@ CHAR_INDEX      =   $97
 ; TODO: eventually move these down to $00-$03
 LOCAL_TEMP      =   $70         ; $70,$71,$72,$73
 
+; NDOS.525 uses $B0-$BF
+
 ; TODO: does this need to be exposed to callers?
 COLOR           =   $E4
 PAGE            =   $E6

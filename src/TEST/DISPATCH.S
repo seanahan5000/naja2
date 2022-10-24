@@ -60,6 +60,7 @@ DISP_MORE       ; random encounters need to clear SAVE_SPAWN
                 STA SAVE_SPAWN
                 ; TODO: random encounter checks?
                 ; TODO: encounter more common if map not visited?
+                CLC
                 RTS
 
 DISP_SPECIAL    LDX MAP_FACE
@@ -81,10 +82,10 @@ DISP_SPECIAL    LDX MAP_FACE
                 ASL
                 TAX
                 LDA SPECIAL_LIST+0,X
-                PHA
+                STA :MOD+1
                 LDA SPECIAL_LIST+1,X
-                PHA
-                RTS
+                STA :MOD+2
+:MOD            JMP $FFFF
 
 DISP_ENCOUNTER  LDX MAP_FACE
                 LDY ENCOUNTER_START,X

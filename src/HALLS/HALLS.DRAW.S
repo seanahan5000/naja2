@@ -81,7 +81,7 @@ SCAN_HALL       LDA #0
                 SEC
                 SBC #BUFFER_WIDTH
                 STA BLOCK_COUNT
-                JMP MOVE_FORWARD
+                RTS
 
 DRAW_BLOCK      LDA #$00
                 STA LINE_SIDE
