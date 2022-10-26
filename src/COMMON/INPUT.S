@@ -17,10 +17,6 @@ REGET_INPUT     ENT
                 JSR DRAW_CURSOR
                 JMP INPUT_CMN
 ;-------------------------------------------------------------------------------
-; On entry:
-;   X: x position of cursor
-;   Y: y position of cursor
-;
 ; On exit:
 ;   A: key pressed in ASCII format
 ;
@@ -28,10 +24,6 @@ GET_INPUT_KEY   ENT
                 LDA #0
                 BEQ GET_INPUT_LIMIT ; always
 ;-------------------------------------------------------------------------------
-; On entry:
-;   X: x position of cursor
-;   Y: y position of cursor
-;
 ; On exit:
 ;   X: length of string
 ;   TEXT_BUFFER: string in Naja format
@@ -41,8 +33,6 @@ GET_INPUT       ENT
                 ; fall through
 ;-------------------------------------------------------------------------------
 ; On entry:
-;   X: x position of cursor
-;   Y: y position of cursor
 ;   A: maximum characters allowed
 ;
 ; On exit:
@@ -51,8 +41,6 @@ GET_INPUT       ENT
 ;
 GET_INPUT_LIMIT ENT
                 STA MAX_TEXT
-                JSR MOVE_TO
-                JSR TABLER
 
                 LDA #0
                 STA CURSOR_CYCLE

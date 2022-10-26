@@ -15,13 +15,13 @@ ImageCornerTop    = 1
 ImageCornerHeight = 150
 
 ; TODO: use DUMMY after code
-NAME_BUFFER     =   $A800
-DESC_BUFFER     =   $AD00
-OFFSET_BUFFER   =   $AF00
-ALIEN_COUNT     =   $AF00
-OFFSET_TABLE    =   $AF01
-KNOWN_LIST      =   $B000
-DATA_TABLE      =   $B100
+NAME_BUFFER     =   $8000
+DESC_BUFFER     =   $8500
+OFFSET_BUFFER   =   $8700
+ALIEN_COUNT     =   $8700
+OFFSET_TABLE    =   $8701
+KNOWN_LIST      =   $8800
+DATA_TABLE      =   $8900
 
 KNOWN_INDEX     =   $C0
 KNOWN_COUNT     =   $C1

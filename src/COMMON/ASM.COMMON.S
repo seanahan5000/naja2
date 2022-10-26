@@ -11,6 +11,7 @@
                 PUT UTILS
                 PUT BLIT
                 PUT PICT
+                DS  16                  ;***
                 PUT UNPACK
                 PUT SHAPES
                 PUT TEXT

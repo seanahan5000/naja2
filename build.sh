@@ -52,6 +52,8 @@ $A2NIB $OBJ/DIAGNOSE        -t 19 -s 00   # 14 sectors
 $A2NIB $OBJ/ALIEN.ID        -t 1A -s 00   #  6 sectors
                                           #  2 sectors
 $A2NIB $OBJ/ELEVATOR        -t 1A -s 08   #  8 sectors
+$A2NIB $OBJ/VIEWPORT        -t 1B -s 00   #  9 sectors
+                                          #  7 sectors
 
 #---------------------------------------
 # Copy all project files

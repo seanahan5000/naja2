@@ -124,34 +124,36 @@ PBUTTON0        =   $C061               ; open-apple
 
 OpSetColor      =   0
 OpMoveTo        =   1
-OpHMoveTo       =   2
-OpHMoveToHigh   =   3
-OpVMoveTo       =   4
-OpVMove         =   5
-OpHLineTo       =   6
-OpHLineToHigh   =   7
-OpVLineTo       =   8
-OpRect          =   9
-OpRectHigh      =   10
-OpFillRect      =   11
-OpFillRectHigh  =   12
-OpSetTextHeight =   13
-OpSetTextBox    =   14
-OpSetTextBoxHigh =  15
-OpText          =   16
-OpTextAt        =   17
-OpTextIn        =   18
-OpImage         =   19
-OpClear         =   20
-OpCopyTo        =   21
-OpSwap          =   22
+OpMoveToHigh    =   2
+OpHMoveTo       =   3
+OpHMoveToHigh   =   4
+OpVMoveTo       =   5
+OpVMove         =   6
+OpHLineTo       =   7
+OpHLineToHigh   =   8
+OpVLineTo       =   9
+OpRect          =   10
+OpRectHigh      =   11
+OpFillRect      =   12
+OpFillRectHigh  =   13
+OpSetTextHeight =   14
+OpSetTextBox    =   15
+OpSetTextBoxHigh =  16
+OpText          =   17
+OpTextAt        =   18
+OpTextIn        =   19
+OpImage         =   20
+OpImageFill     =   21
+OpClear         =   22
+OpCopyTo        =   23
+OpSwap          =   24
 
-OpSetPage1      =   23
-OpSetPage2      =   24
-OpShowPage      =   25
-OpClearPage     =   26
-OpCopyToPage    =   27
-OpCall          =   28
+OpSetPage1      =   25
+OpSetPage2      =   26
+OpShowPage      =   27
+OpClearPage     =   28
+OpCopyToPage    =   29
+OpCall          =   30
 
 OpEnd           =   $FF
 
@@ -180,12 +182,20 @@ PictSetWhite1   MAC
                 DB  OpSetColor,OpColorWhite1
                 EOM
 
+PictSetBlack2   MAC
+                DB  OpSetColor,OpColorBlack2
+                EOM
+
 PictSetOrange   MAC
                 DB  OpSetColor,OpColorOrange
                 EOM
 
 PictSetBlue     MAC
                 DB  OpSetColor,OpColorBlue
+                EOM
+
+PictSetWhite2   MAC
+                DB  OpSetColor,OpColorWhite2
                 EOM
 
 PictHMoveTo     MAC
@@ -208,7 +218,11 @@ PictVMove       MAC
                 EOM
 
 PictMoveTo      MAC
+            DO ]1/256
+                DB  OpMoveToHigh,<]1,]2
+            ELSE
                 DB  OpMoveTo,]1,]2
+            FIN
 ]X              =   ]1
 ]Y              =   ]2
                 EOM
@@ -282,6 +296,11 @@ PictTextIn      MAC
 
 PictImage       MAC
                 DB  OpImage
+                DW  ]1
+                EOM
+
+PictImageFill   MAC
+                DB  OpImageFill
                 DW  ]1
                 EOM
 

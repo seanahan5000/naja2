@@ -77,14 +77,14 @@ DISP_SPECIAL    LDX MAP_FACE
                 BNE :4
                 INY
                 BNE :1                  ; always
-:4              ; TODO: use SPECIAL_DIR bits too?
-                LDA SPECIAL_ID,Y
+:4              LDA SPECIAL_ID,Y
                 ASL
                 TAX
                 LDA SPECIAL_LIST+0,X
                 STA :MOD+1
                 LDA SPECIAL_LIST+1,X
                 STA :MOD+2
+                LDA SPECIAL_DIR,Y
 :MOD            JMP $FFFF
 
 DISP_ENCOUNTER  LDX MAP_FACE
@@ -101,8 +101,7 @@ DISP_ENCOUNTER  LDX MAP_FACE
                 BNE :4
                 INY
                 BNE :1                  ; always
-:4              ; TODO: use ENCOUNTER_DIR bits too?
-                LDA ENCOUNTER_ID,Y
+:4              LDA ENCOUNTER_ID,Y
                 STA SAVE_SPAWN
                 JSR SET_SPAWNED
                 BCS DISP_NEXT

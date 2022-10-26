@@ -229,8 +229,9 @@ bit_Diagnose	=	%01000000
 modDiagnose     =   $80
 modAlienId      =   $81
 modElevator     =   $82
+modViewport     =   $83
 
 fileDiagnose    =   0
 fileAlienId     =   1
 fileElevator    =   2
-
+fileViewport    =   3

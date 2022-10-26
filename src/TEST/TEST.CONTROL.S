@@ -118,8 +118,6 @@ BIG_MAP         =   1
 
 SHIP_SOUND
 GREEN_NET
-AIRLOCK
-VIEWPORT
 ROTATE
 IN_ONE_WAY
 DOOR_SIGN
@@ -137,8 +135,10 @@ ORB_PEDESTAL
 FILE_TABLE      DB  $19,$00,$0E,$A0     ; 0 - diagnose
                 DB  $1A,$00,$06,$A0     ; 1 - alien.id
                 DB  $1A,$08,$08,$A0     ; 2 - elevator
+                DB  $1B,$00,$09,$A0     ; 3 - viewport
 
                 PUT LOAD.ELEVATOR
+                PUT LOAD.VIEWPORT
                 SAV CONTROL
 
                 ORG $A000
@@ -148,3 +148,7 @@ FILE_TABLE      DB  $19,$00,$0E,$A0     ; 0 - diagnose
                 ORG $A000
                 PUT ELEVATOR
                 SAV ELEVATOR
+
+                ORG $A000
+                PUT VIEWPORT
+                SAV VIEWPORT

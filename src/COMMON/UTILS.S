@@ -183,7 +183,7 @@ CHECK_MOVE      ENT
                 BNE CHECK_TURN
                 RTS
 
-CHECK_TURN      ENT
+CHECK_TURN      ENT                 ; used to be CPARER2
                 JSR CHECK_LEFT
                 BEQ :1
                 JSR CHECK_RIGHT

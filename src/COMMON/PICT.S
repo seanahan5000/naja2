@@ -93,6 +93,7 @@ DRAW_PICT       ENT
 
 OP_TABLE        DW  OP_SET_COLOR
                 DW  OP_MOVE_TO
+                DW  OP_MOVE_TO_H
                 DW  OP_HMOVE_TO
                 DW  OP_HMOVE_TO_H
                 DW  OP_VMOVE_TO
@@ -111,6 +112,7 @@ OP_TABLE        DW  OP_SET_COLOR
                 DW  OP_TEXT_AT
                 DW  OP_TEXT_IN
                 DW  OP_IMAGE
+                DW  OP_IMAGE_FILL
                 DW  OP_CLEAR
                 DW  OP_COPY_TO
                 DW  OP_SWAP
@@ -167,9 +169,8 @@ OP_SET_COLOR    LDA (OP_PTR),Y
 
 ; On exit:
 ;   Y: OP_INDEX
-;
-; NOTE: also called by OP_TEXT_AT
 
+; NOTE: also called by OP_TEXT_AT
 OP_MOVE_TO      LDA (OP_PTR),Y
                 INY
                 TAX
@@ -182,6 +183,15 @@ OP_VMOVE_TO     LDA (OP_PTR),Y
                 STA YCOORD
                 STY OP_INDEX
                 RTS
+
+OP_MOVE_TO_H    LDA (OP_PTR),Y
+                INY
+                TAX
+                LDA DIV7HI,X
+                STA XCOORD
+                LDA MOD7HI,X
+                STA XSHIFT
+                BPL OP_VMOVE_TO         ; always
 
 OP_HMOVE_TO     LDA (OP_PTR),Y
                 INY
@@ -213,14 +223,19 @@ OP_VMOVE        LDA (OP_PTR),Y
 
 ;-------------------------------------------------------------------------------
 
-OP_IMAGE        LDA (OP_PTR),Y
+OP_IMAGE_FILL   SEC
+                DB  $24                 ; BIT ZPAGE
+OP_IMAGE        CLC
+                LDA (OP_PTR),Y
                 INY
                 TAX
                 LDA (OP_PTR),Y
                 INY
                 STY OP_INDEX
                 TAY
+                BCS :1
                 JMP UNPACK
+:1              JMP UNPACK_FILL
 
 ;-------------------------------------------------------------------------------
 
@@ -413,6 +428,23 @@ OP_VLINE_TO     LDA (OP_PTR),Y
 :1              STA BOTTOM
 :2              STA YCOORD
 
+        do 0    ; enable to allow for black vertical lines
+                LDY XSHIFT
+                LDA BIT_TABLE,Y
+                ORA #$80
+                STA LEFT_MASK
+                LDY OP_COLOR
+                LDA COLOR_TABLE,Y
+                ; TODO: toggle color by column here
+                TAY
+                EOR #$FF
+                AND LEFT_MASK
+                EOR #$FF
+                STA AND_MASK
+                TYA
+                AND LEFT_MASK
+                STA LEFT_MASK
+        else
                 LDY OP_COLOR
                 LDA COLOR_TABLE,Y
                 AND #$80
@@ -422,6 +454,7 @@ OP_VLINE_TO     LDA (OP_PTR),Y
                 LDY XSHIFT
                 ORA BIT_TABLE,Y
                 STA LEFT_MASK
+        fin
 
                 LDY XCOORD
 :3              LDA LOBYTES,X
