@@ -22,8 +22,6 @@ ON_LINE         =   $C3
 OFF_LINE        =   $C4
 COPY_COUNT      =   $C5
 
-ELEVATOR_MOD    DB  modElevator
-
 ELEVATOR_CMN    STA FLAG_345
                 JSR DRAW_PICT
                 PictSetPage2

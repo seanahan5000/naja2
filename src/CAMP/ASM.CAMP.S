@@ -55,5 +55,6 @@ SHELL           DB  $1              ; TODO: move later
                 SAV CAMP.9000
 
                 ORG $A000
+DIAGNOSE_MOD    DB  modDiagnose
                 PUT I.DIAGNOSE
                 SAV DIAGNOSE

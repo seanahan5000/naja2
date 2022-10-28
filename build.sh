@@ -41,7 +41,6 @@ $ASM TEST   TEST.CONTROL -lst $OBJ/CONTROL.LST
 A2NIB="$TOOLS/a2nib -disk $DSK/naja2.nib"
 $A2NIB -create -volume 1
 
-
 $A2NIB $OBJ/ALIEN.PICS.12   -t 00 -s 00   # A900
 $A2NIB $OBJ/ALIEN.PICS.345  -t 0B -s 00   # C000
 $A2NIB $OBJ/ALIEN.DESC.12   -t 17 -s 00   # 0E00

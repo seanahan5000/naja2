@@ -1,4 +1,5 @@
-RESET_CHRLIST	LDA	#$00
+RESET_CHRLIST	ENT
+				LDA	#$00
 				BEQ	RESET_COM		;Always
 RESET_CHLIST	LDA	#$80
 RESET_COM		STA	TEMP
@@ -17,7 +18,8 @@ RESET_COM		STA	TEMP
 				RTS
 
 LEGALS
-CHAR_LIST		DS	7,0
+CHAR_LIST		ENT
+				DS	7,0
 				DS	9,0
 
 ********************************
@@ -120,7 +122,8 @@ XY_COM			STX	TEMP_HOLD
 *   have any free slots to receive
 *   equipment
 
-CSCAN_PUTABLE	LDX	#<CCALL_PUTABLE
+CSCAN_PUTABLE	ENT
+				LDX	#<CCALL_PUTABLE
 				LDY	#>CCALL_PUTABLE
 				BNE	CSCAN_COMMON	;Always
 
@@ -173,7 +176,8 @@ TEMP_HOLD		DB	0
 
 EQUIP_LIST		DS	16
 
-RESET_EQLIST	LDX	#15
+RESET_EQLIST	ENT
+				LDX	#15
 				LDA	#$00
 :LOOP1			STA	EQUIP_LIST,X
 				DEX
@@ -323,7 +327,8 @@ ESCAN_CANDROP	LDX	#<ECALL_CANDROP
 *-------------------------------
 * Select open "putable" slots
 
-ESCAN_PUTABLE	JSR	ESCAN_HANDBCK	;Only hands and back
+ESCAN_PUTABLE	ENT
+				JSR	ESCAN_HANDBCK	;Only hands and back
 				JSR	ESCAN_OPESLOT	;   that are open
 				LDX	#$FF
 				LDY	#profrace

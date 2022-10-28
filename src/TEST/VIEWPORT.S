@@ -1,8 +1,6 @@
 
 VARIATION       =   $C0
 
-VIEWPORT_MOD    DB  modViewport
-
 DO_AIRLOCK      JSR DRAW_PICT
                 PictSetPage2
                 PictClearPage

@@ -19,8 +19,7 @@
 ; TODO: should this be used here?
 TEMP			=	LOCAL_TEMP
 
-MENU_INIT		;ENT
-; INIT_CURSOR		ENT					; legacy
+MENU_INIT		ENT						; was INIT_CURSOR
 				STX	TEMP
 				STY	TEMP+1
 				LDY	#$00
@@ -70,8 +69,7 @@ BLINK_LOOP		LDA	#$10
 				JSR	BLINK_CURSOR	; blink erase
 				LDA	#$00
 				JSR	WAIT_KEY
-MENU_SELECT 	;ENT
-; GETKEY			ENT					; legacy
+MENU_SELECT 	ENT					; was GETKEY
 				CLC
 				JSR	BLINK_CURSOR	; blink draw
 MENU_SELECT2	;ENT

@@ -69,8 +69,6 @@ ALIGNMENT       DS  72
 ; - show x/n count
 ; - vertically center description text
 
-ALIEN_ID_MOD    DB  modAlienId
-
 IDENTIFIED_ALIENS
                 LDA #1
                 STA ALIEN_SET

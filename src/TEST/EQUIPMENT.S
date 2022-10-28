@@ -4,10 +4,7 @@ POINTL			=	LOCAL_TEMP+0
 POINTH			=	LOCAL_TEMP+1
 ETEMP			=	LOCAL_TEMP+2
 
-; TODO: move this to ZPAGE
-ETABLE			DS	4
-
-EQUIP_IND_TO_TEXT ENT				; was EQUIPR
+EQUIP_IND_TO_TEXT ENT					; was EQUIPR
 				ASL
 				ASL
 				CLC
@@ -20,14 +17,14 @@ CEQUIP_TO_TEXT	LDX	#$00
 				INX
 				CPX	#$04
 				BNE	:LOOP1
-EQUIP1			JSR	CLRBUFF
+ETABLE_TO_TEXT	ENT						; was EQUIP1
 				LDX	#$00
-EQUIP2			TXA
+EQUIP2			TXA						; called byte fight BLASTER.S
 				CLC
 				ADC	#15
-				STA	MUSH_MOD+1
+				STA	TRUNC_MOD+1
 				LDA	ETABLE
-				CMP	#$FF
+				CMP	#$FF				; empty item
 				BNE	EQUIP3
 				RTS
 EQUIP3			LDY	#$00
@@ -62,15 +59,6 @@ GROUPER			ASL
 				STA	POINTL
 				LDA	GROUPS+1,Y
 				STA	POINTH
-				RTS
-
-CLRBUFF			LDY	#15
-				LDA	#$0A
-:LOOP1			STA	TEXTBUF,Y
-				DEY
-				BPL	:LOOP1
-				LDA	#$8D
-				STA	TEXTBUF+16
 				RTS
 
 *** Type, Identified name group (high nibble),
@@ -341,6 +329,8 @@ ARMOR			BIT	ETABLE+0
 				BPL	:SKIPB
 				LDY	#$F9			;/SMART
 				JSR	WORD_SUB
+				LDA #TextSpace
+				STA TEXTBUF,X
 				INX
 :SKIPB			LDA	ETABLE+1
 				AND	#%00111000		;Brand
@@ -379,7 +369,7 @@ BRNDCLAS		PHA
 				ORA	#$F0
 				TAY
 				JSR	WORD_SUB
-				LDA	#$2C			;-
+				LDA	#TextDash
 				STA	TEXTBUF,X
 				INX
 				PLA
@@ -388,6 +378,8 @@ BRNDCLAS		PHA
 				ADC	#$08
 				STA	TEXTBUF,X
 				INX
+				LDA #TextSpace
+				STA	TEXTBUF,X
 				INX
 				RTS
 
@@ -399,7 +391,7 @@ SHIELD			BIT	ETABLE+0
 				LSR
 				PHP
 				BNE	:SKIPA
-				LDA	#$0A
+				LDA	#TextSpace
 :SKIPA			STA	TEXTBUF,X
 				INX
 				LDA	#$05
@@ -408,9 +400,11 @@ SHIELD			BIT	ETABLE+0
 				LDA	#$00
 :SKIPB			STA	TEXTBUF,X
 				INX
-				LDA	#$27			;%
+				LDA	#TextPercent
 				STA	TEXTBUF,X
 				INX
+				LDA #TextSpace
+				STA	TEXTBUF,X
 				INX
 :SKIPC			LDY	#$F7			;/FORCE_SHIELD
 				JMP	WORD_SUB
@@ -454,7 +448,7 @@ PROGRAM			LDY	#$12			;CARD/PROGRAM
 				INX
 				TYA
 				BPL	:SKIPB
-				LDA	#$0B			;A
+				LDA	#TextA
 				STA	TEXTBUF,X
 				INX
 :SKIPB			RTS
@@ -463,6 +457,8 @@ PROGRAM			LDY	#$12			;CARD/PROGRAM
 ROBLAST			JSR	ROBO_SUB
 				LDY	#$F6			;/BLASTER
 				JSR	WORD_SUB
+				LDA #TextSpace
+				STA TEXTBUF,X
 				INX
 				LDA	ETABLE+1
 				AND	#%00000011
@@ -471,13 +467,15 @@ ROBLAST			JSR	ROBO_SUB
 				ADC	#$0A
 				STA	TEXTBUF,X
 				INX
+				LDA #TextLineEnd
+				STA TEXTBUF,X
 				RTS
 
 ROBO_SUB		BIT	ETABLE+0
 				BVC	:SKIPA
 				LDY	#$F0			;/ROBOT
 				JSR	WORD_SUB
-				LDA	#$2C
+				LDA	#TextDash
 				STA	TEXTBUF-1,X
 				RTS
 :SKIPA			PLA
@@ -502,7 +500,13 @@ WORD_SUB		TYA
 				BEQ	WORD_EXIT
 				CPY	#$0F
 				BEQ	:SUBA
+
+				TAY
+				LDA #TextSpace
+				STA TEXTBUF,X
 				INX
+				TYA
+
 :SUBA			STA	ETEMP
 				LDY	#$FF
 :LOOP1			INY
@@ -516,128 +520,130 @@ WORD_LOOP		LDA	(POINTL),Y
 				BMI	LAST_CHAR
 				STA	TEXTBUF,X
 				INY
-MUSH_MOD		CPX	#15				;MOD
+TRUNC_MOD		CPX	#15					; modified
 				BEQ	WORD_LOOP
 				INX
 				BNE	WORD_LOOP
 LAST_CHAR		AND	#$7F
 				STA	TEXTBUF,X
 				INX
-WORD_EXIT		RTS
+WORD_EXIT		LDA #TextLineEnd
+				STA TEXTBUF,X
+				RTS
 
 
-GROUP_BLAST		USR	(FLY)=						;*0          Group 0
-				USR	(LIGHT)=						;*1
-				USR	(MEDIUM)=						;*2
-				USR	(HEAVY)=						;*3
-				USR	(ULTRA)=						;*4
-				USR	(ZIFFER'S)=      ;*5
-UGROUP_WEAP		USR	(PISTOL)=						;*6 *0       Group 1
-				USR	(RIFLE)=						;*7 *1
-				USR	(CANNON)=						;*8 *2
-				USR	(BEAM)=						;   *3
-				USR	(LASER)=						;   *4
-				USR	(WEAPON)=						;   *5
-				USR	(SWORD)=						;   *6
-				USR	(SHOULDER)=						;   *7
-				USR	(CURVED)=						;   *8
-				USR	(SMALL)=						;   *9
-				USR	(THROWABLE)=						;   *A
-				USR	(OBJECT)=						;   *B
-				USR	(LARGE)=						;   *C
-UGROUP_SCAN		USR	(ELECTRONIC)=						;*0 *D       Group 2
-				USR	(METAL_ROD)=						;*1
-				USR	(GADGET)=						;*2
-				USR	(VISOR)=						;*3
-				USR	(RUBBERY)=						;*4
-				USR	(BOOTS)=						;*5
-				USR	(STRANGE_ARMOR)=					;*6
-GROUP_SCAN		USR	(SCANNER)=						;*7 *0       Group 3
-				USR	(I.D.)=						;   *1
-				USR	(FACE_TRACKER)=						;   *2
-				USR	(ORGANIC)=						;   *3
-				USR	(ROBOTIC)=						;   *4
-				USR	(DETECTOR)=						;   *5
-				USR	(DOOR_UNLOCKER)=					;   *6
+GROUP_BLAST		USR	(FLY)=					;*0          Group 0
+				USR	(LIGHT)=				;*1
+				USR	(MEDIUM)=				;*2
+				USR	(HEAVY)=				;*3
+				USR	(ULTRA)=				;*4
+				USR	(ZIFFER'S)=      		;*5
+UGROUP_WEAP		USR	(PISTOL)=				;*6 *0       Group 1
+				USR	(RIFLE)=				;*7 *1
+				USR	(CANNON)=				;*8 *2
+				USR	(BEAM)=					;   *3
+				USR	(LASER)=				;   *4
+				USR	(WEAPON)=				;   *5
+				USR	(SWORD)=				;   *6
+				USR	(SHOULDER)=				;   *7
+				USR	(CURVED)=				;   *8
+				USR	(SMALL)=				;   *9
+				USR	(THROWABLE)=			;   *A
+				USR	(OBJECT)=				;   *B
+				USR	(LARGE)=				;   *C
+UGROUP_SCAN		USR	(ELECTRONIC)=			;*0 *D       Group 2
+				USR	(METAL_ROD)=			;*1
+				USR	(GADGET)=				;*2
+				USR	(VISOR)=				;*3
+				USR	(RUBBERY)=				;*4
+				USR	(BOOTS)=				;*5
+				USR	(STRANGE_ARMOR)=		;*6
+GROUP_SCAN		USR	(SCANNER)=				;*7 *0       Group 3
+				USR	(I.D.)=					;   *1
+				USR	(FACE_TRACKER)=			;   *2
+				USR	(ORGANIC)=				;   *3
+				USR	(ROBOTIC)=				;   *4
+				USR	(DETECTOR)=				;   *5
+				USR	(DOOR_UNLOCKER)=		;   *6
 				USR	(VIBRATION_SENSOR)=		;   *7
 
-GROUP_ARMHELM	USR	(CLEAR)=						;*0          Group 4
-				USR	(BENDER)=						;*1
-				USR	(MIRAGE)=						;*2
-				USR	(IMAGE)=						;*3
-				USR	(MIRROR)=						;*4
-				USR	(ARMOR)=						;*5
-				USR	(HELMET)=						;*6
-				USR	(FORCE_SHIELD)=						;*7
-				USR	(MECHANICAL)=						;*8
-				USR	(SMART)=						;*9
+GROUP_ARMHELM	USR	(CLEAR)=				;*0          Group 4
+				USR	(BENDER)=				;*1
+				USR	(MIRAGE)=				;*2
+				USR	(IMAGE)=				;*3
+				USR	(MIRROR)=				;*4
+				USR	(ARMOR)=				;*5
+				USR	(HELMET)=				;*6
+				USR	(FORCE_SHIELD)=			;*7
+				USR	(MECHANICAL)=			;*8
+				USR	(SMART)=				;*9
 
-GROUP_MISC		USR	(CONTROLLER)=						;   *0       Group 5
-				USR	(MUSCLE)=						;   *1
-				USR	(REFLEX)=						;   *2
-				USR	(MAROON)=						;   *3
-				USR	(SILVER)=						;   *4
-				USR	(POWDER)=						;   *5
+GROUP_MISC		USR	(CONTROLLER)=			;   *0       Group 5
+				USR	(MUSCLE)=				;   *1
+				USR	(REFLEX)=				;   *2
+				USR	(MAROON)=				;   *3
+				USR	(SILVER)=				;   *4
+				USR	(POWDER)=				;   *5
 				USR	(COMPRESSD_PERSON)=		;   *6
-				USR	(DATA)=						;   *7
-				USR	(JUNK)=						;   *8
-GROUP_ROBO		USR	(ROBOT)=						;*0 *9       Group 6
-				USR	(CARD)=						;*1 *A
-				USR	(PROGRAM)=						;*2
-				USR	(HAND)=						;*3
-				USR	(ATTACHMENT)=						;*4
-				USR	(MECHANICAL)=						;*5
-				USR	(BLASTER)=						;*6
-GROUP_BEAM		USR	(DAGGER)=						;*7 *0       Group 7
-				USR	(SWORD)=						;*8 *1
-				USR	(BLUE_BEAM)=						;   *2
-				USR	(GREEN_BEAM)=						;   *3
-				USR	(RED_BEAM)=						;   *4
-				USR	(LASBEAM)=						;   *5
-				USR	(WHIP)=						;   *6
-UGROUP_MEDIC	USR	(LASER)=						;   *7 *0    Group 8
-				USR	(MEDICAL_DEVICE)=				;      *1
-				USR	(GADGET)=						;      *2
-				USR	(HEAD_GEAR)=						;      *3
-GROUP_MEDIC		USR	(CAPSULE)=						;*0    *4    Group 9
-				USR	(DIAGNOSER)=						;*1    *5
+				USR	(DATA)=					;   *7
+				USR	(JUNK)=					;   *8
+GROUP_ROBO		USR	(ROBOT)=				;*0 *9       Group 6
+				USR	(CARD)=					;*1 *A
+				USR	(PROGRAM)=				;*2
+				USR	(HAND)=					;*3
+				USR	(ATTACHMENT)=			;*4
+				USR	(MECHANICAL)=			;*5
+				USR	(BLASTER)=				;*6
+GROUP_BEAM		USR	(DAGGER)=				;*7 *0       Group 7
+				USR	(SWORD)=				;*8 *1
+				USR	(BLUE_BEAM)=			;   *2
+				USR	(GREEN_BEAM)=			;   *3
+				USR	(RED_BEAM)=				;   *4
+				USR	(LASBEAM)=				;   *5
+				USR	(WHIP)=					;   *6
+UGROUP_MEDIC	USR	(LASER)=				;   *7 *0    Group 8
+				USR	(MEDICAL_DEVICE)=		;      *1
+				USR	(GADGET)=				;      *2
+				USR	(HEAD_GEAR)=			;      *3
+GROUP_MEDIC		USR	(CAPSULE)=				;*0    *4    Group 9
+				USR	(DIAGNOSER)=			;*1    *5
 				USR	(CELL_REGENERATOR)=		;*2
 				USR	(CIRCUIT_REPAIRER)=		;*3
-				USR	(ATOM_COMPRESSOR)=			;*4
-				USR	(CAUTERIZER)=						;*5
-				USR	(SIGHT_RESTORER)=				;*6
-				USR	(BRAIN_EQUALIZER)=			;*7
-				USR	(DRUG_INFUSOR)=						;*8
+				USR	(ATOM_COMPRESSOR)=		;*4
+				USR	(CAUTERIZER)=			;*5
+				USR	(SIGHT_RESTORER)=		;*6
+				USR	(BRAIN_EQUALIZER)=		;*7
+				USR	(DRUG_INFUSOR)=			;*8
 
-GROUP_ANTI		USR	(ANTI-)=						;*0          Group A
-				USR	(POISON)=						;*1
-				USR	(FUNGUS)=						;*2
-				USR	(PARASITE)=						;*3
-				USR	(VIRUS)=						;*4
-				USR	(BACTERIA)=						;*5
-				USR	(PENGUIN)=						;*6
+GROUP_ANTI		USR	(ANTI-)=				;*0          Group A
+				USR	(POISON)=				;*1
+				USR	(FUNGUS)=				;*2
+				USR	(PARASITE)=				;*3
+				USR	(VIRUS)=				;*4
+				USR	(BACTERIA)=				;*5
+				USR	(PENGUIN)=				;*6
 
-GROUP_KEY		USR	(TERRAN)=						;*0          Group B
-				USR	(TOUHTAAN)=						;*1
-				USR	(ZINAN)=						;*2
-				USR	(!!!)=						;*3
-				USR	(GILLOITAN)=						;*4
-				USR	(WHITE_SAND)=						;*5
-				USR	(HEAVY_STONE)=						;*6
+GROUP_KEY		USR	(TERRAN)=				;*0          Group B
+				USR	(TOUHTAAN)=				;*1
+				USR	(ZINAN)=				;*2
+				USR	(!!!)=					;*3
+				USR	(GILLOITAN)=			;*4
+				USR	(WHITE_SAND)=			;*5
+				USR	(HEAVY_STONE)=			;*6
 				USR	(CHANGING_CRYSTAL)=		;*7
 				USR	(PLASTEEL_CIRCUIT)=		;*8
-				USR	(PETRIFIED_LEAF)=				;*9
-				USR	(KEY)=						;*A
+				USR	(PETRIFIED_LEAF)=		;*9
+				USR	(KEY)=					;*A
 
-GROUP_ATTACH	USR	(%_DISSIPATOR)=						;*0          Group C
-				USR	(%_GROUNDERS)=						;*1
-				USR	(IMAGE_GENERATOR)=			;*2
-				USR	(BLAST_VISOR)=						;*3
-				USR	(EXOSKELETON)=						;*4
+GROUP_ATTACH	USR	(%_DISSIPATOR)=			;*0          Group C
+				USR	(%_GROUNDERS)=			;*1
+				USR	(IMAGE_GENERATOR)=		;*2
+				USR	(BLAST_VISOR)=			;*3
+				USR	(EXOSKELETON)=			;*4
 
-GROUP_MSCWEAP	USR	(GYRO_BOOMERANG)=				;*0          Group D
-				USR	(DISINTIGRATOR)=					;*1
-				USR	(BRAIN_JAMMER)=						;*2
-				USR	(IMMOBILIZER)=						;*3
-				USR	(SONIC_GRENADE)=					;*4
+GROUP_MSCWEAP	USR	(GYRO_BOOMERANG)=		;*0          Group D
+				USR	(DISINTEGRATOR)=		;*1
+				USR	(BRAIN_JAMMER)=			;*2
+				USR	(IMMOBILIZER)=			;*3
+				USR	(SONIC_GRENADE)=		;*4
 				USR	(ROBOT_RESTRAINER)=		;*5

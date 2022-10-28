@@ -221,10 +221,6 @@ mRobotRepair_Control	=	18
 
 charTrack		=	$0100		;Track/Sector for character data
 
-*** Bit positions in ALLCAMP_HERE
-bit_RefRegCom	=	%10000000
-bit_Diagnose	=	%01000000
-
 ; TODO: consider 16-bit module IDs
 modDiagnose     =   $80
 modAlienId      =   $81

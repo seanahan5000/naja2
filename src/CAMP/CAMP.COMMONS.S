@@ -4,7 +4,8 @@ ARMOR_USE_P		=	$0234			;0.234 (*** FAKE)
 EXO_PROT_E		=	$50				;50%
 EXO_PROT_P		=	$75				;75%
 
-CALC_ALL        JSR CALC_STATS
+CALC_ALL        ENT
+				JSR CALC_STATS
                 JSR CALC_SHIELDIN
                 ; JMP CALC_POWRUSE
                 ; fall through
@@ -701,7 +702,8 @@ SUBCOMMON		STA	TEMP
 :SKIPA			RTS
 
 
-CORESPS			DB	e1_HEAD			;0
+CORESPS			ENT
+				DB	e1_HEAD			;0
 				DB	e2_SLOT			;1
 				DB	e7_BACK1		;2
 				DB	e8_BACK2		;3

@@ -142,13 +142,16 @@ FILE_TABLE      DB  $19,$00,$0E,$A0     ; 0 - diagnose
                 SAV CONTROL
 
                 ORG $A000
+ALIEN_ID_MOD    DB  modAlienId
                 PUT ALIEN.ID
                 SAV ALIEN.ID
 
                 ORG $A000
+ELEVATOR_MOD    DB  modElevator
                 PUT ELEVATOR
                 SAV ELEVATOR
 
                 ORG $A000
+VIEWPORT_MOD    DB  modViewport
                 PUT VIEWPORT
                 SAV VIEWPORT

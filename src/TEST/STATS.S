@@ -9,7 +9,7 @@
 ;       %00000010: show damage
 ;       %00000001: show status
 ;
-DRAW_STATS_BOX  ;ENT
+DRAW_STATS_BOX  ENT
                 LDA #$42
                 BNE DSB_CMN
 DRAW_STATS_BOX_XY ;ENT

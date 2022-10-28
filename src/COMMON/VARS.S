@@ -12,6 +12,7 @@ TextSpace       =   10
 TextA           =   11
 TextZ           =   36
 TextFirstSymbol =   37              ; first symbol after {0-9 A-Z}
+TextPercent     =   $27
 TextDash        =   $2C
 TextPeriod      =   $2D
 TextSlash       =   $2E
@@ -52,10 +53,12 @@ DATPNTL         =   $4D
 DATPNTH         =   $4E
 ;*** shape drawing
 
+; PICT.S uses $50-$5F
+
+; TODO: conflict here?
+
 ; HALLS use $50-$5F
 ; HALLS use $60-$6A
-
-; PICT.S uses $50-$5F
 
 ; TODO: move these character-only vars
 SELECT          =   $90         ; only used in STATS.S -- get rid of
@@ -67,6 +70,8 @@ CURSOR          =   $95
 COUNT           =   $96
 SELECT_FLIP     =   $96         ; only used in T.CAMP.S when flipping stats
 CHAR_INDEX      =   $97
+
+ETABLE          =   $9C         ; $9C,$9D,$9E,$9F
 
 ; TODO: eventually move these down to $00-$03
 LOCAL_TEMP      =   $70         ; $70,$71,$72,$73
