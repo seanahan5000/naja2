@@ -62,6 +62,7 @@ DRAW_TEXT       ENT
                 BEQ OP_TEXT             ; always
 
 OP_TEXT_AT      JSR OP_MOVE_TO
+                LDY OP_INDEX
 OP_TEXT         STY OP_INDEX
                 LDA XCOORD
                 STA LEFT_DIV7

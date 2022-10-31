@@ -425,17 +425,15 @@ UPDATE_ARROWS   LDX #0
 
 DRAW_UP_ARROW   JSR DRAW_PICT
                 PictMoveTo 16;NameBoxTopY+2
+                PictTile UP_ARROW
                 PictEnd
-                LDX #<UP_ARROW
-                LDY #>UP_ARROW
-                JMP DRAW_TILE
+                RTS
 
 DRAW_DOWN_ARROW JSR DRAW_PICT
                 PictMoveTo 16;NameBoxBottomY-5
+                PictTile DOWN_ARROW
                 PictEnd
-                LDX #<DOWN_ARROW
-                LDY #>DOWN_ARROW
-                JMP DRAW_TILE
+                RTS
 
 UP_ARROW        DB  %00001000
                 DB  %00011100

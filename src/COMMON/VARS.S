@@ -149,16 +149,17 @@ OpTextAt        =   18
 OpTextIn        =   19
 OpImage         =   20
 OpImageFill     =   21
-OpClear         =   22
-OpCopyTo        =   23
-OpSwap          =   24
+OpTile          =   22
+OpClear         =   23
+OpCopyTo        =   24
+OpSwap          =   25
 
-OpSetPage1      =   25
-OpSetPage2      =   26
-OpShowPage      =   27
-OpClearPage     =   28
-OpCopyToPage    =   29
-OpCall          =   30
+OpSetPage1      =   26
+OpSetPage2      =   27
+OpShowPage      =   28
+OpClearPage     =   29
+OpCopyToPage    =   30
+OpCall          =   31
 
 OpEnd           =   $FF
 
@@ -247,6 +248,15 @@ PictLineTo      MAC
         FIN
                 EOM
 
+PictHLineTo     MAC
+            DO ]1/256
+                DB  OpHLineToHigh,<]1
+            ELSE
+                DB  OpHLineTo,<]1
+            FIN
+]X              =   ]1
+                EOM
+
 PictRect        MAC
             DO ]3/256
                 DB  OpRectHigh
@@ -306,6 +316,11 @@ PictImage       MAC
 
 PictImageFill   MAC
                 DB  OpImageFill
+                DW  ]1
+                EOM
+
+PictTile        MAC
+                DB  OpTile
                 DW  ]1
                 EOM
 

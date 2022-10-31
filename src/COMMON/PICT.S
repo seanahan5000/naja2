@@ -24,39 +24,6 @@ TEMP_TOGGLE     =   $01
 
 ;-------------------------------------------------------------------------------
 
-; TODO: move this somewhere else?
-;
-; On entry:
-;   X: x position
-;
-; On exit:
-;   X: x position
-;   Y: y position
-;
-HMOVE_TO        ENT
-                LDY YCOORD
-                ; fall through
-;
-; On entry:
-;   X: x position
-;   Y: y position
-;
-; On exit:
-;   X: x position
-;   Y: y position
-;
-MOVE_TO         ENT
-                LDA DIV7,X
-                STA XCOORD
-                LDA MOD7,X
-                STA XSHIFT
-                ; fall through
-VMOVE_TO        ENT
-                STY YCOORD
-                RTS
-
-;-------------------------------------------------------------------------------
-
 DRAW_PICT       ENT
                 PLA
                 STA OP_PTR
@@ -113,6 +80,7 @@ OP_TABLE        DW  OP_SET_COLOR
                 DW  OP_TEXT_IN
                 DW  OP_IMAGE
                 DW  OP_IMAGE_FILL
+                DW  OP_TILE
                 DW  OP_CLEAR
                 DW  OP_COPY_TO
                 DW  OP_SWAP
@@ -160,28 +128,45 @@ OP_CALL         LDA (OP_PTR),Y
 ; TODO: expand these out
 
 OP_SET_COLOR    LDA (OP_PTR),Y
-                STA OP_COLOR        ; TODO: does this really need a zpage?
                 INY
                 STY OP_INDEX
+                STA OP_COLOR        ; TODO: does this really need a zpage?
+                RTS
+
+SET_GREEN       ENT
+                LDA #OpColorGreen
+                STA OP_COLOR
+                RTS
+
+SET_WHITE1      ENT
+                LDA #OpColorWhite1
+                STA OP_COLOR
                 RTS
 
 ;-------------------------------------------------------------------------------
-
-; On exit:
-;   Y: OP_INDEX
 
 ; NOTE: also called by OP_TEXT_AT
 OP_MOVE_TO      LDA (OP_PTR),Y
                 INY
                 TAX
+                LDA (OP_PTR),Y
+                INY
+                STY OP_INDEX
+                TAY
+MOVE_TO         ENT
                 LDA DIV7,X
                 STA XCOORD
                 LDA MOD7,X
                 STA XSHIFT
+                STY YCOORD
+                RTS
+
 OP_VMOVE_TO     LDA (OP_PTR),Y
                 INY
-                STA YCOORD
                 STY OP_INDEX
+                TAY
+VMOVE_TO        ENT
+                STY YCOORD
                 RTS
 
 OP_MOVE_TO_H    LDA (OP_PTR),Y
@@ -195,30 +180,32 @@ OP_MOVE_TO_H    LDA (OP_PTR),Y
 
 OP_HMOVE_TO     LDA (OP_PTR),Y
                 INY
+                STY OP_INDEX
                 TAX
+HMOVE_TO        ENT
                 LDA DIV7,X
                 STA XCOORD
                 LDA MOD7,X
                 STA XSHIFT
-                STY OP_INDEX
                 RTS
 
 OP_HMOVE_TO_H   LDA (OP_PTR),Y
                 INY
+                STY OP_INDEX
                 TAX
+HMOVE_TO_H      ENT
                 LDA DIV7HI,X
                 STA XCOORD
                 LDA MOD7HI,X
                 STA XSHIFT
-                STY OP_INDEX
                 RTS
 
 OP_VMOVE        LDA (OP_PTR),Y
                 INY
+                STY OP_INDEX
                 CLC
                 ADC YCOORD
                 STA YCOORD
-                STY OP_INDEX
                 RTS
 
 ;-------------------------------------------------------------------------------
@@ -236,6 +223,17 @@ OP_IMAGE        CLC
                 BCS :1
                 JMP UNPACK
 :1              JMP UNPACK_FILL
+
+;-------------------------------------------------------------------------------
+
+OP_TILE         LDA (OP_PTR),Y
+                INY
+                TAX
+                LDA (OP_PTR),Y
+                INY
+                STY OP_INDEX
+                TAY
+                JMP DRAW_TILE
 
 ;-------------------------------------------------------------------------------
 
@@ -291,6 +289,10 @@ DO_RECT         LDX OP_COLOR
                 EOR #$FF
                 STA AND_MASK
 
+                LDY LEFT_DIV7
+                CPY RIGHT_DIV7
+                BEQ THIN_RECT
+
                 LDX TOP
 RECT_LOOP       STX TOP
                 LDA LOBYTES,X
@@ -298,7 +300,7 @@ RECT_LOOP       STX TOP
                 LDA HIBYTES,X
                 STA SCREENH
 
-                LDY LEFT_DIV7       ; NOTE: overlap not supported
+                LDY LEFT_DIV7
                 LDX LEFT_MOD7
                 LDA (SCREENL),Y
                 EOR TEMP_COLOR
@@ -361,7 +363,29 @@ FILLRECT_MOD    CLC
                 INX
                 CPX BOTTOM
                 BNE :7
-                BEQ RECT_LOOP       ; always
+                JMP RECT_LOOP       ; always
+
+THIN_RECT       LDX LEFT_MOD7
+                LDA LEFT_MASKS,X
+                LDX RIGHT_MOD7
+                ORA RIGHT_MASKS,X
+                STA :MASK_MOD+1
+;               LDY LEFT_DIV7
+                LDX TOP
+                DEX
+:1              INX
+                LDA LOBYTES,X
+                STA SCREENL
+                LDA HIBYTES,X
+                STA SCREENH
+                LDA (SCREENL),Y
+                EOR TEMP_COLOR
+:MASK_MOD       AND #$FF
+                EOR TEMP_COLOR
+                STA (SCREENL),Y
+                CPX BOTTOM
+                BNE :1
+                RTS
 
 ; TODO: move these into TABLES.S???
 COLOR_TABLE     DB  $00,$2A,$55,$7F
@@ -376,6 +400,7 @@ OP_HLINE_TO_H   LDA (OP_PTR),Y
                 INY
                 STY OP_INDEX
                 TAX
+HLINE_TO_H      ENT
                 LDY MOD7HI,X
                 LDA DIV7HI,X
                 BPL OP_HLINE_COM    ; always
@@ -384,6 +409,7 @@ OP_HLINE_TO     LDA (OP_PTR),Y
                 INY
                 STY OP_INDEX
                 TAX
+HLINE_TO        ENT
                 LDY MOD7,X
                 LDA DIV7,X
 

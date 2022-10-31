@@ -76,7 +76,11 @@ DISP_SPECIAL    LDX MAP_FACE
                 AND SPECIAL_DIR,Y
                 BNE :4
                 INY
-                BNE :1                  ; always
+                LDA DISP_YX
+                CMP SPECIAL_YX,Y
+                BEQ :3
+                BNE DISP_NEXT           ; always
+
 :4              LDA SPECIAL_ID,Y
                 ASL
                 TAX
@@ -100,11 +104,18 @@ DISP_ENCOUNTER  LDX MAP_FACE
                 AND ENCOUNTER_DIR,Y
                 BNE :4
                 INY
-                BNE :1                  ; always
+                LDA DISP_YX
+                CMP SPECIAL_YX,Y
+                BEQ :3
+                BNE DISP_NEXT           ; always
+
 :4              LDA ENCOUNTER_ID,Y
                 STA SAVE_SPAWN
                 JSR SET_SPAWNED
-                BCS DISP_NEXT
+                BCC :5
+                JMP DISP_NEXT
+
+:5
                 ; TODO: use index somehow for encounter
                 ; TODO: need table of encounter descriptors?
                 RTS
