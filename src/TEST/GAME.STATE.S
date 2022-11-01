@@ -34,7 +34,9 @@ ENCOUNTER_SPAWNS
                 HEX 00000000
                 HEX 00000000
 
-                DS  87
+ORBS_FOUND      DB  0
+
+                DS  86
 
 LOST_CHARS      DB  0           ; $BC7D
 GRPCONT         DB  6           ; $BC7E ; number of characters, including dead/compressed?

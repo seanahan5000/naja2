@@ -117,7 +117,6 @@ BIG_MAP         =   1
                 PUT MAP17
 
 SHIP_SOUND
-GREEN_NET
 ROTATE
 IN_ONE_WAY
 DOOR_SIGN
@@ -128,7 +127,6 @@ KILROY
 IS_DOOR
 NOT_DOOR
 ORB_GUARD
-ORB_PEDESTAL
                 CLC
                 RTS
 
@@ -137,8 +135,11 @@ FILE_TABLE      DB  $19,$00,$0E,$A0     ; 0 - diagnose
                 DB  $1A,$08,$08,$A0     ; 2 - elevator
                 DB  $1B,$00,$09,$A0     ; 3 - viewport
 
-                PUT LOAD.ELEVATOR
-                PUT LOAD.VIEWPORT
+                PUT /SPECIALS/LOAD.ELEVATOR
+                PUT /SPECIALS/LOAD.VIEWPORT
+                ; PUT /SPECIALS/FINDMENT
+                PUT /SPECIALS/ORB.GREEN
+                PUT /SPECIALS/GREEN.NET
                 SAV CONTROL
 
                 ORG $A000
@@ -148,10 +149,10 @@ ALIEN_ID_MOD    DB  modAlienId
 
                 ORG $A000
 ELEVATOR_MOD    DB  modElevator
-                PUT ELEVATOR
+                PUT /SPECIALS/ELEVATOR
                 SAV ELEVATOR
 
                 ORG $A000
 VIEWPORT_MOD    DB  modViewport
-                PUT VIEWPORT
+                PUT /SPECIALS/VIEWPORT
                 SAV VIEWPORT

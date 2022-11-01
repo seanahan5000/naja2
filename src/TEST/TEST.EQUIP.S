@@ -102,17 +102,17 @@ MISCCOD
                 DB  $43,$05,$00,$EE     ; JUNK
                 DB  $03,$05,$00,$EE     ; JUNK
 
-                DB  $43,$02,$00,$EE     ; TERRAN_KEY
-                DB  $43,$0A,$00,$EE     ; TOUHTAAN_KEY
-                DB  $43,$12,$00,$EE     ; ZINAN_KEY
-                DB  $43,$1A,$00,$EE     ; !!!_KEY
-                DB  $43,$22,$00,$EE     ; GILLOITAN_KEY
+                DB  $43,$02,$00,$DF     ; TERRAN_KEY
+                DB  $43,$0A,$00,$DF     ; TOUHTAAN_KEY
+                DB  $43,$12,$00,$DF     ; ZINAN_KEY
+                DB  $43,$1A,$00,$DF     ; !!!_KEY
+                DB  $43,$22,$00,$DF     ; GILLOITAN_KEY
 
-                DB  $03,$02,$00,$EE     ; WHITE_SAND
-                DB  $03,$0A,$00,$EE     ; HEAVY_STONE
-                DB  $03,$12,$00,$EE     ; CHANGING_CRYSTAL
-                DB  $03,$1A,$00,$EE     ; PLASTEEL_CIRCUIT
-                DB  $03,$22,$00,$EE     ; PETRIFIED_LEAF
+                DB  $03,$02,$00,$DF     ; WHITE_SAND
+                DB  $03,$0A,$00,$DF     ; HEAVY_STONE
+                DB  $03,$12,$00,$DF     ; CHANGING_CRYSTAL
+                DB  $03,$1A,$00,$DF     ; PLASTEEL_CIRCUIT
+                DB  $03,$22,$00,$DF     ; PETRIFIED_LEAF
 
 BEAMCOD         DB  $48,$00,$00,$AD     ; BLUE_BEAM_DAGGER
                 DB  $48,$01,$00,$8D     ; GREEN_BEAM_DAGGER

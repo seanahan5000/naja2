@@ -6,8 +6,6 @@ B_COUNT         =   $C3
 BEGLINE         =   $C4
 ENDLINE         =   $C5
 
-                DS  \,$EE
-
 GREEN_NET       BIT OPEN1
                 BVS :1
                 CLC                     ; back to halls

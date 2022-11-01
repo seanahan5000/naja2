@@ -99,7 +99,9 @@ KNOWN_ALIENS_END
 
 ENCOUNTER_SPAWNS DS 20          ; 5 shells * 4 bytes
 
-                DS  87
+ORBS_FOUND      DS  0
+
+                DS  86
 
 LOST_CHARS      DS  1           ; $BC7D
 GRPCONT         DS  1           ; $BC7E ; number of characters, including dead/compressed?

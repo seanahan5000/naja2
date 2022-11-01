@@ -84,7 +84,7 @@ WAIT            ENT
                 SAME_PAGE_AS :WAITA
                 RTS
 
-WAIT_KEY        ENT
+WAIT_KEY        ENT                     ; was WAIT2
                 SEC
 :WAITA          PHA
 :WAITB          BIT KEYBRD
