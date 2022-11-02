@@ -16,8 +16,6 @@ tLLINE          =   $CA
 tRLINE          =   $CB
 
 ; TODO: clean up this scratch ZPAGE use
-COUNTER         =   $03
-SCRATCH         =   $06
 ENDLINE         =   $06
 BEGLINE         =   $07
 

@@ -73,8 +73,12 @@ CHAR_INDEX      =   $97
 
 ETABLE          =   $9C         ; $9C,$9D,$9E,$9F
 
-; TODO: eventually move these down to $00-$03
+; TODO: eventually move these down to $00-$07
 LOCAL_TEMP      =   $70         ; $70,$71,$72,$73
+LINENUM         =   $74
+COLUMN          =   $75
+COUNTER         =   $76
+SCRATCH         =   $77
 
 ; NDOS.525 uses $B0-$BF
 

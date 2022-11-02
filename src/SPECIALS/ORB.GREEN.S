@@ -158,10 +158,6 @@ SPACER          LDA KEYBRD
 
 GREEN_ORB_ITEM  DB  $43,$02,$00,$DF
 
-SCRATCH         =   LOCAL_TEMP+0
-LINENUM         =   LOCAL_TEMP+1
-COUNTER         =   LOCAL_TEMP+2
-
 DRAW_ORB        LDA ORB_LINE
                 STA LINENUM
                 LDA #$11

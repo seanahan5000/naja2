@@ -226,8 +226,10 @@ modDiagnose     =   $80
 modAlienId      =   $81
 modElevator     =   $82
 modViewport     =   $83
+modRuuik        =   $84
 
 fileDiagnose    =   0
 fileAlienId     =   1
 fileElevator    =   2
 fileViewport    =   3
+fileRuuik       =   4

@@ -31,6 +31,9 @@
                 STA $C08B           ;read/write $D000-$FFFF, BANK 1
                 STA $C08B
 
+                LDA #$FF            ; reset module present value
+                STA $A000
+
                 LDA #side_T1
                 JSR SET_DISK_SIDE
 
@@ -119,10 +122,8 @@ BIG_MAP         =   1
 SHIP_SOUND
 ROTATE
 IN_ONE_WAY
-DOOR_SIGN
 DATACARD_COMP
 WEAPON_FOUND
-KING_RUUIK
 KILROY
 IS_DOOR
 NOT_DOOR
@@ -134,12 +135,16 @@ FILE_TABLE      DB  $19,$00,$0E,$A0     ; 0 - diagnose
                 DB  $1A,$00,$06,$A0     ; 1 - alien.id
                 DB  $1A,$08,$08,$A0     ; 2 - elevator
                 DB  $1B,$00,$09,$A0     ; 3 - viewport
+                DB  $1C,$00,$0D,$A0     ; 4 - ruuik
 
                 PUT /SPECIALS/LOAD.ELEVATOR
                 PUT /SPECIALS/LOAD.VIEWPORT
-                ; PUT /SPECIALS/FINDMENT
+                PUT /SPECIALS/LOAD.RUUIK
+                ; TODO: this gets overwritten by ALIEN.ID buffers
+                PUT /SPECIALS/FINDMENT  ; TODO: make a module?
                 PUT /SPECIALS/ORB.GREEN
                 PUT /SPECIALS/GREEN.NET
+                PUT /SPECIALS/DOOR.SIGN
                 SAV CONTROL
 
                 ORG $A000
@@ -156,3 +161,9 @@ ELEVATOR_MOD    DB  modElevator
 VIEWPORT_MOD    DB  modViewport
                 PUT /SPECIALS/VIEWPORT
                 SAV VIEWPORT
+
+; TODO: add marker to preload Ruuik module before turning to face him
+                ORG $A000
+RUUIK_MOD       DB  modRuuik
+                PUT /SPECIALS/RUUIK
+                SAV RUUIK

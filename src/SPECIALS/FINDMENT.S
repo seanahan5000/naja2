@@ -183,9 +183,6 @@ FAMASKS         DB  %00100000       ;Face 1
                 DB  %00000010       ;     5
                 DB  %00000001       ;     6
 
-LINENUM         =   LOCAL_TEMP+0
-COLUMN          =   LOCAL_TEMP+1
-
 FLIPPER         LDA #$00
                 STA COLUMN
                 STA LINENUM

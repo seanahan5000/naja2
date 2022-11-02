@@ -1,6 +1,4 @@
 
-LINENUM			=	$00
-
 				DUMMY SCRATCH_PAGE
 GRID25			DS	25
 LIST25			DS	7				; GRID25 index for each character
