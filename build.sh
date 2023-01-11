@@ -59,6 +59,9 @@ $A2NIB $OBJ/VIEWPORT        -t 1B -s 00   #  9 sectors
 $A2NIB $OBJ/RUUIK           -t 1C -s 00   # 13 sectors
                                           #  3 sectors
 
+$A2NIB $OBJ/KEY.DOOR        -t 1D -s 00   # 13 sectors
+                                          #  3 sectors
+
 #---------------------------------------
 # Copy all project files
 #---------------------------------------

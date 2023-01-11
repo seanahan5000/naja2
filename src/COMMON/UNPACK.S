@@ -43,7 +43,6 @@ UNPACK_TO       ENT
                 BEQ UNPACK_CMN2     ; always
 ;
 ; Decompress image to current screen, filling transparent with black
-; *** TODO: how common is this??? ***
 ;
 ; On entry:
 ;   X: data pointer low

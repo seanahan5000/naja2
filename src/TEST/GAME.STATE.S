@@ -34,9 +34,11 @@ ENCOUNTER_SPAWNS
                 HEX 00000000
                 HEX 00000000
 
-ORBS_FOUND      DB  0
+ORBS_FOUND                      ; TODO: get rid of this
+KEYS_FOUND      DB  0
+KEY_DOOR_BITS   DB  0
 
-                DS  86
+                DS  85
 
 LOST_CHARS      DB  0           ; $BC7D
 GRPCONT         DB  6           ; $BC7E ; number of characters, including dead/compressed?
@@ -82,9 +84,9 @@ CHAR_0          USR (BLASTER___)-
                 HEX 480000AD        ;e4_UPRGT
                 HEX 4F070089        ;e5_LWLFT
                 HEX FFFFFFFF        ;e6_LWRGT
-                HEX FFFFFFFF        ;e7_BACK1
-                HEX FFFFFFFF        ;e8_BACK2
-                HEX FFFFFFFF        ;e9_BACK3
+                HEX 430200DF        ;e7_BACK1 (WHITE_SAND)
+                HEX 430A00DF        ;e8_BACK2 (HEAVY_STONE)
+                HEX 431200DF        ;e9_BACK3 (CHANGING_CRYSTAL)
                 HEX FFFFFFFF        ;e10_BACK4
                 HEX FFFFFFFF        ;e11_BACK5
                 HEX FFFFFFFF        ;e12_BACK6
@@ -392,9 +394,9 @@ CHAR_5          USR (BLADE_____)-
                 HEX 61010050        ;e4_UPRGT
                 HEX FFFFFFFF        ;e5_LWLFT
                 HEX FFFFFFFF        ;e6_LWRGT
-                HEX 41030050        ;e7_BACK1
-                HEX FFFFFFFF        ;e8_BACK2
-                HEX FFFFFFFF        ;e9_BACK3
+                HEX 431A00DF        ;e7_BACK1 (PLASTEEL_CIRCUIT)
+                HEX 432200DF        ;e8_BACK2 (PETRIFIED_LEAF)
+                HEX 41030050        ;e9_BACK3 (ATOM_COMPRESSOR)
                 HEX FFFFFFFF        ;e10_BACK4
                 HEX FFFFFFFF        ;e11_BACK5
                 HEX FFFFFFFF        ;e12_BACK6

@@ -26,7 +26,7 @@ EQUIP2			TXA						; called byte fight BLASTER.S
 				LDA	ETABLE
 				CMP	#$FF				; empty item
 				BNE	EQUIP3
-				RTS
+				JMP WORD_EXIT
 EQUIP3			LDY	#$00
 :LOOP1			LDA	ETABLE+0
 				AND	#%00011111
@@ -302,11 +302,11 @@ MISC			LDA	ETABLE+1
 				LSR
 				LSR
 				LSR
-				ORA	#$A0
+				ORA	#$F0
 				BIT	ETABLE+0
-				BVS	:SKIPD
+				BVC	:SKIPD
 				CLC
-				ADC	#$55
+				ADC	#$B5			; add KEY ($Fx->$Ax)
 :SKIPD			TAY
 				JMP	WORD_SUB
 
@@ -623,16 +623,27 @@ GROUP_ANTI		USR	(ANTI-)=				;*0          Group A
 				USR	(BACTERIA)=				;*5
 				USR	(PENGUIN)=				;*6
 
-GROUP_KEY		USR	(TERRAN)=				;*0          Group B
-				USR	(TOUHTAAN)=				;*1
-				USR	(ZINAN)=				;*2
-				USR	(!!!)=					;*3
-				USR	(GILLOITAN)=			;*4
-				USR	(WHITE_SAND)=			;*5
-				USR	(HEAVY_STONE)=			;*6
-				USR	(CHANGING_CRYSTAL)=		;*7
-				USR	(PLASTEEL_CIRCUIT)=		;*8
-				USR	(PETRIFIED_LEAF)=		;*9
+; NOTE: also referenced by KEY.DOOR.S
+GROUP_KEY		ENT
+				USR	(WHITE_SAND)=			;*0          Group B
+				USR	(HEAVY_STONE)=			;*1
+				USR	(CHANGING_CRYSTAL)=		;*2
+				USR	(PLASTEEL_CIRCUIT)=		;*3
+				USR	(PETRIFIED_LEAF)=		;*4
+
+; TODO: change these back once there's a way for
+;	the player to know them at key door time
+;				USR	(TERRAN)=				;*5
+;				USR	(TOUHTAAN)=				;*6
+;				USR	(ZINAN)=				;*7
+;				USR	(!!!)=					;*8
+;				USR	(GILLOITAN)=			;*9
+				USR (HUMAN)=				;*5
+				USR (ORN)=					;*6
+				USR (STILICX)=				;*7
+				USR (XXTYS)=				;*8
+				USR (DENEB)=				;*9
+
 				USR	(KEY)=					;*A
 
 GROUP_ATTACH	USR	(%_DISSIPATOR)=			;*0          Group C

@@ -18,6 +18,7 @@ RESET_COM		STA	TEMP
 				RTS
 
 LEGALS
+MENU_DISABLES	ENT
 CHAR_LIST		ENT
 				DS	7,0
 				DS	9,0
@@ -231,7 +232,8 @@ ESCAN_VISIBLE	LDX	#$FF
 *          $00 means it does
 *          $FF means it doesn't
 
-ESCAN_COMMON	STA	:MOD0+1
+ESCAN_COMMON	ENT
+				STA	:MOD0+1
 				STX	:MOD1+1
 				STY	:MOD1+2
 				LDA	#15
@@ -302,7 +304,8 @@ ESCAN_IDENTED	JSR	ESCAN_FULSLOT
 *-------------------------------
 * Eliminate empty slots
 
-ESCAN_FULSLOT	LDX	#<ECALL_FULSLOT
+ESCAN_FULSLOT	ENT
+				LDX	#<ECALL_FULSLOT
 				LDY	#>ECALL_FULSLOT
 				BNE	ESCAN_COMMON	;Always
 

@@ -81,7 +81,7 @@ OP_TEXT         STY OP_INDEX
                 LDY OP_INDEX
                 BNE :NEXT_CHAR          ; always
 
-:SKIP_SPACE1    JSR ADVANCE
+:SKIP_SPACE1    JSR HMOVE_6
                 BNE :NEXT_CHAR          ; always
 
 :SPECIAL_CHAR   INY
@@ -187,7 +187,7 @@ OP_TEXT_IN      STY OP_INDEX
                 STA WORD_BUFFER,X
                 INX
                 PHA
-                JSR ADVANCE
+                JSR HMOVE_6
                 PLA
                 CMP #TextFirstSymbol
                 BCC :NEXT_CHAR
@@ -243,7 +243,7 @@ OP_TEXT_IN      STY OP_INDEX
                 BEQ :FORCE_BREAK
                 CMP #TextSpace
                 BNE :3
-                JSR ADVANCE
+                JSR HMOVE_6
                 INY
                 BNE :2                  ; always
 
@@ -278,7 +278,8 @@ OP_TEXT_IN      STY OP_INDEX
 ;   Z: 1 (BNE true)
 ;-------------------------------------------------------------------------------
 
-ADVANCE         DEC XSHIFT
+HMOVE_6         ENT
+                DEC XSHIFT
                 BMI :1
                 INC XCOORD
                 RTS                     ; always BNE

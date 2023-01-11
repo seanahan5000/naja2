@@ -227,9 +227,11 @@ modAlienId      =   $81
 modElevator     =   $82
 modViewport     =   $83
 modRuuik        =   $84
+modKeyDoor      =   $85             ; TODO: different shell
 
 fileDiagnose    =   0
 fileAlienId     =   1
 fileElevator    =   2
 fileViewport    =   3
 fileRuuik       =   4
+fileKeyDoor     =   5               ; TODO: different shell

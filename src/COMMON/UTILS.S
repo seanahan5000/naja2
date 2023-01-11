@@ -105,6 +105,7 @@ WAIT_KEY        ENT                     ; was WAIT2
 ; On Exit:
 ;   A: random 8-bit number (0-255)
 ;   Y: modified
+;   Z,N: based on result value
 ;
 ; (from https://wiki.nesdev.com/w/index.php/Random_number_generator)
 ;   Assumes seed0 and seed1 zpage values have been initialized.

@@ -103,9 +103,11 @@ KNOWN_ALIENS_END
 
 ENCOUNTER_SPAWNS DS 20          ; 5 shells * 4 bytes
 
-ORBS_FOUND      DS  0
+ORBS_FOUND                      ; TODO: get rid of this
+KEYS_FOUND      DS  1
+KEY_DOOR_BITS   DS  1           ; a000bbbb - a open status, b order bits
 
-                DS  86
+                DS  85
 
 LOST_CHARS      DS  1           ; $BC7D
 GRPCONT         DS  1           ; $BC7E ; number of characters, including dead/compressed?

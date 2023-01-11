@@ -491,10 +491,10 @@ STATUS_NAMES    USR (HEALTHY)=
                 USR (CRITICAL)=
                 USR (RUN_DOWN)=
 
-; NOTE: currently only used by C.ISTATS.S, so maybe move
 CRACE_TO_TEXT   LDY #profrace
                 LDA (CHARDL),Y
                 AND #$0F
+RACE_TO_TEXT    ENT
                 LDX #<RACE_NAMES
                 LDY #>RACE_NAMES
                 JMP GET_IND_STRING

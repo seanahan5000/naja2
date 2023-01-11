@@ -55,6 +55,7 @@ DRAW_TEXTBUF     =   $1421
 DRAW_TEXT        =   $1425
 WRAP_TEXTBUF     =   $14C3
 DRAW_TEXTBOX     =   $14C7
+HMOVE_6          =   $1582
 GET_IND_STRING   =   $158E
 REGET_INPUT      =   $15C2
 GET_INPUT_KEY    =   $15C8

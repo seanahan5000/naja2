@@ -4,7 +4,8 @@
 *   X: Slot number of equipment to remove
 *-----------------------------------------
 
-REMOVE_ITEM		LDY	#profrace		;Used to be REMOVE
+REMOVE_ITEM		ENT					;Used to be REMOVE
+				LDY	#profrace
 				LDA	(CHARDL),Y
 				STA	TEMP
 				LDY	CORESPS,X
