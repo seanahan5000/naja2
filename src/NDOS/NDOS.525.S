@@ -279,7 +279,7 @@ DENIBLR
 * SSTOREL = DESTINATION ADDRESS (LOW)
 * SSTOREH = DESTINATION ADDRESS (HIGH)
 
-READ_SECTORS	TXA
+READ_SECTORSx	TXA
 				AND	#$0F
 				STA	SECHOLD
 				STX	STRACK
@@ -290,7 +290,7 @@ READ_SECTORS	TXA
 				DEX
 				BNE	:LOOP0
 
-READ_SECTORS2							;*** RENAME?
+READ_SECTORS2						;*** RENAME?
 *SEI
 				NOP					;Remove when SEI put in
 
@@ -654,60 +654,60 @@ SET_DISK_SIDE	ENT
 ;	X: file table address low
 ;	Y: file table address high
 ;
-SET_FILE_TABLE	ENT
-				STX FILES
-				STY FILESH
-				RTS
+; SET_FILE_TABLE	ENT
+; 				STX FILES
+; 				STY FILESH
+; 				RTS
 ;
 ; On entry:
 ;	X: file index
 ;
-LOAD_FILE       ENT
-				LDA #%00000000      ; was SLOAD_FILE
-                BEQ LOAD_FILE_CMN   ; always
-_LOAD_FILE      ENT
-				LDA #%10000000      ; was FLOAD_FILE
-                BNE LOAD_FILE_CMN   ; always
-LOAD_FILE_      ENT
-				LDA #%01000000      ; was SLOADER_FILE
-                BNE LOAD_FILE_CMN   ; always
-_LOAD_FILE_     ENT
-				LDA #%11000000      ; was FLOADER_FILE
-LOAD_FILE_CMN	STA ON_OFF_FLAG
-				TXA
-				ASL
-				ASL
-				TAY
-				LDA (FILES),Y
-				STA STRACK
-				INY
-				LDA (FILES),Y
-				STA SECHOLD
-				INY
-				LDA (FILES),Y
-				STA SECOUNT
-				INY
-				LDA (FILES),Y
-				STA SSTOREH
-				JMP READ_SECTORS2
+; LOAD_FILE       ENT
+; 				LDA #%00000000      ; was SLOAD_FILE
+;                 BEQ LOAD_FILE_CMN   ; always
+; _LOAD_FILE      ENT
+; 				LDA #%10000000      ; was FLOAD_FILE
+;                 BNE LOAD_FILE_CMN   ; always
+; LOAD_FILE_      ENT
+; 				LDA #%01000000      ; was SLOADER_FILE
+;                 BNE LOAD_FILE_CMN   ; always
+; _LOAD_FILE_     ENT
+; 				LDA #%11000000      ; was FLOADER_FILE
+; LOAD_FILE_CMN	STA ON_OFF_FLAG
+; 				TXA
+; 				ASL
+; 				ASL
+; 				TAY
+; 				LDA (FILES),Y
+; 				STA STRACK
+; 				INY
+; 				LDA (FILES),Y
+; 				STA SECHOLD
+; 				INY
+; 				LDA (FILES),Y
+; 				STA SECOUNT
+; 				INY
+; 				LDA (FILES),Y
+; 				STA SSTOREH
+; 				JMP READ_SECTORS2
 
-SET_LOAD_ADDR	ENT
-				STY SSTOREH
-				STA SECOUNT
-				RTS
+; SET_LOAD_ADDR	ENT
+; 				STY SSTOREH
+; 				STA SECOUNT
+; 				RTS
 
-LOAD_DATA       ENT
-				LDA #%00000000      ; was SLOAD
-                BEQ LOAD_DATA_CMN   ; always
-_LOAD_DATA      ENT
-				LDA #%10000000      ; was FLOAD
-                BNE LOAD_DATA_CMN   ; always
-LOAD_DATA_      ENT
-				LDA #%01000000      ; was SLOADER
-                BNE LOAD_DATA_CMN   ; always
-_LOAD_DATA_     ENT
-				LDA #%11000000      ; was FLOADER
-LOAD_DATA_CMN	JMP READ_SECTORS
+; LOAD_DATA       ENT
+; 				LDA #%00000000      ; was SLOAD
+;                 BEQ LOAD_DATA_CMN   ; always
+; _LOAD_DATA      ENT
+; 				LDA #%10000000      ; was FLOAD
+;                 BNE LOAD_DATA_CMN   ; always
+; LOAD_DATA_      ENT
+; 				LDA #%01000000      ; was SLOADER
+;                 BNE LOAD_DATA_CMN   ; always
+; _LOAD_DATA_     ENT
+; 				LDA #%11000000      ; was FLOADER
+; LOAD_DATA_CMN	JMP READ_SECTORS
 
 TRACK			DS	1
 SECTOR			DS	1
@@ -733,10 +733,9 @@ NUM_DRIVES		DB	$01				;TEMP***
 SLOT_X0			DB	$60				;TEMP***
 EXTRA_64K		DB	$00				;TEMP***
 
-				DS	$800-8-*
+				DS	$800-4-*
 
-ON_OFF_FLAG		DS	1
-EOVALUE			DB	$00					; TODO: remove, obsolete
+ON_OFF_FLAG		DB	$00
 LAST1			DB	$00
 SSTOREL			DB	$00
 BANK			DB	$00				;0 OR 1 ???
@@ -745,3 +744,7 @@ BANK			DB	$00				;0 OR 1 ???
 
 				PUT	NDOS.525W
 				SAV	NDOS.525W
+
+				ORG	$9F00
+				PUT	NDOS
+				SAV	NDOS

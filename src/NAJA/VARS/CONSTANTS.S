@@ -221,17 +221,20 @@ mRobotRepair_Control	=	18
 
 charTrack		=	$0100		;Track/Sector for character data
 
-; TODO: consider 16-bit module IDs
-modDiagnose     =   $80
-modAlienId      =   $81
-modElevator     =   $82
-modViewport     =   $83
-modRuuik        =   $84
-modKeyDoor      =   $85             ; TODO: different shell
 
-fileDiagnose    =   0
-fileAlienId     =   1
-fileElevator    =   2
-fileViewport    =   3
-fileRuuik       =   4
-fileKeyDoor     =   5               ; TODO: different shell
+; TODO: move these into separate file
+
+fileAlienPics12  =  $10
+fileAlienDesc12  =  $11
+
+fileAlienPics345 =  $20
+fileAlienDesc345 =  $21
+
+fileDiagnose    =   $30
+fileAlienId     =   $31
+
+fileElevator    =   $40
+fileViewport    =   $41
+fileRuuik       =   $42
+
+fileKeyDoor     =   $50

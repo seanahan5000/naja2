@@ -40,8 +40,19 @@ ELEVATOR_CMN    STA FLAG_345
                 PictImage PANEL
                 PictTextAt 140;80;(PRESS)
                 PictTextAt 122;88;(SHELL-NUMBER)
-                PictCall DRAW_DIAGS_CLOSE
                 PictEnd
+
+; NOTE: This is a duplicate of the code in LOAD.ELEVATOR.S
+;   because it cannot be called back to from here.  The address
+;   may differ between CONTROL17 to CONTROL9, for example.
+
+                LDX #<DIAG_DATA_CLOSE
+                LDY #>DIAG_DATA_CLOSE
+                STX XYDATAL
+                STY XYDATAH
+                LDX #<DIAGS_CLOSE
+                LDY #>DIAGS_CLOSE
+                JSR DRAW_SEGMENTS
 
                 LDA FLAG_345
                 BNE :1
@@ -493,6 +504,18 @@ DOFF            LDA LOBYTES,X
 DOFF_END        CPX #192
                 BNE DOFF
                 JMP DLOOP
+
+DIAGS_CLOSE     DB  ORD_B, ORD_E
+                DB  ORD_A, ORD_F
+                DB  ORD_B, ORD_G
+                DB  ORD_MOVE
+                DB  ORD_C, ORD_E
+                DB  ORD_D, ORD_F
+                DB  ORD_C, ORD_G
+                DB  ORD_STOP
+
+;                    A   B   C   D   E   F   G
+DIAG_DATA_CLOSE DB  $44,$4F,$C8,$D3,$41,$66,$89
 
 PANEL           DB  $0F,$45,$0D,$41
                 HEX 8028FDFD8955FDFD892AA1A62AA198830250408A2AA155A1

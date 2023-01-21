@@ -55,6 +55,11 @@ SHELL           DB  $1              ; TODO: move later
                 SAV CAMP.9000
 
                 ORG $A000
-DIAGNOSE_MOD    DB  modDiagnose
+DIAGNOSE_FILE   DB  fileDiagnose
                 PUT I.DIAGNOSE
                 SAV DIAGNOSE
+
+                ORG $A000
+ALIEN_ID_FILE   DB  fileAlienId
+                PUT C.ALIEN.ID
+                SAV ALIEN.ID

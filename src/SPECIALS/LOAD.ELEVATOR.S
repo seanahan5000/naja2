@@ -29,17 +29,13 @@ ELEVATOR_FAR    JSR DRAW_PICT
 
 DRAW_DIAGS_FAR  LDX #<DIAG_DATA_FAR
                 LDY #>DIAG_DATA_FAR
-                BNE DRAW_DIAGS_CMN      ; always
-DRAW_DIAGS_CLOSE
-                LDX #<DIAG_DATA_CLOSE
-                LDY #>DIAG_DATA_CLOSE
-DRAW_DIAGS_CMN  STX XYDATAL
+                STX XYDATAL
                 STY XYDATAH
-                LDX #<diagonals
-                LDY #>diagonals
+                LDX #<DIAGS_FAR
+                LDY #>DIAGS_FAR
                 JMP DRAW_SEGMENTS
 
-diagonals       DB  ORD_B, ORD_E
+DIAGS_FAR       DB  ORD_B, ORD_E
                 DB  ORD_A, ORD_F
                 DB  ORD_B, ORD_G
                 DB  ORD_MOVE
@@ -50,7 +46,6 @@ diagonals       DB  ORD_B, ORD_E
 
 ;                    A   B   C   D   E   F   G
 DIAG_DATA_FAR   DB  $65,$6D,$A7,$AF,$62,$74,$86
-DIAG_DATA_CLOSE DB  $44,$4F,$C8,$D3,$41,$66,$89
 
 ELEVATOR_123    JSR LOAD_ELEVATOR
                 LDA #0
@@ -60,9 +55,9 @@ ELEVATOR_345    JSR LOAD_ELEVATOR
                 LDA #1
                 JMP ELEVATOR_CMN
 
-LOAD_ELEVATOR   LDA ELEVATOR_MOD        ; TODO: used common/fixed address
-                CMP #modElevator
+LOAD_ELEVATOR   LDA #fileElevator
+                CMP ELEVATOR_FILE
                 BEQ :1
-                LDX #fileElevator
-                JSR LOAD_FILE
+                LDY #>ELEVATOR_FILE
+                JMP LOAD_FILE
 :1              RTS

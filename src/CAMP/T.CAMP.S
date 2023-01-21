@@ -138,13 +138,12 @@ CAMP_MENU_BOX   LDA SHELL
 
 :TRACC			JSR DRAW_PICT
                 PictSetOrange
-                ; PictRect $3B;$7C;$DD;$B7
-                PictRect $3B;$7C;$DD;$AE
+                PictRect $3B;$7C;$DD;$B7
                 PictTextAt 81;128;()-
                 USR (TRADE\n)-
-                ; USR (POOL_CREDITS\n)-
                 USR (REFORMAT_GROUP\n)-
                 USR (INDIVIDUAL_STATISTICS\n)-
+                USR (ALIEN_ENCOUNTER_LOG\n)-
                 USR (FLIP_STATS_TABLE\n)-
                 USR (LEAVE)
                 PictEnd
@@ -165,7 +164,7 @@ CCURPOS_MS      DB  $00
                 DW  GOFLOP
                 DW  GOLEAVE
 
-CAMP_MENU_TRACC DB  $85
+CAMP_MENU_TRACC DB  $86
 CCURPOS_TRACC   DB  $00
                 DW  CAMP_CURS
                 DW  :CAMP_JUMPS_T
@@ -173,6 +172,7 @@ CCURPOS_TRACC   DB  $00
 :CAMP_JUMPS_T   DW  TO_TRADE
                 DW  TO_REFORMAT
                 DW  TO_ISTATS
+                DW  TO_ALIENS
                 DW  GOFLOP
                 DW  GOLEAVE
 
@@ -180,8 +180,10 @@ CAMP_CURS       LDY CAMP_YPNTS,X
                 LDX #$43
                 JMP DRAW_ARROW
 
-CAMP_YPNTS      DB  $80,$89,$92
-                DB  $9B,$A4,$AD
+CAMP_YPNTS		DB	128,137,146
+				DB	155,164,173
+				DB	182
+
 *-------------------------------
 
 TO_TRADE		JSR BANK_1
@@ -225,6 +227,13 @@ TO_REFORMAT
 ; 				ORA	#bit_RefRegCom
 ; 				STA	CAMP_HERE
 ; :EXIT			RTS
+
+TO_ALIENS       LDA #fileAlienId
+                CMP ALIEN_ID_FILE
+                BEQ :1
+                LDY #>ALIEN_ID_FILE
+                JSR LOAD_FILE
+:1              JMP IDENTIFIED_ALIENS
 
 TO_ISTATS		JSR DRAW_PICT
 				PictTextAt 16;70;(CANCEL)

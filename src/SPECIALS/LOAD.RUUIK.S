@@ -1,7 +1,7 @@
 
-KING_RUUIK      LDA RUUIK_MOD
-                CMP #modRuuik
+KING_RUUIK      LDA #fileRuuik
+                CMP RUUIK_FILE
                 BEQ :1
-                LDX #fileRuuik
+                LDY #>RUUIK_FILE
                 JSR LOAD_FILE
 :1              JMP RUUIK

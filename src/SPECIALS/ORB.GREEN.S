@@ -5,7 +5,7 @@ ORB_LINE        =   $C0
 LOCATION        =   $C1
 INPUT_MODE      =   $C2                 ; 0 - turn, 1 - turn and space
 
-ORB_PEDESTAL    JSR DRAW_PICT
+KEY_PEDESTAL    JSR DRAW_PICT
                 PictSetPage2
                 PictClearPage
                 PictCall GET_NSEW

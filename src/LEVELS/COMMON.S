@@ -56,14 +56,13 @@
 
                 LDX #<MAP_DATA
                 LDY #>MAP_DATA
-                LDA #17
                 JSR SET_MAP_DATA
 
-                LDA #0
+                LDA #5
                 STA MAP_FACE
-                LDA #6
+                LDA #2
                 STA MAP_X
-                LDA #9
+                LDA #4
                 STA MAP_Y
                 LDA #3
                 STA MAP_DIR
@@ -91,8 +90,6 @@
                 BEQ :GO_CAMP
                 CMP #"M"
                 BEQ :GO_MAP
-                CMP #"X"
-                BEQ :GO_ALIEN
                 CLC
                 RTS
 
@@ -104,73 +101,6 @@
                 SEC
                 RTS
 
-:GO_ALIEN       LDA ALIEN_ID_MOD        ; TODO: used common/fixed address
-                CMP #modAlienId
-                BEQ :1
-                LDX #fileAlienId
-                JSR LOAD_FILE
-:1              JSR IDENTIFIED_ALIENS
-                SEC
-                RTS
-
 SHELL           DB  $00                 ; TODO: move this someplace real
 
-BIG_MAP         =   1
                 PUT DISPATCH
-                PUT MAP17
-
-SHIP_SOUND
-ROTATE
-IN_ONE_WAY
-DATACARD_COMP
-WEAPON_FOUND
-KILROY
-IS_DOOR
-NOT_DOOR
-ORB_GUARD
-                CLC
-                RTS
-
-FILE_TABLE      DB  $19,$00,$0E,$A0     ; 0 - diagnose
-                DB  $1A,$00,$06,$A0     ; 1 - alien.id
-                DB  $1A,$08,$08,$A0     ; 2 - elevator
-                DB  $1B,$00,$09,$A0     ; 3 - viewport
-                DB  $1C,$00,$0D,$A0     ; 4 - ruuik
-                ; TODO: trim this length
-                DB  $1D,$00,$10,$A0     ; 5 - key.door
-
-                PUT /SPECIALS/LOAD.ELEVATOR
-                PUT /SPECIALS/LOAD.VIEWPORT
-                PUT /SPECIALS/LOAD.RUUIK
-                PUT /SPECIALS/LOAD.KEY.DOOR
-                PUT /SPECIALS/FINDMENT  ; TODO: make a module?
-                PUT /SPECIALS/ORB.GREEN
-                PUT /SPECIALS/GREEN.NET
-                PUT /SPECIALS/DOOR.SIGN
-                SAV CONTROL
-
-                ORG $A000
-ALIEN_ID_MOD    DB  modAlienId
-                PUT ALIEN.ID
-                SAV ALIEN.ID
-
-                ORG $A000
-ELEVATOR_MOD    DB  modElevator
-                PUT /SPECIALS/ELEVATOR
-                SAV ELEVATOR
-
-                ORG $A000
-VIEWPORT_MOD    DB  modViewport
-                PUT /SPECIALS/VIEWPORT
-                SAV VIEWPORT
-
-; TODO: add marker to preload Ruuik module before turning to face him
-                ORG $A000
-RUUIK_MOD       DB  modRuuik
-                PUT /SPECIALS/RUUIK
-                SAV RUUIK
-
-                ORG $A000
-KEY_DOOR_MOD    DB  modKeyDoor
-                PUT /SPECIALS/KEY.DOOR
-                SAV KEY.DOOR

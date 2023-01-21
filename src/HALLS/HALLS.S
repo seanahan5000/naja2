@@ -345,12 +345,6 @@ RESTORE_MAP_POS LDX #0
 ;*** put this some place that survives load/store? ***
 SAVED_MAP_POS   DS  6
 
-SET_MAP_DATA    ENT
-                STX MAP_PTR_MOD_L+1
-                STY MAP_PTR_MOD_H+1
-                STA MAP_SIZE
-                RTS
-
 MARK_MAPPED     ENT
                 LDY MAP_X
                 LDA (MAP_PTR),Y
@@ -389,8 +383,7 @@ LOAD_MAP_DATA   LDY MAP_X
 :2              RTS
 
 MOVE_LEFT       JSR TURN_LEFT
-                JSR MOVE_FORWARD        ; fall through
-
+                JSR MOVE_FORWARD
 TURN_RIGHT      LDX MAP_DIR
                 INX
                 TXA
@@ -399,8 +392,7 @@ TURN_RIGHT      LDX MAP_DIR
                 RTS
 
 MOVE_RIGHT      JSR TURN_RIGHT
-                JSR MOVE_FORWARD        ; fall through
-
+                JSR MOVE_FORWARD
 TURN_LEFT       LDX MAP_DIR
                 DEX
                 TXA
@@ -409,8 +401,7 @@ TURN_LEFT       LDX MAP_DIR
                 RTS
 
 MOVE_BACKWARD   JSR TURN_AROUND
-                JSR MOVE_FORWARD        ; fall through
-
+                JSR MOVE_FORWARD
 TURN_AROUND     LDX MAP_DIR
                 INX
                 INX
@@ -513,7 +504,24 @@ MOVE_FORWARD    LDX MAP_DIR
                 AND #$0F           ; extract dest Y coordinate
                 TAX
                 LDA FACE_TABLE,X
-                STA MAP_Y          ; fall through
+                STA MAP_Y
+                JMP COMPUTE_MAP_PTR
+
+SET_MAP_DATA    ENT
+                STX MAP_PTR_MOD_L+1
+                STY MAP_PTR_MOD_H+1
+                STX TEMP_PTR
+                STY TEMP_PTR_H
+                LDY #0
+                LDA (TEMP_PTR),Y
+                STA MAP_SIZE
+                INY
+                LDA (TEMP_PTR),Y
+                ASL
+;               CLC
+                ADC #2                  ; skip map size and count
+                STA MAP_OFF_MOD+1
+                RTS
 
 COMPUTE_MAP_PTR ENT
 MAP_PTR_MOD_L   LDA #$FF
@@ -521,10 +529,12 @@ MAP_PTR_MOD_L   LDA #$FF
 MAP_PTR_MOD_H   LDA #$FF
                 STA TEMP_PTR_H
 
-                ; look up map face using 6 DW table
+                ; look up map face using pointer table
 
                 LDA MAP_FACE
                 ASL
+;               CLC
+                ADC #2                  ; skip map size and count
                 TAY
                 LDA (TEMP_PTR),Y
                 STA MAP_PTR
@@ -532,13 +542,13 @@ MAP_PTR_MOD_H   LDA #$FF
                 LDA (TEMP_PTR),Y
                 STA MAP_PTR_H
 
-                ; multiple Y by map byte width using lookup table
+                ; multiply Y by map byte width using lookup table
                 ;    and set map pointer to correct line in face map
 
                 LDA MAP_Y
                 ASL
 ;               CLC
-                ADC #6*2            ; skip 6 DW map pointers
+MAP_OFF_MOD     ADC #$FF                ; skip map size, count, and pointers
                 TAY
                 LDA (TEMP_PTR),Y
 ;               CLC

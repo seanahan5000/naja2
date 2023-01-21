@@ -7,9 +7,9 @@ VIEWPORT        PHA
                 PLA
                 JMP DO_VIEWPORT
 
-LOAD_VIEWPORT   LDA VIEWPORT_MOD
-                CMP #modViewport
+LOAD_VIEWPORT   LDA #fileViewport
+                CMP VIEWPORT_FILE
                 BEQ :1
-                LDX #fileViewport
-                JSR LOAD_FILE
+                LDY #>VIEWPORT_FILE
+                JMP LOAD_FILE
 :1              RTS

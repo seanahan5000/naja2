@@ -1,14 +1,15 @@
 
 * Quick fight mode versus "tactical" mode
-* Consider 6 instead of 7 group members, for balancing purposes
+* Consider 5 or 6 instead of 7 group members, for balancing purposes
+    * Also shortens combat loop
 * Identifying aliens adds them to Alien Catalog
     * May also add aliens by finding data cards, etc.
     * Could start with a few common aliens already identified
-x Remove per-character credits and pooling credits UI
+X Remove per-character credits and pooling credits UI
     * Keep pooled credits in game state
 * Make encounters more likely on never-visited map squares
     * Less common once a square has been mapped
-x Change DAMAGE to HEALTH in stats (easier for player)
+X Change DAMAGE to HEALTH in stats (easier for player)
 * Make death/compressed characters mechanism optional
     * Let player decide to be strict/not about death
 * Always allow escape key to cancel/leave a screen
@@ -17,6 +18,8 @@ x Change DAMAGE to HEALTH in stats (easier for player)
 * Get rid of "flip stats" when possible
     * XY information is not useful
     * Maybe just blink status text
+* Consider not showing shielding values in general stats box
+    * really only useful in individual stats screen
 * Make 'S' stats key also close out stats menu
 X Scroll through individuals in camp with <- and -> arrows
 * Better alien masking when drawing over tunnels
@@ -28,5 +31,49 @@ X Scroll through individuals in camp with <- and -> arrows
 * Equipment buffs?
 * More puzzles?
     * Puzzle of unlocking portable airlocks to access area
+    X Make ordering of keys in key door a puzzle
+* Consider tracking quest items separately from rest of inventory
+* Consider unifying cursor to just simple triangle (get rid of ->, etc.)
+    * (Might change original look too much)
+* Note that one-way doors are good for forcing action/suspense
+    * Rotating rooms are less interesting because of the map
 
 
+=================================
+Old notes from /WORK1.PO/TF.NOTES
+=================================
+
+Changes to Professions:
+     All characters are more robot-like
+     All have fighting skills (how does this effect who can use what equipment?)
+     Juicer - make them more real - tied to inorganic and implants
+     Cybernate - computer expert/hacker
+          - deals with core
+          - computer terminals
+          - no longer controls a robot
+     Androids - Alien life forms/languages/scanners,etc - skills related to zenologist.  Needs new name!!!
+     Warrior - specializes in fighting, strategy, tactics, weapons systems (also needs new name)
+Limit number of characters in group to 5!!!
+
+Instead of carrying equipment, implant it whenever possible.
+Juicer - upgrade his equipment
+          - emitting heat/light/energy all separate
+               - buy/find the stuff
+          - have some form of icon in the characters stats that show these abilities
+Androids - scanners implanted
+Explains the availability of the ComLink
+
+ENERGY
+     - implant equivalent of batteries
+     - no longer goes up with rank
+
+DAMAGE
+     - some how tied to implants
+     - mix with idea of replacing organic parts and repairing/healing wounds
+
+EQUIPMENT
+     - can buy any piece of equipment but brain can't always handle it
+     - upper and lower reflex, in addition to IQ become brain measuring numbers instead of physical measurements.  Strength would probably be gotten rid of.
+          - these numbers go up with rank and provide a way to limit what equipment can be used by what level of character, no matter how many credits they have.
+     - robot becomes more of a character - 100% synthetic
+          - artificial brain

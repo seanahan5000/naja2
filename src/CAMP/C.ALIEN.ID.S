@@ -49,13 +49,7 @@ ARROWS_VISIBLE  =   $CC
 ; used by LOAD_DESC and LOAD_ALIEN
 OFFSET_L        =   $CD
 OFFSET_H        =   $CE
-BYTE_COUNT      =   $CF
-
-AlienBase12TS   =   $000
-AlienBase345TS  =   $0B0
-
-AlienDesc12TS   =   $170
-AlienDesc345TS  =   $180
+BYTES_COUNT     =   $CF
 
                 DUMMY SCRATCH_PAGE
 ALIGNMENT       DS  72
@@ -482,17 +476,11 @@ SHOULD_ABORT    PHA
                 PLA
                 RTS
 
-LOAD_NAMES      LDY #>NAME_BUFFER
+LOAD_NAMES      JSR SET_DESC_FILE
 ; TODO: could be dropped to 4 if one name is removed from ALIEN.DESC.12
                 LDA #5                  ; 5 sectors
-                JSR SET_LOAD_ADDR
-                LDX #<AlienDesc12TS
-                LDY #>AlienDesc12TS
-                LDA ALIEN_SET
-                BEQ :1
-                LDX #<AlienDesc345TS
-                LDY #>AlienDesc345TS
-:1              JSR LOAD_DATA           ; spin up/down
+                LDY #>NAME_BUFFER
+                JSR READ_FILE           ; spin up/down
 
                 LDX NAME_BUFFER+0
                 INX                     ; skip DATA_END_xx offset
@@ -514,16 +502,17 @@ NAMES_MODA      LDX #$FF
 NAMES_MODB      LDY #$FF
                 JMP GET_IND_STRING
 
-LOAD_OFFSETS    LDY #>OFFSET_BUFFER
-                LDA #1                  ; one sector
-                JSR SET_LOAD_ADDR
-                LDX #<AlienBase12TS
-                LDY #>AlienBase12TS
-                LDA ALIEN_SET
+SET_PICS_FILE   LDA #fileAlienPics12
+                LDX ALIEN_SET
                 BEQ :1
-                LDX #<AlienBase345TS
-                LDY #>AlienBase345TS
-:1              JMP LOAD_DATA           ; spin up/down
+                LDA #fileAlienPics345
+:1              JSR SET_FILE
+                RTS
+
+LOAD_OFFSETS    JSR SET_PICS_FILE
+                LDA #1                  ; one sector
+                LDY #>OFFSET_BUFFER
+                JMP READ_FILE           ; spin up/down
 
 BUILD_KNOWN_LIST
                 LDX #KNOWN_ALIENS_12-KNOWN_ALIENS_12
@@ -563,7 +552,14 @@ CLEAR_DESC      JSR DRAW_PICT
                 PictEnd
                 RTS
 
-LOAD_DESC       LDX KNOWN_INDEX
+SET_DESC_FILE   LDA #fileAlienDesc12
+                LDX ALIEN_SET
+                BEQ :1
+                LDA #fileAlienDesc345
+:1              JMP SET_FILE
+
+LOAD_DESC       JSR SET_DESC_FILE
+                LDX KNOWN_INDEX
                 LDA KNOWN_LIST,X
                 ASL
                 TAY
@@ -574,7 +570,7 @@ LOAD_DESC       LDX KNOWN_INDEX
                 LDA NAME_BUFFER+3,Y
                 SEC
                 SBC OFFSET_L
-                STA BYTE_COUNT
+                STA BYTES_COUNT
 
                 LDA OFFSET_H
                 SEC
@@ -586,16 +582,17 @@ LOAD_DESC       LDX KNOWN_INDEX
                 BNE :COPY2
 
                 ; shift down and load into top half
-                LDX #0
+:SHIFT_UP       LDX #0
 :1              LDA DESC_BUFFER+$100,X
                 STA DESC_BUFFER,X
                 INX
                 BNE :1
+                INC DESC_BASE
+                LDX DESC_BASE
+                LDY #0
+                JSR SEEK_FILE
                 LDY #>DESC_BUFFER+$100
                 LDA #1                  ; one sector
-                JSR SET_LOAD_ADDR
-                INC DESC_BASE
-                SEC
                 BNE :COMMON             ; always
 
                 ; shift up and load into bottom half
@@ -606,34 +603,22 @@ LOAD_DESC       LDX KNOWN_INDEX
                 STA DESC_BUFFER+$100,X
                 INX
                 BNE :2
+                DEC DESC_BASE
+                LDX DESC_BASE
+                LDY #0
+                JSR SEEK_FILE
                 LDY #>DESC_BUFFER
                 LDA #1                  ; one sector
-                JSR SET_LOAD_ADDR
-                DEC DESC_BASE
-                CLC
                 BNE :COMMON             ; always
 
                 ; fill desc buffer with two sectors
-:COPY2          LDY #>DESC_BUFFER
+:COPY2          LDX OFFSET_H
+                STX DESC_BASE
+                LDY #0
+                JSR SEEK_FILE
+                LDY #>DESC_BUFFER
                 LDA #2                  ; two sectors
-                JSR SET_LOAD_ADDR
-                LDA OFFSET_H
-                STA DESC_BASE
-                CLC
-
-:COMMON         LDX #<AlienDesc12TS
-                LDY #>AlienDesc12TS
-                LDA ALIEN_SET
-                BEQ :3
-                LDX #<AlienDesc345TS
-                LDY #>AlienDesc345TS
-:3              TXA
-                ; carry clear/set above
-                ADC DESC_BASE
-                TAX
-                BCC :4
-                INY
-:4              JSR LOAD_DATA           ; spin up/down for now
+:COMMON         JSR READ_FILE           ; spin up/down for now
 
 :NO_LOAD        LDA OFFSET_H
                 SEC
@@ -646,7 +631,7 @@ LOAD_DESC       LDX KNOWN_INDEX
 :5              LDA (OFFSET_L),Y
                 STA TEXT_BUFFER,Y
                 INY
-                CPY BYTE_COUNT
+                CPY BYTES_COUNT
                 BNE :5
 
                 LDA #TextLineEnd
@@ -685,11 +670,12 @@ ALIEN_BOTTOM    DB  $00
                 PictEnd
                 RTS
 
-START_OFFSET_H  =   BYTE_COUNT
+START_OFFSET_H  =   BYTES_COUNT
 END_OFFSET_L    =   OFFSET_L
 END_OFFSET_H    =   OFFSET_H
 
-LOAD_ALIEN      LDX KNOWN_INDEX
+LOAD_ALIEN      JSR SET_PICS_FILE
+                LDX KNOWN_INDEX
                 LDA KNOWN_LIST,X
                 ASL
                 TAX
@@ -703,6 +689,10 @@ LOAD_ALIEN      LDX KNOWN_INDEX
                 LDA OFFSET_TABLE+3,X
                 STA END_OFFSET_H
 
+                LDX START_OFFSET_H
+                LDY #0
+                JSR SEEK_FILE
+
                 LDX END_OFFSET_H
                 LDA END_OFFSET_L
                 BEQ :2
@@ -711,20 +701,7 @@ LOAD_ALIEN      LDX KNOWN_INDEX
                 SEC
                 SBC START_OFFSET_H
                 LDY #>DATA_TABLE
-                JSR SET_LOAD_ADDR
-
-                LDA #<AlienBase12TS
-                LDY #>AlienBase12TS
-                LDX ALIEN_SET
-                BEQ :3
-                LDA #<AlienBase345TS
-                LDY #>AlienBase345TS
-:3              CLC
-                ADC START_OFFSET_H
-                TAX
-                BCC :4
-                INY
-:4              JSR LOAD_DATA           ; spin up/down
+                JSR READ_FILE           ; spin up/down
 
                 ; stuff #$FF at end of compressed data
                 LDA END_OFFSET_H
