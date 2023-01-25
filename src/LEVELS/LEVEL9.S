@@ -90,7 +90,7 @@ MAP_6           HEX F03030303030303030C0
                 HEX C00000000000000000C0
                 HEX C0000000F030308000C0
                 HEX C0000000C000B2C000C0
-                HEX C0000000C0F000323240
+                HEX C0000000C0F000303240
                 HEX C0000000C0C0C0F030C0
                 HEX C0000000C0E020C000C0
                 HEX C00000002030300000C0
@@ -124,7 +124,7 @@ SPECIAL_YX5     DB  $27,$28,$30
                 DB  $36,$41,$46
                 DB  $56,$67,$68
                 DB  $85
-SPECIAL_YX6     DB  $36,$47,$48
+SPECIAL_YX6     DB  $36,$48
                 DB  $FF
 SPECIAL_DIR
 SPECIAL_DIR0    DB  $0F,$04,$08
@@ -146,39 +146,39 @@ SPECIAL_DIR5    DB  $0F,$0F,$0F
                 DB  $0F,$08,$0F
                 DB  $0F,$0F,$0F
                 DB  $0F
-SPECIAL_DIR6    DB  $08,$02,$08
+SPECIAL_DIR6    DB  $08,$0A
                 DB  $00
 SPECIAL_ID
 SPECIAL_ID0     DB  $0D,$09,$09
 SPECIAL_ID1     DB  $09,$09,$10
                 DB  $10,$0B
 SPECIAL_ID2     DB  $0C,$0A,$01
-                DB  $0A,$00,$07
-                DB  $07,$07,$07
-                DB  $07,$07,$07
-                DB  $07,$07,$07
-                DB  $07
+                DB  $0A,$00,$08
+                DB  $08,$08,$08
+                DB  $08,$08,$08
+                DB  $08,$08,$08
+                DB  $08
 SPECIAL_ID3     DB  $12,$0E,$13
-                DB  $12,$03,$02
+                DB  $12,$05,$04
                 DB  $12,$0D,$13
                 DB  $12,$0E
-SPECIAL_ID4     DB  $09,$08,$09
+SPECIAL_ID4     DB  $09,$03,$09
                 DB  $0F
-SPECIAL_ID5     DB  $07,$07,$12
-                DB  $07,$06,$07
-                DB  $07,$07,$07
+SPECIAL_ID5     DB  $08,$08,$12
+                DB  $08,$02,$08
+                DB  $08,$08,$08
                 DB  $0D
-SPECIAL_ID6     DB  $05,$14,$04
+SPECIAL_ID6     DB  $07,$06
 
 SPECIAL_LIST    DW  ELEVATOR_345
                 DW  ELEVATOR_FAR
+                DW  FAKE_FC_IN
+                DW  GRAFFITI
                 DW  KEY_PEDESTAL
                 DW  KEY_GUARD
                 DW  KEY_DOOR
                 DW  NAJA_DOOR
-                DW  FAKE_FC
                 DW  SHIP_SOUND
-                DW  GRAFFITI
                 DW  ROTROOM
                 DW  NET
                 DW  QUICKD
@@ -190,7 +190,6 @@ SPECIAL_LIST    DW  ELEVATOR_345
                 DW  AUTOEN
                 DW  NOENCNT
                 DW  NOTDOOR
-                DW  FAKE2
 
 ENCOUNTER_START DB  ENCOUNTER_YX0-ENCOUNTER_YX
                 DB  ENCOUNTER_YX1-ENCOUNTER_YX

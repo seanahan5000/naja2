@@ -610,3 +610,9 @@ FACE_DATA       DB  3 * 4 + south, $40    ; north -> 3 south   size-x   0
                 DB  2 * 4 + north, $23    ; east  -> 2 north   y        size
                 DB  3 * 4 + north, $43    ; south -> 3 north   size-x   size
                 DB  4 * 4 + north, $53    ; west  -> 4 north   size-y   size
+
+                ; NOTE: only used for special level 9, face 6
+                DB  6 * 4 + north, $13    ; north -> 6 north   x        size
+                DB  6 * 4 + east,  $02    ; east  -> 6 east    0        y
+                DB  6 * 4 + south, $10    ; south -> 6 south   x        0
+                DB  6 * 4 + west,  $32    ; west  -> 6 west    size     y

@@ -26,7 +26,8 @@ DRAW_HALL       ENT
 :2              RTS
 
 
-SCAN_HALL       LDA #0
+SCAN_HALL       ENT
+                LDA #0
                 STA CUR_DEPTH
                 STA BLOCK_INDEX
 

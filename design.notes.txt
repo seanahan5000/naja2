@@ -1,6 +1,7 @@
 
 * Quick fight mode versus "tactical" mode
 * Consider 5 or 6 instead of 7 group members, for balancing purposes
+    * (Wizardry had 6)
     * Also shortens combat loop
 * Identifying aliens adds them to Alien Catalog
     * May also add aliens by finding data cards, etc.
@@ -26,7 +27,7 @@ X Scroll through individuals in camp with <- and -> arrows
     * Trade having fewer aliens for better masking information
 * Turn off mapping in dark areas
 * Some type of mapping interference to force hand-mapping temporarily
-* Cube on its corner rotating around orb (see portugal picture)
+* Cube on its corner rotating around orb (see Portugal picture)
 * Crafting? Raw-materials?
 * Equipment buffs?
 * More puzzles?
@@ -37,6 +38,8 @@ X Scroll through individuals in camp with <- and -> arrows
     * (Might change original look too much)
 * Note that one-way doors are good for forcing action/suspense
     * Rotating rooms are less interesting because of the map
+* Make specials/encounters work in conjunction with stats/camp/map
+    * Recheck specials on exit
 
 
 =================================

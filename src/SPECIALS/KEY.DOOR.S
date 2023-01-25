@@ -57,8 +57,10 @@ AT_KEY_DOOR     LDA KEY_DOOR_BITS
                 CMP #5
                 BEQ HAVE_KEYS
 
-KEY_TURN_AWAY
-                ; TODO: wait for turning away?
+KEY_TURN_AWAY   LDA KEYBRD
+                BPL KEY_TURN_AWAY
+                JSR CHECK_TURN
+                BNE KEY_TURN_AWAY
                 CLC                 ; return door not opened
                 RTS
 

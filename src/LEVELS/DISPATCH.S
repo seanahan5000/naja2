@@ -2,8 +2,10 @@
 DISP_DATA       =   LOCAL_TEMP+0
 DISP_INDEX      =   LOCAL_TEMP+1
 DISP_YX         =   LOCAL_TEMP+2
+STEP_TYPE       =   LOCAL_TEMP+3
 
-DISPATCH        LDY MAP_X
+DISPATCH        STX STEP_TYPE
+                LDY MAP_X
                 LDA (MAP_PTR),Y
                 ; TODO: use constants
                 AND #$0E                ; clear mapped bit too
@@ -89,6 +91,7 @@ DISP_SPECIAL    LDX MAP_FACE
                 LDA SPECIAL_LIST+1,X
                 STA :MOD+2
                 LDA SPECIAL_DIR,Y
+                LDX STEP_TYPE
 :MOD            JMP $FFFF
 
 DISP_ENCOUNTER  LDX MAP_FACE
