@@ -73,7 +73,7 @@ SET_FC_POS      LDX #0
                 JMP GET_NSEW
 
                 ;   F,X,Y,DIR
-:FC_PNTS        DB  6,6,4,WEST          ; into core
+:FC_PNTS        DB  6,8,4,WEST          ; into core
                 DB  5,1,4,EAST          ; out of core
 ;
 ; On exit:

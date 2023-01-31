@@ -28,6 +28,7 @@ HATCH_BOT_LINE  =   111                 ; inclusive
 KEY_COUNT       DS  1
 KEY_CHARS       DS  5
 KEY_SLOTS       DS  5
+KEY_LIST        DS  5
 KEY_ORDER       DS  5
 KEY_PICKS       DS  5
 LIMIT_LINES_U   DS  7
@@ -41,6 +42,13 @@ AT_KEY_DOOR     LDA KEY_DOOR_BITS
                 BEQ :1
                 STA KEY_DOOR_BITS
 :2              JSR BUILD_KEY_ORDER
+
+                LDX #0
+:3              TXA
+                STA KEY_LIST,X
+                INX
+                CPX #5
+                BNE :3
 
                 JSR DRAW_PICT
                 PictSetPage2
@@ -99,7 +107,7 @@ HAVE_KEYS       JSR DRAW_PICT
                 JSR PICK_KEYS
 
                 JSR DRAW_PICT
-                PictSwap 8;140;32;191
+                PictSwap 8;172;32;191
                 PictEnd
 
                 LDX #4
@@ -113,8 +121,7 @@ HAVE_KEYS       JSR DRAW_PICT
                 BPL :1
                 BMI :CORRECT            ; always
 
-:FAIL
-                JSR DRAW_PICT
+:FAIL           JSR DRAW_PICT
                 PictSetPage2
                 PictClear 12;183;28;192
                 PictTextAt 92;184;(NOTHING_HAPPENED)
@@ -214,7 +221,10 @@ REMOVE_KEYS     LDX #0
                 BNE :1
                 RTS
 
-PICK_KEYS       LDX #<:KEYS_MENU
+PICK_KEYS       LDA #$85
+                STA :KEYS_MENU+0
+
+                LDX #<:KEYS_MENU
                 LDY #>:KEYS_MENU
                 JSR MENU_INIT
 
@@ -224,28 +234,45 @@ PICK_KEYS       LDX #<:KEYS_MENU
                 LDA #4
                 STA CURSOR
                 JSR MENU_SELECT_NEXT
-                LDA #$FF
-                STA MENU_DISABLES,X
-                TXA
+                LDA KEY_LIST,X
                 LDY HATCH_INDEX
                 STA KEY_PICKS,Y
-                JSR DRAW_KEY_NAME
+
+                LDY KEY_LINES,X
+                LDX #65
+                JSR DRAW_MARKER
 
                 LDX HATCH_INDEX
+                LDA #$FF
+                STA MENU_DISABLES,X
                 JSR OPEN_HATCH
                 LDA #$FF
                 JSR WAIT
 
-                LDX CURSOR
+                LDY CURSOR
+                LDX KEY_LIST,Y
                 LDA HATCH_INDEX
                 JSR DRAW_KEY
                 JSR KEY_SOUND
 
                 LDX HATCH_INDEX
+                CPX #4
+                BEQ :4
+
+                LDX CURSOR
+                BEQ :3
+:2              LDA KEY_LIST-1,X
+                STA KEY_LIST,X
+                DEX
+                BNE :2
+
+:3              LDX CURSOR
+                JSR SCROLL_KEY_LIST
+
+                LDX HATCH_INDEX
                 INX
-                CPX #5
-                BNE :1
-                RTS
+                BNE :1                  ; always
+:4              RTS
 
 :KEYS_MENU      DB  $85
                 DB  $00
@@ -256,15 +283,7 @@ PICK_KEYS       LDX #<:KEYS_MENU
                 JMP DRAW_TRIANGLE
 
 DRAW_KEY_NAMES  LDX #0
-:1              STX HATCH_INDEX
-                JSR DRAW_KEY_NAME
-                LDX HATCH_INDEX
-                INX
-                CPX #5
-                BNE :1
-                RTS
-
-DRAW_KEY_NAME   TXA
+:1              TXA
                 PHA
                 LDY KEY_LINES,X
                 LDX #73
@@ -277,8 +296,49 @@ DRAW_KEY_NAME   TXA
                 LDX #<GROUP_KEY
                 LDY #>GROUP_KEY
                 PLA
+                PHA
                 JSR GET_IND_STRING
-                JMP DRAW_TEXTBUF
+                JSR DRAW_TEXTBUF
+                PLA
+                TAX
+                INX
+                CPX #5
+                BNE :1
+                RTS
+;
+; On entry:
+;   X: key item number
+;
+SCROLL_KEY_LIST LDA KEY_LINES,X
+                PHA
+                LDX #8
+                LDA #32
+                JSR SET_LINE_BOUNDS
+                LDA KEY_LINES+0
+                SEC
+                SBC #11
+                STA LIMIT_LINE
+                LDA #8
+                STA SRC_LINE            ; really just a line count
+                PLA
+                TAX
+:1              STX DST_LINE
+:2              JSR SET_DEST_LINE
+                DEX
+                JSR SET_SOURCE_LINE
+                JSR COPY_LINE
+                CPX LIMIT_LINE
+                BNE :2
+                JSR SET_DEST_LINE
+                JSR SET_SOURCE_OFF
+                JSR COPY_LINE
+                INX
+                STX LIMIT_LINE
+                LDX DST_LINE
+                INX
+                DEC SRC_LINE
+                BNE :1
+                RTS
 
 KEY_LINES       DB  151,159,167,175,183
 
