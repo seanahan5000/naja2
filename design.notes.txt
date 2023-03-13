@@ -40,6 +40,8 @@ X Scroll through individuals in camp with <- and -> arrows
     * Rotating rooms are less interesting because of the map
 * Make specials/encounters work in conjunction with stats/camp/map
     * Recheck specials on exit
+* Make map display more "dynamic" -- at least blink current position?
+* Make '?' bring up key help on any screen
 
 
 =================================

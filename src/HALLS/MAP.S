@@ -1,5 +1,14 @@
 
-ThickWalls      =   1
+; TODO:
+; - option to scroll UDLR in map using arrow keys?
+; - option to rotate to direction faced?
+; - background fill pattern?
+
+ThickWalls      =   0
+WhiteWalls      =   0
+
+; TODO: make this more like a camp module
+; TODO: use camp zpage, not hall zpage
 
 SCREEN_Y        =   $11
 CELL_Y          =   $12
@@ -50,8 +59,10 @@ ARROW_X         =   MAP_LEFT_BYTE+8*14
         fin
 ARROW_Y         =   MAP_HEIGHT_CELLS/2*CELL_HEIGHT+MAP_TOP_LINE+4
 
+; TODO: use SCRATCH_PAGE buffers instead
 BLOCK_BUFFER2   =   BLOCK_BUFFER+MAP_WIDTH_CELLS+2
 
+; TODO: generalize/share these
 ARROW_SHAPES    DB  $00,$00,$00,$40,$60,$70,$00     ; up arrow
                 DB  $00,$02,$07,$0F,$1F,$3F,$00
 
@@ -64,17 +75,81 @@ ARROW_SHAPES    DB  $00,$00,$00,$40,$60,$70,$00     ; up arrow
                 DB  $00,$00,$40,$70,$40,$00,$00     ; left arrow
                 DB  $18,$1E,$1F,$1F,$1F,$1E,$18
 
-; TODO:
-; - option to scroll UDLR in map using arrow keys?
-; - option to rotate to direction faced?
-; - option to rotate use cmd-arrow keys?
+SHOW_MAP        ENT
+
+:DRAW_LOOP      JSR DRAW_PICT
+                PictSetPageX
+                PictClearPage
+                PictCall DRAW_MAP
+                PictShowPage
+                PictEnd
+:KEY_LOOP       JSR RANDOM
+                LDA KEYBRD
+                BPL :KEY_LOOP
+                BIT UNSTROB
+                JSR CHECK_LEFT
+                BEQ :LEFT
+                JSR CHECK_RIGHT
+                BEQ :RIGHT
+                JSR CHECK_UP
+                BEQ :UP
+                JSR CHECK_DOWN
+                BEQ :DOWN
+                ; TODO: up/down/reverse?
+                JSR DRAW_PICT
+                PictSetPageX
+                PictClearPage
+                ; TODO: combine these two calls?
+                PictCall GET_NSEW
+                PictCall DRAW_HALL
+                PictShowPage
+                PictEnd
+                ; TODO: make this normalization code common?
+                LDA PAGE
+                CMP #$20
+                BEQ :1
+                JSR DRAW_PICT
+                PictSetPageX
+                PictCopyToPage
+                PictShowPage
+                PictEnd
+:1              SEC
+                RTS
+
+:UP             ; TODO: handle simple up
+                JMP :KEY_LOOP
+
+:DOWN           ; TODO: handle simple down
+                JMP :KEY_LOOP
+
+:LEFT           LDA PBUTTON0            ; open-apple
+                BMI :ROT_CCW
+                ; TODO: handle simple left
+                JMP :KEY_LOOP
+
+:RIGHT          LDA PBUTTON0            ; open-apple
+                BMI :ROT_CW
+                ; TODO: handle simple right
+                JMP :KEY_LOOP
+
+:ROT_CCW        LDX MAP_ROTATION
+                INX
+                JMP :ROTATE
+
+:ROT_CW         LDX MAP_ROTATION
+                DEX
+:ROTATE         STX MAP_ROTATION
+                JMP :DRAW_LOOP
+
+MAP_ROTATION    DB  NORTH
 
 DRAW_MAP        JSR PUSH_MAP_STATE      ; save actual map position
 
-                LDA #NORTH
+                LDA MAP_ROTATION
+                AND #3
                 STA MAP_DIR
 
-                LDA MAP_FACE
+                LDA MAP_FACE            ; capture before MOVE_FORWARD changes it
                 PHA
 
                 LDA #MAP_HEIGHT_CELLS/2
@@ -88,9 +163,9 @@ DRAW_MAP        JSR PUSH_MAP_STATE      ; save actual map position
 
                 LDX #$FF
                 PLA
-                BEQ :2
-                CMP #5
-                BEQ :2
+                ; BEQ :2
+                ; CMP #5
+                ; BEQ :2
                 CMP MAP_FACE
                 BEQ :2
                 LDX MAP_FACE
@@ -112,6 +187,7 @@ DRAW_MAP        JSR PUSH_MAP_STATE      ; save actual map position
                 LDX #MAX_MAP_SIZE+3     ; clear prev line and left/right padding
                 LDA #0
 :4              STA BLOCK_BUFFER,X
+                STA BLOCK_BUFFER2,X
                 DEX
                 BPL :4
 
@@ -147,10 +223,17 @@ NEXT_CELL       LDA BLOCK_BUFFER+1,X
                 AND #MAPPED_MASK
                 BNE :11
         do ThickWalls
+            do WhiteWalls
+                LDA #$7C
+                STA FILL0_BITS
+                LDA #$7F
+                STA FILL1_BITS
+            else
                 LDA #$54
                 STA FILL0_BITS
                 LDA #$2A
                 STA FILL1_BITS
+            fin
         else
                 LDA #$28
                 STA FILL0_BITS
@@ -196,10 +279,18 @@ NEXT_CELL       LDA BLOCK_BUFFER+1,X
 
 :NORTH_DOOR
         do ThickWalls
+            do WhiteWalls
+                LDA #$1F
+            else
                 LDA #$15
+            fin
                 STA (SCREENL),Y
                 INY
+            do WhiteWalls
+                LDA #$60
+            else
                 LDA #$20
+            fin
         else
                 LDA #$6A
                 STA (SCREENL),Y
@@ -211,10 +302,18 @@ NEXT_CELL       LDA BLOCK_BUFFER+1,X
 
 :NORTH_WALL
         do ThickWalls
+            do WhiteWalls
+                LDA #$7F
+            else
                 LDA #$55
+            fin
                 STA (SCREENL),Y
                 INY
+            do WhiteWalls
+                LDA #$7F
+            else
                 LDA #$2A
+            fin
         else
                 LDA #$2A
                 STA (SCREENL),Y
@@ -227,20 +326,42 @@ NEXT_CELL       LDA BLOCK_BUFFER+1,X
 :NORTH_FACE
         do ThickWalls
                 LDA CELL_Y
+            ; do WhiteWalls
+            ;     CMP #1
+            ;     BNE :222
+            ; else
                 CMP #2
                 BCS :222
+            ; fin
 
+            do WhiteWalls
+                LDA #$67
+            else
                 LDA #$65
+            fin
                 STA (SCREENL),Y
                 INY
+            do WhiteWalls
+                LDA #$67
+            else
                 LDA #$27
+            fin
                 STA (SCREENL),Y
                 BNE :CELL_DONE2         ; always
 
-:222            LDA #$05
+:222
+            do WhiteWalls
+                LDA #$07
+            else
+                LDA #$05
+            fin
                 STA (SCREENL),Y
                 INY
+            do WhiteWalls
+                LDA #$60
+            else
                 LDA #$20
+            fin
                 STA (SCREENL),Y
         else
                 LDA #$52
@@ -303,7 +424,11 @@ NEXT_CELL       LDA BLOCK_BUFFER+1,X
 
 :WEST_WALL
         do ThickWalls
+            do WhiteWalls
+                LDA #$07
+            else
                 LDA #$05
+            fin
         else
                 LDA #$02
         fin
@@ -350,7 +475,11 @@ NEXT_CELL       LDA BLOCK_BUFFER+1,X
                 DEY
 :NORTH_DOOR_N
         do ThickWalls
+            do WhiteWalls
+                LDA #$27
+            else
                 LDA #$25
+            fin
                 ; ORA (SCREENL),Y
                 STA (SCREENL),Y
                 INY
@@ -395,11 +524,15 @@ ROW_DONE        INC MAP_ROW
                 LDY #ARROW_Y
                 JSR MOVE_TO
                 LDA MAP_DIR
-                ASL A
-                JSR :DRAW_ARROW
-                LDA MAP_DIR
                 SEC
-                ROL A
+                SBC MAP_ROTATION
+                AND #3
+                PHA
+                ASL
+                JSR :DRAW_ARROW
+                PLA
+                SEC
+                ROL
 :DRAW_ARROW     LDX #<ARROW_SHAPES
                 LDY #>ARROW_SHAPES
                 JMP DRAW_TILE_A
@@ -497,7 +630,7 @@ FIRST_ROW       LDA #0
                 STA BLOCK_DATA
 
                 LDA BLOCK_BUFFER+1,X
-                ASL A
+                ASL
                 EOR BLOCK_DATA
                 AND #PREV_MAPPED_MASK
                 EOR BLOCK_DATA          ; insert now-prev mapped bit
@@ -507,11 +640,7 @@ FIRST_ROW       LDA #0
                 EOR (MAP_PTR),Y         ; reinsert mapped bit
 
 :5              STA BLOCK_BUFFER+1,X
-        do ThickWalls
                 CPX #MAP_WIDTH_CELLS-1
-        else
-                CPX MAP_SIZE
-        fin
                 BNE :1
                 JMP NEXT_ROW
 ;
@@ -531,7 +660,7 @@ SAVE_MAPPED     ENT
                 STA MAPPED_BITS
 :NEXT_ROW       LDY #0
 :NEXT_COLUMN    LDA (MAP_PTR),Y
-                LSR A
+                LSR
                 ROL MAPPED_BITS
                 DEX
                 BNE :SAME_BYTE
@@ -574,9 +703,9 @@ RESTORE_MAPPED  ENT
                 STA MAPPED_BITS
 :NEXT_ROW       LDY #0
 :NEXT_COLUMN    LDA (MAP_PTR),Y
-                LSR A
+                LSR
                 ROL MAPPED_BITS
-                ROL A
+                ROL
                 STA (MAP_PTR),Y
                 DEX
                 BNE :SAME_BYTE

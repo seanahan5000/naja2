@@ -120,22 +120,6 @@ FILTER_HALL     JMP DEFAULT_FILTER
 DEFAULT_FILTER  CLC
                 RTS
 
-SHOW_MAP        ENT
-                JSR SET_PAGE2
-                JSR CLEAR_PAGE
-                JSR DRAW_MAP
-                STA SCNDARY
-:1              JSR RANDOM
-                LDA KEYBRD
-                BPL :1
-                BIT UNSTROB
-                LDA #$20
-                JSR SET_PAGE
-                STA PRIMARY
-                JSR GET_NSEW
-                SEC
-                RTS
-
 GET_NSEW        ENT
                 JSR PUSH_MAP_STATE
 

@@ -27,6 +27,10 @@ LOBYTES         ENT
                 HEX 5050505050505050
                 HEX D0D0D0D0D0D0D0D0
 
+SET_PAGEX       ENT
+                LDA PAGE
+                EOR #$60
+                BNE SET_PAGE            ; always
 SET_PAGE2       ENT
                 LDA #$40
                 BNE SET_PAGE            ; always

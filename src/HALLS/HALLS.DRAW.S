@@ -378,6 +378,25 @@ SIDE_IS_FACE    LDX #<sideFaceChange
                 LDY #>sideCenterTopBot
                 JSR DRAW_SEGMENTS
 
+                LDA BLOCK_DATA
+                AND #FRONT_MASK
+;               CMP #FRONT_OPEN
+                BNE SIDE_IS_DONE
+
+                LDX BLOCK_INDEX
+                LDA BLOCK_BUFFER+BUFFER_WIDTH,X
+                AND #SIDE_MASK
+                CMP #SIDE_FACE
+                BNE SIDE_IS_DONE
+
+                LDA CUR_DEPTH
+                CMP RANGE
+                BCS SIDE_IS_DONE
+
+                LDX #<sideFarOpenToNextOpen
+                LDY #>sideFarOpenToNextOpen
+                JSR DRAW_SEGMENTS
+
 SIDE_IS_DONE
 ; after side 0 (left), draw front center wall/door/face
                 LDA LINE_SIDE

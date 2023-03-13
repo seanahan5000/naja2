@@ -86,11 +86,11 @@ OP_TABLE        DW  OP_SET_COLOR
                 DW  OP_SWAP
                 DW  SET_PAGE1       ; direct call
                 DW  SET_PAGE2       ; direct call
+                DW  SET_PAGEX       ; direct call
                 DW  OP_SHOW_PAGE
                 DW  CLEAR_PAGE
                 DW  COPY_TO_PAGE    ; direct call
                 DW  OP_CALL
-
 
 OP_SHOW_PAGE    LDA PAGE
                 CMP #$40

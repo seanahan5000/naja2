@@ -164,10 +164,11 @@ OpSwap          =   25
 
 OpSetPage1      =   26
 OpSetPage2      =   27
-OpShowPage      =   28
-OpClearPage     =   29
-OpCopyToPage    =   30
-OpCall          =   31
+OpSetPageX      =   28
+OpShowPage      =   29
+OpClearPage     =   30
+OpCopyToPage    =   31
+OpCall          =   32
 
 OpEnd           =   $FF
 
@@ -354,6 +355,10 @@ PictSetPage1    MAC
 
 PictSetPage2    MAC
                 DB  OpSetPage2
+                EOM
+
+PictSetPageX    MAC
+                DB  OpSetPageX
                 EOM
 
 PictShowPage    MAC
