@@ -30,8 +30,6 @@ FAKE_FC_OUT     JSR STEP_HALL
 ; face change into key door/core
 ;
 FAKE_FC_IN      JSR STEP_HALL
-                JSR LOAD_KEY_DOOR
-                PHP
 :1              LDA KEYBRD
                 BPL :1
                 JSR CHECK_TURN
@@ -41,12 +39,10 @@ FAKE_FC_IN      JSR STEP_HALL
                 BIT UNSTROB
 :2              LDY #0
                 JSR SET_FC_POS
-                PLP
+                JSR LOAD_KEY_DOOR
                 BCS :DOOR_OPEN
                 JSR AT_KEY_DOOR
-                PHP
-:3              PLP
-                SEC
+:3              SEC
                 RTS
 
 :DOOR_OPEN      JSR CLEAR_PAGE

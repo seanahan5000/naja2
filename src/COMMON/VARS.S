@@ -86,7 +86,7 @@ SCRATCH         =   $77
 COLOR           =   $E4
 PAGE            =   $E6
 
-; HALLS use $F0-$F7
+; HALLS use $F0-$F8
 ; TODO: move contents of HALLS/VARS.S here
 
 SCRATCH_PAGE    =   $BA00       ; TODO: place somewhere else

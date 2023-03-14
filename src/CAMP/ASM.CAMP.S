@@ -31,7 +31,6 @@ BANK_2          LDA $C083
                 LDA $C083
                 RTS
 
-SHELL           DB  $1              ; TODO: move later
                 SAV CAMP.E000
 
                 ORG $D000           ; bank 1

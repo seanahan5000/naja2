@@ -11,3 +11,4 @@ MAP_PTR_H       =   $F6         ; must be sequential
 ; TODO: do MAP_PTR_L/H really need permanent zpage?
 
 RANGE           =   $F7         ; does this need a zpage?
+SHELL           =   $F8         ; does this need a zpage?

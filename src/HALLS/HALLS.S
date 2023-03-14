@@ -268,7 +268,8 @@ GET_NSEW        ENT
 
 ; save/restore MAP_FACE through MAP_PTR_H state
 
-PUSH_MAP_STATE  LDX MAP_STATE_PTR
+PUSH_MAP_STATE  ENT
+                LDX MAP_STATE_PTR
                 LDY #5
 :1              LDA MAP_FACE,Y
                 DEX
@@ -278,7 +279,8 @@ PUSH_MAP_STATE  LDX MAP_STATE_PTR
                 STX MAP_STATE_PTR
                 RTS
 
-PULL_MAP_STATE  LDX MAP_STATE_PTR
+PULL_MAP_STATE  ENT
+                LDX MAP_STATE_PTR
                 LDY #0
 :1              LDA MAP_STATE_STACK,X
                 INX

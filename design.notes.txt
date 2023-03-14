@@ -42,7 +42,9 @@ X Scroll through individuals in camp with <- and -> arrows
     * Recheck specials on exit
 * Make map display more "dynamic" -- at least blink current position?
 * Make '?' bring up key help on any screen
-
+* Does Electro-medic class still make sense?
+* Different (less D&D) name for Warrior?
+    * Soldier, Grunt, Combat Specialist
 
 =================================
 Old notes from /WORK1.PO/TF.NOTES

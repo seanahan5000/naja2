@@ -233,6 +233,13 @@ fileAlienDesc345 =  $21
 fileDiagnose    =   $30
 fileAlienId     =   $31
 
+; NOTE: must be consecutive in this order
+fileControl17   =   $32
+fileControl15   =   $33
+fileControl13   =   $34
+fileControl11   =   $35
+fileControl9    =   $36
+
 fileElevator    =   $40
 fileViewport    =   $41
 fileRuuik       =   $42

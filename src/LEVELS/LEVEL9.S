@@ -20,8 +20,8 @@ MAP_DATA        DB  9,7
                 DW  10*8
                 DW  10*9
 
-MAP_0           HEX F09010D02020E02010C0
-                HEX C0F030B030F230303080
+MAP_0           HEX F09010D02022E02010C0
+                HEX C0F030B030F030303080
                 HEX 60C000C000B030B030C0
                 HEX C0E03030308000C00080
                 HEX C000F020C030F030F040
@@ -105,7 +105,7 @@ SPECIAL_START   DB  SPECIAL_YX0-SPECIAL_YX
                 DB  SPECIAL_YX5-SPECIAL_YX
                 DB  SPECIAL_YX6-SPECIAL_YX
 SPECIAL_YX
-SPECIAL_YX0     DB  $15,$61,$72
+SPECIAL_YX0     DB  $05,$61,$72
 SPECIAL_YX1     DB  $12,$21,$55
                 DB  $63,$65
 SPECIAL_YX2     DB  $13,$21,$30
@@ -180,7 +180,7 @@ SPECIAL_LIST    DW  ELEVATOR_345
                 DW  NAJA_DOOR
                 DW  SHIP_SOUND
                 DW  ROTROOM
-                DW  NET
+                DW  GREEN_NET
                 DW  QUICKD
                 DW  ESTATION
                 DW  VDOORS

@@ -6,6 +6,8 @@ B_COUNT         =   $C3
 BEGLINE         =   $C4
 ENDLINE         =   $C5
 
+PICHERE         =   $5FFF
+
 GREEN_NET       BIT OPEN1
                 BVS :1
                 CLC                     ; back to halls
@@ -20,9 +22,6 @@ GREEN_NET       BIT OPEN1
                 CMP #$01
                 BEQ NETHERE
 
-                LDA #$01
-                STA PICHERE
-
                 JSR DRAW_PICT
                 PictSetPage2
                 PictClearPage
@@ -31,6 +30,9 @@ GREEN_NET       BIT OPEN1
                 PictEnd
 
                 JSR CLOSE_NET
+
+                LDA #$01
+                STA PICHERE
 
 NETHERE         JSR DRAW_PICT
                 PictSetPage2
@@ -400,7 +402,6 @@ UN_NETLINE      JSR SET_SOURCE_LINE
 
 OPEN1           DB  $FF
 SAVE_RANGE      DB  $01
-PICHERE         DB  $00                 ; TODO: move elsewhere
 
 NUMSIGN0        DB  %01101100
                 DB  %01101100

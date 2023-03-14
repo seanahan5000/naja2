@@ -60,13 +60,6 @@ HGR             ENT
                 STA GRAPHICS
                 RTS
 
-INIT_RANDOM     ENT
-                LDA #$12
-                STA SEED0
-                LDA #$34
-                STA SEED1
-                RTS
-
                 DS  \,$EE               ; TODO: use these bytes
 
 HIBYTES         ENT

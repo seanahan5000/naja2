@@ -30,7 +30,11 @@ $ASM ALIENS ASM.PICS    -lst $OBJ/PICS.LST
 $ASM ALIENS ALIEN.DESC.12
 $ASM ALIENS ALIEN.DESC.345
 
+$ASM LEVELS INIT        -lst $OBJ/INIT.LST
 $ASM LEVELS ASM.17      -lst $OBJ/CONTROL17.LST
+$ASM LEVELS ASM.15      -lst $OBJ/CONTROL15.LST
+$ASM LEVELS ASM.13      -lst $OBJ/CONTROL13.LST
+$ASM LEVELS ASM.11      -lst $OBJ/CONTROL11.LST
 $ASM LEVELS ASM.9       -lst $OBJ/CONTROL9.LST
 
 $ASM TEST   GAME.STATE
@@ -39,29 +43,51 @@ $ASM TEST   GAME.STATE
 # Build disk .nib images
 #---------------------------------------
 
-A2NIB="a2nib -disk $DSK/naja2.nib"
-$A2NIB -create -volume 1
+A2NIB_T1="a2nib -disk $DSK/naja1.nib"
+A2NIB_T2="a2nib -disk $DSK/naja2.nib"
 
-$A2NIB $OBJ/ALIEN.PICS.12   -t 00 -s 00   # A900
-$A2NIB $OBJ/ALIEN.PICS.345  -t 0B -s 00   # C000
-$A2NIB $OBJ/ALIEN.DESC.12   -t 17 -s 00   # 0E00
-$A2NIB $OBJ/ALIEN.DESC.345  -t 18 -s 00   # 0D00
+$A2NIB_T1 -create -volume 1
+$A2NIB_T2 -create -volume 2
 
-$A2NIB $OBJ/DIAGNOSE        -t 19 -s 00   # 14 sectors
-                                          #  2 sectors
+# shell 17,15
+$A2NIB_T1 $OBJ/ALIEN.PICS.12   -t 00 -s 00   # A900
+$A2NIB_T1 $OBJ/ALIEN.DESC.12   -t 0C -s 00   # 0E00
 
-$A2NIB $OBJ/ALIEN.ID        -t 1A -s 00   #  6 sectors
-                                          #  2 sectors
-$A2NIB $OBJ/ELEVATOR        -t 1A -s 08   #  8 sectors
+# shell 13,11,9
+$A2NIB_T2 $OBJ/ALIEN.PICS.345  -t 00 -s 00   # C000
+$A2NIB_T2 $OBJ/ALIEN.DESC.345  -t 0C -s 00   # 0D00
 
-$A2NIB $OBJ/VIEWPORT        -t 1B -s 00   #  9 sectors
-                                          #  7 sectors
+# shell all
+$A2NIB_T1 $OBJ/DIAGNOSE        -t 14 -s 00   # 14 sectors
+$A2NIB_T2 $OBJ/DIAGNOSE        -t 14 -s 00   # 14 sectors
+                                             #  2 sectors
+$A2NIB_T1 $OBJ/ALIEN.ID        -t 15 -s 00   #  6 sectors
+$A2NIB_T2 $OBJ/ALIEN.ID        -t 15 -s 00   #  6 sectors
+                                             #  2 sectors
+$A2NIB_T1 $OBJ/ELEVATOR        -t 15 -s 08   #  8 sectors
+$A2NIB_T2 $OBJ/ELEVATOR        -t 15 -s 08   #  8 sectors
 
-$A2NIB $OBJ/RUUIK           -t 1C -s 00   # 13 sectors
-                                          #  3 sectors
+# shell 17,15
+$A2NIB_T1 $OBJ/CONTROL17       -t 10 -s 00   # 16 sectors (trim)
+$A2NIB_T1 $OBJ/CONTROL15       -t 11 -s 00   # 12 sectors (trim)
 
-$A2NIB $OBJ/KEY.DOOR        -t 1D -s 00   # 13 sectors
-                                          #  3 sectors
+# shell 17
+$A2NIB_T1 $OBJ/VIEWPORT        -t 16 -s 00   #  9 sectors
+                                             #  7 sectors
+$A2NIB_T1 $OBJ/RUUIK           -t 17 -s 00   # 13 sectors
+                                             #  3 sectors
+
+# shell 13,11,9
+$A2NIB_T2 $OBJ/CONTROL13       -t 10 -s 00   # 12 sectors (trim)
+                                             #  4 sectors
+$A2NIB_T2 $OBJ/CONTROL11       -t 11 -s 00   # 12 sectors (trim)
+                                             #  4 sectors
+$A2NIB_T2 $OBJ/CONTROL9        -t 12 -s 00   # 12 sectors (trim)
+                                             #  4 sectors
+
+# shell 9
+$A2NIB_T2 $OBJ/KEY.DOOR        -t 16 -s 00   # 13 sectors
+                                             #  3 sectors
 
 #---------------------------------------
 # Copy all project files
@@ -75,6 +101,6 @@ fi
 
 cp project-naja2.json $PROJ
 cp $OBJ/*           $PROJ
-cp $DSK/naja2.nib   $PROJ
+cp $DSK/naja*.nib   $PROJ
 
 #---------------------------------------

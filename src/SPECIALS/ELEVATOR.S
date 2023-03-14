@@ -23,37 +23,18 @@ OFF_LINE        =   $C4
 COPY_COUNT      =   $C5
 
 ELEVATOR_CMN    STA FLAG_345
+                BCS :0
                 JSR DRAW_PICT
+                PictSetPage1
+                PictCopyToPage
+                PictShowPage
                 PictSetPage2
-                PictClearPage
-                PictCall GET_NSEW
-                PictCall DRAW_HALL
-                PictSetBlack1
-                PictMoveTo $45;$66
-                PictLineTo $D2;$66
-                PictSetWhite1
-                PictRect $4F;$41;$C7;$89
-                PictMoveTo $50;$41
-                PictLineTo $50;$89
-                PictMoveTo $C8;$41
-                PictLineTo $C8;$89
+                PictEnd
+:0              JSR DRAW_PICT
                 PictImage PANEL
                 PictTextAt 140;80;(PRESS)
                 PictTextAt 122;88;(SHELL-NUMBER)
                 PictEnd
-
-; NOTE: This is a duplicate of the code in LOAD.ELEVATOR.S
-;   because it cannot be called back to from here.  The address
-;   may differ between CONTROL17 to CONTROL9, for example.
-
-                LDX #<DIAG_DATA_CLOSE
-                LDY #>DIAG_DATA_CLOSE
-                STX XYDATAL
-                STY XYDATAH
-                LDX #<DIAGS_CLOSE
-                LDY #>DIAGS_CLOSE
-                JSR DRAW_SEGMENTS
-
                 LDA FLAG_345
                 BNE :1
                 JSR DRAW_PICT
@@ -63,12 +44,14 @@ ELEVATOR_CMN    STA FLAG_345
 :1              JSR DRAW_PICT
                 PictImage BUTTONS_345
                 PictEnd
-:2              JSR DRAW_PICT
-                PictShowPage
+:2              JSR SHOW_PAGE
+                JSR DRAW_PICT
                 PictSetPage1
                 PictCopyToPage
                 PictShowPage
+                PictEnd
                 ; build cross section buffer
+                JSR DRAW_PICT
                 PictSetPage2
                 PictClear 0;0;40;CrossHeight
                 PictImage CROSS_SECTION
@@ -101,6 +84,8 @@ ELEVATOR_CMN    STA FLAG_345
 :6              STA DEST_SHELL
                 JSR LOAD_SHELL
 
+                JSR SET_CONTROL
+
                 BIT UNSTROB
                 LDA DEST_SHELL
                 TAX
@@ -113,13 +98,14 @@ ELEVATOR_CMN    STA FLAG_345
 DOWNER          DEX
                 BEQ :1
                 BIT UNSTROB
-                ; DEC XPOS
-                ; DEC YPOS
+                DEC MAP_X
+                DEC MAP_Y
                 LDA #1
-                JSR MIDDLER
+                JSR MIDDLE_HALL
                 JSR :UP_SUB
-:1              ; DEC XPOS
-                ; DEC YPOS
+:1              DEC MAP_X
+                DEC MAP_Y
+                JSR COMPUTE_MAP_PTR
                 JSR GET_NSEW
                 JSR :UP_SUB
                 JMP BACK_TO_HALL
@@ -132,13 +118,14 @@ DOWNER          DEX
 
 UPPER           INX
                 BEQ :1
-                ; INC XPOS
-                ; INC YPOS
+                INC MAP_X
+                INC MAP_Y
                 LDA #0
-                JSR MIDDLER
+                JSR MIDDLE_HALL
                 JSR :DOWN_SUB
-:1              ; INC XPOS
-                ; INC YPOS
+:1              INC MAP_X
+                INC MAP_Y
+                JSR COMPUTE_MAP_PTR
                 JSR GET_NSEW
                 JSR :DOWN_SUB
                 JMP BACK_TO_HALL
@@ -157,7 +144,10 @@ HALL_ON2        JSR DRAW_PICT
                 PictEnd
                 RTS
 
-BACK_TO_HALL    BIT UNSTROB
+BACK_TO_HALL    JSR RESTORE_MAPPED
+                JSR MARK_MAPPED         ; force current position as mapped
+
+                BIT UNSTROB
                 JSR DRAW_PICT
                 PictSetPage2
                 PictShowPage
@@ -172,51 +162,32 @@ BACK_TO_HALL    BIT UNSTROB
 ; On entry:
 ;   A: 0=UP, 1=DOWN
 ;
-MIDDLER
-;                 EOR SHELL
-;                 ASL
-;                 TAX
-;                 LDA MIDDLES-2,X
-;                 STA POINTL
-;                 LDA MIDDLES-1,X
-;                 STA POINTH
-;                 LDY #$00
-;                 LDA (POINTL),Y
-;                 TAX
-; :1              INY
-;                 LDA (POINTL),Y
-;                 STA BLOCK_BUFFER-1,Y
-;                 DEX
-;                 BNE :1
-                RTS
+MIDDLE_HALL     PHA
+                JSR PUSH_MAP_STATE
+                PLA
+                EOR SHELL
+                ASL
+                ASL
+                TAY
+                LDX #0
+:1              LDA :MID_PNTS-4,Y
+                STA MAP_FACE,X
+                INY
+                INX
+                CPX #4
+                BNE :1
+                JSR COMPUTE_MAP_PTR
+                JSR GET_NSEW
+                JMP PULL_MAP_STATE
 
-; MIDDLES         DW  UP_31
-;                 DW  DOWN_13
-;                 DW  UP_53
-;                 DW  DOWN_35
+                ;   F,X,Y,DIR
+:MID_PNTS       DB  5,12,11,SOUTH       ; UP_31
+                DB  5,2,11,SOUTH        ; DOWN_13
+                DB  2,1,5,EAST          ; UP_53
+                DB  2,1,5,EAST          ; DOWN_35
 
-; UP_31           DB  14
-;                 DB  $00,$00,$C0
-;                 DB  $C0,$C0,$C0
-;                 DB  $C0,$C0,$C0
-;                 DB  $C0,$D8,$1B
-;                 DB  $FF,$C0
-
-; DOWN_13         DB  6
-;                 DB  $00,$00,$D8
-;                 DB  $1B,$FF,$C0
-
-; UP_53           DB  8
-;                 DB  $00,$00,$C0
-;                 DB  $C0,$1B,$D8
-;                 DB  $FF,$80
-
-; DOWN_35         DB  6
-;                 DB  $00,$00,$1B
-;                 DB  $D8,$FF,$C0
-
-FLAG_345        DB  $00
-DEST_SHELL      DB  $00
+FLAG_345        DB  0
+DEST_SHELL      DB  0
 
 COPY_CROSS      LDA #<CROSS_BEGIN
                 STA CROSSL
@@ -244,39 +215,19 @@ COPY_CROSS      LDA #<CROSS_BEGIN
                 RTS
 
 LOAD_SHELL      LDX DEST_SHELL
-                LDA DISK_SIDES-1,X
+                LDA :DISK_SIDES-1,X
                 JSR SET_DISK_SIDE
-            do 0
-; Load control file based on DEST_SHELL
-;   and file table in camp
                 TXA
                 CLC
-                ADC #cControl17-1
-                TAX
-                JSR SLOAD_FILE
+                ADC #fileControl17-1
+                LDY #>CONTROL_FILE
+                JMP LOAD_FILE
 
-                LDX #$03
-:1              LDA SHELL_INFO,X
-                STA MAPSPOT,X
-                DEX
-                BPL :1
-            fin
-                RTS
-
-DISK_SIDES
-            do ORIGINAL
-                DB  side_T1     ; 17
-                DB  side_T2     ; 15
-                DB  side_T3     ; 13
-                DB  side_T4     ; 11
-                DB  side_T5     ;  9
-            else
-                DB  side_T1     ; 17
-                DB  side_T1     ; 15
-                DB  side_T2     ; 13
-                DB  side_T2     ; 11
-                DB  side_T2     ;  9
-            fin
+:DISK_SIDES     DB  side_T1             ; 17
+                DB  side_T1             ; 15
+                DB  side_T2             ; 13
+                DB  side_T2             ; 11
+                DB  side_T2             ;  9
 
 ;---------------------------------------
 ; scroll screen down (up elevator)
@@ -504,18 +455,6 @@ DOFF            LDA LOBYTES,X
 DOFF_END        CPX #192
                 BNE DOFF
                 JMP DLOOP
-
-DIAGS_CLOSE     DB  ORD_B, ORD_E
-                DB  ORD_A, ORD_F
-                DB  ORD_B, ORD_G
-                DB  ORD_MOVE
-                DB  ORD_C, ORD_E
-                DB  ORD_D, ORD_F
-                DB  ORD_C, ORD_G
-                DB  ORD_STOP
-
-;                    A   B   C   D   E   F   G
-DIAG_DATA_CLOSE DB  $44,$4F,$C8,$D3,$41,$66,$89
 
 PANEL           DB  $0F,$45,$0D,$41
                 HEX 8028FDFD8955FDFD892AA1A62AA198830250408A2AA155A1

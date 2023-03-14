@@ -84,21 +84,13 @@ OP_TABLE        DW  OP_SET_COLOR
                 DW  OP_CLEAR
                 DW  OP_COPY_TO
                 DW  OP_SWAP
-                DW  SET_PAGE1       ; direct call
-                DW  SET_PAGE2       ; direct call
-                DW  SET_PAGEX       ; direct call
-                DW  OP_SHOW_PAGE
+                DW  SET_PAGE1
+                DW  SET_PAGE2
+                DW  SET_PAGEX
+                DW  SHOW_PAGE
                 DW  CLEAR_PAGE
-                DW  COPY_TO_PAGE    ; direct call
+                DW  COPY_TO_PAGE
                 DW  OP_CALL
-
-OP_SHOW_PAGE    LDA PAGE
-                CMP #$40
-                BEQ :SHOW2
-:SHOW1          STA PRIMARY
-                RTS
-:SHOW2          STA SCNDARY
-                RTS
 
 OP_CALL         LDA (OP_PTR),Y
                 STA :CALL_MOD+1

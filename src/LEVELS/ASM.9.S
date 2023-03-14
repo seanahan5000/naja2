@@ -1,5 +1,6 @@
 
 BIG_MAP         =   0
+SHELLNUM        =   5
 
                 PUT COMMON
                 PUT CONTROL9
@@ -7,6 +8,7 @@ BIG_MAP         =   0
 
                 PUT /SPECIALS/LOAD.ELEVATOR
                 PUT /SPECIALS/LOAD.KEY.DOOR
+                PUT /SPECIALS/GREEN.NET
                 SAV CONTROL9
 
                 ORG $A000

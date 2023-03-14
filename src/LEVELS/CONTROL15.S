@@ -1,19 +1,4 @@
 
-DOOR_SIGN
-KEY_PEDESTAL
-
-SHIP_SOUND
-ROTATE
-IN_ONE_WAY
-DATACARD_COMP
-WEAPON_FOUND
-KILROY
-IS_DOOR
-NOT_DOOR
-KEY_GUARD
-                CLC
-                RTS
-
 FILE_TABLE      DB  fileAlienPics12,  $00,$00,$B0   ; trim
                 DB  fileAlienDesc12,  $0C,$00,$10   ; trim
 
@@ -24,6 +9,3 @@ FILE_TABLE      DB  fileAlienPics12,  $00,$00,$B0   ; trim
                 DB  fileDiagnose,     $14,$00,$0E
                 DB  fileAlienId,      $15,$00,$06
                 DB  fileElevator,     $15,$08,$08
-
-                DB  fileViewport,     $16,$00,$09
-                DB  fileRuuik,        $17,$00,$0D

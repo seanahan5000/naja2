@@ -1,10 +1,8 @@
 
                 PUT /HALLS/HALLS.EQU
 
-ELEVATOR_FAR    JSR DRAW_PICT
-                PictSetPage2
-                PictClearPage
-                PictCall DRAW_HALL
+ELEVATOR_FAR    JSR ELEVATOR_STEP
+                JSR DRAW_PICT
                 PictSetBlack1
                 PictMoveTo $66;$74
                 PictLineTo $AE;$74
@@ -16,15 +14,54 @@ ELEVATOR_FAR    JSR DRAW_PICT
                 PictCopyToPage
                 PictShowPage
                 PictEnd
-                JSR LOAD_ELEVATOR
-                JMP :2
-
-:1              BIT UNSTROB
-:2              LDA KEYBRD
-                BPL :2
+                JMP :3
+:2              BIT UNSTROB
+:3              LDA KEYBRD
+                BPL :3
                 JSR CHECK_MOVE
-                BNE :1
+                BNE :2
                 SEC
+                RTS
+
+ELEVATOR_123    LDA #0
+                BEQ ELEVATOR_ALL        ; always
+ELEVATOR_345    LDA #1
+ELEVATOR_ALL    PHA
+                JSR ELEVATOR_STEP
+                JSR DRAW_PICT
+                PictSetBlack1
+                PictMoveTo $45;$66
+                PictLineTo $D2;$66
+                PictSetWhite1
+                PictRect $4F;$41;$C7;$89
+                PictMoveTo $50;$41
+                PictLineTo $50;$89
+                PictMoveTo $C8;$41
+                PictLineTo $C8;$89
+                PictCall DRAW_DIAGS_NEAR
+                PictEnd
+                LDA #fileElevator
+                CMP ELEVATOR_FILE
+                SEC
+                BEQ :1
+                PHA
+                JSR SHOW_PAGE
+                PLA
+                LDY #>ELEVATOR_FILE
+                JSR LOAD_FILE
+                CLC
+:1              PLA
+                JMP ELEVATOR_CMN
+
+ELEVATOR_STEP   LDX STEP_TYPE
+                CPX #3
+                BNE :1
+                JSR GET_NSEW
+:1              JSR DRAW_PICT
+                PictSetPage2
+                PictClearPage
+                PictCall DRAW_HALL
+                PictEnd
                 RTS
 
 DRAW_DIAGS_FAR  LDX #<DIAG_DATA_FAR
@@ -33,6 +70,14 @@ DRAW_DIAGS_FAR  LDX #<DIAG_DATA_FAR
                 STY XYDATAH
                 LDX #<DIAGS_FAR
                 LDY #>DIAGS_FAR
+                JMP DRAW_SEGMENTS
+
+DRAW_DIAGS_NEAR LDX #<DIAG_DATA_NEAR
+                LDY #>DIAG_DATA_NEAR
+                STX XYDATAL
+                STY XYDATAH
+                LDX #<DIAGS_NEAR
+                LDY #>DIAGS_NEAR
                 JMP DRAW_SEGMENTS
 
 DIAGS_FAR       DB  ORD_B, ORD_E
@@ -44,20 +89,15 @@ DIAGS_FAR       DB  ORD_B, ORD_E
                 DB  ORD_C, ORD_G
                 DB  ORD_STOP
 
+DIAGS_NEAR      DB  ORD_B, ORD_E
+                DB  ORD_A, ORD_F
+                DB  ORD_B, ORD_G
+                DB  ORD_MOVE
+                DB  ORD_C, ORD_E
+                DB  ORD_D, ORD_F
+                DB  ORD_C, ORD_G
+                DB  ORD_STOP
+
 ;                    A   B   C   D   E   F   G
 DIAG_DATA_FAR   DB  $65,$6D,$A7,$AF,$62,$74,$86
-
-ELEVATOR_123    JSR LOAD_ELEVATOR
-                LDA #0
-                JMP ELEVATOR_CMN
-
-ELEVATOR_345    JSR LOAD_ELEVATOR
-                LDA #1
-                JMP ELEVATOR_CMN
-
-LOAD_ELEVATOR   LDA #fileElevator
-                CMP ELEVATOR_FILE
-                BEQ :1
-                LDY #>ELEVATOR_FILE
-                JMP LOAD_FILE
-:1              RTS
+DIAG_DATA_NEAR  DB  $44,$4F,$C8,$D3,$41,$66,$89

@@ -43,7 +43,7 @@ MAP_0           HEX 7030D030303010F010F0303030F030B030C0
                 HEX C0F03030C0000000C0F0C030E0F0302020C0
                 HEX C0C000003030303000C0308000C0F0308040
                 HEX E0C00000F0B0F0B0C03030303000C000C0C0
-                HEX C0B2303280C080C0B030B03030C0303000C0
+                HEX C0B0303280C080C0B030B03030C0303000C0
                 HEX 303030303030303030103030303030303000
 
 MAP_1           HEX F0F030F03030F03030D0B0F0F0F0F0F0F0C0
@@ -55,7 +55,7 @@ MAP_1           HEX F0F030F03030F03030D0B0F0F0F0F0F0F0C0
                 HEX C030C0C0C0C0C0C000C0C00000C0C080C0C0
                 HEX 70C0C0C0C0C0C0C0F080B030F0003030E0C0
                 HEX C0C000C0C000C0C0C0C0C0F0C0F030C0C0C0
-                HEX C0323022303000303030303000C0C0C0C0C0
+                HEX C0303022303000303030303000C0C0C0C0C0
                 HEX F02030C0F030F03030C0E0303000C0C0C0C0
                 HEX C00000C08000800000C0C0F02030C0C0C0C0
                 HEX F03000C0F020F0B03080C0F0303080C0C0C0
@@ -81,14 +81,14 @@ MAP_2           HEX F03010F030F0303030303030F030D03030C0
                 HEX C030203020300030E0F000302030203000C0
                 HEX 40F030203030C0E0C0E0C0F030203030C040
                 HEX C0C000000000C0C0F0C0C0C000000000C0C0
-                HEX C23032F2B23222323232223232B2F23002C0
+                HEX C23030F2B23222323232223232B2F03002C0
                 HEX 303010203020202020202020302010303000
 
 MAP_3           HEX F030303030F03030D0F0D030303010F030C0
                 HEX C00000F080F0C0F080C0C000000000C000C0
-                HEX 72303280C080C0C0B0C0303030303000F240
+                HEX 72303080C080C0C0B0C0303030303000F240
                 HEX F03030C080C0C030C0B0C000F0C0F0C0C0C0
-                HEX C000003000F0000030C0B0F080B080B082C0
+                HEX C000003000F0000030C0B0F080B080B080C0
                 HEX F0303030E0F0C00000F08080F0C0B0C0F0C0
                 HEX 703030C0C080B0B0B080F03000F080F000C0
                 HEX C00000C030F080C080B0C000F080F00000C0
@@ -98,7 +98,7 @@ MAP_3           HEX F030303030F03030D0F0D030303010F030C0
                 HEX C0F030300000F08080F000F030C0F080F0C0
                 HEX F030303030C0C0B0F000F20000C0C0B0C0C0
                 HEX C00000F080C0F080B0C030C000C032C0B0C0
-                HEX 72303280C0B080F0C0B0C030E030C0F080C0
+                HEX 72303080C0B080F0C0B0C030E030C0F080C0
                 HEX F03030C080C0F00030C0B0C030C0C0C0B0C0
                 HEX C000003000F000000030C0C000C0C032C0C0
                 HEX 303030303030303030301030301030303000
@@ -122,21 +122,21 @@ MAP_4           HEX D030303030F0F030B230123030303030F0C0
                 HEX F0F030303030303022B030F0F000000000C0
                 HEX 303030303030301030303030303010303000
 
-MAP_5           HEX F01030D0F030F030D0F030123032303030C0
+MAP_5           HEX F01030D0F030F030D0F030103032303030C0
                 HEX F02030C02030302000C0F03030C0F020C0C0
                 HEX 7020F03030303030F0003030C0C0C000C040
                 HEX C0F000B0303030203030303080C0E030F080
                 HEX C0C0C0F0303030E0F0303030C0C0C000C0C0
                 HEX C0C0C0C030C0F00030C0F000C0C0F020C080
-                HEX C0C0C032C0C0C0F2C0C0C0F222028000C080
-                HEX C0C0C0C0C0300000003002F03030E230C080
-                HEX C0C0C0C2C0F0F0F0F0F0C2C00000C200C080
+                HEX C0C0C030C0C0C0F2C0C0C0F222028000C080
+                HEX C0C0C0C2C0300000003002F03030E230C080
+                HEX C0C0C0C0C0F0F0F0F0F0C2C00000C200C080
                 HEX 40C0C0C0C0C4C0C4C0C4C2C00000C200C080
                 HEX C0C000C0C0A280A280A280F23232A030C080
                 HEX C03080C0C0E4C0E4C0E4C0C0E0C0C000C080
                 HEX C0C0F202C0C0C0C0C0C0C0C0C0C0F020C0C0
                 HEX C0C0F0C0C03030E2F03000C0C0C0C000C080
-                HEX C0C000C03032F20232F03000C0C0E030F040
+                HEX C0C000C03030F20232F03000C0C0E030F040
                 HEX C0C0303030C0C23202C0F03000C0C000C0C0
                 HEX C030303000C230C0F00030303000302000C0
                 HEX 303030103030103030303030303030303000
@@ -151,17 +151,15 @@ SPECIAL_START   DB  SPECIAL_YX0-SPECIAL_YX
                 DB  SPECIAL_YX4-SPECIAL_YX
                 DB  SPECIAL_YX5-SPECIAL_YX
 SPECIAL_YX
-SPECIAL_YX0     DB  $F0,$F2
-SPECIAL_YX1     DB  $80,$82
-SPECIAL_YX2     DB  $7E,$F0,$F1
-                DB  $F2,$F3,$F4
-                DB  $F5,$F6,$F7
-                DB  $F8,$F9,$FA
-                DB  $FB,$FC,$FD
-                DB  $FF
-SPECIAL_YX3     DB  $10,$11,$1F
-                DB  $3F,$7A,$B9
-                DB  $CD,$D0,$D1
+SPECIAL_YX0     DB  $F2
+SPECIAL_YX1     DB  $82
+SPECIAL_YX2     DB  $7E,$F0,$F2
+                DB  $F3,$F4,$F5
+                DB  $F6,$F7,$F8
+                DB  $F9,$FA,$FB
+                DB  $FC,$FF
+SPECIAL_YX3     DB  $10,$1F,$7A
+                DB  $B9,$CD,$D0
                 DB  $FE
 SPECIAL_YX4     DB  $07,$09,$18
                 DB  $1C,$2C,$3D
@@ -171,30 +169,27 @@ SPECIAL_YX4     DB  $07,$09,$18
                 DB  $A4,$B5,$C1
                 DB  $C2,$D3,$E3
                 DB  $E6,$F7
-SPECIAL_YX5     DB  $0A,$0C,$52
-                DB  $56,$5A,$5B
-                DB  $5C,$69,$6D
-                DB  $72,$79,$7D
-                DB  $89,$8D,$94
-                DB  $96,$98,$9A
-                DB  $9B,$9C,$B1
-                DB  $B2,$C6,$D4
+SPECIAL_YX5     DB  $0C,$56,$5A
+                DB  $5B,$5C,$62
+                DB  $69,$6D,$79
+                DB  $7D,$89,$8D
+                DB  $94,$96,$98
+                DB  $9A,$9B,$9C
+                DB  $B1,$B2,$C6
                 DB  $D5,$D6,$D7
-                DB  $E5,$E6,$E7
-                DB  $F4
+                DB  $E5,$E6,$E6
+                DB  $E7,$F4
                 DB  $FF
 SPECIAL_DIR
-SPECIAL_DIR0    DB  $02,$08
-SPECIAL_DIR1    DB  $02,$08
-SPECIAL_DIR2    DB  $02,$02,$08
-                DB  $04,$84,$C4
+SPECIAL_DIR0    DB  $08
+SPECIAL_DIR1    DB  $08
+SPECIAL_DIR2    DB  $02,$02,$04
+                DB  $84,$C4,$E4
                 DB  $E4,$E4,$E4
-                DB  $E4,$E4,$64
-                DB  $24,$04,$02
-                DB  $08
-SPECIAL_DIR3    DB  $02,$08,$04
-                DB  $01,$0F,$08
-                DB  $02,$02,$08
+                DB  $E4,$64,$24
+                DB  $04,$08
+SPECIAL_DIR3    DB  $02,$04,$0F
+                DB  $04,$02,$02
                 DB  $0F
 SPECIAL_DIR4    DB  $04,$08,$0F
                 DB  $0F,$0F,$0F
@@ -204,30 +199,27 @@ SPECIAL_DIR4    DB  $04,$08,$0F
                 DB  $0F,$0F,$0F
                 DB  $0F,$0F,$0F
                 DB  $0F,$01
-SPECIAL_DIR5    DB  $02,$08,$04
+SPECIAL_DIR5    DB  $08,$0F,$0F
+                DB  $0F,$0F,$04
                 DB  $0F,$0F,$0F
                 DB  $0F,$0F,$0F
-                DB  $01,$0F,$0F
                 DB  $0F,$0F,$0F
                 DB  $0F,$0F,$0F
-                DB  $0F,$0F,$08
-                DB  $08,$0F,$04
+                DB  $08,$08,$0F
                 DB  $0F,$0F,$0F
-                DB  $0F,$04,$0F
-                DB  $01
+                DB  $0F,$04,$0B
+                DB  $0F,$01
                 DB  $00
 SPECIAL_ID
-SPECIAL_ID0     DB  $03,$03
-SPECIAL_ID1     DB  $03,$03
-SPECIAL_ID2     DB  $09,$03,$03
-                DB  $04,$05,$05
+SPECIAL_ID0     DB  $03
+SPECIAL_ID1     DB  $03
+SPECIAL_ID2     DB  $09,$03,$04
                 DB  $05,$05,$05
                 DB  $05,$05,$05
-                DB  $05,$04,$03
-                DB  $03
-SPECIAL_ID3     DB  $03,$03,$03
-                DB  $03,$06,$07
-                DB  $07,$03,$03
+                DB  $05,$05,$05
+                DB  $04,$03
+SPECIAL_ID3     DB  $03,$03,$06
+                DB  $07,$07,$03
                 DB  $0A
 SPECIAL_ID4     DB  $08,$03,$0E
                 DB  $0E,$0D,$0D
@@ -237,17 +229,16 @@ SPECIAL_ID4     DB  $08,$03,$0E
                 DB  $0E,$0E,$0E
                 DB  $0D,$0D,$0E
                 DB  $0E,$08
-SPECIAL_ID5     DB  $03,$03,$03
-                DB  $06,$02,$02
+SPECIAL_ID5     DB  $03,$06,$02
+                DB  $02,$02,$03
                 DB  $02,$02,$02
-                DB  $03,$02,$02
-                DB  $02,$02,$06
-                DB  $06,$06,$02
-                DB  $02,$02,$00
-                DB  $01,$0F,$03
+                DB  $02,$02,$02
+                DB  $06,$06,$06
+                DB  $02,$02,$02
+                DB  $00,$01,$0F
                 DB  $0F,$0F,$0F
                 DB  $0F,$10,$0F
-                DB  $03
+                DB  $0F,$03
 
 SPECIAL_LIST    DW  ELEVATOR_123
                 DW  ELEVATOR_FAR

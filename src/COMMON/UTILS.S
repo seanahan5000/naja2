@@ -66,6 +66,15 @@ COPY_TO_PAGE    ;ENT
                 DEY
                 BNE :1
                 RTS
+
+SHOW_PAGE       ENT
+                LDA PAGE
+                CMP #$40
+                BEQ :SHOW2
+:SHOW1          STA PRIMARY
+                RTS
+:SHOW2          STA SCNDARY
+                RTS
 ;
 ; On Entry:
 ;   A: wait value
@@ -98,6 +107,13 @@ WAIT_KEY        ENT                     ; was WAIT2
                 RTS
 :KEYHIT         PLA
                 LDA KEYBRD
+                RTS
+
+INIT_RANDOM     ENT
+                LDA #$12
+                STA SEED0
+                LDA #$34
+                STA SEED1
                 RTS
 ;
 ; Generate a random 8-bit number

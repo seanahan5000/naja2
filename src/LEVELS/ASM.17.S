@@ -1,5 +1,6 @@
 
 BIG_MAP         =   1
+SHELLNUM        =   1
 
                 PUT COMMON
                 PUT CONTROL17
@@ -8,10 +9,10 @@ BIG_MAP         =   1
                 PUT /SPECIALS/LOAD.ELEVATOR
                 PUT /SPECIALS/LOAD.VIEWPORT
                 PUT /SPECIALS/LOAD.RUUIK
-                PUT /SPECIALS/FINDMENT  ; TODO: make a module?
-                PUT /SPECIALS/ORB.GREEN
+                ; PUT /SPECIALS/FINDMENT  ; TODO: make a module?
+                ; PUT /SPECIALS/ORB.GREEN
                 PUT /SPECIALS/GREEN.NET
-                PUT /SPECIALS/DOOR.SIGN
+                ; PUT /SPECIALS/DOOR.SIGN
                 SAV CONTROL17
 
                 ORG $A000
