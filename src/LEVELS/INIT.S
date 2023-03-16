@@ -9,8 +9,8 @@
 
                 PUT /NDOS/EXT
 
-CONTROL_MODULE  =   $7400
-SET_CONTROL     =   $7401
+CONTROL_MODULE  =   $7800
+SET_CONTROL     =   $7801
 
                 ORG $AF00
 

@@ -2,12 +2,30 @@
 BIG_MAP         =   0
 SHELLNUM        =   4
 
-                PUT COMMON
-                PUT CONTROL11
+                PUT CONTROL
+                PUT FILES2
                 PUT LEVEL11
 
                 PUT /SPECIALS/LOAD.ELEVATOR
                 PUT /SPECIALS/GREEN.NET
+
+DOOR_SIGN
+EMPTY_CELL
+KEY_GUARD
+KEY_PEDESTAL
+NO_ENCOUNTER
+PRESSURE_SUIT
+PRISONER
+SHIP_SOUND
+SPECDOOR
+DECONTAM
+ESTATION
+IVISDOOR
+NOISYDOR
+SCANGENT
+                CLC
+                RTS
+
                 SAV CONTROL11
 
                 ORG $A000

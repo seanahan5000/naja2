@@ -10,7 +10,7 @@
 
                 PUT /NDOS/EXT
 
-                ORG $7400
+                ORG $7800
 
 CONTROL_FILE    DB  fileControl17+SHELLNUM-1
 

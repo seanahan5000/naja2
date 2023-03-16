@@ -2,8 +2,8 @@
 BIG_MAP         =   0
 SHELLNUM        =   2
 
-                PUT COMMON
-                PUT CONTROL15
+                PUT CONTROL
+                PUT FILES1
                 PUT LEVEL15
 
                 PUT /SPECIALS/LOAD.ELEVATOR

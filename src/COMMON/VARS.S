@@ -81,6 +81,7 @@ COUNTER         =   $76
 SCRATCH         =   $77
 
 ; NDOS.525 uses $B0-$BF
+; CAMP uses $C0-$CF
 
 ; TODO: does this need to be exposed to callers?
 COLOR           =   $E4

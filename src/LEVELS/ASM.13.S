@@ -2,12 +2,34 @@
 BIG_MAP         =   0
 SHELLNUM        =   3
 
-                PUT COMMON
-                PUT CONTROL13
+                PUT CONTROL
+                PUT FILES2
                 PUT LEVEL13
 
                 PUT /SPECIALS/LOAD.ELEVATOR
                 PUT /SPECIALS/GREEN.NET
+
+ADD_DOOR
+CODEDOOR
+CROSSWALK
+DNUMBER
+INFCORE
+KEY_GUARD
+KEY_PEDESTAL
+LIBRARY
+NETCODE
+NO_ENCOUNTER
+QUICKD
+REMOVE_DOOR
+ROTCUBE
+SHIP_SOUND
+STOREROOM
+TELEPORT
+TPDATAC
+WEAPON_CABINET
+                CLC
+                RTS
+
                 SAV CONTROL13
 
                 ORG $A000

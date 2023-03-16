@@ -2,8 +2,8 @@
 BIG_MAP         =   1
 SHELLNUM        =   1
 
-                PUT COMMON
-                PUT CONTROL17
+                PUT CONTROL
+                PUT FILES1
                 PUT LEVEL17
 
                 PUT /SPECIALS/LOAD.ELEVATOR
@@ -13,6 +13,22 @@ SHELLNUM        =   1
                 ; PUT /SPECIALS/ORB.GREEN
                 PUT /SPECIALS/GREEN.NET
                 ; PUT /SPECIALS/DOOR.SIGN
+
+DOOR_SIGN
+KEY_PEDESTAL
+
+SHIP_SOUND
+ROTATE
+IN_ONE_WAY
+DATACARD_COMP
+WEAPON_FOUND
+KILROY
+IS_DOOR
+NOT_DOOR
+KEY_GUARD
+                CLC
+                RTS
+
                 SAV CONTROL17
 
                 ORG $A000

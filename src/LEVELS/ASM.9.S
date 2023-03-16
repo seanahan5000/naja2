@@ -2,13 +2,33 @@
 BIG_MAP         =   0
 SHELLNUM        =   5
 
-                PUT COMMON
-                PUT CONTROL9
+                PUT CONTROL
+                PUT FILES2
                 PUT LEVEL9
 
                 PUT /SPECIALS/LOAD.ELEVATOR
                 PUT /SPECIALS/LOAD.KEY.DOOR
                 PUT /SPECIALS/GREEN.NET
+
+KEY_PEDESTAL
+KEY_GUARD
+NAJA_DOOR
+SHIP_SOUND
+GRAFFITI
+ROTROOM
+NET
+QUICKD
+ESTATION
+VDOORS
+HDOORS
+CDFOUND
+INFROOM
+AUTOEN
+NOENCNT
+NOTDOOR
+                CLC
+                RTS
+
                 SAV CONTROL9
 
                 ORG $A000
