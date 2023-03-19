@@ -141,7 +141,8 @@ ENERGY_CHANGED	LDY	#status
 *   Overflow Set = Made him go critical
 *   Overflow Clear = Didn't change critical state
 
-INFLICTER		STX	TEMP
+INFLICTER		ENT
+				STX	TEMP
 				STY	TEMP+1
 				PHP
 				LDY	#status

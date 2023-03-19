@@ -4,8 +4,8 @@ ALIEN_PTR       =   ZBLOCK_40+2     ;+3
 MONS_PTR        =   ZBLOCK_40+4     ;+5
 ZCOUNT          =   ZBLOCK_40+7
 
-XCOUNT          =   ZBLOCK_48+0     ;not needed between fight modes
-YCOUNT          =   ZBLOCK_48+1     ;not needed between fight modes
+; XCOUNT          =   ZBLOCK_48+0     ;not needed between fight modes
+; YCOUNT          =   ZBLOCK_48+1     ;not needed between fight modes
 GROUP_STATUS    =   ZBLOCK_48+2
 SUPRISED_FLAG   =   ZBLOCK_48+3     ;mc000000
 *
@@ -13,22 +13,23 @@ SUPRISED_FLAG   =   ZBLOCK_48+3     ;mc000000
 ROUND           =   ZBLOCK_48+6
 MONS_TOTAL      =   ZBLOCK_48+7     ;Was MNUMBER
 
-DIRHOLD         =   $60
-ALIEN1          =   $61
-ALIEN2          =   $62
-ALIEN3          =   $63
-HMANY1          =   $64
-HMANY2          =   $65
-HMANY3          =   $66
-ALTYPE1         =   $67
-ALTYPE2         =   $68
-ALTYPE3         =   $69
-ALIENID         =   $6A
-ATALLY          =   $6B
-ENERGY_INDEX    =   $6C
-ATOTAL1         =   $6D
-ATOTAL2         =   $6E
-ATOTAL3         =   $6F
+; TODO: used to be $60 -- fix these
+DIRHOLD         =   $C0
+ALIEN1          =   $C1
+ALIEN2          =   $C2
+ALIEN3          =   $C3
+HMANY1          =   $C4
+HMANY2          =   $C5
+HMANY3          =   $C6
+ALTYPE1         =   $C7
+ALTYPE2         =   $C8
+ALTYPE3         =   $C9
+ALIENID         =   $CA
+ATALLY          =   $CB
+ENERGY_INDEX    =   $CC
+ATOTAL1         =   $CD
+ATOTAL2         =   $CE
+ATOTAL3         =   $CF
 
 *---------------------------------
 * GROUP_STATUS

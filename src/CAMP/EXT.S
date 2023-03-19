@@ -24,5 +24,6 @@ RESET_EQLIST     =   $E56C
 ESCAN_COMMON     =   $E5B8
 ESCAN_FULSLOT    =   $E60C
 ESCAN_PUTABLE    =   $E61E
+INFLICTER        =   $E7D1
 CALC_ALL         =   $EB7F
 CORESPS          =   $F029

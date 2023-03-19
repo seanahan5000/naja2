@@ -70,10 +70,12 @@ COPY_TO_PAGE    ;ENT
 SHOW_PAGE       ENT
                 LDA PAGE
                 CMP #$40
-                BEQ :SHOW2
-:SHOW1          STA PRIMARY
+                BEQ SHOW_PAGE2
+SHOW_PAGE1      ENT
+                STA PRIMARY
                 RTS
-:SHOW2          STA SCNDARY
+SHOW_PAGE2      ENT
+                STA SCNDARY
                 RTS
 ;
 ; On Entry:

@@ -5,5 +5,5 @@ SET_FILE_TABLE   =   $9F00
 SET_NEXT_ON_OFF  =   $9F05
 SET_FILE         =   $9F09
 SEEK_FILE        =   $9F33
-LOAD_FILE        =   $9F47
-READ_FILE        =   $9F68
+LOAD_FILE        =   $9F49
+READ_FILE        =   $9F6A

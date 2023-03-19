@@ -8,7 +8,10 @@
                 ; PUT /CAMP/VARS
                 PUT /CAMP/EXT
 
+                PUT /NDOS/VARS
                 PUT /NDOS/EXT
+
+                PUT /NAJA/VARS/CONSTANTS
 
                 ORG $7800
 
@@ -38,8 +41,12 @@ SET_CONTROL     LDX #<FILE_HOOK
                 BEQ :GO_CAMP
                 CMP #"M"
                 BEQ :GO_MAP
+                CMP #"X"
+                BEQ :GO_FIGHT
                 CLC
                 RTS
+
+:GO_FIGHT       JMP LOAD_FIGHT
 
 ; TODO: Needs to have checked DISPATCH first for any specials
 :GO_MAP         JSR SHOW_MAP
@@ -52,3 +59,13 @@ SET_CONTROL     LDX #<FILE_HOOK
                 RTS
 
                 PUT DISPATCH
+
+; TODO: move this or use symbol directly
+FIGHT_LOADER    =   $8800
+
+LOAD_FIGHT      LDA #NOT_SPINNING+KEEP_SPINNING
+                JSR SET_NEXT_ON_OFF
+                LDA #fileFightLoader
+                LDY #>FIGHT_LOADER
+                JSR LOAD_FILE
+                JMP FIGHT_LOADER

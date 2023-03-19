@@ -1,6 +1,6 @@
-SCRATCH         =   $01
+; SCRATCH         =   $01
 ODDS            =   $07
-COUNTER         =   $0F
+; COUNTER         =   $0F
 LINECNT         =   $19
 
 RAREPNT         =   ZBLOCK_28+0
@@ -12,8 +12,8 @@ LAST_ONE        =   ZBLOCK_28+5
 RND_HOLD        =   ZBLOCK_28+6
 ALIEN_NUMBER    =   ZBLOCK_28+7
 
-DATPNTL         =   ZBLOCK_30+0     ;+1
-DATPNTH         =   DATPNTL+1
+; DATPNTL         =   ZBLOCK_30+0     ;+1
+; DATPNTH         =   DATPNTL+1
 LPTR1           =   ZBLOCK_30+2     ;+3
 LPTR2           =   ZBLOCK_30+4     ;+5
 LPTR3           =   ZBLOCK_30+6     ;+7

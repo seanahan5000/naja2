@@ -588,8 +588,7 @@ LOAD_DESC       JSR SET_DESC_FILE
                 INX
                 BNE :1
                 INC DESC_BASE
-                LDX DESC_BASE
-                LDY #0
+                LDA DESC_BASE
                 JSR SEEK_FILE
                 LDY #>DESC_BUFFER+$100
                 LDA #1                  ; one sector
@@ -604,17 +603,15 @@ LOAD_DESC       JSR SET_DESC_FILE
                 INX
                 BNE :2
                 DEC DESC_BASE
-                LDX DESC_BASE
-                LDY #0
+                LDA DESC_BASE
                 JSR SEEK_FILE
                 LDY #>DESC_BUFFER
                 LDA #1                  ; one sector
                 BNE :COMMON             ; always
 
                 ; fill desc buffer with two sectors
-:COPY2          LDX OFFSET_H
-                STX DESC_BASE
-                LDY #0
+:COPY2          LDA OFFSET_H
+                STA DESC_BASE
                 JSR SEEK_FILE
                 LDY #>DESC_BUFFER
                 LDA #2                  ; two sectors
@@ -689,8 +686,7 @@ LOAD_ALIEN      JSR SET_PICS_FILE
                 LDA OFFSET_TABLE+3,X
                 STA END_OFFSET_H
 
-                LDX START_OFFSET_H
-                LDY #0
+                LDA START_OFFSET_H
                 JSR SEEK_FILE
 
                 LDX END_OFFSET_H

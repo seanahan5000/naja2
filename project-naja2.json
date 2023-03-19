@@ -4,12 +4,13 @@
   "startAddress": "0xAF00",
   "lsts": [
     { "fileName": "INIT.LST",      "bins": [{ "fileName": "INIT",      "loadAt": "0xAF00" }]},
-    { "fileName": "CONTROL17.LST", "bins": [{ "fileName": "CONTROL17", "loadAt": "0x7400", "enabled": false }]},
-    { "fileName": "CONTROL15.LST", "bins": [{ "fileName": "CONTROL15", "loadAt": "0x7400", "enabled": false }]},
-    { "fileName": "CONTROL13.LST", "bins": [{ "fileName": "CONTROL13", "loadAt": "0x7400", "enabled": false }]},
-    { "fileName": "CONTROL11.LST", "bins": [{ "fileName": "CONTROL11", "loadAt": "0x7400", "enabled": false }]},
-    { "fileName": "CONTROL9.LST",  "bins": [{ "fileName": "CONTROL9",  "loadAt": "0x7400", "enabled": true }]},
-    { "fileName": "CAMP.LST",     "bins": [
+    { "fileName": "CONTROL17.LST", "bins": [{ "fileName": "CONTROL17", "loadAt": "0x7800", "enabled": true }]},
+    { "fileName": "CONTROL15.LST", "bins": [{ "fileName": "CONTROL15", "loadAt": "0x7800", "enabled": false }]},
+    { "fileName": "CONTROL13.LST", "bins": [{ "fileName": "CONTROL13", "loadAt": "0x7800", "enabled": false }]},
+    { "fileName": "CONTROL11.LST", "bins": [{ "fileName": "CONTROL11", "loadAt": "0x7800", "enabled": false }]},
+    { "fileName": "CONTROL9.LST",  "bins": [{ "fileName": "CONTROL9",  "loadAt": "0x7800", "enabled": false }]},
+    { "fileName": "FLOADER.LST" },
+    { "fileName": "CAMP.LST", "bins": [
       { "fileName": "CAMP.9000",    "loadAt": "0x9000" },
       { "fileName": "CAMP.D000.M1", "loadAt": "0xD000", "bank": 1 },
       { "fileName": "CAMP.D000.M2", "loadAt": "0xD000", "bank": 2 },

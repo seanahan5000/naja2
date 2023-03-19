@@ -24,8 +24,7 @@ PICK_NUMBER     LDX #0
                 LSR
                 LSR
                 STA TEMP
-:LOOP2          JSR RNDMIZE
-                LDA RANDOM1
+:LOOP2          JSR RANDOM
                 AND #%00001111
                 CMP TEMP
                 BCC :LOOP2

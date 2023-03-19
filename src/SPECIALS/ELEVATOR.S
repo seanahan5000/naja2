@@ -8,7 +8,6 @@
 *------------------------------*
 
                 EXP OFF
-                PUT /NAJA/VARS/CONSTANTS
 
 CrossHeight     =   37
 ScrollDY        =   5

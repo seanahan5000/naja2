@@ -2,21 +2,10 @@
 *
 *===============================
 
-LOAD_TABLE      LDA #>DATA_BUFR
-                STA SSTOREH
-                LDY SHELL
-                LDA DATA_LENGTHS-1,Y
-                PHA
-                LDX DATA_SECTL-1,Y
-                LDA DATA_SECTH-1,Y
-                TAY
-                PLA
-                JMP FLOADER
-
 PICK_ALIENS     JSR LOAD_TABLE
 
-                LDX FACE
-                LDA FACE_MASKS-1,X
+                LDX MAP_FACE
+                LDA FACE_MASKS,X
                 STA FMASK
 
                 LDA OPTIONS1
@@ -35,7 +24,7 @@ POSLOOP         LDY COUNT
                 BEQ NOTPOS
                 LDY POSCNT
                 LDA COUNT
-                STA POSSIBL,Y
+                STA POSSIBLE,Y
                 INC POSCNT
 NOTPOS          LDA COUNT
                 INC COUNT
@@ -43,11 +32,11 @@ NOTPOS          LDA COUNT
                 BNE POSLOOP
                 LDY POSCNT
                 LDA #$FF
-                STA POSSIBL,Y
+                STA POSSIBLE,Y
 
                 JSR RARESUB
-RERAND          JSR RNDMIZE
-                LDY RANDOM1
+RERAND          JSR RANDOM
+                TAY
                 CPY RAREPNT
                 BCS RERAND
                 LDA RARITY,Y
@@ -80,8 +69,7 @@ FIRST_PICKED    LDA #$FF
 
                 BIT TWINS_FLAG
                 BMI GROUP2
-                JSR RNDMIZE
-                LDA RANDOM1
+                JSR RANDOM
                 CMP #$60
                 BCC GROUP2
                 RTS
@@ -106,22 +94,22 @@ GROUP2          LDA ALIEN1
                 BNE :LOOP1
 :SKIPA          LDX #$00
 :LOOP2          LDA (DATPNTL),Y
-                STA POSSIBL,X
+                STA POSSIBLE,X
                 INX
                 INY
                 CMP #$FE
                 BEQ :SKIPC
                 CMP #$FF
                 BNE :LOOP2
-:SKIPC          LDA POSSIBL-2,X
+:SKIPC          LDA POSSIBLE-2,X
                 CMP #$99
                 BEQ GOT_ALIENS
                 JSR RARESUB
                 LDA OPTIONS1
                 AND #Xalien2
                 BEQ GOT_ALIENS
-RERAND3         JSR RNDMIZE
-                LDY RANDOM1
+RERAND3         JSR RANDOM
+                TAY
                 CPY RAREPNT
                 BCS RERAND3
                 LDA RARITY,Y
@@ -137,16 +125,15 @@ RERAND3         JSR RNDMIZE
                 LDA OPTIONS1
                 AND #Xalien3
                 BEQ GOT_ALIENS
-                JSR RNDMIZE
-                LDA RANDOM1
+                JSR RANDOM
                 CMP #$60
                 BCC GROUP3
                 JMP GOT_ALIENS
-GROUP3          LDA POSSIBL+1
+GROUP3          LDA POSSIBLE+1
                 CMP #$FF
                 BEQ GOT_ALIENS
-RERAND4         JSR RNDMIZE
-                LDY RANDOM1
+RERAND4         JSR RANDOM
+                TAY
                 CPY RAREPNT
                 BCS RERAND4
                 LDA RARITY,Y
@@ -171,7 +158,7 @@ RARESUB         LDA #$00
                 STA COUNT
                 STA RAREPNT
 RLOOP1          LDY COUNT
-                LDA POSSIBL,Y
+                LDA POSSIBLE,Y
                 CMP #$FF
                 BEQ RAROUT
                 TAY
@@ -187,7 +174,7 @@ RLOOP1          LDY COUNT
                 LDA (DATPNTL),Y
                 STA RARECNT
                 LDY COUNT
-                LDA POSSIBL,Y
+                LDA POSSIBLE,Y
                 TAX
 RLOOP2          LDY RAREPNT
                 TXA
@@ -214,39 +201,47 @@ RAROUT          RTS
 
 PICK12          ASL
                 ASL
-                LDX #$01
+                LDX #0
 XLOOP           ASL
                 BCS FIRST
                 INX
                 BNE XLOOP
 FIRST           LDY #$01
-                CPX FACE
+                CPX MAP_FACE
                 BEQ PICKOUT
                 INY
 PICKOUT         RTS
 
-
-** Number of sectors needed to get offset
-**   tables and preliminary monster data
-**   for each shell's monsters
-
-DATA_LENGTHS    DB  3,2,2,1,1
-
-
-** Beginning sector of each of the data blocks
-
-DATA_SECTL      DB  <S_DATA17
-                DB  <S_DATA15
-                DB  <S_DATA13
-                DB  <S_DATA11
-                DB  <S_DATA9
-
-DATA_SECTH      DB  >S_DATA17
-                DB  >S_DATA15
-                DB  >S_DATA13
-                DB  >S_DATA11
-                DB  >S_DATA9
-
+LOAD_TABLE      LDY SHELL
+                LDA :DATA_FILES-1,Y
+                JSR SET_FILE
+                LDY SHELL
+                LDA :DATA_OFFSETS-1,Y
+                JSR SEEK_FILE
+                LDA #IS_SPINNING+KEEP_SPINNING
+                JSR SET_NEXT_ON_OFF
+                LDY SHELL
+                LDA :DATA_LENGTHS-1,Y
+                LDY #>DATA_BUFR
+                JMP READ_FILE
+;
+; Base file for alien data by shell
+;
+:DATA_FILES     DB  fileAlienData12
+                DB  fileAlienData12
+                DB  fileAlienData345
+                DB  fileAlienData345
+                DB  fileAlienData345
+;
+; Beginning sector offset of each of the data blocks
+;
+:DATA_OFFSETS   DB  $00,$1B,$00,$10,$21
+;
+; Number of sectors needed to get offset
+;   tables and preliminary monster data
+;   for each shell's monsters
+;
+:DATA_LENGTHS   DB  3,2,2,1,1
 
 POINTEM         LDA #<DATA_BUFR
                 CLC

@@ -37,7 +37,7 @@ SET_FILE        ENT
                 INY
                 INY
                 BNE :1
-                SEC
+                SEC                     ; TODO: file not found should be fatal
                 RTS
 :2              INY
                 LDA (FILES),Y
@@ -55,14 +55,14 @@ SET_FILE        ENT
                 RTS
 ;
 ; On entry:
-;   X: sector offset (low)
-;   Y: sector offset (high)
+;   A: sector offset
 ;
 SEEK_FILE       ENT
-                TXA
+                LDY #0
+                STY FILE_OFFSET+1
+                TAX
                 AND #$0F
                 STA FILE_OFFSET+0
-                STY FILE_OFFSET+1
                 TXA
                 LDX #4
 :1              ASL

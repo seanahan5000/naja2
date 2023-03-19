@@ -141,29 +141,6 @@ timeTESSERACT   =   upTime
 
 *-------------------------------
 
-            do ORIGINAL
-S_PICDATA       =   $0020
-
-S_DATA12        =   $0000
-S_DATA17        =   $0000
-S_DATA13        =   $0000
-S_DATA15        =   $0000
-S_DATA11        =   $0000
-S_DATA9         =   $0000
-S_SCODE12       =   $0140           ;TEMP/GARBAGE VALUE
-            else
-S_PICDATA       =   $0000
-
-S_DATA12        =   $00F0
-S_DATA17        =   S_DATA12
-S_DATA15        =   S_DATA17+$1C
-S_DATA13        =   S_DATA12
-S_DATA11        =   S_DATA13+$10
-S_DATA9         =   S_DATA13+$21
-
-S_SCODE12       =   $0140           ;TEMP VALUE
-            fin
-
 Xmonsprd        =   %10000000
 Xchrsprd        =   %01000000
 Xalien1         =   %00100000
@@ -180,7 +157,8 @@ Xloaddata3      =   %00010000
 
 *-------------------------------
 
-                DUMMY   $8000       ;(Through $9FFF)
+                ; TODO: move this
+                DUMMY   $9000       ;(Through $AFFF)
 DATA_BUFR       DS  $300            ;* These must
 RARITY          DS  $100            ;*   begin on
 PICT_BUFR                           ;*   page
@@ -189,6 +167,7 @@ SCODE_HEADR     DS  $200
                 DS  $1700
                 DEND
 
+                ; TODO: move this
                 DUMMY   $B100
 
 MONSTR0         DS  25*20           ;Must be on page boundary

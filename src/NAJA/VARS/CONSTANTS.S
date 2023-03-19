@@ -219,16 +219,18 @@ mArsenal_Control		=	16
 mRobotRepair_Start		=	17
 mRobotRepair_Control	=	18
 
-charTrack		=	$0100		;Track/Sector for character data
+; charTrack		=	$0100		;Track/Sector for character data
 
 
 ; TODO: move these into separate file
 
 fileAlienPics12  =  $10
 fileAlienDesc12  =  $11
+fileAlienData12  =  $12
 
 fileAlienPics345 =  $20
 fileAlienDesc345 =  $21
+fileAlienData345 =  $22
 
 fileDiagnose    =   $30
 fileAlienId     =   $31
@@ -239,6 +241,8 @@ fileControl15   =   $33
 fileControl13   =   $34
 fileControl11   =   $35
 fileControl9    =   $36
+
+fileFightLoader =   $37
 
 fileElevator    =   $40
 fileViewport    =   $41

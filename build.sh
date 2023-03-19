@@ -26,9 +26,13 @@ $ASM NDOS   NDOS.525    -lst $OBJ/NDOS.LST     -ent $SRC/NDOS/EXT.S
 $ASM COMMON ASM.COMMON  -lst $OBJ/COMMON.LST   -ent $SRC/COMMON/EXT.S
 $ASM HALLS  ASM.HALLS   -lst $OBJ/HALLS.LST    -ent $SRC/HALLS/EXT.S
 $ASM CAMP   ASM.CAMP    -lst $OBJ/CAMP.LST     -ent $SRC/CAMP/EXT.S
-$ASM ALIENS ASM.PICS    -lst $OBJ/PICS.LST
+### TODO: .lst files only needed for sizing information ###
+$ASM ALIENS ASM.PICS    -lst $OBJ/ALIEN.PICS.LST
+$ASM ALIENS ASM.DATA    -lst $OBJ/ALIEN.DATA.LST
 $ASM ALIENS ALIEN.DESC.12
 $ASM ALIENS ALIEN.DESC.345
+
+$ASM FIGHT/LOADER ASM.LOADER -lst $OBJ/FLOADER.LST
 
 $ASM LEVELS INIT        -lst $OBJ/INIT.LST
 $ASM LEVELS ASM.17      -lst $OBJ/CONTROL17.LST
@@ -52,10 +56,12 @@ $A2NIB_T2 -create -volume 2
 # shell 17,15
 $A2NIB_T1 $OBJ/ALIEN.PICS.12   -t 00 -s 00   # A900
 $A2NIB_T1 $OBJ/ALIEN.DESC.12   -t 0C -s 00   # 0E00
+$A2NIB_T1 $OBJ/ALIEN.DATA.12   -t 0D -s 00   # 2E00
 
 # shell 13,11,9
 $A2NIB_T2 $OBJ/ALIEN.PICS.345  -t 00 -s 00   # C000
 $A2NIB_T2 $OBJ/ALIEN.DESC.345  -t 0C -s 00   # 0D00
+$A2NIB_T2 $OBJ/ALIEN.DATA.345  -t 0D -s 00   # 2D00
 
 # shell all
 $A2NIB_T1 $OBJ/DIAGNOSE        -t 14 -s 00   # 14 sectors
@@ -70,6 +76,7 @@ $A2NIB_T2 $OBJ/ELEVATOR        -t 15 -s 08   #  8 sectors
 # shell 17,15
 $A2NIB_T1 $OBJ/CONTROL17       -t 10 -s 00   # 16 sectors (trim)
 $A2NIB_T1 $OBJ/CONTROL15       -t 11 -s 00   # 12 sectors (trim)
+$A2NIB_T1 $OBJ/FIGHT.LOADER    -t 13 -s 00   #  3 sectors
 
 # shell 17
 $A2NIB_T1 $OBJ/VIEWPORT        -t 16 -s 00   #  9 sectors
@@ -84,6 +91,7 @@ $A2NIB_T2 $OBJ/CONTROL11       -t 11 -s 00   # 12 sectors (trim)
                                              #  4 sectors
 $A2NIB_T2 $OBJ/CONTROL9        -t 12 -s 00   # 12 sectors (trim)
                                              #  4 sectors
+$A2NIB_T2 $OBJ/FIGHT.LOADER    -t 13 -s 00   #  3 sectors
 
 # shell 9
 $A2NIB_T2 $OBJ/KEY.DOOR        -t 16 -s 00   # 13 sectors
