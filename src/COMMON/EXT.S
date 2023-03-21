@@ -69,4 +69,3 @@ DRAW_ARROW       =   $185B
 DRAW_BACK_ARROW  =   $187A
 DRAW_MARKER      =   $1892
 DRAW_TRIANGLE    =   $18A3
-FILE_HOOK        =   $18B4

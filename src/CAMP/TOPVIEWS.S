@@ -1,5 +1,5 @@
 
-DRAW_GRID       ;ENT
+DRAW_GRID       ENT
                 JSR DRAW_PICT
                 PictSetGreen
                 PictRect $07;$47;$55;$B7
@@ -50,8 +50,14 @@ DRAW_GRID       ;ENT
 ; CPOS_TO_XY      ;ENT
 ;                 LDY #position
 ;                 LDA (CHARDL),Y
+
+;
+; On entry:
+;   X: grid X position 0 to 4
+;   Y: grid Y position 0 to 4
+;
 ; FROM11B         ;ENT                 ; legacy name
-POS_TO_XY       ;ENT
+POS_TO_XY       ENT
                 STA :MOD+1
                 LSR
                 LSR
@@ -65,17 +71,22 @@ POS_TO_XY       ;ENT
                 AND #$0F
                 TAY
                 RTS
-
+;
 ; On entry:
 ;   A: position in 11 format
 ;
 ; On exit:
-;   A: grid index 0 to 24
+;   Y: grid index 0 to 24
 ;
-POS_TO_I25      JSR POS_TO_XY
+MONPOS_TO_I25   ENT
+                SEC
+                SBC #$05
+POS_TO_I25      ENT
+                JSR POS_TO_XY
                 TXA
                 CLC
                 ADC MUL5,Y
+                TAY
                 RTS
 
 MUL5            DB  0,5,10,15,20
@@ -110,7 +121,7 @@ DRAW_CHAR_TOPVIEW
 ;   X: grid X
 ;   Y: grid Y
 
-TVIEWIT                             ; legacy name
+; TVIEWIT                             ; legacy name
 DRAW_TOPVIEW    PHA
                 LDA GRID_XPNTS,X
                 STA XCOORD
@@ -131,8 +142,10 @@ DRAW_TOPVIEW    PHA
 
                 ; pixel positions in top view grid
 
-GRID_XPNTS      DB  #10, #25, #40, #55, #70
-GRID_YPNTS      DB  #128,#139,#150,#161,#172
+GRID_XPNTS      ENT
+                DB  #10, #25, #40, #55, #70
+GRID_YPNTS      ENT
+                DB  #128,#139,#150,#161,#172
 
                 ; byte offsets into TCHARS data
 

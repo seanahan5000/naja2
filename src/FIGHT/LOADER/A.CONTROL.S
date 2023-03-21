@@ -1,16 +1,26 @@
                 JMP FIGHT_LOADER
                 JMP SPECIAL_LOAD
 
+SAVE_SEED       =   $FE
+
 FIGHT_LOADER    LDX #%11111111
                 LDY #%11110000
                 LDA #%00000000
                 STA TAKEN_COUNT
 SPECIAL_LOAD    STX OPTIONS1        ;Calling routine must clear
                 STY OPTIONS2        ;   TAKEN_COUNT if unused
-                STA FORCE_SUPRISE
+                STA FORCE_SURPRISE
+
+                ; TODO: remove this debug code
+                LDA SEED0
+                STA SAVE_SEED+0
+                LDA SEED1
+                STA SAVE_SEED+1
+
                 TXA
                 AND #Xalien1+Xalien2+Xalien3
                 BEQ :SKIPA
+                JSR SET_DATA_FILE
                 JSR PICK_ALIENS
 :SKIPA          LDA OPTIONS1
                 AND #Xhmany1+Xhmany2+Xhmany3
@@ -53,26 +63,21 @@ SPECIAL_LOAD    STX OPTIONS1        ;Calling routine must clear
 ;             fin
 ;                 JMP RDKEY
 
-                JSR DRAW_PICT
-                PictSetPage1
-                PictCopyToPage
-                PictShowPage
-                PictEnd
-                RTS
 
 NOEXIT          ; JSR DRIVE_ON
 NOSPECIAL       ; LDX #fLoader2
                 ; JSR FLOADER_FILE
-                ; JSR LOAD_DATA
-                ; LDA #0
-                ; STA ROUND
-                ; STA SUPRISED_FLAG
-                ; STA ATOTAL1
-                ; STA ATOTAL2
-                ; STA ATOTAL3
-                ; JSR MAKE_ALLMONS
-                ; JSR FIGHT_SCREEN
-                ; JSR SUPRISE_SUB
+                JSR SET_DATA_FILE
+                JSR LOAD_DATA
+                LDA #0
+                STA ROUND
+                STA SURPRISED_FLAG
+                STA ATOTAL1
+                STA ATOTAL2
+                STA ATOTAL3
+                JSR MAKE_ALLMONS
+                JSR FIGHT_SCREEN
+                ; JSR SURPRISE_SUB
                 ; LDA #$62
                 ; PHA
                 ; LDA #$FF
@@ -80,7 +85,26 @@ NOSPECIAL       ; LDX #fLoader2
                 ; LDX #fCommand
                 ; JMP FLOAD_FILE
 
+                JSR DRAW_PICT
+                PictSetPage1
+                ; PictCopyToPage
+                PictShowPage
+                PictEnd
+                RTS
+
+SET_DATA_FILE   LDY SHELL
+                LDA :DATA_FILES-1,Y
+                JMP SET_FILE
+;
+; Base file for alien data by shell
+;
+:DATA_FILES     DB  fileAlienData12
+                DB  fileAlienData12
+                DB  fileAlienData345
+                DB  fileAlienData345
+                DB  fileAlienData345
+
 OPTIONS1        DS  1
 OPTIONS2        DS  1
-FORCE_SUPRISE   DS  1
+FORCE_SURPRISE  DS  1
 TWINS_FLAG      DS  1

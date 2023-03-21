@@ -1,4 +1,7 @@
 
+                PUT /COMMON/VARS
+                PUT /COMMON/EXT
+
 ; TODO: this doesn't belong in COMMON
 ; TODO: make module handling the basis for caching in RAM
 
@@ -12,15 +15,15 @@
 FILE_HOOK       ENT
                 BCS MESS_CMN
 
-ASK_FOR_SIDE
-            do ORIGINAL
-                LDX SIDE_LETTERS+0
-                TAY
-                BEQ :SKIPA
-                LDX SIDE_LETTERS+1
-:SKIPA          STX MESSAGES+12
-                STY MESSAGES+13
-            else
+:ASK_FOR_SIDE
+;             do ORIGINAL
+;                 LDX SIDE_LETTERS+0
+;                 TAY
+;                 BEQ :SKIPA
+;                 LDX SIDE_LETTERS+1
+; :SKIPA          STX MESSAGES+12
+;                 STY MESSAGES+13
+;             else
                 LSR
                 TAX
                 LDA SIDE_LETTERS,X
@@ -29,7 +32,7 @@ ASK_FOR_SIDE
                 BCC :SKIPA
                 INX
 :SKIPA          STX MESSAGES+13
-            fin
+;             fin
                 CLC
 
 MESS_CMN        PHP

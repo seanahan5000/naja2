@@ -14,10 +14,11 @@ PICK_POSITNS    LDA #<GRID
                 LDX ALIEN_NUMBER
                 LDY ALIEN1,X
                 INY
-                BEQ :SKIPC
+                CLC
+                BEQ :3
                 TXA
                 JSR POINTALN
-                LDA #0                                              ;To fake out INIT_TVPTR
+                LDA #0                  ; To fake out INIT_TVPTR
                 JSR INIT_TVPTR2
 
                 LDA ALIEN_NUMBER
@@ -28,23 +29,22 @@ PICK_POSITNS    LDA #<GRID
                 LDA GBUFF_LIST+1,X
                 STA TEMP+1
                 LDY #bytespergroup-1
-:LOOP1          LDA (TEMP),Y
+:1              LDA (TEMP),Y
                 STA GROUP_BUFF0,Y
                 DEY
-                BPL :LOOP1
+                BPL :1
 
                 JSR POSITIONS
                 LDA MONS_NUMBER
                 CMP HMANY1,X
-                BEQ :EXIT           ;Carry assumed set
+                BCS :3
                 LDX ALIEN_NUMBER
                 LDA MONS_NUMBER
-                BNE :SKIPB
-:SKIPA          LDA #$FF
-                STA ALIEN1,X
-:SKIPB          STA HMANY1,X
-:SKIPC          CLC
-:EXIT           RTS
+                CMP #1
+                BCS :2
+                LDA #$FF
+:2              STA HMANY1,X
+:3              RTS
 
 *---------------------------------------------------------------
 * On Entry:
@@ -105,8 +105,7 @@ POSITIONS       LDA #0
                 INY
                 BNE :SKIPB          ;Always
 :SKIPD
-:LOOP7          JSR RNDMIZE
-                LDA RANDOM1
+:LOOP7          JSR RANDOM
                 AND #%00011111
                 CMP FIRST_ONE
                 BCC :LOOP7
@@ -140,7 +139,7 @@ POSITIONS       LDA #0
 :BAD_DATA       LDA ALIEN_NUMBER                        ;**
                 LDY ALIEN1                      ;**
                 LDX ALIEN2                      ;**
-                DEBUG   "Position error"                ;**
+                ; DEBUG   "Position error"                ;**
                 LDA #$FF
                 BNE :SKIPE          ;Always
 
@@ -166,7 +165,7 @@ MAKE_FILLGRID   LDX #24
                 STA YCOUNT
                 LDA #$16
                 STA COUNT
-:LOOP2          JSR INDEX_SUB
+:LOOP2          JSR MONPOS_TO_I25
                 STY :MOD1+1
                 LDA #$FF
                 JSR CHECK_GRID
@@ -223,7 +222,7 @@ RAND_POSITION   STA TEMP+1
                 ADC #$05
 :SKIPB          ORA TEMP
                 PHA
-                JSR INDEX_SUB
+                JSR MONPOS_TO_I25
                 PLA
                 LDX FILLED_GRID,Y
                 BNE :LOOP1
@@ -233,14 +232,13 @@ RAND_POSITION   STA TEMP+1
                 LDY TV_HEIGHTS,X
                 STY YCOUNT
                 PHA
-                JSR INDEX_SUB
+                JSR MONPOS_TO_I25
                 LDA #$00
                 JSR FILL_GRID
                 PLA
                 RTS
 
-:SUBA           JSR RNDMIZE
-                LDA RANDOM1
+:SUBA           JSR RANDOM
                 AND #%00000111
                 BEQ :SUBA
                 CMP #6
@@ -285,7 +283,7 @@ ANY_LEGAL       TAX
                 BEQ :SKIPC
 
                 TXA                 ;Scan a single square
-                JSR INDEX_SUB
+                JSR MONPOS_TO_I25
                 SEC
                 LDA FILLED_GRID,Y
                 BEQ :EXIT2
@@ -295,7 +293,7 @@ ANY_LEGAL       TAX
 :SKIPB          TXA                 ;Scan a ROW
                 AND #%00001111
                 ORA #$10
-                JSR INDEX_SUB
+                JSR MONPOS_TO_I25
                 LDX #5
                 SEC
 :LOOP2          LDA FILLED_GRID,Y
@@ -309,7 +307,7 @@ ANY_LEGAL       TAX
 :SKIPC          TXA                 ;Scan a COLUMN
                 AND #%11110000
                 ORA #$0A
-                JSR INDEX_SUB
+                JSR MONPOS_TO_I25
                 LDX #5
 :LOOP3          LDA FILLED_GRID,Y
                 SEC
@@ -322,21 +320,6 @@ ANY_LEGAL       TAX
                 BNE :LOOP3
                 CLC                 ;No open space found
 :EXIT4          RTS
-
-*-------------------------------
-
-INDEX_SUB       SEC
-                SBC #$05
-                JSR FROM11B
-                LDA TIMES5,Y
-                STA TEMP
-                TXA
-                CLC
-                ADC TEMP
-                TAY
-                RTS
-
-TIMES5          DB  0,5,10,15,20
 
 *-------------------------------
 

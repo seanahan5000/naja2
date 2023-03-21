@@ -7,7 +7,7 @@ ZCOUNT          =   ZBLOCK_40+7
 ; XCOUNT          =   ZBLOCK_48+0     ;not needed between fight modes
 ; YCOUNT          =   ZBLOCK_48+1     ;not needed between fight modes
 GROUP_STATUS    =   ZBLOCK_48+2
-SUPRISED_FLAG   =   ZBLOCK_48+3     ;mc000000
+SURPRISED_FLAG  =   ZBLOCK_48+3     ;mc000000
 *
 *
 ROUND           =   ZBLOCK_48+6

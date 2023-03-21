@@ -211,11 +211,10 @@ FIRST           LDY #$01
                 BEQ PICKOUT
                 INY
 PICKOUT         RTS
-
+;
+; NOTE: caller has already set file
+;
 LOAD_TABLE      LDY SHELL
-                LDA :DATA_FILES-1,Y
-                JSR SET_FILE
-                LDY SHELL
                 LDA :DATA_OFFSETS-1,Y
                 JSR SEEK_FILE
                 LDA #IS_SPINNING+KEEP_SPINNING
@@ -224,14 +223,6 @@ LOAD_TABLE      LDY SHELL
                 LDA :DATA_LENGTHS-1,Y
                 LDY #>DATA_BUFR
                 JMP READ_FILE
-;
-; Base file for alien data by shell
-;
-:DATA_FILES     DB  fileAlienData12
-                DB  fileAlienData12
-                DB  fileAlienData345
-                DB  fileAlienData345
-                DB  fileAlienData345
 ;
 ; Beginning sector offset of each of the data blocks
 ;

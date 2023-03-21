@@ -745,6 +745,7 @@ BANK			DB	$00				;0 OR 1 ???
 				PUT	NDOS.525W
 				SAV	NDOS.525W
 
-				ORG	$9F00
+				ORG	$1E00
 				PUT	NDOS
-				SAV	NDOS
+				PUT FILES
+				SAV	NDOS.1E00

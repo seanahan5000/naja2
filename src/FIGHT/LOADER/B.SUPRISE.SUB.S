@@ -1,12 +1,12 @@
 *================================================
-* 1 in 4 chance of any suprising
+* 1 in 4 chance of any surprising
 * SCRATCH = (android intelligence-20)/2+SRANGE *
 *   1.5 if vibration sensor
 *   1.3 if organic or robotic detector
 *   but not both
-* Percent odds of character being suprised =
+* Percent odds of character being surprised =
 *   monsters ability to do so - SCRATCH
-* Percent odds of monster being suprised =
+* Percent odds of monster being surprised =
 *   monsters ability to be + SCRATCH
 *================================================
 **********************************
@@ -16,18 +16,17 @@
 
 *** UNHOOKED RIGHT NOW --- SEEMS TO HANG !!!
 
-SUPRISE_SUB     JSR RNDMIZE
-                LDA RANDOM1
+SURPRISE_SUB    JSR RANDOM
                 AND #%00000011
 *BEQ :SKIPA
                 RTS
 :SKIPA          JSR OTHER_ODDS
                 STA SCRATCH
-                LDA RANDOM1
+                JSR RANDOM
                 BMI CHAR_FIRST
-                JSR MON_SUPRISE
+                JSR MON_SURPRISE
                 BCS CHR_EXIT
-CHR_SUPRISE     LDA FORCE_SUPRISE
+CHR_SURPRISE    LDA FORCE_SURPRISE
                 AND #Xchrsprd
                 BNE :SKIPA
                 LDA OPTIONS1
@@ -45,15 +44,15 @@ CHR_SUPRISE     LDA FORCE_SUPRISE
                 BCC CHR_EXIT
                 JSR ODDER
                 BCC CHR_EXIT
-:SKIPA          LDA SUPRISED_FLAG
+:SKIPA          LDA SURPRISED_FLAG
                 ORA #%01000000
-                STA SUPRISED_FLAG
+                STA SURPRISED_FLAG
                 SEC
 CHR_EXIT        RTS
 
-CHAR_FIRST      JSR CHR_SUPRISE
+CHAR_FIRST      JSR CHR_SURPRISE
                 BCS MON_EXIT
-MON_SUPRISE     LDA FORCE_SUPRISE
+MON_SURPRISE    LDA FORCE_SURPRISE
                 AND #Xmonsprd
                 BNE :SKIPA
                 LDA OPTIONS1
@@ -71,9 +70,9 @@ MON_SUPRISE     LDA FORCE_SUPRISE
                 BCS :SKIPA
                 JSR ODDER
                 BCC MON_EXIT
-:SKIPA          LDA SUPRISED_FLAG
+:SKIPA          LDA SURPRISED_FLAG
                 ORA #%10000000
-                STA SUPRISED_FLAG
+                STA SURPRISED_FLAG
                 SEC
 MON_EXIT        RTS
 
@@ -104,7 +103,7 @@ OTHER_ODDS      JSR RESET_CHLIST
 NO_CHANCE       LDA #$00
                 RTS
 GOT_ANDROID     TXA
-                JSR POINTIT
+                JSR SET_CHAR
                 LDY #intelligence
                 LDA (CHARDL),Y
                 SED
@@ -118,11 +117,11 @@ GOT_ANDROID     TXA
                 JSR PERCENT_OF
                 TXA
                 SED
-                CLC
-                ADC SRANGE
-                CLD
-                BCC :SKIPA
-                LDA #$99
+                ; CLC
+                ; ADC SRANGE
+                ; CLD
+                ; BCC :SKIPA
+                ; LDA #$99
 :SKIPA          PHA
 
                 LDY #e14_FEET
@@ -193,8 +192,7 @@ ODDER           JSR RAND09
 :SKIPA          SEC
                 RTS
 
-RAND09          JSR RNDMIZE
-                LDA RANDOM1
+RAND09          JSR RANDOM
                 AND #$0F
                 CMP #$0A
                 BCS RAND09

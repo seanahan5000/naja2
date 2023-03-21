@@ -28,7 +28,6 @@ BUILD_GRID25	LDX #24
 :2				LDY #position
 				LDA (CHARDL),Y
 :3				JSR POS_TO_I25
-				TAY
 				LDA GRID25,Y
 				BMI :4
 

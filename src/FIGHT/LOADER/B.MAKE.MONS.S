@@ -2,23 +2,18 @@
 *
 *===============================
 
-MAKE_ALLMONS    LDA #0
-                STA COUNT
-:LOOP0          JSR POINTIT
-                LDY #position
+MAKE_ALLMONS    JSR FIRST_CHAR
+:1              LDY #position
                 LDA (CHARDL),Y
-                LDX COUNT
                 STA CHARXY,X
-                INC COUNT
-                LDA COUNT
-                CMP GRPNUMB
-                BNE :LOOP0
+                JSR NEXT_CHAR
+                BCC :1
 
                 LDX #24
                 LDA #$FF
-:LOOP1          STA GRID,X
+:2              STA GRID,X
                 DEX
-                BPL :LOOP1
+                BPL :2
 
                 LDX #0
                 STX ALIEN_NUMBER
@@ -47,12 +42,12 @@ MAKE_ALLMONS    LDA #0
 MAKE_MONSTER
                 LDY #aUpperReflex
                 LDA (ALIEN_PTR),Y
-                JSR PLUS_MINUS_10
+                ; JSR PLUS_MINUS_10
                 STA NEW_MONSTER+monUPREF
 
                 LDY #aLowerReflex
                 LDA (ALIEN_PTR),Y
-                JSR PLUS_MINUS_10
+                ; JSR PLUS_MINUS_10
                 STA NEW_MONSTER+monLOREF
 
                 LDY #aBlasts
@@ -113,35 +108,36 @@ MAKE_MONSTER
 *
 *-------------------------------
 
-PLUS_MINUS_10   PHA
-:LOOP1          JSR RNDMIZE
-                CPY RANDOM1
-                BCC :LOOP1
-                LDA RANDOM1
-                STA TEMP
-                AND #$0F
-                CMP #$0A
-                BCS :LOOP1
-                LDA TEMP
-                AND #$F0
-                CMP #$A0
-                BCS :LOOP1
-                LDA RANDOM1+1
-                BCC :SKIPA
-                PLA
-                CLC
-                SED
-                ADC TEMP
-                CLD
-                BCC :EXIT
-                LDA #$99
-                RTS
-:SKIPA          PLA
-                SEC
-                SED
-                SBC TEMP
-                CLD
-                BEQ :SKIPB
-                BCS :EXIT
-:SKIPB          LDA #$01
-:EXIT           RTS
+; TODO: this code seems buggy
+; PLUS_MINUS_10   PHA
+; :LOOP1          JSR RANDOM
+;                 STA TEMP
+;                 CPY TEMP
+;                 BCC :LOOP1
+;                 AND #$0F
+;                 CMP #$0A
+;                 BCS :LOOP1
+;                 LDA TEMP
+;                 AND #$F0
+;                 CMP #$A0
+;                 BCS :LOOP1
+; ;               LDA RANDOM1+1
+; ; TODO: should this be BMI :SKIPA?
+;                 BCC :SKIPA
+;                 PLA
+;                 CLC
+;                 SED
+;                 ADC TEMP
+;                 CLD
+;                 BCC :EXIT
+;                 LDA #$99
+;                 RTS
+; :SKIPA          PLA
+;                 SEC
+;                 SED
+;                 SBC TEMP
+;                 CLD
+;                 BEQ :SKIPB
+;                 BCS :EXIT
+; :SKIPB          LDA #$01
+; :EXIT           RTS

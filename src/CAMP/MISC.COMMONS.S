@@ -167,7 +167,8 @@ LESS_PERCENT	STA	TEMP
 
 *-------------------------------
 
-PERCENT_OF		JSR	MULTIPLY_12
+PERCENT_OF		ENT
+				JSR	MULTIPLY_12
 				LDA	PRODUCT_3+2
 				CLC
 				SED

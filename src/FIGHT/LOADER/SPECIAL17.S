@@ -8,6 +8,7 @@ RUUSTOP         BEQ GORUUIK
                 JSR PREFITE
                 JMP FREAD
 GOSWIM          JMP AIRSWIM
+
 GORUUIK         STA DRIVOFF
                 JSR CLEAR1
                 LDA #$20
@@ -24,6 +25,7 @@ GORUUIK         STA DRIVOFF
                 LDA #$04
                 STA MAXTEXT
                 JSR INPUT2
+; TODO: should only allow correct password if Ruuik has actually provided it
                 LDX #$03
 CCOMP           LDA TEXTBUF,X
                 CMP CRUU,X
@@ -55,6 +57,7 @@ RUUIAIR         LDA DIRHOLD
                 LDA #$12
                 STA READNUM
                 JMP SREAD
+
 FCRUU           LDX #$03
 FCOMP           LDA FUCK,X
                 CMP TEXTBUF,X
@@ -72,6 +75,7 @@ ATTACOM         JSR CLRBOX
                 JSR FSCREEN
                 JSR PREFITE
                 JMP SREADIT
+
 CRUU            DFB $C3,$D2,$D5
                 DFB $D5
 FUCK            DFB $C6,$D5,$C3
@@ -82,6 +86,9 @@ OLINE           DFB $00,$3B,$3D
                 DFB $00,$3B,$54
                 DFB $00,$3B,$3D
                 DFB $FF
+
+; TODO: should only do this the first couple of times alien is encountered
+
 AIRSWIM         STA DRIVOFF
                 JSR CLEAR1
                 LDA #$20
@@ -129,9 +136,11 @@ REKEYER         LDA TEXTBUF
                 JSR CHAROUT
 NORETIN         JSR RECALL
                 JMP REKEYER
+
 RECALL          LDA HOLDIT
                 PHA
                 JMP KEYREAD
+
 NOATTAK         JSR CHAROUT
                 JSR CLRBOX
                 LDY #$0A
@@ -152,6 +161,7 @@ NOATTAK         JSR CHAROUT
                 LDY #$04
                 JSR WAITER
                 JMP RUUIAIR
+
 NOLIAR          LDY #$0E
                 JSR TEXTER
                 LDA #$69
@@ -176,6 +186,7 @@ COLIAR          STA MONSPRD
 DOLIAR          LDY #$10
                 JSR TEXTER
                 JMP LIARNOC
+
 MODIFY          LDA #$26
                 STA CLRBOX+1
                 LDA #$45
@@ -185,12 +196,14 @@ MODIFY          LDA #$26
                 LDA #$48
                 STA MOVEMOD+1
                 RTS
+
 OLINE2          DFB $00,$3B,$25
                 DFB $00,$DB,$25
                 DFB $00,$DB,$45
                 DFB $00,$3B,$45
                 DFB $00,$3B,$25
                 DFB $FF
+
 CLRBOX          LDX #$3E
 CLOOP1          LDA LOBYTES,X
                 STA SCREENL
@@ -207,6 +220,7 @@ CLOOP2          STA (SCREENL),Y
 CLRMOD          CPX #$54
                 BNE CLOOP1
                 RTS
+
 TRANSER         LDA #$04
                 STA COUNT
 TRLOOPA         LDA COUNT
@@ -230,6 +244,7 @@ TMOD2B          STA $9B00,X
                 DEC COUNT
                 BPL TRLOOPA
                 RTS
+
 MOVE212         LDA #$3B
                 STA LINENUM
 MLOOP1          LDX LINENUM
@@ -256,6 +271,7 @@ MLOOP2          LDA (SCREENL),Y
 MOVEMOD         CMP #$57
                 BNE MLOOP1
                 RTS
+
 WAITER          LDA #$00
                 JSR WAIT2
                 BNE WAITEND
@@ -263,131 +279,38 @@ WAITER          LDA #$00
                 BPL WAITER
 WAITEND         BIT UNSTROB
                 RTS
-TEXT0           DFB $09,$05,$41
-                DFB $1D,$1E,$0B
-                DFB $1E,$0F,$0A
-                DFB $1E,$12,$0F
-                DFB $0A,$1C,$19
-                DFB $23,$0B,$16
-                DFB $0A,$1A,$0B
-                DFB $1D,$1D,$21
-                DFB $19,$1C,$0E
-                DFB $8D,$0A,$04
-                DFB $4A,$19,$1C
-                DFB $0A,$0C,$0F
-                DFB $0A,$0E,$0F
-                DFB $1D,$1E,$1C
-                DFB $19,$23,$0F
-                DFB $0E,$2F,$0A
-                DFB $8D,$FF
-TEXT1           DFB $0D,$01,$45
-                DFB $16,$19,$18
-                DFB $11,$0A,$16
-                DFB $13,$20,$0F
-                DFB $0A,$1C,$1F
-                DFB $1F,$13,$15
-                DFB $25,$8D,$FF
-TEXT2           DFB $10,$04,$45
-                DFB $0B,$1E,$1E
-                DFB $0B,$0D,$15
-                DFB $25,$25,$8D
-                DFB $FF
-TEXT3           DFB $09,$05,$41
-                DFB $21,$0F,$0A
-                DFB $21,$19,$1F
-                DFB $16,$0E,$0A
-                DFB $18,$0F,$20
-                DFB $0F,$1C,$0A
-                DFB $1C,$0F,$1A
-                DFB $1C,$19,$0E
-                DFB $1F,$0D,$0F
-                DFB $8D,$09,$05
-                DFB $4A,$21,$13
-                DFB $1E,$12,$0A
-                DFB $23,$19,$1F
-                DFB $1C,$0A,$13
-                DFB $18,$10,$0F
-                DFB $1C,$13,$19
-                DFB $1C,$0A,$1C
-                DFB $0B,$0D,$0F
-                DFB $25,$8D,$FF
-TEXT7           DFB $09,$05,$29
-                DFB $1A,$16,$0F
-                DFB $0B,$1D,$0F
-                DFB $0A,$0E,$19
-                DFB $18,$28,$1E
-                DFB $0A,$0B,$1E
-                DFB $1E,$0B,$0D
-                DFB $15,$0A,$17
-                DFB $0F,$2D,$8D
-                DFB $FF
-TEXT8           DFB $09,$05,$32
-                DFB $13,$28,$17
-                DFB $0A,$12,$0B
-                DFB $1C,$17,$16
-                DFB $0F,$1D,$1D
-                DFB $2D,$8D,$FF
-TEXT9           DFB $15,$05,$32
-                DFB $0A,$13,$0A
-                DFB $21,$19,$1F
-                DFB $16,$0E,$8D
-                DFB $09,$05,$3B
-                DFB $18,$0F,$20
-                DFB $0F,$1C,$0A
-                DFB $12,$1F,$1C
-                DFB $1E,$0A,$0B
-                DFB $18,$23,$19
-                DFB $18,$0F,$2D
-                DFB $8D,$FF
-TEXTA           DFB $0D,$03,$B4
-                DFB $0B,$1E,$1E
-                DFB $0B,$0D,$15
-                DFB $0A,$30,$23
-                DFB $2E,$18,$32
-                DFB $33,$0A,$8D
-                DFB $FF
-TEXTB           DFB $09,$05,$2D
-                DFB $19,$12,$0A
-                DFB $1E,$12,$0B
-                DFB $18,$15,$0A
-                DFB $23,$19,$1F
-                DFB $0A,$1D,$19
-                DFB $0A,$17,$1F
-                DFB $0D,$12,$25
-                DFB $25,$25,$8D
-                DFB $FF
-TEXTC           DFB $09,$05,$37
-                DFB $1E,$12,$0B
-                DFB $18,$15,$0A
-                DFB $23,$19,$1F
-                DFB $2D,$8D,$FF
-TEXTD           DFB $14,$00,$37
-                DFB $1E,$12,$0B
-                DFB $18,$15,$0A
-                DFB $23,$19,$1F
-                DFB $2D,$8D,$FF
-TEXTE           DFB $0B,$06,$32
-                DFB $1D,$19,$0A
-                DFB $13,$0A,$16
-                DFB $13,$0F,$0E
-                DFB $0A,$0B,$0A
-                DFB $16,$13,$1E
-                DFB $1E,$16,$0F
-                DFB $2D,$8D,$FF
-TEXTF           DFB $0F,$02,$32
-                DFB $23,$19,$1F
-                DFB $0A,$17,$0F
-                DFB $0B,$18,$13
-                DFB $0F,$2D,$8D
-                DFB $FF
-TEXT10          DFB $09,$05,$32
-                DFB $13,$0A,$0E
-                DFB $19,$18,$28
-                DFB $1E,$0A,$16
-                DFB $13,$15,$0F
-                DFB $0A,$23,$19
-                DFB $1F,$0A,$0B
-                DFB $1E,$0A,$0B
-                DFB $16,$16,$2D
-                DFB $8D,$FF
 
+TEXT0           DB  $09,$05,$41
+                (STATE_THE_ROYAL_PASSWORD)
+                DB  $0A,$04,$4A
+                (OR_BE_DESTROYED:_)+
+TEXT1           DB  $0D,$01,$45
+                (LONG_LIVE_RUUIK!)+
+TEXT2           DB  $10,$04,$45
+                (ATTACK!!)+
+TEXT3           DB  $09,$05,$41
+                (WE_WOULD_NEVER_REPRODUCE)
+                DB  $09,$05,$4A
+                (WITH_YOUR_INFERIOR_RACE!)+
+TEXT7           DB  $09,$05,$29
+                (PLEASE_DON,$28,T_ATTACK_ME.)+
+TEXT8           DB  $09,$05,$32
+                (I'M_HARMLESS.)+
+TEXT9           DB  $15,$05,$32
+                (_I_WOULD)
+                DB  $09,$05,$3B
+                (NEVER_HURT_ANYONE.)+
+TEXTA           DB  $0D,$03,$B4
+                (ATTACK_<Y/N>?_)+
+TEXTB           DB  $09,$05,$2D
+                (OH_THANK_YOU_SO_MUCH!!!)+
+TEXTC           DB  $09,$05,$37
+                (THANK_YOU.)+
+TEXTD           DB  $14,$00,$37
+                (THANK_YOU.)+
+TEXTE           DB  $0B,$06,$32
+                (SO_I_LIED_A_LITTLE.)+
+TEXTF           DB  $0F,$02,$32
+                (YOU_MEANIE.)+
+TEXT10          DB  $09,$05,$32
+                (I_DON'T_LIKE_YOU_AT_ALL.)+

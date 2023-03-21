@@ -1,9 +1,10 @@
 CHECK_WRITPRO    =   $058A
 SET_FILE_HOOK    =   $0783
 SET_DISK_SIDE    =   $0792
-SET_FILE_TABLE   =   $9F00
-SET_NEXT_ON_OFF  =   $9F05
-SET_FILE         =   $9F09
-SEEK_FILE        =   $9F33
-LOAD_FILE        =   $9F49
-READ_FILE        =   $9F6A
+SET_FILE_TABLE   =   $1E00
+SET_NEXT_ON_OFF  =   $1E05
+SET_FILE         =   $1E09
+SEEK_FILE        =   $1E33
+LOAD_FILE        =   $1E49
+READ_FILE        =   $1E6A
+FILE_HOOK        =   $1E98

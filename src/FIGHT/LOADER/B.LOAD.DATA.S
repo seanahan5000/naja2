@@ -2,12 +2,13 @@
 *
 *===============================
 
-LOAD_DATA       LDA #>SCODE_HEADR
-                STA SSTOREH
-                LDX #<S_SCODE12
-                LDY #>S_SCODE12
-                LDA #2
-                JSR FLOADER
+LOAD_DATA
+                ; LDA #>SCODE_HEADR
+                ; STA SSTOREH
+                ; LDX #<S_SCODE12
+                ; LDY #>S_SCODE12
+                ; LDA #2
+                ; JSR FLOADER
 
                 LDX #0
                 STX ALIEN_NUMBER
@@ -45,19 +46,15 @@ DATA_LOADER     LDA DATA_BUFR+1     ;Data offset low
                 STA DATPNTL
                 BCC :SKIPA
                 INC DATPNTH
-:SKIPA          LDA #>ALIEN_BUFR
-                STA SSTOREH
-
+:SKIPA
                 LDY #1
                 LDA (DATPNTL),Y
-                CLC
-                ADC #<S_DATA12
-                TAX
-                LDY #>S_DATA12
-                BCC :SKIPB
-                INY
-:SKIPB          LDA #3
-                JSR FLOADER
+                JSR SEEK_FILE
+                LDA #IS_SPINNING+KEEP_SPINNING
+                JSR SET_NEXT_ON_OFF
+                LDA #3
+                LDY #>ALIEN_BUFR
+                JSR READ_FILE
 
                 LDY #0
                 LDA (DATPNTL),Y
@@ -67,7 +64,6 @@ DATA_LOADER     LDA DATA_BUFR+1     ;Data offset low
                 LDA #$00
                 ADC #>ALIEN_BUFR
                 STA DATPNTH
-
                 LDA #<ALIEN_HEAP
                 STA TEMP
                 LDA #>ALIEN_HEAP
@@ -235,42 +231,42 @@ ADD_CODE        LDY #4              ;code
                 SBC LPTR2+1
                 STA (LPTR2),Y
 
-                LDX ALIEN_NUMBER
-                LDA ALIEN1,X
-                LDX #<SCODE_HEADR
-                LDY #>SCODE_HEADR
-*JSR SEARCH_LIST
-                CLC                 ;TEMP ***
-                BCC :SKIPB
-
-                STA DATPNTL
-                LDY #6
-                CLC
-                SBC (TEMP),Y
-                PHA
-                LDY #3
-                LDA (TEMP),Y
-                TAX
-                LDY #7
-                SBC (TEMP),Y
-                PHA
-
-                TXA
-                CLC
-                ADC #<S_SCODE12
-                TAX
-                LDY #>S_SCODE12
-                BCC :SKIPA
-                INY
-:SKIPA          LDA #>DATA_BUFR
-                STA SSTOREH
-                STA DATPNTH
-                LDA #3
-                JSR FLOADER
-
-                JSR MOVE_BYTES
-                LDX ALIEN_NUMBER
-                DEC SCODE_PRESENT,X
+;                 LDX ALIEN_NUMBER
+;                 LDA ALIEN1,X
+;                 LDX #<SCODE_HEADR
+;                 LDY #>SCODE_HEADR
+; *JSR SEARCH_LIST
+;                 CLC                 ;TEMP ***
+;                 BCC :SKIPB
+;
+;                 STA DATPNTL
+;                 LDY #6
+;                 CLC
+;                 SBC (TEMP),Y
+;                 PHA
+;                 LDY #3
+;                 LDA (TEMP),Y
+;                 TAX
+;                 LDY #7
+;                 SBC (TEMP),Y
+;                 PHA
+;
+;                 TXA
+;                 CLC
+;                 ADC #<S_SCODE12
+;                 TAX
+;                 LDY #>S_SCODE12
+;                 BCC :SKIPA
+;                 INY
+; :SKIPA          LDA #>DATA_BUFR
+;                 STA SSTOREH
+;                 STA DATPNTH
+;                 LDA #3
+;                 JSR FLOADER
+;
+;                 JSR MOVE_BYTES
+;                 LDX ALIEN_NUMBER
+;                 DEC SCODE_PRESENT,X
 
 :SKIPB          LDY #0
                 LDA LPTR3
@@ -305,7 +301,7 @@ MOVE_BYTES      LDA LPTR3
 :SKIPA          LDA ALIEN1                              ;**
                 LDY ALIEN2                              ;**
                 LDX ALIEN3                              ;**
-                DEBUG   "Alien heap full"               ;**
+                ; DEBUG   "Alien heap full"               ;**
                 LDX ALIEN_NUMBER
                 LDA #$FF
 :1              STA ALIEN1,X

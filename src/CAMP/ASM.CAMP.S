@@ -47,10 +47,13 @@ BANK_2          LDA $C083
                 PUT C.ISTATS.DATA
                 SAV CAMP.D000.M2
 
-                ORG $9000
+                ORG $1900
                 PUT /TEST/CHARACTERS
-                PUT /TEST/EQUIPMENT
                 PUT /TEST/STATS
+                SAV CAMP.1900
+
+                ORG $9000
+                PUT /TEST/EQUIPMENT
                 SAV CAMP.9000
 
                 ORG $A000

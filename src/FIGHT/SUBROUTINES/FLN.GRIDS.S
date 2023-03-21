@@ -31,7 +31,6 @@ FILL_GRID		STA	TEMP+1
 				BNE	:LOOP1
 				RTS
 
-
 *-----------------------------------------------------
 * On Entry:
 *          A: Value to look for (in addition to #$FF)

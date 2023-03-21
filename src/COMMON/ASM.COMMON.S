@@ -18,7 +18,4 @@
                 PUT FONT
                 PUT CURSORS
 
-                ; TODO: move this from COMMON
-                PUT FILES
-
                 SAV COMMON

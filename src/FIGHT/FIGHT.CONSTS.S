@@ -162,7 +162,7 @@ Xloaddata3      =   %00010000
 DATA_BUFR       DS  $300            ;* These must
 RARITY          DS  $100            ;*   begin on
 PICT_BUFR                           ;*   page
-ALIEN_BUFR      DS  $300            ;*   boundries
+ALIEN_BUFR      DS  $300            ;*   boundaries
 SCODE_HEADR     DS  $200
                 DS  $1700
                 DEND
