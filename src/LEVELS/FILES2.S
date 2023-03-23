@@ -14,6 +14,7 @@ FILE_TABLE      DB  fileAlienPics345, $00,$00,$C0
                 DB  fileControl9,     $12,$00,$10
 
                 DB  fileFightLoader,  $13,$00,$0C
+                DB  fileDeadGroup,    $22,$00,$0D
 
                 DB  fileDiagnose,     $14,$00,$0E
                 DB  fileAlienId,      $15,$00,$06

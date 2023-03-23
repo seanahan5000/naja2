@@ -9,10 +9,14 @@
 
                 PUT TABLES
                 PUT UTILS
-                PUT BLIT
-                PUT PICT
                 PUT UNPACK
+                PUT BLIT
                 PUT SHAPES
+
+                ; TODO: reorder code to avoid alignment issues
+                DS  32
+                PUT PICT
+
                 PUT TEXT
                 PUT INPUT
                 PUT FONT

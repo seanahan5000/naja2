@@ -10,6 +10,7 @@
     { "fileName": "CONTROL11.LST", "bins": [{ "fileName": "CONTROL11", "loadAt": "0x7800", "enabled": false }]},
     { "fileName": "CONTROL9.LST",  "bins": [{ "fileName": "CONTROL9",  "loadAt": "0x7800", "enabled": false }]},
     { "fileName": "FLOADER.LST" },
+    { "fileName": "DEAD.LST" },
     { "fileName": "CAMP.LST", "bins": [
       { "fileName": "CAMP.1900",    "loadAt": "0x1900" },
       { "fileName": "CAMP.9000",    "loadAt": "0x9000" },

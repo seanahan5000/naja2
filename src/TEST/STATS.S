@@ -147,7 +147,8 @@ PROFNAME_TO_TEXT LDY #profrace
                 INX
                 BNE NTT_CMN         ; always
 
-CNAME_TO_TEXT   LDX #0
+CNAME_TO_TEXT   ENT
+                LDX #0
 NTT_CMN         LDY #name
 :2              LDA (CHARDL),Y
                 STA TEXT_BUFFER,X
@@ -179,8 +180,9 @@ WRAP_TRIMMED_NAME ENT
                 JSR TRIM_NAME
                 JMP WRAP_TEXTBUF
 
-; NOTE: currently only used by C.ISTATS.S, so maybe move
-CPROF_TO_TEXT   LDY #profrace
+; NOTE: currently only used by C.ISTATS/DEAD.GROUP, so maybe move
+CPROF_TO_TEXT   ENT
+                LDY #profrace
                 LDA (CHARDL),Y
                 LSR
                 LSR
@@ -227,7 +229,6 @@ MUTANT          USR (MUTANT)=
 EMEDIC          USR (EMD/E-MEDIC)=
 GENIUS          USR (GENIUS)=
 ROBOT           USR (ROBOT)=
-NONE            USR (NONE)=
 
 CPOS_TO_TEXT    LDY #position
                 LDA (CHARDL),Y
@@ -326,8 +327,9 @@ ETT_CMN         LDA #TextSlash
                 LDA #3
                 BNE CMN_TO_TEXT_L   ; always
 
-; NOTE: currently only used by C.ISTATS.S, so maybe move
-CEXP_TO_TEXT    LDY #experience
+; NOTE: currently only used by C.ISTATS/DEAD.GROUP, so maybe move
+CEXP_TO_TEXT    ENT
+                LDY #experience
                 LDX #0
                 LDA #4
                 BNE CMN_TO_TEXT_L   ; always
@@ -343,8 +345,9 @@ CSTAT_TO_TEXT_R LDX #0
                 STA TEXT_BUFFER,X
                 RTS
 
-; NOTE: currently only used by C.ISTATS.S, so maybe move
-CLEVEL_TO_TEXT  LDY #level
+; NOTE: currently only used by C.ISTATS/DEAD.GROUP, so maybe move
+CLEVEL_TO_TEXT  ENT
+                LDY #level
                 LDX #0
 CMN_TO_TEXT_L2  LDA #2
 CMN_TO_TEXT_L   JSR CHAR_DIGITS_L
@@ -491,9 +494,12 @@ STATUS_NAMES    USR (HEALTHY)=
                 USR (CRITICAL)=
                 USR (RUN_DOWN)=
 
-CRACE_TO_TEXT   LDY #profrace
+CRACE_TO_TEXT   ENT
+                LDY #profrace
                 LDA (CHARDL),Y
-                AND #$0F
+                BPL :1
+                LDA #$05                ; no race for robots
+:1              AND #$0F
 RACE_TO_TEXT    ENT
                 LDX #<RACE_NAMES
                 LDY #>RACE_NAMES
@@ -505,3 +511,4 @@ ORN             USR (ORN)=
 STILICX         USR (STILICX)=
 XXTYS           USR (XXTYS)=
 DENEB           USR (DENEB)=
+NONE            USR (NONE)=

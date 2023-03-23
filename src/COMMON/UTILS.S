@@ -94,7 +94,15 @@ WAIT            ENT
                 BNE :WAITA
                 SAME_PAGE_AS :WAITA
                 RTS
-
+;
+; On Entry:
+;   A: wait value
+;
+; On Exit:
+;   A: key value
+;   X,Y: unchanged
+;   BMI/BPL status of key value
+;
 WAIT_KEY        ENT                     ; was WAIT2
                 SEC
 :WAITA          PHA

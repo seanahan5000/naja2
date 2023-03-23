@@ -32,7 +32,9 @@ $ASM ALIENS ASM.DATA    -lst $OBJ/ALIEN.DATA.LST
 $ASM ALIENS ALIEN.DESC.12
 $ASM ALIENS ALIEN.DESC.345
 
-$ASM FIGHT/LOADER ASM.LOADER -lst $OBJ/FLOADER.LST
+$ASM FIGHT/LOADER  ASM.LOADER -lst $OBJ/FLOADER.LST
+# $ASM FIGHT/AWARDER ASM.AWARDER -lst $OBJ/AWARDER.LST
+$ASM FIGHT/DEAD    ASM.DEAD -lst $OBJ/DEAD.LST
 
 $ASM LEVELS INIT        -lst $OBJ/INIT.LST
 $ASM LEVELS ASM.17      -lst $OBJ/CONTROL17.LST
@@ -96,6 +98,9 @@ $A2NIB_T2 $OBJ/FIGHT.LOADER    -t 13 -s 00   #  3 sectors
 # shell 9
 $A2NIB_T2 $OBJ/KEY.DOOR        -t 16 -s 00   # 13 sectors
                                              #  3 sectors
+
+$A2NIB_T1 $OBJ/DEAD.GROUP      -t 22 -s 00   # 13 sectors
+$A2NIB_T2 $OBJ/DEAD.GROUP      -t 22 -s 00   # 13 sectors
 
 #---------------------------------------
 # Copy all project files

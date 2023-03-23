@@ -18,7 +18,7 @@ LEFT_MASK       =   $5B
 RIGHT_MASK      =   $5C
 MAX_DIV7        =   $5F             ; TEXT-only
 
-; TODO: use LOCAL_TEMP
+; TODO: use LOCAL_TEMP?
 TEMP_COLOR      =   $00
 TEMP_TOGGLE     =   $01
 
@@ -29,7 +29,7 @@ DRAW_PICT       ENT
                 STA OP_PTR
                 PLA
                 STA OP_PTR_H
-                LDY #1              ; adjust for return address
+                LDY #1                  ; adjust for return address
 
 :DISPATCH       LDA (OP_PTR),Y
                 BMI :DONE
@@ -42,7 +42,6 @@ DRAW_PICT       ENT
                 STA :OP_MOD+2
                 STY OP_INDEX
 :OP_MOD         JSR $FFFF
-                ; TODO: use Y here instead of OP_INDEX?
                 LDA OP_PTR
                 CLC
                 ADC OP_INDEX
@@ -50,13 +49,15 @@ DRAW_PICT       ENT
                 LDY #0
                 BCC :DISPATCH
                 INC OP_PTR_H
-                BCS :DISPATCH       ; always
+                BCS :DISPATCH           ; always
 
 :DONE           LDA OP_PTR_H
                 PHA
                 LDA OP_PTR
                 PHA
-                RTS
+                LDA #TextLineHeight     ; restore text height on PictEnd
+                STA TEXT_HEIGHT
+                RTS                     ; BNE always true
 
 OP_TABLE        DW  OP_SET_COLOR
                 DW  OP_MOVE_TO
@@ -78,6 +79,8 @@ OP_TABLE        DW  OP_SET_COLOR
                 DW  OP_TEXT
                 DW  OP_TEXT_AT
                 DW  OP_TEXT_IN
+                DW  OP_DRAW_TEXTBUF
+                DW  OP_DRAW_TEXTBUF_RET
                 DW  OP_IMAGE
                 DW  OP_IMAGE_FILL
                 DW  OP_TILE
@@ -93,13 +96,13 @@ OP_TABLE        DW  OP_SET_COLOR
                 DW  OP_CALL
 
 OP_CALL         LDA (OP_PTR),Y
-                STA :CALL_MOD+1
+                TAX
                 INY
                 LDA (OP_PTR),Y
-                STA :CALL_MOD+2
                 INY
                 STY OP_INDEX
-
+OP_CALL_PROC    STX :CALL_MOD+1
+                STA :CALL_MOD+2
                 LDA OP_PTR
                 PHA
                 LDA OP_PTR_H
@@ -520,7 +523,6 @@ OP_CLEAR        LDA (OP_PTR),Y
                 BNE :1
                 SAME_PAGE_AS :1
                 RTS
-
 
 ;-------------------------------------------------------------------------------
 ;

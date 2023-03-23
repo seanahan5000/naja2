@@ -156,20 +156,22 @@ OpSetTextBoxHigh =  16
 OpText          =   17
 OpTextAt        =   18
 OpTextIn        =   19
-OpImage         =   20
-OpImageFill     =   21
-OpTile          =   22
-OpClear         =   23
-OpCopyTo        =   24
-OpSwap          =   25
+OpTextbuf       =   20
+OpTextbufRet    =   21
+OpImage         =   22
+OpImageFill     =   23
+OpTile          =   24
+OpClear         =   25
+OpCopyTo        =   26
+OpSwap          =   27
 
-OpSetPage1      =   26
-OpSetPage2      =   27
-OpSetPageX      =   28
-OpShowPage      =   29
-OpClearPage     =   30
-OpCopyToPage    =   31
-OpCall          =   32
+OpSetPage1      =   28
+OpSetPage2      =   29
+OpSetPageX      =   30
+OpShowPage      =   31
+OpClearPage     =   32
+OpCopyToPage    =   33
+OpCall          =   34
 
 OpEnd           =   $FF
 
@@ -317,6 +319,14 @@ PictTextAt      MAC
 PictTextIn      MAC
                 DB  OpTextIn
                 USR ]1
+                EOM
+
+PictTextbuf     MAC
+                DB  OpTextbuf
+                EOM
+
+PictTextbufRet  MAC
+                DB  OpTextbufRet
                 EOM
 
 PictImage       MAC

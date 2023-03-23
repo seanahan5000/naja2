@@ -243,6 +243,7 @@ fileControl11   =   $35
 fileControl9    =   $36
 
 fileFightLoader =   $37
+fileDeadGroup   =   $38
 
 fileElevator    =   $40
 fileViewport    =   $41
