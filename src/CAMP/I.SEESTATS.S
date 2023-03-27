@@ -77,32 +77,27 @@ STAT_DEF		DB	$81
 				JMP	DRAW_ARROW
 *-------------------------------
 
-DRAW_STATS_VALS LDX #$DB
-				LDY #$36
-				JSR MOVE_TO
-
-				JSR CSTATUS_TO_TEXT
-				JSR DRAW_TEXTBUF_RET
-
-				JSR HEALTH_TO_TEXT_L
-				JSR DRAW_TEXTBUF_RET
-
-				JSR DRAW_PICT
+DRAW_STATS_VALS JSR DRAW_PICT
+				PictMoveTo $DB;$36
+				PictCall CSTATUS_TO_TEXT_L
+				PictTextbufRet
+				PictCall HEALTH_TO_TEXT_L
+				PictTextbuf
 				PictTextAt 219;72;(E-___P-\n)
-				PictVMoveTo 72
+				PictMoveTo 231;72
 				PictEnd
 
 				LDY	#Eshielding
 				JSR CSTAT_TO_TEXT_L
-				LDX	#$E7
-				JSR DRAW_TEXTBUF_X
 
 				JSR DRAW_PICT
+				PictTextbuf
 				PictHMoveTo $105
 				PictEnd
+
 				LDY	#Pshielding
 				JSR CSTAT_TO_TEXT_L
-				JSR DRAW_TEXTBUF_RET
+				JSR DRAW_TEXTBUF
 
 				; TODO: switch this over to pooled credits
 ; 				LDY	#profrace
@@ -115,13 +110,12 @@ DRAW_STATS_VALS LDX #$DB
 ; 				JSR	CHAR_CREDOUT
 ; OVRCRED
 				JSR	ENERGY_TO_TEXT
-				LDX	#$B7
-				LDY	#$68
-				JSR	DRAW_TEXTBUF_XY
+				JSR DRAW_PICT
+				PictMoveTo $B7;$68
+				PictTextbuf
+				PictMoveTo $FF;$76
+				PictEnd
 
-				LDX #$FF
-				LDY #$76
-				JSR MOVE_TO
 				LDX #0
 NEXSTAT			STX COUNT
 				LDY	STAT_LIST,X

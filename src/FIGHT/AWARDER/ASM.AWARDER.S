@@ -1,0 +1,45 @@
+
+divDVND			=	$14				;$15
+divQUOT			=	$16				;$17
+divADD			=	$18				;$19
+
+EPOINT			=	XCOUNT
+; * YCOUNT is used as a non-volatile counter
+
+				ORG	$A000
+
+AWARDER_FILE    DB  $00                 ; TODO: just so module ID is overwritten
+				PUT	AWARDER/AWARDER
+				PUT	AWARDER/AWARD.CREDIT
+				PUT	AWARDER/AWARD.EQUIP
+
+********************************
+				DUMMY	*
+********************************
+
+THE_ANDROID		DS	1
+GOOD_MEN		DS	1
+KILL_TOTAL		DS	1
+CRED_TOTAL		DS	4
+EXPR_TOTAL		DS	4
+
+MASK			DS	1
+MASTER_MASK		DS	1
+GROUP			DS	1
+ITEM			DS	1
+
+ROOM_FOUND		DS	1
+
+FOUND_COUNT		DS	1
+FOUND_ITEMS		DS	20
+
+CREDIT_ALIEN	DS	18
+EXPERI_ALIEN	=	CREDIT_ALIEN+2
+FINDODD_ALIEN	=	EXPERI_ALIEN+2
+FINDGRP_ALIEN	=	FINDODD_ALIEN+1
+
+********************************
+				DEND
+********************************
+
+				SAV	AWARDER

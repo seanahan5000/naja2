@@ -60,6 +60,13 @@ DATPNTH         =   $4E
 ; HALLS use $50-$5F
 ; HALLS use $60-$6A
 
+; TODO: eventually move these down to $00-$07
+LOCAL_TEMP      =   $70         ; $70,$71,$72,$73
+LINENUM         =   $74
+COLUMN          =   $75
+COUNTER         =   $76
+SCRATCH         =   $77
+
 ; TODO: move these character-only vars
 SELECT          =   $90         ; only used in STATS.S -- get rid of
 CHARDL          =   $91
@@ -72,13 +79,6 @@ SELECT_FLIP     =   $96         ; only used in T.CAMP.S when flipping stats
 CHAR_INDEX      =   $97
 
 ETABLE          =   $9C         ; $9C,$9D,$9E,$9F
-
-; TODO: eventually move these down to $00-$07
-LOCAL_TEMP      =   $70         ; $70,$71,$72,$73
-LINENUM         =   $74
-COLUMN          =   $75
-COUNTER         =   $76
-SCRATCH         =   $77
 
 ; NDOS.525 uses $B0-$BF
 ; CAMP uses $C0-$CF
@@ -108,13 +108,19 @@ ORBS_FOUND                      ; TODO: get rid of this
 KEYS_FOUND      DS  1
 KEY_DOOR_BITS   DS  1           ; a000bbbb - a open status, b order bits
 
-                DS  85
+                DS  73
+
+KILLS           DS  4           ; expedition totals (assumed sequential)
+CREDITS         DS  4
+EXPERIENCE      DS  4
 
 LOST_CHARS      DS  1           ; $BC7D
 GRPCONT         DS  1           ; $BC7E ; number of characters, including dead/compressed?
 GRPNUMB         DS  1           ; $BC7F ; number of living characters in group
 
-CHAR_0          DS  $80         ; $BC80
+                ERR $BC80-*
+
+CHAR_0          DS  $80
 CHAR_1          DS  $80
 CHAR_2          DS  $80
 CHAR_3          DS  $80
@@ -139,39 +145,40 @@ PBUTTON0        =   $C061               ; open-apple
 OpSetColor      =   0
 OpMoveTo        =   1
 OpMoveToHigh    =   2
-OpHMoveTo       =   3
-OpHMoveToHigh   =   4
-OpVMoveTo       =   5
+OpHMove         =   3
+OpHMoveTo       =   4
+OpHMoveToHigh   =   5
 OpVMove         =   6
-OpHLineTo       =   7
-OpHLineToHigh   =   8
-OpVLineTo       =   9
-OpRect          =   10
-OpRectHigh      =   11
-OpFillRect      =   12
-OpFillRectHigh  =   13
-OpSetTextHeight =   14
-OpSetTextBox    =   15
-OpSetTextBoxHigh =  16
-OpText          =   17
-OpTextAt        =   18
-OpTextIn        =   19
-OpTextbuf       =   20
-OpTextbufRet    =   21
-OpImage         =   22
-OpImageFill     =   23
-OpTile          =   24
-OpClear         =   25
-OpCopyTo        =   26
-OpSwap          =   27
+OpVMoveTo       =   7
+OpHLineTo       =   8
+OpHLineToHigh   =   9
+OpVLineTo       =   10
+OpRect          =   11
+OpRectHigh      =   12
+OpFillRect      =   13
+OpFillRectHigh  =   14
+OpSetTextHeight =   15
+OpSetTextBox    =   16
+OpSetTextBoxHigh =  17
+OpText          =   18
+OpTextAt        =   19
+OpTextIn        =   20
+OpTextbuf       =   21
+OpTextbufRet    =   22
+OpImage         =   23
+OpImageFill     =   24
+OpTile          =   25
+OpClear         =   26
+OpCopyTo        =   27
+OpSwap          =   28
 
-OpSetPage1      =   28
-OpSetPage2      =   29
-OpSetPageX      =   30
-OpShowPage      =   31
-OpClearPage     =   32
-OpCopyToPage    =   33
-OpCall          =   34
+OpSetPage1      =   29
+OpSetPage2      =   30
+OpSetPageX      =   31
+OpShowPage      =   32
+OpClearPage     =   33
+OpCopyToPage    =   34
+OpCall          =   35
 
 OpEnd           =   $FF
 
@@ -216,6 +223,11 @@ PictSetWhite2   MAC
                 DB  OpSetColor,OpColorWhite2
                 EOM
 
+PictHMove       MAC
+                DB  OpHMove,]1
+]Y              =   0
+                EOM
+
 PictHMoveTo     MAC
             DO ]1/256
                 DB  OpHMoveToHigh,<]1
@@ -225,14 +237,14 @@ PictHMoveTo     MAC
 ]X              =   ]1
                 EOM
 
-PictVMoveTo     MAC
-                DB  OpVMoveTo,]1
-]Y              =   ]1
-                EOM
-
 PictVMove       MAC
                 DB  OpVMove,]1
 ]Y              =   0
+                EOM
+
+PictVMoveTo     MAC
+                DB  OpVMoveTo,]1
+]Y              =   ]1
                 EOM
 
 PictMoveTo      MAC

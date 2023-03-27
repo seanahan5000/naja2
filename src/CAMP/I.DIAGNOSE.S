@@ -43,12 +43,13 @@ DIAGNOSER		STA	DEATH_FLAG
 				PictTextAt 214;150;(PULSE)
 				PictTextAt 195;183;(RESPIRATION)
 				PictTextAt 5;2;(PATIENT:)
-				; TODO: align and use TextLineBreak
-				PictTextAt 11;10;(__PROF:)
-				PictTextAt 11;18;(__RACE:)
-				PictTextAt 11;26;(HEALTH:)
-				PictTextAt 11;34;(ENERGY:)
-				PictTextAt 11;42;(STATUS:)
+				PictSetTextHeight 8
+				PictTextAt 11;10;()-
+				USR (__PROF:\n)-
+				USR (__RACE:\n)-
+				USR (HEALTH:\n)-
+				USR (ENERGY:\n)-
+				USR (STATUS:)
 				PictTextAt 47;50;(:)
 				PictTextAt 5;58;(PHYSICN:)
 				PictTextAt 11;66;(ENERGY:)
@@ -969,24 +970,23 @@ TIMES5			DB	$00,$05,$0A
 YCURSOR			DB	$00,$00,$00
 TCURSOR			DB	$00,$00,$00
 
-STATTER			LDX #$3B
-				LDY #$02
-				JSR MOVE_TO
+STATTER			JSR DRAW_PICT
+				PictSetTextHeight 8
+				PictMoveTo $3B;$02
+				PictCall CNAME_TO_TEXT
+				PictTextbufRet
+				PictCall CPROF_TO_TEXT
+				PictTextbufRet
+				PictCall CRACE_TO_TEXT
+				PictTextbufRet
+				PictCall HEALTH_TO_TEXT_L
+				PictTextbufRet
+				PictCall ENERGY_TO_TEXT_L
+				PictTextbufRet
+				PictEnd
 
-				JSR CNAME_TO_TEXT
-				JSR DRAW_TEXTBUF_RET
-
-				JSR CPROF_TO_TEXT
-				JSR DRAW_TEXTBUF_RET
-
-				JSR CRACE_TO_TEXT
-				JSR DRAW_TEXTBUF_RET
-
-				JSR HEALTH_TO_TEXT_L
-				JSR DRAW_TEXTBUF_RET
-
-				JSR	ENERGY_TO_TEXT_L
-				JSR DRAW_TEXTBUF_RET
+				LDA #8
+				JSR SET_TEXT_HEIGHT
 
 				JSR	DUAL_STATUS
 
@@ -998,10 +998,13 @@ STATTER			LDX #$3B
 				JSR	ENERGY_TO_TEXT_L
 				JSR DRAW_TEXTBUF_RET
 
+				LDA #0
+				JSR SET_TEXT_HEIGHT
+
 				LDA	ITARGET_CHAR
 				JMP	SET_CHAR
 
-DUAL_STATUS		JSR	CSTATUS_TO_TEXT
+DUAL_STATUS		JSR	CSTATUS_TO_TEXT_L
 				JSR DRAW_TEXTBUF_RET
 				LDA	#TextLineEnd
 				STA	TEXTBUF
@@ -1021,7 +1024,7 @@ DUAL_STATUS		JSR	CSTATUS_TO_TEXT
 				BVC	:SKIPC
 				BPL	:EXIT
 :SKIPB			LDA	#rundown
-:SKIPC			JSR	STATUS_TO_TEXT
+:SKIPC			JSR	STATUS_TO_TEXT_L
 :EXIT			JMP	DRAW_TEXTBUF_RET
 
 THERMOMETER     DB  $03,$52,$03,$59

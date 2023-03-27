@@ -25,6 +25,7 @@ X Change DAMAGE to HEALTH in stats (easier for player)
 X Scroll through individuals in camp with <- and -> arrows
 * Better alien masking when drawing over tunnels
     * Trade having fewer aliens for better masking information
+    * Or maybe just limit hall depth more aggressively and by alien type
 * Turn off mapping in dark areas
 * Some type of mapping interference to force hand-mapping temporarily
 * Cube on its corner rotating around orb (see Portugal picture)
@@ -46,6 +47,12 @@ X Scroll through individuals in camp with <- and -> arrows
 * Different (less D&D) name for Warrior?
     * Soldier, Grunt, Combat Specialist
 * Remove "no encounter" squares and check for them programmatically
+* Tell player when somebody has gone up a level
+* Limit credits and experience to 6 digits instead of 8 (3 bytes)
+* Show hallway structure in fight grid
+    * Get rid of XY coordinates completely
+    * Maybe make bigger once extra characters are gone
+* Put name before prof in stats box
 
 =================================
 Old notes from /WORK1.PO/TF.NOTES

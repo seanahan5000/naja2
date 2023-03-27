@@ -44,6 +44,12 @@ CONTROL_BOOT    JSR INIT_RANDOM
                 LDA :DISK_SIDES-1,X
                 JSR SET_DISK_SIDE
 
+                LDA #0                  ; clear expedition totals
+                LDX #11                 ; assumes 4 bytes per field
+:1              STA KILLS,X
+                DEX
+                BPL :1
+
                 LDA #5
                 STA MAP_FACE
                 LDA #2

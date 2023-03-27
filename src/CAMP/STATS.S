@@ -4,17 +4,15 @@
 ;
 ; On entry:
 ;   A: stats box enables
-;       %10000000: show XY
+;       %10000000: show XY          TODO: get rid of
 ;       %01000000: show shielding
 ;       %00000010: show damage
 ;       %00000001: show status
 ;
 DRAW_STATS_BOX  ENT
-                LDA #$42
-                BNE DSB_CMN             ; always
-DRAW_STATS_BOX_XY ENT
-                LDA #$82
-DSB_CMN         PHA
+                LDA #statsShielding+statsDamage
+DRAW_STATS_BOX_A ENT
+                PHA
                 JSR DRAW_PICT
                 PictSetGreen
                 PictRect $01;$00;$115;$44
@@ -25,18 +23,17 @@ DSB_CMN         PHA
                 PLA
                 STA SELECT
                 JSR STATS_HEADER
-                JSR DRAW_PICT
-                PictVMove 10
-                PictEnd
+                LDY #10
+                JSR VMOVE
                 JSR FIRST_CHAR
 :1              JSR STATS_LINE
-                JSR DRAW_PICT
-                PictVMove 8
-                PictEnd
+                LDY #8
+                JSR VMOVE
                 JSR NEXT_CHAR
                 BCC :1
                 RTS
 
+; TODO: swap PROF and NAME
 STATS_HEADER    JSR DRAW_PICT
                 PictHMoveTo 14
                 PictText (PROF)
@@ -59,6 +56,7 @@ STATS_HEADER2   STA SELECT
                 PictEnd
                 JMP :DAMSTAT
 
+; TODO: get rid of XY completely
 :XY             JSR DRAW_PICT
                 PictHMoveTo 113
                 PictText (XY)
@@ -123,7 +121,7 @@ STATS_LINE2     STA SELECT
                 BCC :2
 :1              JSR HEALTH_TO_TEXT
                 JMP :3
-:2              JSR CSTATUS_TO_TEXT
+:2              JSR CSTATUS_TO_TEXT_C
 :3              LDX #$8A
                 JMP DRAW_TEXTBUF_X
 
@@ -403,9 +401,27 @@ CHAR_DIG_CMN    STA :FILL_MOD+1
                 INX
                 RTS
 
-CSTATUS_TO_TEXT LDY #status
+CSTATUS_TO_TEXT_L
+                JSR CSTATUS_TO_TEXT_C
+                JMP FORCE_LEFT
+
+STATUS_TO_TEXT_L
+                JSR STATUS_TO_TEXT_C
+FORCE_LEFT      LDX #0
+:1              LDA TEXT_BUFFER,X
+                CMP #TextSpace
+                BNE :2
+                LDA #TextEmpty
+                STA TEXT_BUFFER,X
+                INX
+                BNE :1                  ; always
+:2              RTS
+
+CSTATUS_TO_TEXT_C
+                LDY #status
                 LDA (CHARDL),Y
-STATUS_TO_TEXT  TAX
+STATUS_TO_TEXT_C
+                TAX
                 AND #critical
                 BNE :1
                 TXA
@@ -421,7 +437,7 @@ STATUS_TO_TEXT  TAX
 :2              CMP STATUS_NUMS,X
                 BEQ :FOUND_STATUS
                 INX
-                BNE :2              ; always
+                BNE :2                  ; always
 
 :FOUND_STATUS   TXA
                 LDX #<STATUS_NAMES
@@ -436,7 +452,8 @@ MAJOR_STATUS    JSR BAD_STATUS
                 SEC
 :1              RTS
 
-BAD_STATUS      LDY #status         ;Exit carry set and BEQ true
+BAD_STATUS      ENT
+                LDY #status         ;Exit carry set and BEQ true
                 LDA (CHARDL),Y      ;   if it's a major stat
                 AND #%00111111      ;   A - holds status
                 BEQ :1              ;   X - is unchanged
@@ -464,33 +481,33 @@ STATUS_NUMS     DB  healthy,dead
                 DB  choking,critical
                 DB  rundown
 
-STATUS_NAMES    USR (HEALTHY)=
-                USR (DEAD)=
+STATUS_NAMES    USR (_HEALTHY)=
+                USR (__DEAD)=
                 USR (ABANDONED)=
-                USR (BROKEN)=
+                USR (_BROKEN)=
                 USR (IN-TRACC)=
                 USR (COMPRESSD)=
                 USR (IN-LIMBO)=
-                USR (LOST)=
+                USR (__LOST)=
                 USR (CORRODING)=
                 USR (POISONED)=
                 USR (BLEEDING)=
                 USR (RADIATED)=
-                USR (ILL)=
-                USR (BLIND)=
+                USR (___ILL)=
+                USR (__BLIND)=
                 USR (CONFUSED)=
                 USR (SMOTHERIN)=
-                USR (FAST)=
-                USR (STRONG)=
+                USR (__FAST)=
+                USR (_STRONG)=
                 USR (SLIPPING)=
-                USR (NUMB)=
+                USR (__NUMB)=
                 USR (RAN_AWAY)=
-                USR (ON_FIRE)=
-                USR (DIZZY)=
-                USR (STUNNED)=
+                USR (_ON_FIRE)=
+                USR (__DIZZY)=
+                USR (_STUNNED)=
                 USR (IMMOBILE)=
                 USR (CONTROLLD)=
-                USR (CHOKING)=
+                USR (_CHOKING)=
                 USR (CRITICAL)=
                 USR (RUN_DOWN)=
 

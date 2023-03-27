@@ -438,15 +438,14 @@ DRAW_HAND_LABELS
 				BEQ	:DENEB
 
 				JSR	DRAW_PICT
-				PictTextAt 38;107;(_L:)
-				PictTextAt 38;115;(_R:)
+				PictSetTextHeight 8
+				PictTextAt 38;107;(_L:\n_R:)
 				PictEnd
 				RTS
 
 :DENEB			JSR	DRAW_PICT
 				PictSetTextHeight 8
 				PictTextAt 38;107;(UL:\nUR:\nLL:\nLR:)
-				PictSetTextHeight 0
 				PictEnd
 				RTS
 
@@ -493,22 +492,18 @@ DRAW_CHAR_INFO	JSR DRAW_PICT
 				USR(LEVL:\n)-
 				USR(EXPR:)
 				PictMoveTo $CC;4
+				PictCall CNAME_TO_TEXT
+				PictTextbufRet
+				PictCall CRACE_TO_TEXT
+				PictTextbufRet
+				PictCall CPROF_TO_TEXT
+				PictTextbufRet
+				PictCall CLEVEL_TO_TEXT
+				PictTextbufRet
+				PictCall CEXP_TO_TEXT
+				PictTextbufRet
 				PictEnd
-
-				JSR CNAME_TO_TEXT
-				JSR DRAW_TEXTBUF_RET
-
-				JSR CRACE_TO_TEXT
-				JSR DRAW_TEXTBUF_RET
-
-				JSR CPROF_TO_TEXT
-				JSR DRAW_TEXTBUF_RET
-
-				JSR CLEVEL_TO_TEXT
-				JSR DRAW_TEXTBUF_RET
-
-				JSR CEXP_TO_TEXT
-				JMP DRAW_TEXTBUF_RET
+				RTS
 
 DRAW_ROBO_EQUIP	LDX #9
 				LDY	#e1_HEAD
@@ -524,11 +519,8 @@ DRAW_ROBO_EQUIP	LDX #9
 				PictEnd
 				JSR DRAW_PICT
 				PictTextAt 42;33;(ARMS)
-				;*** could use line breaks (with line height 8) ***
-				PictTextAt 44;42;(L:)
-				PictTextAt 44;50;(_:)
-				PictTextAt 44;58;(R:)
-				PictTextAt 44;66;(_:)
+				PictSetTextHeight 8
+				PictTextAt 44;42;(L:\n_:\nR:\n_:)
 				PictTextAt 42;104;(BACK)
 				PictTextAt 50;113;(:)
 				PictTextAt 42;128;(PROGRAM)
@@ -628,13 +620,11 @@ DRAW_ROBO_INFO	JSR DRAW_PICT
 				USR(LEVL:\n)-
 				USR(OWNR:)
 				PictMoveTo $CC;4
+				PictCall CNAME_TO_TEXT
+				PictTextbufRet
+				PictCall CPROF_TO_TEXT
+				PictTextbufRet
 				PictEnd
-
-				JSR CNAME_TO_TEXT
-				JSR DRAW_TEXTBUF_RET
-
-				JSR CPROF_TO_TEXT
-				JSR DRAW_TEXTBUF_RET
 
 				LDX #0
 				LDY	#e15_PROGRAM+1

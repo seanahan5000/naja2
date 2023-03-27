@@ -1,44 +1,12 @@
 
-                EXP OFF
-
-TEMP            =   $00                 ; ,$01
-
-POINTL          =   $12
-POINTH          =   $13
-
-; TODO: fix these
-ZBLOCK_28       =   $78 ;$28             ;Narrate, Command, Loader
-
-ZBLOCK_30       =   $80 ;$30             ;Narrate, Command, Loader
-ZBLOCK_38       =   $88 ;$38             ;Narrate, Command, Loader
-
-ZBLOCK_40       =   $A0 ;$40             ;Fight common
-ZBLOCK_48       =   $A8 ;$48             ;All fight
-
-                PUT /COMMON/VARS
-                PUT /COMMON/EXT
-
-                PUT /HALLS/VARS
-                PUT /HALLS/EXT
-
-                PUT /NDOS/VARS
-                PUT /NDOS/EXT
-
-                PUT /CAMP/EXT
-
-                PUT /NAJA/VARS/CONSTANTS
-
-                PUT /FIGHT/FIGHT.CONSTS
-                PUT /FIGHT/FIGHT.ZPAGE
-
                 ; TODO: move this
                 ORG $8400
 
-                PUT EQUATES
-                PUT A.CONTROL
-                PUT A.PICK.ALIENS
-                PUT A.PICK.NUMBER
-                PUT A.DRAW.PICTUR
+                PUT LOADER/EQUATES
+                PUT LOADER/A.CONTROL
+                PUT LOADER/A.PICK.ALIENS
+                PUT LOADER/A.PICK.NUMBER
+                PUT LOADER/A.DRAW.PICTUR
 
                 ; DS  \,$EE
 
@@ -46,14 +14,15 @@ ZBLOCK_48       =   $A8 ;$48             ;All fight
 POSSIBLE        DS  18
                 ; DEND
 
-                PUT /FIGHT/SUBROUTINES/FLN.POINTERS
-                PUT /FIGHT/SUBROUTINES/FLN.TOPVIEWS
-                PUT /FIGHT/SUBROUTINES/FLN.GRIDS
+                PUT SUBROUTINES/FLN.POINTERS
+                PUT SUBROUTINES/FLN.TOPVIEWS
+                PUT SUBROUTINES/FLN.GRIDS
+                PUT /CAMP/TOPVIEWS
 
-                PUT B.LOAD.DATA
-                PUT B.MAKE.MONS
-                PUT B.PICK.POSITN
-                PUT B.FIGHT.SCRN
+                PUT LOADER/B.LOAD.DATA
+                PUT LOADER/B.MAKE.MONS
+                PUT LOADER/B.PICK.POSITN
+                PUT LOADER/B.FIGHT.SCRN
                 ; PUT B.SUPRISE.SUB
 
                 DS  \,$EE

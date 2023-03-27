@@ -293,11 +293,9 @@ DRAW_KEY_NAMES  LDX #0
                 JSR RACE_TO_TEXT
                 JSR DRAW_TEXTBUF
                 JSR HMOVE_6
-                LDX #<GROUP_KEY
-                LDY #>GROUP_KEY
                 PLA
                 PHA
-                JSR GET_IND_STRING
+                JSR GET_KEY_STRING
                 JSR DRAW_TEXTBUF
                 PLA
                 TAX

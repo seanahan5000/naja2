@@ -90,7 +90,18 @@ NOSPECIAL       ; LDX #fLoader2
                 ; PictCopyToPage
                 PictShowPage
                 PictEnd
-                RTS
+
+                LDX #2
+:1              LDA HMANY1,X
+                STA ATOTAL1,X
+                DEX
+                BPL :1
+                LDA #0
+                STA GROUP_STATUS
+                LDA #fileFightAwarder
+                LDY #>AWARDER_FILE
+                JSR LOAD_FILE
+                JMP AWARDER
 
 SET_DATA_FILE   LDY SHELL
                 LDA :DATA_FILES-1,Y

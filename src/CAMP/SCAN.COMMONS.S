@@ -35,7 +35,8 @@ CHAR_LIST		ENT
 *          $00 means they do
 *          $FF means they don't
 
-CSCAN_COMMON	STA	:MOD0+1
+CSCAN_COMMON	ENT
+				STA	:MOD0+1
 				STX	:MOD1+1
 				STY	:MOD1+2
 				LDA	#6
@@ -135,7 +136,8 @@ CSCAN_PUTABLE	ENT
 *   dead, broken, ranaway, or
 *   compressd
 
-CSCAN_NOTDEAD	LDX	#<CCALL_NOTDEAD
+CSCAN_NOTDEAD	ENT
+				LDX	#<CCALL_NOTDEAD
 				LDY	#>CCALL_NOTDEAD
 				BNE	CSCAN_COMMON	;Always
 

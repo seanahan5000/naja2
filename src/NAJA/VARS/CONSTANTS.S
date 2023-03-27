@@ -65,9 +65,9 @@ name			=	$00
 status			=	$0A
 level			=	$0B
 profrace		=	$0D
-experience		=	$0E
+experience		=	$0E                 ; TODO: trim to 3 bytes
 *
-credits			=	$13
+credits			=	$13                 ; TODO: trim to 3 bytes
 strength		=	$17
 upreflex		=	$18
 lwreflex		=	$19
@@ -173,30 +173,30 @@ side_F2			=	5
             fin
 
 *** File numbers for camp
-cCtrlCommon		=	0
-cControl17		=	1				;cControl's must coresp. to shell #'s
-cControl15		=	2
-cControl13		=	3
-cControl11		=	4
-cControl9		=	5
-cFindment		=	6
-cElevator		=	7
-cRefRegCom		=	8
-cDiagnose		=	9
-*c = 10 ;*** UNUSED ***
-cTunnels		=	11
-cTraccCampA		=	12
-cTraccCampB		=	13
-cCampCommons	=	14
+; cCtrlCommon		=	0
+; cControl17		=	1				;cControl's must coresp. to shell #'s
+; cControl15		=	2
+; cControl13		=	3
+; cControl11		=	4
+; cControl9		=	5
+; cFindment		=	6
+; cElevator		=	7
+; cRefRegCom		=	8
+; cDiagnose		=	9
+; *c = 10 ;*** UNUSED ***
+; cTunnels		=	11
+; cTraccCampA		=	12
+; cTraccCampB		=	13
+; cCampCommons	=	14
 
 *** File numbers for fighting
-fLoader1		=	0
-fLoader2		=	1
-fCommand		=	2
-fNarrate		=	3
-fAwarder		=	4
-fDeadGroup		=	5
-fReNarrate		=	6
+; fLoader1		=	0
+; fLoader2		=	1
+; fCommand		=	2
+; fNarrate		=	3
+; fAwarder		=	4
+; fDeadGroup		=	5
+; fReNarrate		=	6
 
 *** File numbers for mothership
 mHallsPicts				=	0
@@ -222,6 +222,11 @@ mRobotRepair_Control	=	18
 ; charTrack		=	$0100		;Track/Sector for character data
 
 
+statsXY         =   %10000000           ; TODO: get rid of this
+statsShielding  =   %01000000
+statsDamage     =   %00000010
+statsStatus     =   %00000001
+
 ; TODO: move these into separate file
 
 fileAlienPics12  =  $10
@@ -234,16 +239,18 @@ fileAlienData345 =  $22
 
 fileDiagnose    =   $30
 fileAlienId     =   $31
+fileReformat    =   $32
 
 ; NOTE: must be consecutive in this order
-fileControl17   =   $32
-fileControl15   =   $33
-fileControl13   =   $34
-fileControl11   =   $35
-fileControl9    =   $36
+fileControl17   =   $33
+fileControl15   =   $34
+fileControl13   =   $35
+fileControl11   =   $36
+fileControl9    =   $37
 
-fileFightLoader =   $37
-fileDeadGroup   =   $38
+fileFightLoader =   $38
+fileFightAwarder =  $39
+fileDeadGroup   =   $3A
 
 fileElevator    =   $40
 fileViewport    =   $41

@@ -158,13 +158,13 @@ Xloaddata3      =   %00010000
 *-------------------------------
 
                 ; TODO: move this
-                DUMMY   $9000       ;(Through $AFFF)
+                DUMMY   $9100       ;(Through $AFFF) TODO: was $9000
 DATA_BUFR       DS  $300            ;* These must
 RARITY          DS  $100            ;*   begin on
 PICT_BUFR                           ;*   page
 ALIEN_BUFR      DS  $300            ;*   boundaries
 SCODE_HEADR     DS  $200
-                DS  $1700
+                DS  $1600           ; TODO: was $1700
                 DEND
 
                 ; TODO: move this

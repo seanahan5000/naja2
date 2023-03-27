@@ -1,29 +1,29 @@
-*-------------------------------
-*
-*-------------------------------
 
 DRAW_ALIEN		LDY	#monPOSITION
 				LDA	(MONS_PTR),Y
-DRAW_ALIEN_AT	JSR	ADJUST_XYPNTS
+DRAW_ALIEN_AT	SEC
+				SBC	#$05
+				JSR	POS_TO_XY
+				LDA	TVIEW_OFFSET
+				LSR
+				LSR
+				LSR
+				LSR
+				CLC
+				ADC GRID_XPNTS,X
+				STA XCOORD
+				LDA	TVIEW_OFFSET
+				AND #$0F
+				CLC
+				ADC GRID_YPNTS,Y
+				SEC
+				SBC	#$37
+				STA YCOORD
 				LDX	TVIEW_HOLDPTR
 				LDY	TVIEW_HOLDPTR+1
-				LDA	TVIEW_DIMENS
-
-
-*-------------------------------------------------------------
-* On Entry:
-*         X,Y: Address of shape to be drawn
-*           A: High/low nibble width/height of shape in chars
-*   XPNT,YPNT: X and Y screen coordinate to draw shape at
-*-------------------------------------------------------------
-
-DRAW_TOPVIEW	STX DATPNTL
+				STX DATPNTL
 				STY DATPNTH
-				TAX
-				LDA XPNT
-				STA XCOORD
-				LDA YPNT
-				STA YCOORD
+				LDX	TVIEW_DIMENS
 				TXA
 				AND	#%00001111
 				TAY
@@ -34,38 +34,3 @@ DRAW_TOPVIEW	STX DATPNTL
 				LSR
 				TAX
 				JMP DRAW_SHAPE
-
-*---------------------------------------------
-* On Entry:
-*   A: Grid position byte
-*
-* On Exit:
-*   XPNT,YPNT: Screen coordinates of top view
-*---------------------------------------------
-
-ADJUST_XYPNTS	SEC
-				SBC	#$05
-				JSR	POS_TO_XY
-				LDA	GRID_XPNTS,X
-				STA	XPNT
-				LDA	GRID_YPNTS,Y
-				SEC
-				SBC	#$37
-				STA	YPNT
-				LDA	TVIEW_OFFSET
-				TAX
-				AND	#%00001111
-				CLC
-				ADC	YPNT
-				STA	YPNT
-				TXA
-				LSR
-				LSR
-				LSR
-				LSR
-				CLC
-				ADC	XPNT
-				STA	XPNT
-				RTS
-
-*-------------------------------

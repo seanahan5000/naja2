@@ -130,19 +130,18 @@ INIT_RANDOM     ENT
 ;
 ; On Exit:
 ;   A: random 8-bit number (0-255)
-;   Y: modified
+;   X,Y: unmodified
 ;   Z,N: based on result value
 ;
 ; (from https://wiki.nesdev.com/w/index.php/Random_number_generator)
 ;   Assumes seed0 and seed1 zpage values have been initialized.
-;   35 bytes, 69 cycles
 ;
 ; NOTE: seed0 and seed1 need to be initialized using either INIT_RANDOM
 ;   or by setting values directly.
 ;
 RANDOM          ENT
                 LDA SEED1
-                TAY
+                PHA
                 LSR
                 LSR
                 LSR
@@ -153,7 +152,7 @@ RANDOM          ENT
                 EOR SEED1
                 EOR SEED0
                 STA SEED1
-                TYA
+                PLA
                 STA SEED0
                 ASL
                 EOR SEED0

@@ -18,97 +18,6 @@ TOP2			=	$C7
 BOTTOM2			=	$C8
 CHAR_COUNT		=	$C9				; TODO: reconcile with GROUP_SIZE
 
-
-BUILD_GRID25	LDX #24
-				LDA #$80
-:1				STA GRID25,X
-				DEX
-				BPL :1
-				JSR FIRST_CHAR
-:2				LDY #position
-				LDA (CHARDL),Y
-:3				JSR POS_TO_I25
-				LDA GRID25,Y
-				BMI :4
-
-				; if space full, randomly pick new location
-				JSR RANDOM
-				AND #$33
-				CLC
-				ADC #$12
-				LDY #position
-				STA (CHARDL),Y
-				BNE :3				; always
-
-:4				LDA CHAR_INDEX
-				STA GRID25,Y
-				TAX
-				TYA
-				STA LIST25,X
-				JSR NEXT_CHAR
-				BCC :2
-				RTS
-
-; NOTE: This will be called externally when arriving at TRACC station
-;	with a newly formed group with unknown grid format.
-PROCESS_GRID	JSR BUILD_GRID25
-				; fall through
-
-SORT_GRID25		LDA #0
-				STA SORTED_ANY
-:1				LDA #0
-				STA SORTED_PASS
-				JSR FIRST_CHAR
-:2				LDA CHARDL
-				STA DESTINL
-				LDA CHARDH
-				STA DESTINH
-				JSR	NEXT_CHAR
-				BCS :4
-				LDA LIST25,X
-				CMP LIST25-1,X
-				BCS :2
-				TAY
-				LDA #1
-				STA SORTED_ANY
-				STA SORTED_PASS
-				LDA LIST25-1,X
-				STA LIST25,X
-				TYA
-				STA LIST25-1,X
-				LDY	#$7F
-:3				LDA	(CHARDL),Y
-				TAX
-				LDA	(DESTINL),Y
-				STA	(CHARDL),Y
-				TXA
-				STA	(DESTINL),Y
-				DEY
-				BPL	:3
-				BMI :2				; always
-:4				LDA SORTED_PASS
-				BNE :1
-				LDA SORTED_ANY
-				BEQ :5
-				JMP BUILD_GRID25
-:5				RTS
-
-DRAW_SEL_MEMB	JSR DRAW_PICT
-				PictClear 15;86;37;93
-				PictTextAt 108;86;(SELECT_MEMBER_TO_BE_MOVED)
-				PictClear 22;170;29;177
-				PictTextAt 162;170;(L>EAVE)
-				PictEnd
-				RTS
-
-DRAW_SEL_DEST	JSR DRAW_PICT
-				PictClear 15;86;37;93
-				PictTextAt 126;86;(SELECT_DESTINATION)
-				PictClear 22;170;29;177
-				PictTextAt 160;170;(C>ANCEL)
-				PictEnd
-				RTS
-
 REFORMAT
 				; TODO: remove this once GRPNUMB is moved to ZPAGE
 				LDA GRPNUMB
@@ -581,4 +490,95 @@ SCROLL_UP2		LDA #8
 				JSR COPY_FULL_LINE
 				DEC COUNT
 				BNE :1
+				RTS
+
+
+BUILD_GRID25	LDX #24
+				LDA #$80
+:1				STA GRID25,X
+				DEX
+				BPL :1
+				JSR FIRST_CHAR
+:2				LDY #position
+				LDA (CHARDL),Y
+:3				JSR POS_TO_I25
+				LDA GRID25,Y
+				BMI :4
+
+				; if space full, randomly pick new location
+				JSR RANDOM
+				AND #$33
+				CLC
+				ADC #$12
+				LDY #position
+				STA (CHARDL),Y
+				BNE :3				; always
+
+:4				LDA CHAR_INDEX
+				STA GRID25,Y
+				TAX
+				TYA
+				STA LIST25,X
+				JSR NEXT_CHAR
+				BCC :2
+				RTS
+
+; NOTE: This will be called externally when arriving at TRACC station
+;	with a newly formed group with unknown grid format.
+PROCESS_GRID	JSR BUILD_GRID25
+				; fall through
+
+SORT_GRID25		LDA #0
+				STA SORTED_ANY
+:1				LDA #0
+				STA SORTED_PASS
+				JSR FIRST_CHAR
+:2				LDA CHARDL
+				STA DESTINL
+				LDA CHARDH
+				STA DESTINH
+				JSR	NEXT_CHAR
+				BCS :4
+				LDA LIST25,X
+				CMP LIST25-1,X
+				BCS :2
+				TAY
+				LDA #1
+				STA SORTED_ANY
+				STA SORTED_PASS
+				LDA LIST25-1,X
+				STA LIST25,X
+				TYA
+				STA LIST25-1,X
+				LDY	#$7F
+:3				LDA	(CHARDL),Y
+				TAX
+				LDA	(DESTINL),Y
+				STA	(CHARDL),Y
+				TXA
+				STA	(DESTINL),Y
+				DEY
+				BPL	:3
+				BMI :2				; always
+:4				LDA SORTED_PASS
+				BNE :1
+				LDA SORTED_ANY
+				BEQ :5
+				JMP BUILD_GRID25
+:5				RTS
+
+DRAW_SEL_MEMB	JSR DRAW_PICT
+				PictClear 15;86;37;93
+				PictTextAt 108;86;(SELECT_MEMBER_TO_BE_MOVED)
+				PictClear 22;170;29;177
+				PictTextAt 162;170;(L>EAVE)
+				PictEnd
+				RTS
+
+DRAW_SEL_DEST	JSR DRAW_PICT
+				PictClear 15;86;37;93
+				PictTextAt 126;86;(SELECT_DESTINATION)
+				PictClear 22;170;29;177
+				PictTextAt 160;170;(C>ANCEL)
+				PictEnd
 				RTS

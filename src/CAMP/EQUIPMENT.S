@@ -4,20 +4,26 @@ POINTL			=	LOCAL_TEMP+0
 POINTH			=	LOCAL_TEMP+1
 ETEMP			=	LOCAL_TEMP+2
 
-EQUIP_IND_TO_TEXT ENT					; was EQUIPR
+_GET_KEY_STRING LDX #<GROUP_KEY
+                LDY #>GROUP_KEY
+                PLA
+                PHA
+                JMP GET_IND_STRING
+
+_EQUIP_IND_TO_TEXT						; was EQUIPR
 				ASL
 				ASL
 				CLC
 				ADC	#e1_HEAD
 				TAY
-CEQUIP_TO_TEXT	LDX	#$00
+_CEQUIP_TO_TEXT	LDX	#$00
 :LOOP1			LDA	(CHARDL),Y
 				STA	ETABLE,X
 				INY
 				INX
 				CPX	#$04
 				BNE	:LOOP1
-ETABLE_TO_TEXT	ENT						; was EQUIP1
+_ETABLE_TO_TEXT							; was EQUIP1
 				LDX	#$00
 EQUIP2			TXA						; called byte fight BLASTER.S
 				CLC
@@ -623,9 +629,8 @@ GROUP_ANTI		USR	(ANTI-)=				;*0          Group A
 				USR	(BACTERIA)=				;*5
 				USR	(PENGUIN)=				;*6
 
-; NOTE: also referenced by KEY.DOOR.S
-GROUP_KEY		ENT
-				USR	(WHITE_SAND)=			;*0          Group B
+;*** NOTE: also referenced indirectly by KEY.DOOR.S
+GROUP_KEY		USR	(WHITE_SAND)=			;*0          Group B
 				USR	(HEAVY_STONE)=			;*1
 				USR	(CHANGING_CRYSTAL)=		;*2
 				USR	(PLASTEEL_CIRCUIT)=		;*3

@@ -62,10 +62,11 @@ DRAW_PICT       ENT
 OP_TABLE        DW  OP_SET_COLOR
                 DW  OP_MOVE_TO
                 DW  OP_MOVE_TO_H
+                DW  OP_HMOVE
                 DW  OP_HMOVE_TO
                 DW  OP_HMOVE_TO_H
-                DW  OP_VMOVE_TO
                 DW  OP_VMOVE
+                DW  OP_VMOVE_TO
                 DW  OP_HLINE_TO
                 DW  OP_HLINE_TO_H
                 DW  OP_VLINE_TO
@@ -79,8 +80,8 @@ OP_TABLE        DW  OP_SET_COLOR
                 DW  OP_TEXT
                 DW  OP_TEXT_AT
                 DW  OP_TEXT_IN
-                DW  OP_DRAW_TEXTBUF
-                DW  OP_DRAW_TEXTBUF_RET
+                DW  OP_TEXTBUF
+                DW  OP_TEXTBUF_RET
                 DW  OP_IMAGE
                 DW  OP_IMAGE_FILL
                 DW  OP_TILE
@@ -198,9 +199,35 @@ HMOVE_TO_H      ENT
 OP_VMOVE        LDA (OP_PTR),Y
                 INY
                 STY OP_INDEX
+                TAY
+VMOVE           ENT
+                TYA
                 CLC
                 ADC YCOORD
                 STA YCOORD
+                RTS
+
+OP_HMOVE        LDA (OP_PTR),Y
+                INY
+                STY OP_INDEX
+                TAX
+HMOVE           ENT
+                TXA
+                CLC
+                ADC XSHIFT
+                BMI :2
+                TAX
+                SEC
+                SBC #7
+                BCC :1
+                TAX
+                INC XCOORD
+:1              STX XSHIFT
+                RTS
+:2              CLC
+                ADC #7
+                STA XSHIFT
+                DEC XCOORD
                 RTS
 
 ;-------------------------------------------------------------------------------

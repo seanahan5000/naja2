@@ -213,20 +213,12 @@ EXIT_CAMP		JSR	DRAW_PICT
 				PictEnd
 				RTS
 
-TO_REFORMAT
-				; JSR	LOAD_REFORM
-				JSR BANK_1
-				JMP	REFORMAT
-
-; LOAD_REFORM	LDA	CAMP_HERE
-; 				AND	#bit_RefRegCom
-; 				BNE	:EXIT
-; 				LDX	#cRefRegCom
-; 				JSR	SLOAD_FILE
-; 				LDA	CAMP_HERE
-; 				ORA	#bit_RefRegCom
-; 				STA	CAMP_HERE
-; :EXIT			RTS
+TO_REFORMAT		LDA #fileReformat
+                CMP REFORMAT_FILE
+                BEQ :1
+                LDY #>REFORMAT_FILE
+                JSR LOAD_FILE
+:1				JMP REFORMAT
 
 TO_ALIENS       LDA #fileAlienId
                 CMP ALIEN_ID_FILE
@@ -276,10 +268,11 @@ PRE_ARROW		LDA #$00
 				JMP	DRAW_ARROW
 
 ; NOTE: was in KEY.COMMONS.S
-YPOINTS			DFB	$0C,$14,$1C
-				DFB	$24,$2C,$34
-				DFB	$3C
-				DFB	$46					; cancel
+YPOINTS			ENT
+				DB	$0C,$14,$1C
+				DB	$24,$2C,$34
+				DB	$3C
+				DB	$46					; cancel
 *-------------------------------
 
 ; caller has already set Y position

@@ -13,8 +13,10 @@ FILE_TABLE      DB  fileAlienPics345, $00,$00,$C0
                 DB  fileControl11,    $11,$00,$10
                 DB  fileControl9,     $12,$00,$10
 
-                DB  fileFightLoader,  $13,$00,$0C
+                DB  fileFightLoader,  $13,$00,$10
+                DB  fileFightAwarder, $21,$00,$10
                 DB  fileDeadGroup,    $22,$00,$0D
+                DB  fileReformat,     $20,$00,$07
 
                 DB  fileDiagnose,     $14,$00,$0E
                 DB  fileAlienId,      $15,$00,$06

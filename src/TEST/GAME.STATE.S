@@ -38,11 +38,17 @@ ORBS_FOUND                      ; TODO: get rid of this
 KEYS_FOUND      DB  0
 KEY_DOOR_BITS   DB  0
 
-                DS  85
+                DS  73
+
+KILLS           DS  4
+CREDITS         DS  4
+EXPERIENCE      DS  4
 
 LOST_CHARS      DB  0           ; $BC7D
 GRPCONT         DB  6           ; $BC7E ; number of characters, including dead/compressed?
 GRPNUMB         DB  6           ; $BC7F ; number of living characters in group
+
+                ERR $BC80-*
 
 CHAR_0          USR (BLASTER___)-
                 DFB healthy         ;healthy

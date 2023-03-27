@@ -1,6 +1,5 @@
 
-DRAW_GRID       ENT
-                JSR DRAW_PICT
+DRAW_GRID       JSR DRAW_PICT
                 PictSetGreen
                 PictRect $07;$47;$55;$B7
                 PictMoveTo $07;$7F
@@ -46,8 +45,8 @@ DRAW_GRID       ENT
                 BCC :4
                 RTS
 
-; FROM11          ;ENT                 ; legacy name
-; CPOS_TO_XY      ;ENT
+; FROM11                           ; legacy name
+; CPOS_TO_XY
 ;                 LDY #position
 ;                 LDA (CHARDL),Y
 
@@ -56,9 +55,8 @@ DRAW_GRID       ENT
 ;   X: grid X position 0 to 4
 ;   Y: grid Y position 0 to 4
 ;
-; FROM11B         ;ENT                 ; legacy name
-POS_TO_XY       ENT
-                STA :MOD+1
+; FROM11B                          ; legacy name
+POS_TO_XY       STA :MOD+1
                 LSR
                 LSR
                 LSR
@@ -78,11 +76,9 @@ POS_TO_XY       ENT
 ; On exit:
 ;   Y: grid index 0 to 24
 ;
-MONPOS_TO_I25   ENT
-                SEC
+MONPOS_TO_I25   SEC
                 SBC #$05
-POS_TO_I25      ENT
-                JSR POS_TO_XY
+POS_TO_I25      JSR POS_TO_XY
                 TXA
                 CLC
                 ADC MUL5,Y
@@ -122,7 +118,7 @@ DRAW_CHAR_TOPVIEW
 ;   Y: grid Y
 
 ; TVIEWIT                             ; legacy name
-DRAW_TOPVIEW    PHA
+                PHA
                 LDA GRID_XPNTS,X
                 STA XCOORD
                 LDA GRID_YPNTS,Y
@@ -142,10 +138,8 @@ DRAW_TOPVIEW    PHA
 
                 ; pixel positions in top view grid
 
-GRID_XPNTS      ENT
-                DB  #10, #25, #40, #55, #70
-GRID_YPNTS      ENT
-                DB  #128,#139,#150,#161,#172
+GRID_XPNTS      DB  #10, #25, #40, #55, #70
+GRID_YPNTS      DB  #128,#139,#150,#161,#172
 
                 ; byte offsets into TCHARS data
 
@@ -221,7 +215,7 @@ DRAW_GRID_CURSOR_XY
 ; On entry:
 ;   A: grid 11 position
 ;
-DRAW_GRID_CURSOR ;ENT
+DRAW_GRID_CURSOR
                 LDX #<GRID_CURSOR
                 STX DATPNTL
                 LDY #>GRID_CURSOR

@@ -20,7 +20,8 @@ FIGHT_SCREEN    JSR DRAW_PICT
                 JSR DRAW_GRID
                 JSR DRAW_ALLMONS
                 JSR DRAW_MNAMES
-                JMP DRAW_STATS_BOX_XY
+                LDA #statsXY+statsDamage
+                JMP DRAW_STATS_BOX_A
 
 *-------------------------------
 *

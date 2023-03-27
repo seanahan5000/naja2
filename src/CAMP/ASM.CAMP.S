@@ -22,6 +22,30 @@
                 PUT I.TRANSFER
                 PUT I.REGENERATE    ; must be in same bank as I.TRANSFER
 
+GET_KEY_STRING  ENT
+                TAX
+                JSR BANK_1
+                TXA
+                JSR _GET_KEY_STRING
+                JMP BANK_2
+
+EQUIP_IND_TO_TEXT ENT
+                TAX
+                JSR BANK_1
+                TXA
+                JSR _EQUIP_IND_TO_TEXT
+                JMP BANK_2
+
+CEQUIP_TO_TEXT  ENT
+                JSR BANK_1
+                JSR _CEQUIP_TO_TEXT
+                JMP BANK_2
+
+ETABLE_TO_TEXT  ENT
+                JSR BANK_1
+                JSR _ETABLE_TO_TEXT
+                JMP BANK_2
+
 ; TODO: move later
 BANK_1          LDA $C08B
                 LDA $C08B
@@ -34,9 +58,8 @@ BANK_2          LDA $C083
                 SAV CAMP.E000
 
                 ORG $D000           ; bank 1
-                PUT C.TRADE
-                PUT C.REFORMAT
-                PUT TOPVIEWS
+                PUT C.TRADE         ; calls EQUIPMENT directly
+                PUT EQUIPMENT
                 SAV CAMP.D000.M1
 
                 ORG $D000           ; bank 2
@@ -48,13 +71,19 @@ BANK_2          LDA $C083
                 SAV CAMP.D000.M2
 
                 ORG $1900
-                PUT /TEST/CHARACTERS
-                PUT /TEST/STATS
+                PUT CHARACTERS
+                PUT STATS
+                DS  \,$EE
+                ERR $1E00-*
                 SAV CAMP.1900
 
-                ORG $9000
-                PUT /TEST/EQUIPMENT
-                SAV CAMP.9000
+                ORG $A000
+REFORMAT_FILE   DB  fileReformat
+                PUT C.REFORMAT
+                PUT TOPVIEWS
+                DS  \,$EE
+                ERR $A700-*
+                SAV REFORMAT
 
                 ORG $A000
 DIAGNOSE_FILE   DB  fileDiagnose

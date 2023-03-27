@@ -65,13 +65,14 @@ NORMAL			LDX	#3
 *   X,Y = Multiplicand (low/high)
 *----------------------------------------
 
-MULTIPLY_12		STA	MULTIPLIER
+MULTIPLY_12		ENT
+				STA	MULTIPLIER
 				STX	MULTIPLICAND+3
 				STY	MULTIPLICAND+2
 				LDA	#0
 				STA	MULTIPLICAND+1
-				; CLC
-				; BCC	DO_MULT2		;Always
+				CLC
+				BCC	DO_MULT2		;Always
 
 *----------------------------------------
 * On Entry:
@@ -81,8 +82,11 @@ MULTIPLY_12		STA	MULTIPLIER
 * Handles up to 99 * 999,999
 *----------------------------------------
 
-; MULTIPLY_13		CLC
-; 				BCC	DO_MULT1		;Always
+; NOTE: only used in AWARDER.S right now
+
+MULTIPLY_13		ENT
+				CLC
+				BCC	DO_MULT1		;Always
 
 *----------------------------------------
 * On Entry:
@@ -92,20 +96,20 @@ MULTIPLY_12		STA	MULTIPLIER
 * Handles up to 99 * 9,999,999
 *----------------------------------------
 
-; MULTIPLY_14		SEC
-; DO_MULT1		STA	MULTIPLIER
-; 				STX	TEMP
-; 				STY	TEMP+1
+MULTIPLY_14		SEC
+DO_MULT1		STA	MULTIPLIER
+				STX	TEMP
+				STY	TEMP+1
 
-; 				LDX	#3
-; 				LDY	#3
-; 				BCS	:LOOP1
-; 				DEY
-; :LOOP1			LDA	(TEMP),Y
-; 				STA	MULTIPLICAND,X
-; 				DEX
-; 				DEY
-; 				BPL	:LOOP1
+				LDX	#3
+				LDY	#3
+				BCS	:LOOP1
+				DEY
+:LOOP1			LDA	(TEMP),Y
+				STA	MULTIPLICAND,X
+				DEX
+				DEY
+				BPL	:LOOP1
 
 DO_MULT2		LDX	#4
 				LDA	#0
@@ -150,9 +154,12 @@ DO_MULT2		LDX	#4
 
 MULTIPLIER		DB	0
 MULTIPLICAND	DB	0,0,0,0
-PRODUCT_5		DB	0				;Must be
-PRODUCT_4		DB	0				;   consecutive
-PRODUCT_3		DB	0,0,0			;      in this order
+PRODUCT_5		ENT
+				DB	0				;Must be
+PRODUCT_4		ENT
+				DB	0				;   consecutive
+PRODUCT_3		ENT
+				DB	0,0,0			;      in this order
 
 *-------------------------------
 *
@@ -192,7 +199,10 @@ PERCENT_OF		ENT
 *   X,Y: Quotient (low/high)
 *-------------------------------
 
-; DIVIDE_12		STX	divDVND+0
+; NOTE: only used in AWARDER.S right now (FIGHT.NARRATOR later)
+
+; DIVIDE_12		ENT
+; 				STX	divDVND+0
 ; 				STY	divDVND+1
 ; 				LDX	#1
 ; 				STX	divADD+1

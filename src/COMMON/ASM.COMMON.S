@@ -12,14 +12,13 @@
                 PUT UNPACK
                 PUT BLIT
                 PUT SHAPES
-
-                ; TODO: reorder code to avoid alignment issues
-                DS  32
                 PUT PICT
-
                 PUT TEXT
                 PUT INPUT
                 PUT FONT
                 PUT CURSORS
+
+                DS  \,$EE
+                ERR $1900-*
 
                 SAV COMMON

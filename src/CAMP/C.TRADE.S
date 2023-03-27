@@ -761,7 +761,7 @@ TOETAB          LDA (CHARDL),Y
                 LDY COUNT
                 LDA (tLPNTL),Y
                 STA YPNT
-                JSR ETABLE_TO_TEXT
+                JSR _ETABLE_TO_TEXT
                 LDX XPNT
                 LDY YPNT
                 JSR DRAW_TEXTBUF_XY
