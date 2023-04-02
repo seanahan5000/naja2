@@ -1,0 +1,256 @@
+{
+  "rarity": [
+    {
+      "tag": "MAGNET",
+      "comment": "Magnetic Sweeper",
+      "data": [
+        "DB  ROBOT_FORM+ALL_FACES",
+        "DB  $11,$04",
+        "DB  $06,$10,$17,$FF"
+      ]
+    },
+    {
+      "tag": "MISER",
+      "comment": "\"Miser\"",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $12,$04",
+        "DB  $08,$14,$15,$16,$FF"
+      ]
+    },
+    {
+      "tag": "ROBED_SELLER",
+      "comment": "Ebkal'ee",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $11,$05",
+        "DB  $99,$FF"
+      ]
+    },
+    {
+      "tag": "SCREAMER",
+      "comment": "\"Screecher\"",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $12,$05",
+        "DB  $09,$0A,$0C,$13,$18,$FF"
+      ]
+    },
+    {
+      "tag": "TF_BAIT",
+      "comment": "\"Mauler\"",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $23,$05",
+        "DB  $99,$FF"
+      ]
+    },
+    {
+      "tag": "PROG_CHANGER",
+      "comment": "Mem-Placer Robot",
+      "data": [
+        "DB  ROBOT_FORM+ALL_FACES",
+        "DB  $11,$06",
+        "DB  $01,$10,$17,$FF"
+      ]
+    },
+    {
+      "tag": "SPARKLES",
+      "comment": "Sparkle",
+      "data": [
+        "DB  UNKNOWN_ALIEN+ALL_FACES",
+        "DB  $66,$06",
+        "DB  $99,$FF"
+      ]
+    },
+    {
+      "tag": "CLOAKED_ALIEN",
+      "comment": "Encephaloid",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $13,$06",
+        "DB  $02,$14,$15,$16,$FF"
+      ]
+    },
+    {
+      "tag": "GLASS_GUY",
+      "comment": "Transparent",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $12,$06",
+        "DB  $04,$0A,$0C,$13,$18,$FF"
+      ]
+    },
+    {
+      "tag": "ACID_SPITTER",
+      "comment": "Acid Spitter",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $12,$09",
+        "DB  $04,$09,$0C,$13,$18,$FF"
+      ]
+    },
+    {
+      "tag": "SEVEN_CLAWS",
+      "comment": "Zetoc",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $23,$09",
+        "DB  $0E,$0F,$12,$FF"
+      ]
+    },
+    {
+      "tag": "PHASOID",
+      "comment": "Phasoid",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $24,$09",
+        "DB  $04,$09,$0A,$13,$18,$FF"
+      ]
+    },
+    {
+      "tag": "FAKER",
+      "comment": "Pseudomort",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $11,$10",
+        "DB  $99,$FF"
+      ]
+    },
+    {
+      "tag": "TANGIBLE_GAS",
+      "comment": "Tangible Gas",
+      "data": [
+        "DB  UNKNOWN_ALIEN+ALL_FACES",
+        "DB  $11,$10",
+        "DB  $0B,$0F,$12,$FF"
+      ]
+    },
+    {
+      "tag": "GREEN_PUDDLE",
+      "comment": "Puddle Creature",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $13,$10",
+        "DB  $0B,$0E,$12,$FF"
+      ]
+    },
+    {
+      "tag": "DIODE_ROBOT",
+      "comment": "Ion Diode Robot",
+      "data": [
+        "DB  ROBOT_FORM+ALL_FACES",
+        "DB  $13,$10",
+        "DB  $01,$06,$17,$FF"
+      ]
+    },
+    {
+      "tag": "EXPLODER",
+      "comment": "Vegan Exploder",
+      "data": [
+        "DB  UNKNOWN_ALIEN+ALL_FACES",
+        "DB  $8C,$12",
+        "DB  $99,$FF"
+      ]
+    },
+    {
+      "tag": "CARNIVORE",
+      "comment": "Carnivore",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $11,$12",
+        "DB  $0B,$0E,$0F,$FF"
+      ]
+    },
+    {
+      "tag": "ATOM_SHIFTER",
+      "comment": "Atom Arranger",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $11,$12",
+        "DB  $04,$09,$0A,$0C,$18,$FF"
+      ]
+    },
+    {
+      "tag": "LITTLE_MEN",
+      "comment": "Little Men",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $68,$13",
+        "DB  $02,$08,$15,$16,$FF"
+      ]
+    },
+    {
+      "tag": "TAIL_FIGHTER",
+      "comment": "Beteiguesen",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $25,$14",
+        "DB  $02,$08,$14,$16,$FF"
+      ]
+    },
+    {
+      "tag": "SHARP_SHOOTER",
+      "comment": "\"Sharp Shooter\"",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $22,$13",
+        "DB  $02,$08,$14,$15,$FF"
+      ]
+    },
+    {
+      "tag": "CYLINDER_BOT",
+      "comment": "Triped IV Robot",
+      "data": [
+        "DB  ROBOT_FORM+ALL_FACES",
+        "DB  $12,$14",
+        "DB  $01,$06,$10,$FF"
+      ]
+    },
+    {
+      "tag": "WEB_THING",
+      "comment": "Webbed Parasite",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $24,$14",
+        "DB  $04,$09,$0A,$0C,$13,$FF"
+      ]
+    },
+    {
+      "tag": "INSECT",
+      "comment": "Worker Insect",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $45,$14",
+        "DB  $1A,$FF"
+      ]
+    },
+    {
+      "tag": "INSECT",
+      "comment": "Fighter Insect",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $45,$14",
+        "DB  $19,$FF"
+      ]
+    },
+    {
+      "tag": "TREE_HANGER",
+      "comment": "Okkar Marsupial",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $46,$10",
+        "DB  $1C,$FF"
+      ]
+    },
+    {
+      "tag": "OKKAR_PLANT",
+      "comment": "Okkar Plant",
+      "data": [
+        "DB  ALIEN_FORM",
+        "DB  $46,$00",
+        "DB  $1B,$FF"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,319 @@
+{
+  "rarity": [
+    {
+      "tag": "SNOW_JOB",
+      "comment": "\"Subzero\"",
+      "data": [
+        "DB  ALIEN_FORM+FACE_4+FACE_6",
+        "DB  $11,$24",
+        "DB  $03,$06,$FF"
+      ]
+    },
+    {
+      "tag": "REPAIR_UNIT",
+      "comment": "Repair Unit 1000",
+      "data": [
+        "DB  ROBOT_FORM+FACE_4+FACE_6",
+        "DB  $12,$24",
+        "DB  $99,$FF"
+      ]
+    },
+    {
+      "tag": "TWISTER",
+      "comment": "\"Twister\"",
+      "data": [
+        "DB  ALIEN_FORM+FACE_4+FACE_6",
+        "DB  $14,$22",
+        "DB  $01,$06,$FF"
+      ]
+    },
+    {
+      "tag": "PLATFORM",
+      "comment": "Beta Centaurian",
+      "data": [
+        "DB  UNKNOWN_ROBOT+FACE_4+FACE_6",
+        "DB  $12,$22",
+        "DB  $04,$FF"
+      ]
+    },
+    {
+      "tag": "SIX_ARM",
+      "comment": "\"Hexiclaw\"",
+      "data": [
+        "DB  ALIEN_FORM+FACE_4+FACE_6",
+        "DB  $24,$22",
+        "DB  $08,$FF"
+      ]
+    },
+    {
+      "tag": "CEILING_FAN",
+      "comment": "Tandem Tenticles)",
+      "data": [
+        "DB  ALIEN_FORM+FACE_4+FACE_6",
+        "DB  $13,$22",
+        "DB  $01,$03,$FF"
+      ]
+    },
+    {
+      "tag": "SCAVENGER",
+      "comment": "Scavenger",
+      "data": [
+        "DB  ALIEN_FORM+FACE_4+FACE_6",
+        "DB  $35,$24",
+        "DB  $04,$FF"
+      ]
+    },
+    {
+      "tag": "SNOUT",
+      "comment": "Mutant Insectoid",
+      "data": [
+        "DB  ALIEN_FORM+FACE_4+FACE_6",
+        "DB  $12,$24",
+        "DB  $05,$FF"
+      ]
+    },
+    {
+      "tag": "FIRE_MAN",
+      "comment": "K-60 Fire Unit",
+      "data": [
+        "DB  ROBOT_FORM+FACE_4+FACE_6",
+        "DB  $24,$24",
+        "DB  $99,$FF"
+      ]
+    },
+    {
+      "tag": "LEASHED_DOGS",
+      "comment": "Leashed Grunter)",
+      "data": [
+        "DB  ALIEN_FORM+FACE_4+FACE_6",
+        "DB  $22,$24",
+        "DB  $99,$FF"
+      ]
+    },
+    {
+      "tag": "TENTICLE",
+      "comment": "Tenticles",
+      "data": [
+        "DB  ALIEN_FORM+FACE_4+FACE_6",
+        "DB  $11,$24",
+        "DB  $99,$FF"
+      ]
+    },
+    {
+      "tag": "IN_WEB",
+      "comment": "Ullda Nich",
+      "data": [
+        "DB  ALIEN_FORM+FACE_1+FACE_5",
+        "DB  $11,$22",
+        "DB  $23,$FF"
+      ]
+    },
+    {
+      "tag": "RAG_ALIEN",
+      "comment": "Meern Mutation",
+      "data": [
+        "DB  ALIEN_FORM+FACE_1+FACE_5",
+        "DB  $12,$22",
+        "DB  $0E,$0F,$10,$11,$15,$FF"
+      ]
+    },
+    {
+      "tag": "ROBIEN",
+      "comment": "Robien Brain",
+      "data": [
+        "DB  UNKNOWN_ROBOT+FACE_1+FACE_5",
+        "DB  $12,$22",
+        "DB  $0D,$0F,$10,$11,$15,$FF"
+      ]
+    },
+    {
+      "tag": "STRINGY_HAND",
+      "comment": "Acruxite",
+      "data": [
+        "DB  ALIEN_FORM+FACE_1+FACE_5",
+        "DB  $13,$22",
+        "DB  $0D,$0E,$10,$11,$15,$FF"
+      ]
+    },
+    {
+      "tag": "POINTY_HEAD",
+      "comment": "Pointy Head)",
+      "data": [
+        "DB  ALIEN_FORM+FACE_1+FACE_5",
+        "DB  $33,$24",
+        "DB  $0D,$0E,$0F,$11,$15,$FF"
+      ]
+    },
+    {
+      "tag": "SPOOL_ALIEN",
+      "comment": "Nunki Blue Devil",
+      "data": [
+        "DB  UNKNOWN_ROBOT+FACE_1+FACE_5",
+        "DB  $13,$24",
+        "DB  $0D,$0E,$0F,$10,$15,$FF"
+      ]
+    },
+    {
+      "tag": "AMOEBA",
+      "comment": "Amoeboid",
+      "data": [
+        "DB  ALIEN_FORM+FACE_1+FACE_5",
+        "DB  $12,$24",
+        "DB  $99,$FF"
+      ]
+    },
+    {
+      "tag": "FURNACE",
+      "comment": "\"Shoveler\"",
+      "data": [
+        "DB  ALIEN_FORM+FACE_1+FACE_5",
+        "DB  $11,$24",
+        "DB  $99,$FF"
+      ]
+    },
+    {
+      "tag": "LONG_ARM",
+      "comment": "Long Armed Epe",
+      "data": [
+        "DB  ALIEN_FORM+FACE_1+FACE_5",
+        "DB  $11,$24",
+        "DB  $0E,$10,$FF"
+      ]
+    },
+    {
+      "tag": "SLICER",
+      "comment": "Slicer Sphere",
+      "data": [
+        "DB  ALIEN_FORM+FACE_1+FACE_5",
+        "DB  $11,$24",
+        "DB  $0D,$0E,$0F,$10,$11,$FF"
+      ]
+    },
+    {
+      "tag": "TREADED_BOT",
+      "comment": "Prototype 2000-7",
+      "data": [
+        "DB  ROBOT_FORM+FACE_1+FACE_5",
+        "DB  $24,$24",
+        "DB  $99,$FF"
+      ]
+    },
+    {
+      "tag": "STICKY",
+      "comment": "????????????????)",
+      "data": [
+        "DB  ALIEN_FORM+FACE_2+FACE_3",
+        "DB  $11,$21",
+        "DB  $1A,$1D,$1E,$20,$21,$FF"
+      ]
+    },
+    {
+      "tag": "METAL_MITES",
+      "comment": "\"Metal Mites\"",
+      "data": [
+        "DB  ROBOT_FORM+FACE_2+FACE_3",
+        "DB  $8C,$21",
+        "DB  $99,$FF"
+      ]
+    },
+    {
+      "tag": "STAFF",
+      "comment": "Sceptarian",
+      "data": [
+        "DB  ALIEN_FORM+FACE_2+FACE_3",
+        "DB  $12,$22",
+        "DB  $1E,$FF"
+      ]
+    },
+    {
+      "tag": "DIZZY",
+      "comment": "\"Dizzy\"",
+      "data": [
+        "DB  ALIEN_FORM+FACE_2+FACE_3",
+        "DB  $11,$21",
+        "DB  $17,$1D,$1E,$20,$21,$FF"
+      ]
+    },
+    {
+      "tag": "BRANCHES",
+      "comment": "Psilotis Pedetum",
+      "data": [
+        "DB  ALIEN_FORM+FACE_2+FACE_3",
+        "DB  $35,$22",
+        "DB  $1C,$FF"
+      ]
+    },
+    {
+      "tag": "SPOOR_PLANT",
+      "comment": "Spoor Plant",
+      "data": [
+        "DB  ALIEN_FORM+FACE_2+FACE_3",
+        "DB  $12,$22",
+        "DB  $1B,$FF"
+      ]
+    },
+    {
+      "tag": "LIZARD",
+      "comment": "Adharan Lizard",
+      "data": [
+        "DB  ALIEN_FORM+FACE_2+FACE_3",
+        "DB  $22,$21",
+        "DB  $17,$1A,$1E,$20,$21,$FF"
+      ]
+    },
+    {
+      "tag": "CONSTRICTOR",
+      "comment": "Ankaa Strangler",
+      "data": [
+        "DB  ALIEN_FORM+FACE_2+FACE_3",
+        "DB  $25,$21",
+        "DB  $17,$1A,$1D,$20,$21,$FF"
+      ]
+    },
+    {
+      "tag": "LITTLE_PLANES",
+      "comment": "Spica V Fighter",
+      "data": [
+        "DB  ROBOT_FORM+FACE_2+FACE_3",
+        "DB  $55,$21",
+        "DB  $99,$FF"
+      ]
+    },
+    {
+      "tag": "WATER_TOWER",
+      "comment": "Moikler",
+      "data": [
+        "DB  ALIEN_FORM+FACE_2+FACE_3",
+        "DB  $13,$21",
+        "DB  $17,$1A,$1D,$1E,$21,$FF"
+      ]
+    },
+    {
+      "tag": "UNLOADER",
+      "comment": "Energy Unloader",
+      "data": [
+        "DB  ALIEN_FORM+FACE_2+FACE_3",
+        "DB  $46,$21",
+        "DB  $17,$1A,$1D,$1E,$20,$FF"
+      ]
+    },
+    {
+      "tag": "INSECT",
+      "comment": "Worker Insect",
+      "data": [
+        "DB  ALIEN_FORM+FACE_2+FACE_3",
+        "DB  $8A,$22",
+        "DB  $99,$FF"
+      ]
+    },
+    {
+      "tag": "WEB",
+      "comment": "Ullda Nich Web",
+      "data": [
+        "DB  UNKNOWN_ALIEN",
+        "DB  $11,$00",
+        "DB  $0C,$FF"
+      ]
+    }
+  ]
+}

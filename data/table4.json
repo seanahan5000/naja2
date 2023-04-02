@@ -1,0 +1,211 @@
+{
+  "rarity": [
+    {
+      "tag": "DUAL_HEAD",
+      "comment": "Dualtronic Robot",
+      "data": [
+        "DB  ROBOT_FORM+ALL_FACES",
+        "DB  $13,$17",
+        "DB  $02,$FF"
+      ]
+    },
+    {
+      "tag": "CENTAUR",
+      "comment": "Centaurian Robot",
+      "data": [
+        "DB  ROBOT_FORM+ALL_FACES",
+        "DB  $13,$17",
+        "DB  $01,$FF"
+      ]
+    },
+    {
+      "tag": "SWAMP_THING",
+      "comment": "Slime Creature",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $14,$17",
+        "DB  $14,$FF"
+      ]
+    },
+    {
+      "tag": "ALIEN_ON",
+      "comment": "Taluma And Mount",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $25,$17",
+        "DB  $06,$0B,$0C,$FF"
+      ]
+    },
+    {
+      "tag": "LIGHT_ALIEN",
+      "comment": "Spectramite",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $12,$17",
+        "DB  $06,$07,$0B,$0C,$FF"
+      ]
+    },
+    {
+      "tag": "PUNKER",
+      "comment": "\"Spike\"",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $23,$17",
+        "DB  $05,$07,$0B,$0C,$FF"
+      ]
+    },
+    {
+      "tag": "EARS",
+      "comment": "Solician",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $13,$17",
+        "DB  $05,$06,$0B,$0C,$FF"
+      ]
+    },
+    {
+      "tag": "WANDERING",
+      "comment": "Wanderin Thought",
+      "data": [
+        "DB  UNKNOWN_ALIEN+ALL_FACES",
+        "DB  $13,$10",
+        "DB  $99,$FF"
+      ]
+    },
+    {
+      "tag": "KAMIKAZE",
+      "comment": "Intruder Missile",
+      "data": [
+        "DB  UNKNOWN_ROBOT+ALL_FACES",
+        "DB  $35,$12",
+        "DB  $99,$FF"
+      ]
+    },
+    {
+      "tag": "REFLEX_ALIEN",
+      "comment": "\"Speedo\"",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $13,$12",
+        "DB  $0B,$FF"
+      ]
+    },
+    {
+      "tag": "SHIFTER",
+      "comment": "Shifter",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $13,$12",
+        "DB  $05,$06,$07,$0C,$FF"
+      ]
+    },
+    {
+      "tag": "GREMLIN",
+      "comment": "Adharan Gremlin",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $11,$12",
+        "DB  $05,$06,$07,$0B,$FF"
+      ]
+    },
+    {
+      "tag": "WIND_TUNNEL",
+      "comment": "Air Circulator",
+      "data": [
+        "DB  ROBOT_FORM+ALL_FACES",
+        "DB  $11,$06",
+        "DB  $10,$FF"
+      ]
+    },
+    {
+      "tag": "DRILLER",
+      "comment": "Station Driller",
+      "data": [
+        "DB  ROBOT_FORM+ALL_FACES",
+        "DB  $11,$06",
+        "DB  $02,$FF"
+      ]
+    },
+    {
+      "tag": "INVISIBLE",
+      "comment": "Invisible Alien",
+      "data": [
+        "DB  UNKNOWN_ALIEN+ALL_FACES",
+        "DB  $16,$07",
+        "DB  $99,$FF"
+      ]
+    },
+    {
+      "tag": "COOLER",
+      "comment": "Cooling Unit",
+      "data": [
+        "DB  ROBOT_FORM+ALL_FACES",
+        "DB  $11,$07",
+        "DB  $0D,$FF"
+      ]
+    },
+    {
+      "tag": "HEATER",
+      "comment": "Thermal Unit",
+      "data": [
+        "DB  ROBOT_FORM+ALL_FACES",
+        "DB  $11,$07",
+        "DB  $16,$FF"
+      ]
+    },
+    {
+      "tag": "GLOWER",
+      "comment": "Infra-Flourinoid",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $11,$08",
+        "DB  $06,$0B,$0C,$FF"
+      ]
+    },
+    {
+      "tag": "POISON_SUIT",
+      "comment": "\"Gasser\"",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $24,$08",
+        "DB  $99,$FF"
+      ]
+    },
+    {
+      "tag": "FUNGUS",
+      "comment": "TRACC Fungus",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $12,$08",
+        "DB  $03,$FF"
+      ]
+    },
+    {
+      "tag": "QUEEN_INSECT",
+      "comment": "Queen Insect",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $11,$10",
+        "DB  $17,$FF"
+      ]
+    },
+    {
+      "tag": "HOT_HEAD",
+      "comment": "Hameler Hot Head",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $35,$12",
+        "DB  $11,$FF"
+      ]
+    },
+    {
+      "tag": "INSECT",
+      "comment": "Fighter Insect",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $88,$00",
+        "DB  $15,$FF"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,182 @@
+{
+  "rarity": [
+    {
+      "tag": "TIME_WARP",
+      "comment": "* A - Time Warp",
+      "data": [
+        "DB  UNKNOWN_ALIEN+ALL_FACES",
+        "DB  $11,$05",
+        "DB  $99,$FF"
+      ]
+    },
+    {
+      "tag": "CORE_ALIEN",
+      "comment": "* B - Najan Mind Slave",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $44,$18",
+        "DB  $99,$FF"
+      ]
+    },
+    {
+      "tag": "BLACK_ALIEN",
+      "comment": "* C - Plasmanoid",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $15,$15",
+        "DB  $07,$0A,$0E",
+        "DB  $0F,$11,$FF"
+      ]
+    },
+    {
+      "tag": "GODZILLA",
+      "comment": "* D - Blast Breather",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $14,$18",
+        "DB  $03,$07,$0A",
+        "DB  $0E,$0F,$11",
+        "DB  $FF"
+      ]
+    },
+    {
+      "tag": "ONE_ARM_BLOB",
+      "comment": "* E - Asymmetric Alien",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $11,$15",
+        "DB  $03,$07,$0A",
+        "DB  $0E,$0F,$11",
+        "DB  $FF"
+      ]
+    },
+    {
+      "tag": "RICOCHET",
+      "comment": "* F - Ricochet Missile",
+      "data": [
+        "DB  UNKNOWN_ROBOT+ALL_FACES",
+        "DB  $59,$15",
+        "DB  $99,$FF"
+      ]
+    },
+    {
+      "tag": "GREEN_HEAD",
+      "comment": "* G - Cerebromorph",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $15,$15",
+        "DB  $03,$0A,$0E",
+        "DB  $0F,$11,$FF"
+      ]
+    },
+    {
+      "tag": "TELEPORTER",
+      "comment": "* H - \"Blinker\"",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $11,$15",
+        "DB  $99,$FF"
+      ]
+    },
+    {
+      "tag": "TANK_HUMAN",
+      "comment": "* I - Man In Levitator",
+      "data": [
+        "DB  UNKNOWN_ROBOT+ALL_FACES",
+        "DB  $12,$18",
+        "DB  $03,$07,$0A",
+        "DB  $0E,$0F,$11",
+        "DB  $FF"
+      ]
+    },
+    {
+      "tag": "FOUR_SWORDS",
+      "comment": "* J - Mechanico 450",
+      "data": [
+        "DB  ROBOT_FORM+ALL_FACES",
+        "DB  $15,$22",
+        "DB  $03,$07,$0E",
+        "DB  $0F,$11,$FF"
+      ]
+    },
+    {
+      "tag": "AIRLOCK",
+      "comment": "* K - Portable Airlock",
+      "data": [
+        "DB  ROBOT_FORM+ALL_FACES",
+        "DB  $11,$05",
+        "DB  $03,$07,$0A",
+        "DB  $0E,$0F,$10",
+        "DB  $11,$FF"
+      ]
+    },
+    {
+      "tag": "THROWER",
+      "comment": "* L - \"Thrower\"",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $13,$09",
+        "DB  $99,$FF"
+      ]
+    },
+    {
+      "tag": "LATCHER",
+      "comment": "* M - \"Latcher\"",
+      "data": [
+        "DB  ALIEN_FORM",
+        "DB  $13,$00",
+        "DB  $99,$FF"
+      ]
+    },
+    {
+      "tag": "INVERSE",
+      "comment": "* N - Inversion Alien",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $15,$12",
+        "DB  $03,$07,$0A",
+        "DB  $0F,$11,$FF"
+      ]
+    },
+    {
+      "tag": "ANTISIPATOR",
+      "comment": "* O - Anticipator",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $15,$12",
+        "DB  $03,$07,$0A",
+        "DB  $0E,$11,$FF"
+      ]
+    },
+    {
+      "tag": "RABBIT_EARS",
+      "comment": "* P - Snarc",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $11,$09",
+        "DB  $03,$07,$0A",
+        "DB  $0E,$0F,$11",
+        "DB  $FF"
+      ]
+    },
+    {
+      "tag": "RUNNING_BOT",
+      "comment": "* Q - Alien Assassin",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $15,$22",
+        "DB  $03,$07,$0A",
+        "DB  $0E,$0F,$FF"
+      ]
+    },
+    {
+      "tag": "INFORMER",
+      "comment": "* R - Informer",
+      "data": [
+        "DB  ALIEN_FORM+ALL_FACES",
+        "DB  $24,$22",
+        "DB  $99,$FF"
+      ]
+    }
+  ]
+}
