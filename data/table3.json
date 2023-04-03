@@ -1,255 +1,351 @@
 {
-  "rarity": [
+  "table": [
     {
       "tag": "MAGNET",
       "comment": "Magnetic Sweeper",
-      "data": [
-        "DB  ROBOT_FORM+ALL_FACES",
-        "DB  $11,$04",
-        "DB  $06,$10,$17,$FF"
+      "type": "ROBOT_FORM",
+      "minCount": 1,
+      "maxCount": 1,
+      "rarity": 4,
+      "with": [
+        "PROG_CHANGER",
+        "DIODE_ROBOT",
+        "CYLINDER_BOT"
       ]
     },
     {
       "tag": "MISER",
       "comment": "\"Miser\"",
-      "data": [
-        "DB  ALIEN_FORM+ALL_FACES",
-        "DB  $12,$04",
-        "DB  $08,$14,$15,$16,$FF"
+      "type": "ALIEN_FORM",
+      "minCount": 1,
+      "maxCount": 2,
+      "rarity": 4,
+      "with": [
+        "CLOAKED_ALIEN",
+        "LITTLE_MEN",
+        "TAIL_FIGHTER",
+        "SHARP_SHOOTER"
       ]
     },
     {
       "tag": "ROBED_SELLER",
       "comment": "Ebkal'ee",
-      "data": [
-        "DB  ALIEN_FORM+ALL_FACES",
-        "DB  $11,$05",
-        "DB  $99,$FF"
-      ]
+      "type": "ALIEN_FORM",
+      "minCount": 1,
+      "maxCount": 1,
+      "rarity": 5
     },
     {
       "tag": "SCREAMER",
       "comment": "\"Screecher\"",
-      "data": [
-        "DB  ALIEN_FORM+ALL_FACES",
-        "DB  $12,$05",
-        "DB  $09,$0A,$0C,$13,$18,$FF"
+      "type": "ALIEN_FORM",
+      "minCount": 1,
+      "maxCount": 2,
+      "rarity": 5,
+      "with": [
+        "GLASS_GUY",
+        "ACID_SPITTER",
+        "PHASOID",
+        "ATOM_SHIFTER",
+        "WEB_THING"
       ]
     },
     {
       "tag": "TF_BAIT",
       "comment": "\"Mauler\"",
-      "data": [
-        "DB  ALIEN_FORM+ALL_FACES",
-        "DB  $23,$05",
-        "DB  $99,$FF"
-      ]
+      "type": "ALIEN_FORM",
+      "minCount": 2,
+      "maxCount": 3,
+      "rarity": 5
     },
     {
       "tag": "PROG_CHANGER",
       "comment": "Mem-Placer Robot",
-      "data": [
-        "DB  ROBOT_FORM+ALL_FACES",
-        "DB  $11,$06",
-        "DB  $01,$10,$17,$FF"
+      "type": "ROBOT_FORM",
+      "minCount": 1,
+      "maxCount": 1,
+      "rarity": 6,
+      "with": [
+        "MAGNET",
+        "DIODE_ROBOT",
+        "CYLINDER_BOT"
       ]
     },
     {
       "tag": "SPARKLES",
       "comment": "Sparkle",
-      "data": [
-        "DB  UNKNOWN_ALIEN+ALL_FACES",
-        "DB  $66,$06",
-        "DB  $99,$FF"
-      ]
+      "type": "UNKNOWN_ALIEN",
+      "minCount": 6,
+      "maxCount": 6,
+      "rarity": 6
     },
     {
       "tag": "CLOAKED_ALIEN",
       "comment": "Encephaloid",
-      "data": [
-        "DB  ALIEN_FORM+ALL_FACES",
-        "DB  $13,$06",
-        "DB  $02,$14,$15,$16,$FF"
+      "type": "ALIEN_FORM",
+      "minCount": 1,
+      "maxCount": 3,
+      "rarity": 6,
+      "with": [
+        "MISER",
+        "LITTLE_MEN",
+        "TAIL_FIGHTER",
+        "SHARP_SHOOTER"
       ]
     },
     {
       "tag": "GLASS_GUY",
       "comment": "Transparent",
-      "data": [
-        "DB  ALIEN_FORM+ALL_FACES",
-        "DB  $12,$06",
-        "DB  $04,$0A,$0C,$13,$18,$FF"
+      "type": "ALIEN_FORM",
+      "minCount": 1,
+      "maxCount": 2,
+      "rarity": 6,
+      "with": [
+        "SCREAMER",
+        "ACID_SPITTER",
+        "PHASOID",
+        "ATOM_SHIFTER",
+        "WEB_THING"
       ]
     },
     {
       "tag": "ACID_SPITTER",
       "comment": "Acid Spitter",
-      "data": [
-        "DB  ALIEN_FORM+ALL_FACES",
-        "DB  $12,$09",
-        "DB  $04,$09,$0C,$13,$18,$FF"
+      "type": "ALIEN_FORM",
+      "minCount": 1,
+      "maxCount": 2,
+      "rarity": 9,
+      "with": [
+        "SCREAMER",
+        "GLASS_GUY",
+        "PHASOID",
+        "ATOM_SHIFTER",
+        "WEB_THING"
       ]
     },
     {
       "tag": "SEVEN_CLAWS",
       "comment": "Zetoc",
-      "data": [
-        "DB  ALIEN_FORM+ALL_FACES",
-        "DB  $23,$09",
-        "DB  $0E,$0F,$12,$FF"
+      "type": "ALIEN_FORM",
+      "minCount": 2,
+      "maxCount": 3,
+      "rarity": 9,
+      "with": [
+        "TANGIBLE_GAS",
+        "GREEN_PUDDLE",
+        "CARNIVORE"
       ]
     },
     {
       "tag": "PHASOID",
       "comment": "Phasoid",
-      "data": [
-        "DB  ALIEN_FORM+ALL_FACES",
-        "DB  $24,$09",
-        "DB  $04,$09,$0A,$13,$18,$FF"
+      "type": "ALIEN_FORM",
+      "minCount": 2,
+      "maxCount": 4,
+      "rarity": 9,
+      "with": [
+        "SCREAMER",
+        "GLASS_GUY",
+        "ACID_SPITTER",
+        "ATOM_SHIFTER",
+        "WEB_THING"
       ]
     },
     {
       "tag": "FAKER",
       "comment": "Pseudomort",
-      "data": [
-        "DB  ALIEN_FORM+ALL_FACES",
-        "DB  $11,$10",
-        "DB  $99,$FF"
-      ]
+      "type": "ALIEN_FORM",
+      "minCount": 1,
+      "maxCount": 1,
+      "rarity": 10
     },
     {
       "tag": "TANGIBLE_GAS",
       "comment": "Tangible Gas",
-      "data": [
-        "DB  UNKNOWN_ALIEN+ALL_FACES",
-        "DB  $11,$10",
-        "DB  $0B,$0F,$12,$FF"
+      "type": "UNKNOWN_ALIEN",
+      "minCount": 1,
+      "maxCount": 1,
+      "rarity": 10,
+      "with": [
+        "SEVEN_CLAWS",
+        "GREEN_PUDDLE",
+        "CARNIVORE"
       ]
     },
     {
       "tag": "GREEN_PUDDLE",
       "comment": "Puddle Creature",
-      "data": [
-        "DB  ALIEN_FORM+ALL_FACES",
-        "DB  $13,$10",
-        "DB  $0B,$0E,$12,$FF"
+      "type": "ALIEN_FORM",
+      "minCount": 1,
+      "maxCount": 3,
+      "rarity": 10,
+      "with": [
+        "SEVEN_CLAWS",
+        "TANGIBLE_GAS",
+        "CARNIVORE"
       ]
     },
     {
       "tag": "DIODE_ROBOT",
       "comment": "Ion Diode Robot",
-      "data": [
-        "DB  ROBOT_FORM+ALL_FACES",
-        "DB  $13,$10",
-        "DB  $01,$06,$17,$FF"
+      "type": "ROBOT_FORM",
+      "minCount": 1,
+      "maxCount": 3,
+      "rarity": 10,
+      "with": [
+        "MAGNET",
+        "PROG_CHANGER",
+        "CYLINDER_BOT"
       ]
     },
     {
       "tag": "EXPLODER",
       "comment": "Vegan Exploder",
-      "data": [
-        "DB  UNKNOWN_ALIEN+ALL_FACES",
-        "DB  $8C,$12",
-        "DB  $99,$FF"
-      ]
+      "type": "UNKNOWN_ALIEN",
+      "minCount": 8,
+      "maxCount": 12,
+      "rarity": 12
     },
     {
       "tag": "CARNIVORE",
       "comment": "Carnivore",
-      "data": [
-        "DB  ALIEN_FORM+ALL_FACES",
-        "DB  $11,$12",
-        "DB  $0B,$0E,$0F,$FF"
+      "type": "ALIEN_FORM",
+      "minCount": 1,
+      "maxCount": 1,
+      "rarity": 12,
+      "with": [
+        "SEVEN_CLAWS",
+        "TANGIBLE_GAS",
+        "GREEN_PUDDLE"
       ]
     },
     {
       "tag": "ATOM_SHIFTER",
       "comment": "Atom Arranger",
-      "data": [
-        "DB  ALIEN_FORM+ALL_FACES",
-        "DB  $11,$12",
-        "DB  $04,$09,$0A,$0C,$18,$FF"
+      "type": "ALIEN_FORM",
+      "minCount": 1,
+      "maxCount": 1,
+      "rarity": 12,
+      "with": [
+        "SCREAMER",
+        "GLASS_GUY",
+        "ACID_SPITTER",
+        "PHASOID",
+        "WEB_THING"
       ]
     },
     {
       "tag": "LITTLE_MEN",
       "comment": "Little Men",
-      "data": [
-        "DB  ALIEN_FORM+ALL_FACES",
-        "DB  $68,$13",
-        "DB  $02,$08,$15,$16,$FF"
+      "type": "ALIEN_FORM",
+      "minCount": 6,
+      "maxCount": 8,
+      "rarity": 13,
+      "with": [
+        "MISER",
+        "CLOAKED_ALIEN",
+        "TAIL_FIGHTER",
+        "SHARP_SHOOTER"
       ]
     },
     {
       "tag": "TAIL_FIGHTER",
       "comment": "Beteiguesen",
-      "data": [
-        "DB  ALIEN_FORM+ALL_FACES",
-        "DB  $25,$14",
-        "DB  $02,$08,$14,$16,$FF"
+      "type": "ALIEN_FORM",
+      "minCount": 2,
+      "maxCount": 5,
+      "rarity": 14,
+      "with": [
+        "MISER",
+        "CLOAKED_ALIEN",
+        "LITTLE_MEN",
+        "SHARP_SHOOTER"
       ]
     },
     {
       "tag": "SHARP_SHOOTER",
       "comment": "\"Sharp Shooter\"",
-      "data": [
-        "DB  ALIEN_FORM+ALL_FACES",
-        "DB  $22,$13",
-        "DB  $02,$08,$14,$15,$FF"
+      "type": "ALIEN_FORM",
+      "minCount": 2,
+      "maxCount": 2,
+      "rarity": 13,
+      "with": [
+        "MISER",
+        "CLOAKED_ALIEN",
+        "LITTLE_MEN",
+        "TAIL_FIGHTER"
       ]
     },
     {
       "tag": "CYLINDER_BOT",
       "comment": "Triped IV Robot",
-      "data": [
-        "DB  ROBOT_FORM+ALL_FACES",
-        "DB  $12,$14",
-        "DB  $01,$06,$10,$FF"
+      "type": "ROBOT_FORM",
+      "minCount": 1,
+      "maxCount": 2,
+      "rarity": 14,
+      "with": [
+        "MAGNET",
+        "PROG_CHANGER",
+        "DIODE_ROBOT"
       ]
     },
     {
       "tag": "WEB_THING",
       "comment": "Webbed Parasite",
-      "data": [
-        "DB  ALIEN_FORM+ALL_FACES",
-        "DB  $24,$14",
-        "DB  $04,$09,$0A,$0C,$13,$FF"
+      "type": "ALIEN_FORM",
+      "minCount": 2,
+      "maxCount": 4,
+      "rarity": 14,
+      "with": [
+        "SCREAMER",
+        "GLASS_GUY",
+        "ACID_SPITTER",
+        "PHASOID",
+        "ATOM_SHIFTER"
       ]
     },
     {
       "tag": "INSECT",
       "comment": "Worker Insect",
-      "data": [
-        "DB  ALIEN_FORM+ALL_FACES",
-        "DB  $45,$14",
-        "DB  $1A,$FF"
+      "type": "ALIEN_FORM",
+      "minCount": 4,
+      "maxCount": 5,
+      "rarity": 14,
+      "with": [
+        "INSECT"
       ]
     },
     {
       "tag": "INSECT",
       "comment": "Fighter Insect",
-      "data": [
-        "DB  ALIEN_FORM+ALL_FACES",
-        "DB  $45,$14",
-        "DB  $19,$FF"
+      "type": "ALIEN_FORM",
+      "minCount": 4,
+      "maxCount": 5,
+      "rarity": 14,
+      "with": [
+        "INSECT"
       ]
     },
     {
       "tag": "TREE_HANGER",
       "comment": "Okkar Marsupial",
-      "data": [
-        "DB  ALIEN_FORM+ALL_FACES",
-        "DB  $46,$10",
-        "DB  $1C,$FF"
+      "type": "ALIEN_FORM",
+      "minCount": 4,
+      "maxCount": 6,
+      "rarity": 10,
+      "with": [
+        "OKKAR_PLANT"
       ]
     },
     {
       "tag": "OKKAR_PLANT",
       "comment": "Okkar Plant",
-      "data": [
-        "DB  ALIEN_FORM",
-        "DB  $46,$00",
-        "DB  $1B,$FF"
+      "type": "ALIEN_FORM",
+      "minCount": 4,
+      "maxCount": 6,
+      "rarity": 0,
+      "with": [
+        "TREE_HANGER"
       ]
     }
   ]

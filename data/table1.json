@@ -1,453 +1,738 @@
 {
-  "rarity": [
+  "table": [
     {
       "tag": "SPACE_MAN",
-      "data": [
-        "DB  $58,$12",
-        "DB  $30,$26",
-        "DB  $04,$06,$07",
-        "DB  $FE,$99,$FF"
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_2",
+        "FACE_3"
+      ],
+      "minCount": 1,
+      "maxCount": 2,
+      "rarity": 30,
+      "rarity2": 26,
+      "with": [
+        "ONE_EYE",
+        "BTWN_LEGS",
+        "RAG_ALIEN"
       ]
     },
     {
       "tag": "AIR_SWIMMER",
-      "data": [
-        "DB  $54,$11",
-        "DB  $30,$13",
-        "DB  $99,$FE,$99",
-        "DB  $FF"
-      ]
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_2",
+        "FACE_4"
+      ],
+      "minCount": 1,
+      "maxCount": 1,
+      "rarity": 30,
+      "rarity2": 13
     },
     {
       "tag": "SHIELD",
-      "data": [
-        "DB  $50,$24",
-        "DB  $30,$00",
-        "DB  $99,$FF"
-      ]
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_2"
+      ],
+      "minCount": 2,
+      "maxCount": 4,
+      "rarity": 30
     },
     {
       "tag": "ONE_EYE",
-      "data": [
-        "DB  $50,$12",
-        "DB  $30,$00",
-        "DB  $01,$06,$07",
-        "DB  $FF"
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_2"
+      ],
+      "minCount": 1,
+      "maxCount": 2,
+      "rarity": 30,
+      "with": [
+        "SPACE_MAN",
+        "BTWN_LEGS",
+        "RAG_ALIEN"
       ]
     },
     {
       "tag": "HANGING_BOT",
-      "data": [
-        "DB  $98,$13",
-        "DB  $30,$25",
-        "DB  $99,$FE,$99",
-        "DB  $FF"
-      ]
+      "type": "ROBOT_FORM",
+      "faces": [
+        "FACE_2",
+        "FACE_3"
+      ],
+      "minCount": 1,
+      "maxCount": 3,
+      "rarity": 30,
+      "rarity2": 25
     },
     {
       "tag": "BTWN_LEGS",
-      "data": [
-        "DB  $50,$12",
-        "DB  $16,$00",
-        "DB  $01,$04,$07",
-        "DB  $FF"
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_2"
+      ],
+      "minCount": 1,
+      "maxCount": 2,
+      "rarity": 16,
+      "with": [
+        "SPACE_MAN",
+        "ONE_EYE",
+        "RAG_ALIEN"
       ]
     },
     {
       "tag": "RAG_ALIEN",
-      "data": [
-        "DB  $50,$12",
-        "DB  $30,$00",
-        "DB  $01,$04,$06",
-        "DB  $FF"
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_2"
+      ],
+      "minCount": 1,
+      "maxCount": 2,
+      "rarity": 30,
+      "with": [
+        "SPACE_MAN",
+        "ONE_EYE",
+        "BTWN_LEGS"
       ]
     },
     {
       "tag": "PER_ALIEN",
-      "data": [
-        "DB  $50,$11",
-        "DB  $30,$00",
-        "DB  $99,$FF"
-      ]
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_2"
+      ],
+      "minCount": 1,
+      "maxCount": 1,
+      "rarity": 30
     },
     {
       "tag": "ROBOT",
-      "data": [
-        "DB  $90,$14",
-        "DB  $30,$00",
-        "DB  $99,$FF"
-      ]
+      "type": "ROBOT_FORM",
+      "faces": [
+        "FACE_2"
+      ],
+      "minCount": 1,
+      "maxCount": 4,
+      "rarity": 30
     },
     {
       "tag": "CEIL_SWINGER",
-      "data": [
-        "DB  $68,$13",
-        "DB  $12,$32",
-        "DB  $0C,$16,$FE",
-        "DB  $0C,$0D,$11",
-        "DB  $FF"
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_1",
+        "FACE_3"
+      ],
+      "minCount": 1,
+      "maxCount": 3,
+      "rarity": 12,
+      "rarity2": 32,
+      "with": [
+        "STARBURST",
+        "HORNED_DOG"
+      ],
+      "with2": [
+        "STARBURST",
+        "TRUNK",
+        "TWISTER"
       ]
     },
     {
       "tag": "WEIRD_ALIEN",
       "comment": "duplicate below?",
-      "data": [
-        "DB  $68,$12",
-        "DB  $12,$16",
-        "DB  $17,$FE,$0F",
-        "DB  $FF"
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_1",
+        "FACE_3"
+      ],
+      "minCount": 1,
+      "maxCount": 2,
+      "rarity": 12,
+      "rarity2": 16,
+      "with": [
+        "PINK_WINGS"
+      ],
+      "with2": [
+        "WEIRD_ALIEN"
       ]
     },
     {
       "tag": "STARBURST",
-      "data": [
-        "DB  $68,$13",
-        "DB  $12,$32",
-        "DB  $0A,$16,$FE",
-        "DB  $0A,$0D,$11",
-        "DB  $FF"
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_1",
+        "FACE_3"
+      ],
+      "minCount": 1,
+      "maxCount": 3,
+      "rarity": 12,
+      "rarity2": 32,
+      "with": [
+        "CEIL_SWINGER",
+        "HORNED_DOG"
+      ],
+      "with2": [
+        "CEIL_SWINGER",
+        "TRUNK",
+        "TWISTER"
       ]
     },
     {
       "tag": "TRUNK",
-      "data": [
-        "DB  $48,$13",
-        "DB  $26,$00",
-        "DB  $0A,$0C,$11",
-        "DB  $FF"
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_3"
+      ],
+      "minCount": 1,
+      "maxCount": 3,
+      "rarity": 26,
+      "with": [
+        "CEIL_SWINGER",
+        "STARBURST",
+        "TWISTER"
       ]
     },
     {
       "tag": "TREE_ALIEN",
-      "data": [
-        "DB  $48,$12",
-        "DB  $32,$00",
-        "DB  $99,$FF"
-      ]
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_3"
+      ],
+      "minCount": 1,
+      "maxCount": 2,
+      "rarity": 32
     },
     {
       "tag": "WEIRD_ALIEN",
       "comment": "duplicate above?",
-      "data": [
-        "DB  $48,$12",
-        "DB  $16,$00",
-        "DB  $0B,$FF"
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_3"
+      ],
+      "minCount": 1,
+      "maxCount": 2,
+      "rarity": 16,
+      "with": [
+        "WEIRD_ALIEN"
       ]
     },
     {
       "tag": "FROG_BOT",
-      "data": [
-        "DB  $88,$37",
-        "DB  $25,$00",
-        "DB  $99,$FF"
-      ]
+      "type": "ROBOT_FORM",
+      "faces": [
+        "FACE_3"
+      ],
+      "minCount": 3,
+      "maxCount": 7,
+      "rarity": 25
     },
     {
       "tag": "TWISTER",
-      "data": [
-        "DB  $48,$13",
-        "DB  $26,$00",
-        "DB  $0A,$0C,$0D",
-        "DB  $FF"
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_3"
+      ],
+      "minCount": 1,
+      "maxCount": 3,
+      "rarity": 26,
+      "with": [
+        "CEIL_SWINGER",
+        "STARBURST",
+        "TRUNK"
       ]
     },
     {
       "tag": "BARRICADE",
-      "data": [
-        "DB  UNKNOWN_ALIEN",
-        "DB  $00,$00",
-        "DB  $FF"
-      ]
+      "type": "UNKNOWN_ALIEN",
+      "minCount": 0,
+      "maxCount": 0,
+      "rarity": 0,
+      "rarity2": 165
     },
     {
       "tag": "WORMS",
-      "data": [
-        "DB  $60,$36",
-        "DB  $26,$00",
-        "DB  $99,$FF"
-      ]
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_1"
+      ],
+      "minCount": 3,
+      "maxCount": 6,
+      "rarity": 26
     },
     {
       "tag": "PROBOT",
-      "data": [
-        "DB  $A0,$11",
-        "DB  $26,$00",
-        "DB  $99,$FF"
-      ]
+      "type": "ROBOT_FORM",
+      "faces": [
+        "FACE_1"
+      ],
+      "minCount": 1,
+      "maxCount": 1,
+      "rarity": 26
     },
     {
       "tag": "ARMOR_ALIEN",
-      "data": [
-        "DB  $24,$14",
-        "DB  $26,$24",
-        "DB  $99,$FE,$99",
-        "DB  $FF"
-      ]
+      "type": "UNKNOWN_ALIEN",
+      "faces": [
+        "FACE_1",
+        "FACE_4"
+      ],
+      "minCount": 1,
+      "maxCount": 4,
+      "rarity": 26,
+      "rarity2": 24
     },
     {
       "tag": "HORNED_DOG",
-      "data": [
-        "DB  $64,$13",
-        "DB  $12,$14",
-        "DB  $0A,$0C,$FE",
-        "DB  $1C,$1F,$21",
-        "DB  $22,$FF"
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_1",
+        "FACE_4"
+      ],
+      "minCount": 1,
+      "maxCount": 3,
+      "rarity": 12,
+      "rarity2": 14,
+      "with": [
+        "CEIL_SWINGER",
+        "STARBURST"
+      ],
+      "with2": [
+        "OILER",
+        "BLOW_DART",
+        "LITTLE_BUG",
+        "CEILING_FAN"
       ]
     },
     {
       "tag": "PINK_WINGS",
-      "data": [
-        "DB  $64,$12",
-        "DB  $26,$14",
-        "DB  $0B,$18,$1A",
-        "DB  $FE,$18,$FF"
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_1",
+        "FACE_4"
+      ],
+      "minCount": 1,
+      "maxCount": 2,
+      "rarity": 26,
+      "rarity2": 14,
+      "with": [
+        "WEIRD_ALIEN",
+        "SQUINTER",
+        "CROSS_BOW"
+      ],
+      "with2": [
+        "SQUINTER"
       ]
     },
     {
       "tag": "SQUINTER",
-      "data": [
-        "DB  $64,$23",
-        "DB  $26,$14",
-        "DB  $17,$1A,$FE",
-        "DB  $17,$FF"
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_1",
+        "FACE_4"
+      ],
+      "minCount": 2,
+      "maxCount": 3,
+      "rarity": 26,
+      "rarity2": 14,
+      "with": [
+        "PINK_WINGS",
+        "CROSS_BOW"
+      ],
+      "with2": [
+        "PINK_WINGS"
       ]
     },
     {
       "tag": "PLATFORM",
-      "data": [
-        "DB  $E0,$12",
-        "DB  $26,$00",
-        "DB  $99,$FF"
-      ]
+      "type": "UNKNOWN_ROBOT",
+      "faces": [
+        "FACE_1"
+      ],
+      "minCount": 1,
+      "maxCount": 2,
+      "rarity": 26
     },
     {
       "tag": "CROSS_BOW",
-      "data": [
-        "DB  $60,$11",
-        "DB  $26,$00",
-        "DB  $17,$18,$FF"
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_1"
+      ],
+      "minCount": 1,
+      "maxCount": 1,
+      "rarity": 26,
+      "with": [
+        "PINK_WINGS",
+        "SQUINTER"
       ]
     },
     {
       "tag": "HOLSTER",
-      "data": [
-        "DB  $46,$11",
-        "DB  $25,$04",
-        "DB  $1D,$FE,$1D",
-        "DB  $28,$FF"
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_4",
+        "FACE_5"
+      ],
+      "minCount": 1,
+      "maxCount": 1,
+      "rarity": 25,
+      "rarity2": 4,
+      "with": [
+        "SLEEPY"
+      ],
+      "with2": [
+        "SLEEPY",
+        "WORMS"
       ]
     },
     {
       "tag": "OILER",
-      "data": [
-        "DB  $86,$12",
-        "DB  $25,$04",
-        "DB  $1F,$21,$22",
-        "DB  $16,$FE,$25",
-        "DB  $FF"
+      "type": "ROBOT_FORM",
+      "faces": [
+        "FACE_4",
+        "FACE_5"
+      ],
+      "minCount": 1,
+      "maxCount": 2,
+      "rarity": 25,
+      "rarity2": 4,
+      "with": [
+        "BLOW_DART",
+        "LITTLE_BUG",
+        "CEILING_FAN",
+        "HORNED_DOG"
+      ],
+      "with2": [
+        "CLAPPER"
       ]
     },
     {
       "tag": "SLEEPY",
-      "data": [
-        "DB  $46,$24",
-        "DB  $25,$04",
-        "DB  $1B,$FE,$1B",
-        "DB  $28,$FF"
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_4",
+        "FACE_5"
+      ],
+      "minCount": 2,
+      "maxCount": 4,
+      "rarity": 25,
+      "rarity2": 4,
+      "with": [
+        "HOLSTER"
+      ],
+      "with2": [
+        "HOLSTER",
+        "WORMS"
       ]
     },
     {
       "tag": "HANGING_BOT",
-      "data": [
-        "DB  $84,$13",
-        "DB  $25,$00",
-        "DB  $99,$FF"
-      ]
+      "type": "ROBOT_FORM",
+      "faces": [
+        "FACE_4"
+      ],
+      "minCount": 1,
+      "maxCount": 3,
+      "rarity": 25
     },
     {
       "tag": "BLOW_DART",
-      "data": [
-        "DB  $44,$12",
-        "DB  $25,$00",
-        "DB  $1C,$21,$22",
-        "DB  $16,$FF"
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_4"
+      ],
+      "minCount": 1,
+      "maxCount": 2,
+      "rarity": 25,
+      "with": [
+        "OILER",
+        "LITTLE_BUG",
+        "CEILING_FAN",
+        "HORNED_DOG"
       ]
     },
     {
       "tag": "AIR_SWIMMER",
-      "data": [
-        "DB  $44,$11",
-        "DB  $13,$00",
-        "DB  $99,$FF"
-      ]
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_4"
+      ],
+      "minCount": 1,
+      "maxCount": 1,
+      "rarity": 13
     },
     {
       "tag": "LITTLE_BUG",
-      "data": [
-        "DB  $44,$17",
-        "DB  $14,$00",
-        "DB  $1C,$1F,$22",
-        "DB  $16,$FF"
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_4"
+      ],
+      "minCount": 1,
+      "maxCount": 7,
+      "rarity": 14,
+      "with": [
+        "OILER",
+        "BLOW_DART",
+        "CEILING_FAN",
+        "HORNED_DOG"
       ]
     },
     {
       "tag": "CEILING_FAN",
-      "data": [
-        "DB  $44,$13",
-        "DB  $25,$00",
-        "DB  $1C,$1F,$21",
-        "DB  $16,$FF"
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_4"
+      ],
+      "minCount": 1,
+      "maxCount": 3,
+      "rarity": 25,
+      "with": [
+        "OILER",
+        "BLOW_DART",
+        "LITTLE_BUG",
+        "HORNED_DOG"
       ]
     },
     {
       "tag": "RUUIKS_MEN",
       "comment": "if not index $23, change RUUIK.S",
-      "data": [
-        "DB  $42,$48",
-        "DB  $69,$00",
-        "DB  $99,$FF"
-      ]
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_5"
+      ],
+      "minCount": 4,
+      "maxCount": 8,
+      "rarity": 69
     },
     {
       "tag": "BIRD_INSECT",
-      "data": [
-        "DB  $43,$12",
-        "DB  $27,$26",
-        "DB  $2A,$2B,$FE",
-        "DB  $2E,$FF"
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_5",
+        "FACE_6"
+      ],
+      "minCount": 1,
+      "maxCount": 2,
+      "rarity": 27,
+      "rarity2": 26,
+      "with": [
+        "SIX_ARM",
+        "STRINGY_HAND"
+      ],
+      "with2": [
+        "STINKY"
       ]
     },
     {
       "tag": "CLAPPER",
-      "data": [
-        "DB  $43,$23",
-        "DB  $27,$20",
-        "DB  $1C,$FE,$33",
-        "DB  $FF"
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_5",
+        "FACE_6"
+      ],
+      "minCount": 2,
+      "maxCount": 3,
+      "rarity": 27,
+      "rarity2": 20,
+      "with": [
+        "OILER"
+      ],
+      "with2": [
+        "ROBIEN"
       ]
     },
     {
       "tag": "CLUBBER",
-      "data": [
-        "DB  $43,$12",
-        "DB  $27,$14",
-        "DB  $99,$FE,$99",
-        "DB  $FF"
-      ]
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_5",
+        "FACE_6"
+      ],
+      "minCount": 1,
+      "maxCount": 2,
+      "rarity": 27,
+      "rarity2": 14
     },
     {
       "tag": "SPACE_SHIP",
-      "data": [
-        "DB  $C3,$13",
-        "DB  $18,$07",
-        "DB  $99,$FE,$99",
-        "DB  $FF"
-      ]
+      "type": "UNKNOWN_ROBOT",
+      "faces": [
+        "FACE_5",
+        "FACE_6"
+      ],
+      "minCount": 1,
+      "maxCount": 3,
+      "rarity": 18,
+      "rarity2": 7
     },
     {
       "tag": "WORMS",
-      "data": [
-        "DB  $43,$23",
-        "DB  $18,$07",
-        "DB  $1B,$1D,$FE",
-        "DB  $2F,$32,$FF"
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_5",
+        "FACE_6"
+      ],
+      "minCount": 2,
+      "maxCount": 3,
+      "rarity": 18,
+      "rarity2": 7,
+      "with": [
+        "HOLSTER",
+        "SLEEPY"
+      ],
+      "with2": [
+        "PARTICLE_MAN",
+        "HOLSTER"
       ]
     },
     {
       "tag": "GAS_CLOUD",
-      "data": [
-        "DB  $03,$59",
-        "DB  $04,$03",
-        "DB  $99,$FE,$99",
-        "DB  $FF"
-      ]
+      "type": "UNKNOWN_ALIEN",
+      "faces": [
+        "FACE_5",
+        "FACE_6"
+      ],
+      "minCount": 5,
+      "maxCount": 9,
+      "rarity": 4,
+      "rarity2": 3
     },
     {
       "tag": "SIX_ARM",
-      "data": [
-        "DB  $42,$24",
-        "DB  $27,$00",
-        "DB  $24,$2B,$FF"
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_5"
+      ],
+      "minCount": 2,
+      "maxCount": 4,
+      "rarity": 27,
+      "with": [
+        "BIRD_INSECT",
+        "STRINGY_HAND"
       ]
     },
     {
       "tag": "STRINGY_HAND",
-      "data": [
-        "DB  $42,$12",
-        "DB  $27,$00",
-        "DB  $24,$2A,$FF"
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_5"
+      ],
+      "minCount": 1,
+      "maxCount": 2,
+      "rarity": 27,
+      "with": [
+        "BIRD_INSECT",
+        "SIX_ARM"
       ]
     },
     {
       "tag": "FINGERS",
-      "data": [
-        "DB  $41,$12",
-        "DB  $26,$00",
-        "DB  $34,$FF"
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_6"
+      ],
+      "minCount": 1,
+      "maxCount": 2,
+      "rarity": 26,
+      "with": [
+        "STICKY"
       ]
     },
     {
       "tag": "PEEKER",
-      "data": [
-        "DB  $41,$11",
-        "DB  $07,$00",
-        "DB  $99,$FF"
-      ]
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_6"
+      ],
+      "minCount": 1,
+      "maxCount": 1,
+      "rarity": 7
     },
     {
       "tag": "STINKY",
-      "data": [
-        "DB  $41,$13",
-        "DB  $20,$00",
-        "DB  $24,$FF"
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_6"
+      ],
+      "minCount": 1,
+      "maxCount": 3,
+      "rarity": 20,
+      "with": [
+        "BIRD_INSECT"
       ]
     },
     {
       "tag": "PARTICLE_MAN",
-      "data": [
-        "DB  $41,$23",
-        "DB  $26,$00",
-        "DB  $28,$32,$FF"
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_6"
+      ],
+      "minCount": 2,
+      "maxCount": 3,
+      "rarity": 26,
+      "with": [
+        "WORMS",
+        "HOLSTER"
       ]
     },
     {
       "tag": "BARRICADE",
-      "data": [
-        "DB  $41,$55",
-        "DB  $26,$00",
-        "DB  $99,$FF"
-      ]
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_6"
+      ],
+      "minCount": 5,
+      "maxCount": 5,
+      "rarity": 26
     },
     {
       "tag": "PROBOT",
-      "data": [
-        "DB  $81,$11",
-        "DB  $20,$00",
-        "DB  $99,$FF"
-      ]
+      "type": "ROBOT_FORM",
+      "faces": [
+        "FACE_6"
+      ],
+      "minCount": 1,
+      "maxCount": 1,
+      "rarity": 20
     },
     {
       "tag": "HOLSTER",
-      "data": [
-        "DB  $41,$12",
-        "DB  $14,$00",
-        "DB  $2F,$28,$FF"
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_6"
+      ],
+      "minCount": 1,
+      "maxCount": 2,
+      "rarity": 14,
+      "with": [
+        "PARTICLE_MAN",
+        "WORMS"
       ]
     },
     {
       "tag": "ROBIEN",
-      "data": [
-        "DB  $C1,$12",
-        "DB  $26,$00",
-        "DB  $25,$FF"
+      "type": "UNKNOWN_ROBOT",
+      "faces": [
+        "FACE_6"
+      ],
+      "minCount": 1,
+      "maxCount": 2,
+      "rarity": 26,
+      "with": [
+        "CLAPPER"
       ]
     },
     {
       "tag": "STICKY",
-      "data": [
-        "DB  $41,$11",
-        "DB  $14,$00",
-        "DB  $2C,$FF"
+      "type": "ALIEN_FORM",
+      "faces": [
+        "FACE_6"
+      ],
+      "minCount": 1,
+      "maxCount": 1,
+      "rarity": 14,
+      "with": [
+        "FINGERS"
       ]
     }
   ]

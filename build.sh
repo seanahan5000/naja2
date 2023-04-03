@@ -8,6 +8,7 @@ ROOT=`pwd`
 SRC="$ROOT/src"
 OBJ="$ROOT/obj"
 DSK="$ROOT/dsk"
+DATA="$ROOT/data"
 ASM="asm6502 -root $SRC -objbase ../obj -srcbase"
 
 if ! [[ -d "$OBJ" ]]; then
@@ -117,8 +118,13 @@ if ! [[ -d "$PROJ" ]]; then
   mkdir $PROJ
 fi
 
+if ! [[ -d "$PROJ/data" ]]; then
+  mkdir "$PROJ/data"
+fi
+
 cp project-naja2.json $PROJ
 cp $OBJ/*           $PROJ
 cp $DSK/naja*.nib   $PROJ
+cp $DATA/*.json     $PROJ/data
 
 #---------------------------------------
