@@ -1,352 +1,350 @@
-{
-  "table": [
-    {
-      "tag": "MAGNET",
-      "comment": "Magnetic Sweeper",
-      "type": "ROBOT_FORM",
-      "minCount": 1,
-      "maxCount": 1,
-      "rarity": 4,
-      "with": [
-        "PROG_CHANGER",
-        "DIODE_ROBOT",
-        "CYLINDER_BOT"
-      ]
-    },
-    {
-      "tag": "MISER",
-      "comment": "\"Miser\"",
-      "type": "ALIEN_FORM",
-      "minCount": 1,
-      "maxCount": 2,
-      "rarity": 4,
-      "with": [
-        "CLOAKED_ALIEN",
-        "LITTLE_MEN",
-        "TAIL_FIGHTER",
-        "SHARP_SHOOTER"
-      ]
-    },
-    {
-      "tag": "ROBED_SELLER",
-      "comment": "Ebkal'ee",
-      "type": "ALIEN_FORM",
-      "minCount": 1,
-      "maxCount": 1,
-      "rarity": 5
-    },
-    {
-      "tag": "SCREAMER",
-      "comment": "\"Screecher\"",
-      "type": "ALIEN_FORM",
-      "minCount": 1,
-      "maxCount": 2,
-      "rarity": 5,
-      "with": [
-        "GLASS_GUY",
-        "ACID_SPITTER",
-        "PHASOID",
-        "ATOM_SHIFTER",
-        "WEB_THING"
-      ]
-    },
-    {
-      "tag": "TF_BAIT",
-      "comment": "\"Mauler\"",
-      "type": "ALIEN_FORM",
-      "minCount": 2,
-      "maxCount": 3,
-      "rarity": 5
-    },
-    {
-      "tag": "PROG_CHANGER",
-      "comment": "Mem-Placer Robot",
-      "type": "ROBOT_FORM",
-      "minCount": 1,
-      "maxCount": 1,
-      "rarity": 6,
-      "with": [
-        "MAGNET",
-        "DIODE_ROBOT",
-        "CYLINDER_BOT"
-      ]
-    },
-    {
-      "tag": "SPARKLES",
-      "comment": "Sparkle",
-      "type": "UNKNOWN_ALIEN",
-      "minCount": 6,
-      "maxCount": 6,
-      "rarity": 6
-    },
-    {
-      "tag": "CLOAKED_ALIEN",
-      "comment": "Encephaloid",
-      "type": "ALIEN_FORM",
-      "minCount": 1,
-      "maxCount": 3,
-      "rarity": 6,
-      "with": [
-        "MISER",
-        "LITTLE_MEN",
-        "TAIL_FIGHTER",
-        "SHARP_SHOOTER"
-      ]
-    },
-    {
-      "tag": "GLASS_GUY",
-      "comment": "Transparent",
-      "type": "ALIEN_FORM",
-      "minCount": 1,
-      "maxCount": 2,
-      "rarity": 6,
-      "with": [
-        "SCREAMER",
-        "ACID_SPITTER",
-        "PHASOID",
-        "ATOM_SHIFTER",
-        "WEB_THING"
-      ]
-    },
-    {
-      "tag": "ACID_SPITTER",
-      "comment": "Acid Spitter",
-      "type": "ALIEN_FORM",
-      "minCount": 1,
-      "maxCount": 2,
-      "rarity": 9,
-      "with": [
-        "SCREAMER",
-        "GLASS_GUY",
-        "PHASOID",
-        "ATOM_SHIFTER",
-        "WEB_THING"
-      ]
-    },
-    {
-      "tag": "SEVEN_CLAWS",
-      "comment": "Zetoc",
-      "type": "ALIEN_FORM",
-      "minCount": 2,
-      "maxCount": 3,
-      "rarity": 9,
-      "with": [
-        "TANGIBLE_GAS",
-        "GREEN_PUDDLE",
-        "CARNIVORE"
-      ]
-    },
-    {
-      "tag": "PHASOID",
-      "comment": "Phasoid",
-      "type": "ALIEN_FORM",
-      "minCount": 2,
-      "maxCount": 4,
-      "rarity": 9,
-      "with": [
-        "SCREAMER",
-        "GLASS_GUY",
-        "ACID_SPITTER",
-        "ATOM_SHIFTER",
-        "WEB_THING"
-      ]
-    },
-    {
-      "tag": "FAKER",
-      "comment": "Pseudomort",
-      "type": "ALIEN_FORM",
-      "minCount": 1,
-      "maxCount": 1,
-      "rarity": 10
-    },
-    {
-      "tag": "TANGIBLE_GAS",
-      "comment": "Tangible Gas",
-      "type": "UNKNOWN_ALIEN",
-      "minCount": 1,
-      "maxCount": 1,
-      "rarity": 10,
-      "with": [
-        "SEVEN_CLAWS",
-        "GREEN_PUDDLE",
-        "CARNIVORE"
-      ]
-    },
-    {
-      "tag": "GREEN_PUDDLE",
-      "comment": "Puddle Creature",
-      "type": "ALIEN_FORM",
-      "minCount": 1,
-      "maxCount": 3,
-      "rarity": 10,
-      "with": [
-        "SEVEN_CLAWS",
-        "TANGIBLE_GAS",
-        "CARNIVORE"
-      ]
-    },
-    {
-      "tag": "DIODE_ROBOT",
-      "comment": "Ion Diode Robot",
-      "type": "ROBOT_FORM",
-      "minCount": 1,
-      "maxCount": 3,
-      "rarity": 10,
-      "with": [
-        "MAGNET",
-        "PROG_CHANGER",
-        "CYLINDER_BOT"
-      ]
-    },
-    {
-      "tag": "EXPLODER",
-      "comment": "Vegan Exploder",
-      "type": "UNKNOWN_ALIEN",
-      "minCount": 8,
-      "maxCount": 12,
-      "rarity": 12
-    },
-    {
-      "tag": "CARNIVORE",
-      "comment": "Carnivore",
-      "type": "ALIEN_FORM",
-      "minCount": 1,
-      "maxCount": 1,
-      "rarity": 12,
-      "with": [
-        "SEVEN_CLAWS",
-        "TANGIBLE_GAS",
-        "GREEN_PUDDLE"
-      ]
-    },
-    {
-      "tag": "ATOM_SHIFTER",
-      "comment": "Atom Arranger",
-      "type": "ALIEN_FORM",
-      "minCount": 1,
-      "maxCount": 1,
-      "rarity": 12,
-      "with": [
-        "SCREAMER",
-        "GLASS_GUY",
-        "ACID_SPITTER",
-        "PHASOID",
-        "WEB_THING"
-      ]
-    },
-    {
-      "tag": "LITTLE_MEN",
-      "comment": "Little Men",
-      "type": "ALIEN_FORM",
-      "minCount": 6,
-      "maxCount": 8,
-      "rarity": 13,
-      "with": [
-        "MISER",
-        "CLOAKED_ALIEN",
-        "TAIL_FIGHTER",
-        "SHARP_SHOOTER"
-      ]
-    },
-    {
-      "tag": "TAIL_FIGHTER",
-      "comment": "Beteiguesen",
-      "type": "ALIEN_FORM",
-      "minCount": 2,
-      "maxCount": 5,
-      "rarity": 14,
-      "with": [
-        "MISER",
-        "CLOAKED_ALIEN",
-        "LITTLE_MEN",
-        "SHARP_SHOOTER"
-      ]
-    },
-    {
-      "tag": "SHARP_SHOOTER",
-      "comment": "\"Sharp Shooter\"",
-      "type": "ALIEN_FORM",
-      "minCount": 2,
-      "maxCount": 2,
-      "rarity": 13,
-      "with": [
-        "MISER",
-        "CLOAKED_ALIEN",
-        "LITTLE_MEN",
-        "TAIL_FIGHTER"
-      ]
-    },
-    {
-      "tag": "CYLINDER_BOT",
-      "comment": "Triped IV Robot",
-      "type": "ROBOT_FORM",
-      "minCount": 1,
-      "maxCount": 2,
-      "rarity": 14,
-      "with": [
-        "MAGNET",
-        "PROG_CHANGER",
-        "DIODE_ROBOT"
-      ]
-    },
-    {
-      "tag": "WEB_THING",
-      "comment": "Webbed Parasite",
-      "type": "ALIEN_FORM",
-      "minCount": 2,
-      "maxCount": 4,
-      "rarity": 14,
-      "with": [
-        "SCREAMER",
-        "GLASS_GUY",
-        "ACID_SPITTER",
-        "PHASOID",
-        "ATOM_SHIFTER"
-      ]
-    },
-    {
-      "tag": "INSECT",
-      "comment": "Worker Insect",
-      "type": "ALIEN_FORM",
-      "minCount": 4,
-      "maxCount": 5,
-      "rarity": 14,
-      "with": [
-        "INSECT"
-      ]
-    },
-    {
-      "tag": "INSECT",
-      "comment": "Fighter Insect",
-      "type": "ALIEN_FORM",
-      "minCount": 4,
-      "maxCount": 5,
-      "rarity": 14,
-      "with": [
-        "INSECT"
-      ]
-    },
-    {
-      "tag": "TREE_HANGER",
-      "comment": "Okkar Marsupial",
-      "type": "ALIEN_FORM",
-      "minCount": 4,
-      "maxCount": 6,
-      "rarity": 10,
-      "with": [
-        "OKKAR_PLANT"
-      ]
-    },
-    {
-      "tag": "OKKAR_PLANT",
-      "comment": "Okkar Plant",
-      "type": "ALIEN_FORM",
-      "minCount": 4,
-      "maxCount": 6,
-      "rarity": 0,
-      "with": [
-        "TREE_HANGER"
-      ]
-    }
-  ]
-}
+[
+  {
+    "tag": "MAGNET",
+    "comment": "Magnetic Sweeper",
+    "type": "ROBOT_FORM",
+    "minCount": 1,
+    "maxCount": 1,
+    "rarity": 4,
+    "with": [
+      "PROG_CHANGER",
+      "DIODE_ROBOT",
+      "CYLINDER_BOT"
+    ]
+  },
+  {
+    "tag": "MISER",
+    "comment": "\"Miser\"",
+    "type": "ALIEN_FORM",
+    "minCount": 1,
+    "maxCount": 2,
+    "rarity": 4,
+    "with": [
+      "CLOAKED_ALIEN",
+      "LITTLE_MEN",
+      "TAIL_FIGHTER",
+      "SHARP_SHOOTER"
+    ]
+  },
+  {
+    "tag": "ROBED_SELLER",
+    "comment": "Ebkal'ee",
+    "type": "ALIEN_FORM",
+    "minCount": 1,
+    "maxCount": 1,
+    "rarity": 5
+  },
+  {
+    "tag": "SCREAMER",
+    "comment": "\"Screecher\"",
+    "type": "ALIEN_FORM",
+    "minCount": 1,
+    "maxCount": 2,
+    "rarity": 5,
+    "with": [
+      "GLASS_GUY",
+      "ACID_SPITTER",
+      "PHASOID",
+      "ATOM_SHIFTER",
+      "WEB_THING"
+    ]
+  },
+  {
+    "tag": "TF_BAIT",
+    "comment": "\"Mauler\"",
+    "type": "ALIEN_FORM",
+    "minCount": 2,
+    "maxCount": 3,
+    "rarity": 5
+  },
+  {
+    "tag": "PROG_CHANGER",
+    "comment": "Mem-Placer Robot",
+    "type": "ROBOT_FORM",
+    "minCount": 1,
+    "maxCount": 1,
+    "rarity": 6,
+    "with": [
+      "MAGNET",
+      "DIODE_ROBOT",
+      "CYLINDER_BOT"
+    ]
+  },
+  {
+    "tag": "SPARKLES",
+    "comment": "Sparkle",
+    "type": "UNKNOWN_ALIEN",
+    "minCount": 6,
+    "maxCount": 6,
+    "rarity": 6
+  },
+  {
+    "tag": "CLOAKED_ALIEN",
+    "comment": "Encephaloid",
+    "type": "ALIEN_FORM",
+    "minCount": 1,
+    "maxCount": 3,
+    "rarity": 6,
+    "with": [
+      "MISER",
+      "LITTLE_MEN",
+      "TAIL_FIGHTER",
+      "SHARP_SHOOTER"
+    ]
+  },
+  {
+    "tag": "GLASS_GUY",
+    "comment": "Transparent",
+    "type": "ALIEN_FORM",
+    "minCount": 1,
+    "maxCount": 2,
+    "rarity": 6,
+    "with": [
+      "SCREAMER",
+      "ACID_SPITTER",
+      "PHASOID",
+      "ATOM_SHIFTER",
+      "WEB_THING"
+    ]
+  },
+  {
+    "tag": "ACID_SPITTER",
+    "comment": "Acid Spitter",
+    "type": "ALIEN_FORM",
+    "minCount": 1,
+    "maxCount": 2,
+    "rarity": 9,
+    "with": [
+      "SCREAMER",
+      "GLASS_GUY",
+      "PHASOID",
+      "ATOM_SHIFTER",
+      "WEB_THING"
+    ]
+  },
+  {
+    "tag": "SEVEN_CLAWS",
+    "comment": "Zetoc",
+    "type": "ALIEN_FORM",
+    "minCount": 2,
+    "maxCount": 3,
+    "rarity": 9,
+    "with": [
+      "TANGIBLE_GAS",
+      "GREEN_PUDDLE",
+      "CARNIVORE"
+    ]
+  },
+  {
+    "tag": "PHASOID",
+    "comment": "Phasoid",
+    "type": "ALIEN_FORM",
+    "minCount": 2,
+    "maxCount": 4,
+    "rarity": 9,
+    "with": [
+      "SCREAMER",
+      "GLASS_GUY",
+      "ACID_SPITTER",
+      "ATOM_SHIFTER",
+      "WEB_THING"
+    ]
+  },
+  {
+    "tag": "FAKER",
+    "comment": "Pseudomort",
+    "type": "ALIEN_FORM",
+    "minCount": 1,
+    "maxCount": 1,
+    "rarity": 10
+  },
+  {
+    "tag": "TANGIBLE_GAS",
+    "comment": "Tangible Gas",
+    "type": "UNKNOWN_ALIEN",
+    "minCount": 1,
+    "maxCount": 1,
+    "rarity": 10,
+    "with": [
+      "SEVEN_CLAWS",
+      "GREEN_PUDDLE",
+      "CARNIVORE"
+    ]
+  },
+  {
+    "tag": "GREEN_PUDDLE",
+    "comment": "Puddle Creature",
+    "type": "ALIEN_FORM",
+    "minCount": 1,
+    "maxCount": 3,
+    "rarity": 10,
+    "with": [
+      "SEVEN_CLAWS",
+      "TANGIBLE_GAS",
+      "CARNIVORE"
+    ]
+  },
+  {
+    "tag": "DIODE_ROBOT",
+    "comment": "Ion Diode Robot",
+    "type": "ROBOT_FORM",
+    "minCount": 1,
+    "maxCount": 3,
+    "rarity": 10,
+    "with": [
+      "MAGNET",
+      "PROG_CHANGER",
+      "CYLINDER_BOT"
+    ]
+  },
+  {
+    "tag": "EXPLODER",
+    "comment": "Vegan Exploder",
+    "type": "UNKNOWN_ALIEN",
+    "minCount": 8,
+    "maxCount": 12,
+    "rarity": 12
+  },
+  {
+    "tag": "CARNIVORE",
+    "comment": "Carnivore",
+    "type": "ALIEN_FORM",
+    "minCount": 1,
+    "maxCount": 1,
+    "rarity": 12,
+    "with": [
+      "SEVEN_CLAWS",
+      "TANGIBLE_GAS",
+      "GREEN_PUDDLE"
+    ]
+  },
+  {
+    "tag": "ATOM_SHIFTER",
+    "comment": "Atom Arranger",
+    "type": "ALIEN_FORM",
+    "minCount": 1,
+    "maxCount": 1,
+    "rarity": 12,
+    "with": [
+      "SCREAMER",
+      "GLASS_GUY",
+      "ACID_SPITTER",
+      "PHASOID",
+      "WEB_THING"
+    ]
+  },
+  {
+    "tag": "LITTLE_MEN",
+    "comment": "Little Men",
+    "type": "ALIEN_FORM",
+    "minCount": 6,
+    "maxCount": 8,
+    "rarity": 13,
+    "with": [
+      "MISER",
+      "CLOAKED_ALIEN",
+      "TAIL_FIGHTER",
+      "SHARP_SHOOTER"
+    ]
+  },
+  {
+    "tag": "TAIL_FIGHTER",
+    "comment": "Beteiguesen",
+    "type": "ALIEN_FORM",
+    "minCount": 2,
+    "maxCount": 5,
+    "rarity": 14,
+    "with": [
+      "MISER",
+      "CLOAKED_ALIEN",
+      "LITTLE_MEN",
+      "SHARP_SHOOTER"
+    ]
+  },
+  {
+    "tag": "SHARP_SHOOTER",
+    "comment": "\"Sharp Shooter\"",
+    "type": "ALIEN_FORM",
+    "minCount": 2,
+    "maxCount": 2,
+    "rarity": 13,
+    "with": [
+      "MISER",
+      "CLOAKED_ALIEN",
+      "LITTLE_MEN",
+      "TAIL_FIGHTER"
+    ]
+  },
+  {
+    "tag": "CYLINDER_BOT",
+    "comment": "Triped IV Robot",
+    "type": "ROBOT_FORM",
+    "minCount": 1,
+    "maxCount": 2,
+    "rarity": 14,
+    "with": [
+      "MAGNET",
+      "PROG_CHANGER",
+      "DIODE_ROBOT"
+    ]
+  },
+  {
+    "tag": "WEB_THING",
+    "comment": "Webbed Parasite",
+    "type": "ALIEN_FORM",
+    "minCount": 2,
+    "maxCount": 4,
+    "rarity": 14,
+    "with": [
+      "SCREAMER",
+      "GLASS_GUY",
+      "ACID_SPITTER",
+      "PHASOID",
+      "ATOM_SHIFTER"
+    ]
+  },
+  {
+    "tag": "INSECT",
+    "comment": "Worker Insect",
+    "type": "ALIEN_FORM",
+    "minCount": 4,
+    "maxCount": 5,
+    "rarity": 14,
+    "with": [
+      "INSECT"
+    ]
+  },
+  {
+    "tag": "INSECT",
+    "comment": "Fighter Insect",
+    "type": "ALIEN_FORM",
+    "minCount": 4,
+    "maxCount": 5,
+    "rarity": 14,
+    "with": [
+      "INSECT"
+    ]
+  },
+  {
+    "tag": "TREE_HANGER",
+    "comment": "Okkar Marsupial",
+    "type": "ALIEN_FORM",
+    "minCount": 4,
+    "maxCount": 6,
+    "rarity": 10,
+    "with": [
+      "OKKAR_PLANT"
+    ]
+  },
+  {
+    "tag": "OKKAR_PLANT",
+    "comment": "Okkar Plant",
+    "type": "ALIEN_FORM",
+    "minCount": 4,
+    "maxCount": 6,
+    "rarity": 0,
+    "with": [
+      "TREE_HANGER"
+    ]
+  }
+]

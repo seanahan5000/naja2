@@ -1,553 +1,551 @@
-{
-  "pictures": [
-    {
-      "tag": "ACID_SPITTER",
-      "file": "ACID.SPITTER.S"
-    },
-    {
-      "tag": "AIR_SWIMMER",
-      "file": "AIR.SWIMMER.S"
-    },
-    {
-      "tag": "AIRLOCK",
-      "file": "AIRLOCK.S"
-    },
-    {
-      "tag": "ALIEN_ON",
-      "file": "ALIEN.ON.S"
-    },
-    {
-      "tag": "ANTISIPATOR",
-      "file": "ANTISIPATOR.S"
-    },
-    {
-      "tag": "ARMOR_ALIEN",
-      "file": "ARMOR.ALIEN.S"
-    },
-    {
-      "tag": "ATOM_SHIFTER",
-      "file": "ATOM.SHIFTER.S"
-    },
-    {
-      "tag": "BARRICADER",
-      "file": "BARRICADER.S"
-    },
-    {
-      "tag": "BIRD_INSECT",
-      "file": "BIRD.INSECT.S"
-    },
-    {
-      "tag": "BLACK_ALIEN",
-      "file": "BLACK.ALIEN.S"
-    },
-    {
-      "tag": "BLOW_DART",
-      "file": "BLOW.DART.S"
-    },
-    {
-      "tag": "BRANCHES",
-      "file": "BRANCHES.S"
-    },
-    {
-      "tag": "BTWN_LEGS",
-      "file": "BTWN.LEGS.S"
-    },
-    {
-      "tag": "CARNIVORE",
-      "file": "CARNIVORE.S"
-    },
-    {
-      "tag": "CEIL_SWINGER",
-      "file": "CEIL.SWINGER.S"
-    },
-    {
-      "tag": "CEILING_FAN",
-      "file": "CEILING.FAN.S"
-    },
-    {
-      "tag": "CENTAUR",
-      "file": "CENTAUR.S"
-    },
-    {
-      "tag": "CLAPPER",
-      "file": "CLAPPER.S"
-    },
-    {
-      "tag": "CLOAKED_ALIEN",
-      "file": "CLOAKED.ALIEN.S"
-    },
-    {
-      "tag": "CLUBBER",
-      "file": "CLUBBER.S"
-    },
-    {
-      "tag": "CONSTRICTOR",
-      "file": "CONSTRICTOR.S"
-    },
-    {
-      "tag": "COOLER",
-      "file": "COOLER.S"
-    },
-    {
-      "tag": "CORE_ALIEN",
-      "file": "CORE.ALIEN.S"
-    },
-    {
-      "tag": "CROSS_BOW",
-      "file": "CROSS.BOW.S"
-    },
-    {
-      "tag": "CYLINDER_BOT",
-      "file": "CYLINDER.BOT.S"
-    },
-    {
-      "tag": "DIODE_ROBOT",
-      "file": "DIODE.ROBOT.S"
-    },
-    {
-      "tag": "DIZZY",
-      "file": "DIZZY.S"
-    },
-    {
-      "tag": "DRILLER",
-      "file": "DRILLER.S"
-    },
-    {
-      "tag": "DUAL_HEAD",
-      "file": "DUAL.HEAD.S"
-    },
-    {
-      "tag": "EARS",
-      "file": "EARS.S"
-    },
-    {
-      "tag": "EXPLODER",
-      "comment": "change file name",
-      "file": "EXPLODE.S"
-    },
-    {
-      "tag": "FAKER",
-      "file": "FAKER.S"
-    },
-    {
-      "tag": "FINGERS",
-      "file": "FINGERS.S"
-    },
-    {
-      "tag": "FIRE_MAN",
-      "file": "FIRE.MAN.S"
-    },
-    {
-      "tag": "FOUR_SWORDS",
-      "file": "FOUR.SWORDS.S"
-    },
-    {
-      "tag": "FROG_BOT",
-      "file": "FROG.BOT.S"
-    },
-    {
-      "tag": "FUNGUS",
-      "file": "FUNGUS.S"
-    },
-    {
-      "tag": "FURNACE",
-      "file": "FURNACE.S"
-    },
-    {
-      "tag": "GAS_CLOUD",
-      "file": "GAS.CLOUD.S"
-    },
-    {
-      "tag": "GLASS_GUY",
-      "file": "GLASS.GUY.S"
-    },
-    {
-      "tag": "GLOWER",
-      "file": "GLOWER.S"
-    },
-    {
-      "tag": "GODZILLA",
-      "file": "GODZILLA.S"
-    },
-    {
-      "tag": "GREEN_HEAD",
-      "file": "GREEN.HEAD.S"
-    },
-    {
-      "tag": "GREEN_PUDDLE",
-      "file": "GREEN.PUDDLE.S"
-    },
-    {
-      "tag": "GREMLIN",
-      "file": "GREMLIN.S"
-    },
-    {
-      "tag": "HANGING_BOT",
-      "file": "HANGING.BOT.S"
-    },
-    {
-      "tag": "HEATER",
-      "file": "HEATER.S"
-    },
-    {
-      "tag": "HOLSTER",
-      "file": "HOLSTER.S"
-    },
-    {
-      "tag": "HORNED_DOG",
-      "file": "HORNED.DOG.S"
-    },
-    {
-      "tag": "HOT_HEAD",
-      "file": "HOT.HEAD.S"
-    },
-    {
-      "tag": "IN_WEB",
-      "file": "IN.WEB.S"
-    },
-    {
-      "tag": "INFORMER",
-      "file": "INFORMER.S"
-    },
-    {
-      "tag": "INSECT",
-      "file": "INSECT.S"
-    },
-    {
-      "tag": "INVERSE",
-      "file": "INVERSE.S"
-    },
-    {
-      "tag": "INVISIBLE",
-      "file": "INVISIBLE.S"
-    },
-    {
-      "tag": "KAMIKAZE",
-      "comment": "Rename file",
-      "file": "KAMAKAZE.S"
-    },
-    {
-      "tag": "LEASHED_DOGS",
-      "file": "LEASHED.DOGS.S"
-    },
-    {
-      "tag": "LIGHT_ALIEN",
-      "file": "LIGHT.ALIEN.S"
-    },
-    {
-      "tag": "LITTLE_BUG",
-      "file": "LITTLE.BUG.S"
-    },
-    {
-      "tag": "LITTLE_MEN",
-      "file": "LITTLE.MEN.S"
-    },
-    {
-      "tag": "LITTLE_PLANES",
-      "file": "LITTLE.PLANES.S"
-    },
-    {
-      "tag": "LIZARD",
-      "file": "LIZARD.S"
-    },
-    {
-      "tag": "LONG_ARM",
-      "file": "LONG.ARM.S"
-    },
-    {
-      "tag": "MAGNET",
-      "file": "MAGNET.S"
-    },
-    {
-      "tag": "METAL_MITES",
-      "file": "METAL.MITES.S"
-    },
-    {
-      "tag": "MISER",
-      "file": "MISER.S"
-    },
-    {
-      "tag": "OILER",
-      "file": "OILER.S"
-    },
-    {
-      "tag": "AMOEBA",
-      "comment": "rename this file",
-      "file": "OMEBA.S"
-    },
-    {
-      "tag": "ONE_ARM_BLOB",
-      "file": "ONE.ARM.BLOB.S"
-    },
-    {
-      "tag": "ONE_EYE",
-      "file": "ONE.EYE.S"
-    },
-    {
-      "tag": "PARTICLE_MAN",
-      "file": "PARTICLE.MAN.S"
-    },
-    {
-      "tag": "PEEKER",
-      "file": "PEEKER.S"
-    },
-    {
-      "tag": "PER_ALIEN",
-      "file": "PER.ALIEN.S"
-    },
-    {
-      "tag": "PHASOID",
-      "file": "PHASOID.S"
-    },
-    {
-      "tag": "PINK_WINGS",
-      "file": "PINK.WINGS.S"
-    },
-    {
-      "tag": "PLATFORM",
-      "file": "PLATFORM.S"
-    },
-    {
-      "tag": "POINTY_HEAD",
-      "file": "POINTY.HEAD.S"
-    },
-    {
-      "tag": "POISON_SUIT",
-      "file": "POISON.SUIT.S"
-    },
-    {
-      "tag": "PROBOT",
-      "file": "PROBOT.S"
-    },
-    {
-      "tag": "PROG_CHANGER",
-      "file": "PROG.CHANGER.S"
-    },
-    {
-      "tag": "PUNKER",
-      "file": "PUNKER.S"
-    },
-    {
-      "tag": "QUEEN_INSECT",
-      "file": "QUEEN.INSECT.S"
-    },
-    {
-      "tag": "RABBIT_EARS",
-      "file": "RABBIT.EARS.S"
-    },
-    {
-      "tag": "RAG_ALIEN",
-      "file": "RAG.ALIEN.S"
-    },
-    {
-      "tag": "RAG_SWORD",
-      "file": "RAG.SWORD.S"
-    },
-    {
-      "tag": "REFLEX_ALIEN",
-      "file": "REFLEX.ALIEN.S"
-    },
-    {
-      "tag": "REPAIR_UNIT",
-      "file": "REPAIR.UNIT.S"
-    },
-    {
-      "tag": "RICOCHET",
-      "file": "RICOCHET.S"
-    },
-    {
-      "tag": "ROBED_SELLER",
-      "file": "ROBED.SELLER.S"
-    },
-    {
-      "tag": "ROBIEN",
-      "file": "ROBIEN.S"
-    },
-    {
-      "tag": "ROBOT",
-      "file": "ROBOT.S"
-    },
-    {
-      "tag": "RUNNING_BOT",
-      "file": "RUNNING.BOT.S"
-    },
-    {
-      "tag": "RUUIKS_MEN",
-      "file": "RUUIKS.MEN.S"
-    },
-    {
-      "tag": "SCAVENGER",
-      "file": "SCAVENGER.S"
-    },
-    {
-      "tag": "SCREAMER",
-      "file": "SCREAMER.S"
-    },
-    {
-      "tag": "SEVEN_CLAWS",
-      "file": "SEVEN.CLAWS.S"
-    },
-    {
-      "tag": "SHARP_SHOOTER",
-      "file": "SHARP.SHOOTER.S"
-    },
-    {
-      "tag": "SHIELD",
-      "file": "SHIELD.S"
-    },
-    {
-      "tag": "SHIFTER",
-      "file": "SHIFTER.S"
-    },
-    {
-      "tag": "SIX_ARM",
-      "file": "SIX.ARM.S"
-    },
-    {
-      "tag": "SLEEPY",
-      "file": "SLEEPY.S"
-    },
-    {
-      "tag": "SLICER",
-      "file": "SLICER.S"
-    },
-    {
-      "tag": "SNOUT",
-      "file": "SNOUT.S"
-    },
-    {
-      "tag": "SNOW_JOB",
-      "file": "SNOW.JOB.S"
-    },
-    {
-      "tag": "SPACE_MAN",
-      "file": "SPACE.MAN.S"
-    },
-    {
-      "tag": "SPACE_SHIP",
-      "file": "SPACE.SHIP.S"
-    },
-    {
-      "tag": "SPARKLES",
-      "file": "SPARKLES.S"
-    },
-    {
-      "tag": "SPOOL_ALIEN",
-      "file": "SPOOL.ALIEN.S"
-    },
-    {
-      "tag": "SPOOR_PLANT",
-      "file": "SPOOR.PLANT.S"
-    },
-    {
-      "tag": "SQUINTER",
-      "file": "SQUINTER.S"
-    },
-    {
-      "tag": "STAFF",
-      "file": "STAFF.S"
-    },
-    {
-      "tag": "STARBURST",
-      "file": "STARBURST.S"
-    },
-    {
-      "tag": "STICKY",
-      "file": "STICKY.S"
-    },
-    {
-      "tag": "STINKY",
-      "file": "STINKY.S"
-    },
-    {
-      "tag": "STRINGY_HAND",
-      "file": "STRINGY.HAND.S"
-    },
-    {
-      "tag": "SWAMP_THING",
-      "file": "SWAMP.THING.S"
-    },
-    {
-      "tag": "TAIL_FIGHTER",
-      "comment": "rename file?",
-      "file": "TAILFIGHTER.S"
-    },
-    {
-      "tag": "TANGIBLE_GAS",
-      "file": "TANGIBLE.GAS.S"
-    },
-    {
-      "tag": "TANK_HUMAN",
-      "file": "TANK.HUMAN.S"
-    },
-    {
-      "tag": "TELEPORTER",
-      "file": "TELEPORTER.S"
-    },
-    {
-      "tag": "TENTICLE",
-      "file": "TENTICLE.S"
-    },
-    {
-      "tag": "TF_BAIT",
-      "file": "TF.BAIT.S"
-    },
-    {
-      "tag": "THROWER",
-      "file": "THROWER.S"
-    },
-    {
-      "tag": "TIME_WARP",
-      "file": "TIME.WARP.S"
-    },
-    {
-      "tag": "TREADED_BOT",
-      "file": "TREADED.BOT.S"
-    },
-    {
-      "tag": "TREE_ALIEN",
-      "file": "TREE.ALIEN.S"
-    },
-    {
-      "tag": "TREE_HANGER",
-      "file": "TREE.HANGER.S"
-    },
-    {
-      "tag": "TRUNK",
-      "file": "TRUNK.S"
-    },
-    {
-      "tag": "TWISTER",
-      "file": "TWISTER.S"
-    },
-    {
-      "tag": "UNLOADER",
-      "file": "UNLOADER.S"
-    },
-    {
-      "tag": "WANDERING",
-      "file": "WANDERING.S"
-    },
-    {
-      "tag": "WATER_TOWER",
-      "file": "WATER.TOWER.S"
-    },
-    {
-      "tag": "WEB_THING",
-      "file": "WEB.THING.S"
-    },
-    {
-      "tag": "WEIRD_ALIEN",
-      "comment": "TODO: fix spelling of file name",
-      "file": "WIERD.ALIEN.S"
-    },
-    {
-      "tag": "WIND_TUNNEL",
-      "file": "WIND.TUNNEL.S"
-    },
-    {
-      "tag": "WORMS",
-      "file": "WORMS.S"
-    }
-  ]
-}
+[
+  {
+    "tag": "ACID_SPITTER",
+    "file": "ACID.SPITTER.S"
+  },
+  {
+    "tag": "AIR_SWIMMER",
+    "file": "AIR.SWIMMER.S"
+  },
+  {
+    "tag": "AIRLOCK",
+    "file": "AIRLOCK.S"
+  },
+  {
+    "tag": "ALIEN_ON",
+    "file": "ALIEN.ON.S"
+  },
+  {
+    "tag": "ANTISIPATOR",
+    "file": "ANTISIPATOR.S"
+  },
+  {
+    "tag": "ARMOR_ALIEN",
+    "file": "ARMOR.ALIEN.S"
+  },
+  {
+    "tag": "ATOM_SHIFTER",
+    "file": "ATOM.SHIFTER.S"
+  },
+  {
+    "tag": "BARRICADER",
+    "file": "BARRICADER.S"
+  },
+  {
+    "tag": "BIRD_INSECT",
+    "file": "BIRD.INSECT.S"
+  },
+  {
+    "tag": "BLACK_ALIEN",
+    "file": "BLACK.ALIEN.S"
+  },
+  {
+    "tag": "BLOW_DART",
+    "file": "BLOW.DART.S"
+  },
+  {
+    "tag": "BRANCHES",
+    "file": "BRANCHES.S"
+  },
+  {
+    "tag": "BTWN_LEGS",
+    "file": "BTWN.LEGS.S"
+  },
+  {
+    "tag": "CARNIVORE",
+    "file": "CARNIVORE.S"
+  },
+  {
+    "tag": "CEIL_SWINGER",
+    "file": "CEIL.SWINGER.S"
+  },
+  {
+    "tag": "CEILING_FAN",
+    "file": "CEILING.FAN.S"
+  },
+  {
+    "tag": "CENTAUR",
+    "file": "CENTAUR.S"
+  },
+  {
+    "tag": "CLAPPER",
+    "file": "CLAPPER.S"
+  },
+  {
+    "tag": "CLOAKED_ALIEN",
+    "file": "CLOAKED.ALIEN.S"
+  },
+  {
+    "tag": "CLUBBER",
+    "file": "CLUBBER.S"
+  },
+  {
+    "tag": "CONSTRICTOR",
+    "file": "CONSTRICTOR.S"
+  },
+  {
+    "tag": "COOLER",
+    "file": "COOLER.S"
+  },
+  {
+    "tag": "CORE_ALIEN",
+    "file": "CORE.ALIEN.S"
+  },
+  {
+    "tag": "CROSS_BOW",
+    "file": "CROSS.BOW.S"
+  },
+  {
+    "tag": "CYLINDER_BOT",
+    "file": "CYLINDER.BOT.S"
+  },
+  {
+    "tag": "DIODE_ROBOT",
+    "file": "DIODE.ROBOT.S"
+  },
+  {
+    "tag": "DIZZY",
+    "file": "DIZZY.S"
+  },
+  {
+    "tag": "DRILLER",
+    "file": "DRILLER.S"
+  },
+  {
+    "tag": "DUAL_HEAD",
+    "file": "DUAL.HEAD.S"
+  },
+  {
+    "tag": "EARS",
+    "file": "EARS.S"
+  },
+  {
+    "tag": "EXPLODER",
+    "comment": "change file name",
+    "file": "EXPLODE.S"
+  },
+  {
+    "tag": "FAKER",
+    "file": "FAKER.S"
+  },
+  {
+    "tag": "FINGERS",
+    "file": "FINGERS.S"
+  },
+  {
+    "tag": "FIRE_MAN",
+    "file": "FIRE.MAN.S"
+  },
+  {
+    "tag": "FOUR_SWORDS",
+    "file": "FOUR.SWORDS.S"
+  },
+  {
+    "tag": "FROG_BOT",
+    "file": "FROG.BOT.S"
+  },
+  {
+    "tag": "FUNGUS",
+    "file": "FUNGUS.S"
+  },
+  {
+    "tag": "FURNACE",
+    "file": "FURNACE.S"
+  },
+  {
+    "tag": "GAS_CLOUD",
+    "file": "GAS.CLOUD.S"
+  },
+  {
+    "tag": "GLASS_GUY",
+    "file": "GLASS.GUY.S"
+  },
+  {
+    "tag": "GLOWER",
+    "file": "GLOWER.S"
+  },
+  {
+    "tag": "GODZILLA",
+    "file": "GODZILLA.S"
+  },
+  {
+    "tag": "GREEN_HEAD",
+    "file": "GREEN.HEAD.S"
+  },
+  {
+    "tag": "GREEN_PUDDLE",
+    "file": "GREEN.PUDDLE.S"
+  },
+  {
+    "tag": "GREMLIN",
+    "file": "GREMLIN.S"
+  },
+  {
+    "tag": "HANGING_BOT",
+    "file": "HANGING.BOT.S"
+  },
+  {
+    "tag": "HEATER",
+    "file": "HEATER.S"
+  },
+  {
+    "tag": "HOLSTER",
+    "file": "HOLSTER.S"
+  },
+  {
+    "tag": "HORNED_DOG",
+    "file": "HORNED.DOG.S"
+  },
+  {
+    "tag": "HOT_HEAD",
+    "file": "HOT.HEAD.S"
+  },
+  {
+    "tag": "IN_WEB",
+    "file": "IN.WEB.S"
+  },
+  {
+    "tag": "INFORMER",
+    "file": "INFORMER.S"
+  },
+  {
+    "tag": "INSECT",
+    "file": "INSECT.S"
+  },
+  {
+    "tag": "INVERSE",
+    "file": "INVERSE.S"
+  },
+  {
+    "tag": "INVISIBLE",
+    "file": "INVISIBLE.S"
+  },
+  {
+    "tag": "KAMIKAZE",
+    "comment": "Rename file",
+    "file": "KAMAKAZE.S"
+  },
+  {
+    "tag": "LEASHED_DOGS",
+    "file": "LEASHED.DOGS.S"
+  },
+  {
+    "tag": "LIGHT_ALIEN",
+    "file": "LIGHT.ALIEN.S"
+  },
+  {
+    "tag": "LITTLE_BUG",
+    "file": "LITTLE.BUG.S"
+  },
+  {
+    "tag": "LITTLE_MEN",
+    "file": "LITTLE.MEN.S"
+  },
+  {
+    "tag": "LITTLE_PLANES",
+    "file": "LITTLE.PLANES.S"
+  },
+  {
+    "tag": "LIZARD",
+    "file": "LIZARD.S"
+  },
+  {
+    "tag": "LONG_ARM",
+    "file": "LONG.ARM.S"
+  },
+  {
+    "tag": "MAGNET",
+    "file": "MAGNET.S"
+  },
+  {
+    "tag": "METAL_MITES",
+    "file": "METAL.MITES.S"
+  },
+  {
+    "tag": "MISER",
+    "file": "MISER.S"
+  },
+  {
+    "tag": "OILER",
+    "file": "OILER.S"
+  },
+  {
+    "tag": "AMOEBA",
+    "comment": "rename this file",
+    "file": "OMEBA.S"
+  },
+  {
+    "tag": "ONE_ARM_BLOB",
+    "file": "ONE.ARM.BLOB.S"
+  },
+  {
+    "tag": "ONE_EYE",
+    "file": "ONE.EYE.S"
+  },
+  {
+    "tag": "PARTICLE_MAN",
+    "file": "PARTICLE.MAN.S"
+  },
+  {
+    "tag": "PEEKER",
+    "file": "PEEKER.S"
+  },
+  {
+    "tag": "PER_ALIEN",
+    "file": "PER.ALIEN.S"
+  },
+  {
+    "tag": "PHASOID",
+    "file": "PHASOID.S"
+  },
+  {
+    "tag": "PINK_WINGS",
+    "file": "PINK.WINGS.S"
+  },
+  {
+    "tag": "PLATFORM",
+    "file": "PLATFORM.S"
+  },
+  {
+    "tag": "POINTY_HEAD",
+    "file": "POINTY.HEAD.S"
+  },
+  {
+    "tag": "POISON_SUIT",
+    "file": "POISON.SUIT.S"
+  },
+  {
+    "tag": "PROBOT",
+    "file": "PROBOT.S"
+  },
+  {
+    "tag": "PROG_CHANGER",
+    "file": "PROG.CHANGER.S"
+  },
+  {
+    "tag": "PUNKER",
+    "file": "PUNKER.S"
+  },
+  {
+    "tag": "QUEEN_INSECT",
+    "file": "QUEEN.INSECT.S"
+  },
+  {
+    "tag": "RABBIT_EARS",
+    "file": "RABBIT.EARS.S"
+  },
+  {
+    "tag": "RAG_ALIEN",
+    "file": "RAG.ALIEN.S"
+  },
+  {
+    "tag": "RAG_SWORD",
+    "file": "RAG.SWORD.S"
+  },
+  {
+    "tag": "REFLEX_ALIEN",
+    "file": "REFLEX.ALIEN.S"
+  },
+  {
+    "tag": "REPAIR_UNIT",
+    "file": "REPAIR.UNIT.S"
+  },
+  {
+    "tag": "RICOCHET",
+    "file": "RICOCHET.S"
+  },
+  {
+    "tag": "ROBED_SELLER",
+    "file": "ROBED.SELLER.S"
+  },
+  {
+    "tag": "ROBIEN",
+    "file": "ROBIEN.S"
+  },
+  {
+    "tag": "ROBOT",
+    "file": "ROBOT.S"
+  },
+  {
+    "tag": "RUNNING_BOT",
+    "file": "RUNNING.BOT.S"
+  },
+  {
+    "tag": "RUUIKS_MEN",
+    "file": "RUUIKS.MEN.S"
+  },
+  {
+    "tag": "SCAVENGER",
+    "file": "SCAVENGER.S"
+  },
+  {
+    "tag": "SCREAMER",
+    "file": "SCREAMER.S"
+  },
+  {
+    "tag": "SEVEN_CLAWS",
+    "file": "SEVEN.CLAWS.S"
+  },
+  {
+    "tag": "SHARP_SHOOTER",
+    "file": "SHARP.SHOOTER.S"
+  },
+  {
+    "tag": "SHIELD",
+    "file": "SHIELD.S"
+  },
+  {
+    "tag": "SHIFTER",
+    "file": "SHIFTER.S"
+  },
+  {
+    "tag": "SIX_ARM",
+    "file": "SIX.ARM.S"
+  },
+  {
+    "tag": "SLEEPY",
+    "file": "SLEEPY.S"
+  },
+  {
+    "tag": "SLICER",
+    "file": "SLICER.S"
+  },
+  {
+    "tag": "SNOUT",
+    "file": "SNOUT.S"
+  },
+  {
+    "tag": "SNOW_JOB",
+    "file": "SNOW.JOB.S"
+  },
+  {
+    "tag": "SPACE_MAN",
+    "file": "SPACE.MAN.S"
+  },
+  {
+    "tag": "SPACE_SHIP",
+    "file": "SPACE.SHIP.S"
+  },
+  {
+    "tag": "SPARKLES",
+    "file": "SPARKLES.S"
+  },
+  {
+    "tag": "SPOOL_ALIEN",
+    "file": "SPOOL.ALIEN.S"
+  },
+  {
+    "tag": "SPOOR_PLANT",
+    "file": "SPOOR.PLANT.S"
+  },
+  {
+    "tag": "SQUINTER",
+    "file": "SQUINTER.S"
+  },
+  {
+    "tag": "STAFF",
+    "file": "STAFF.S"
+  },
+  {
+    "tag": "STARBURST",
+    "file": "STARBURST.S"
+  },
+  {
+    "tag": "STICKY",
+    "file": "STICKY.S"
+  },
+  {
+    "tag": "STINKY",
+    "file": "STINKY.S"
+  },
+  {
+    "tag": "STRINGY_HAND",
+    "file": "STRINGY.HAND.S"
+  },
+  {
+    "tag": "SWAMP_THING",
+    "file": "SWAMP.THING.S"
+  },
+  {
+    "tag": "TAIL_FIGHTER",
+    "comment": "rename file?",
+    "file": "TAILFIGHTER.S"
+  },
+  {
+    "tag": "TANGIBLE_GAS",
+    "file": "TANGIBLE.GAS.S"
+  },
+  {
+    "tag": "TANK_HUMAN",
+    "file": "TANK.HUMAN.S"
+  },
+  {
+    "tag": "TELEPORTER",
+    "file": "TELEPORTER.S"
+  },
+  {
+    "tag": "TENTICLE",
+    "file": "TENTICLE.S"
+  },
+  {
+    "tag": "TF_BAIT",
+    "file": "TF.BAIT.S"
+  },
+  {
+    "tag": "THROWER",
+    "file": "THROWER.S"
+  },
+  {
+    "tag": "TIME_WARP",
+    "file": "TIME.WARP.S"
+  },
+  {
+    "tag": "TREADED_BOT",
+    "file": "TREADED.BOT.S"
+  },
+  {
+    "tag": "TREE_ALIEN",
+    "file": "TREE.ALIEN.S"
+  },
+  {
+    "tag": "TREE_HANGER",
+    "file": "TREE.HANGER.S"
+  },
+  {
+    "tag": "TRUNK",
+    "file": "TRUNK.S"
+  },
+  {
+    "tag": "TWISTER",
+    "file": "TWISTER.S"
+  },
+  {
+    "tag": "UNLOADER",
+    "file": "UNLOADER.S"
+  },
+  {
+    "tag": "WANDERING",
+    "file": "WANDERING.S"
+  },
+  {
+    "tag": "WATER_TOWER",
+    "file": "WATER.TOWER.S"
+  },
+  {
+    "tag": "WEB_THING",
+    "file": "WEB.THING.S"
+  },
+  {
+    "tag": "WEIRD_ALIEN",
+    "comment": "TODO: fix spelling of file name",
+    "file": "WIERD.ALIEN.S"
+  },
+  {
+    "tag": "WIND_TUNNEL",
+    "file": "WIND.TUNNEL.S"
+  },
+  {
+    "tag": "WORMS",
+    "file": "WORMS.S"
+  }
+]

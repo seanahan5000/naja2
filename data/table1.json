@@ -1,739 +1,737 @@
-{
-  "table": [
-    {
-      "tag": "SPACE_MAN",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_2",
-        "FACE_3"
-      ],
-      "minCount": 1,
-      "maxCount": 2,
-      "rarity": 30,
-      "rarity2": 26,
-      "with": [
-        "ONE_EYE",
-        "BTWN_LEGS",
-        "RAG_ALIEN"
-      ]
-    },
-    {
-      "tag": "AIR_SWIMMER",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_2",
-        "FACE_4"
-      ],
-      "minCount": 1,
-      "maxCount": 1,
-      "rarity": 30,
-      "rarity2": 13
-    },
-    {
-      "tag": "SHIELD",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_2"
-      ],
-      "minCount": 2,
-      "maxCount": 4,
-      "rarity": 30
-    },
-    {
-      "tag": "ONE_EYE",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_2"
-      ],
-      "minCount": 1,
-      "maxCount": 2,
-      "rarity": 30,
-      "with": [
-        "SPACE_MAN",
-        "BTWN_LEGS",
-        "RAG_ALIEN"
-      ]
-    },
-    {
-      "tag": "HANGING_BOT",
-      "type": "ROBOT_FORM",
-      "faces": [
-        "FACE_2",
-        "FACE_3"
-      ],
-      "minCount": 1,
-      "maxCount": 3,
-      "rarity": 30,
-      "rarity2": 25
-    },
-    {
-      "tag": "BTWN_LEGS",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_2"
-      ],
-      "minCount": 1,
-      "maxCount": 2,
-      "rarity": 16,
-      "with": [
-        "SPACE_MAN",
-        "ONE_EYE",
-        "RAG_ALIEN"
-      ]
-    },
-    {
-      "tag": "RAG_ALIEN",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_2"
-      ],
-      "minCount": 1,
-      "maxCount": 2,
-      "rarity": 30,
-      "with": [
-        "SPACE_MAN",
-        "ONE_EYE",
-        "BTWN_LEGS"
-      ]
-    },
-    {
-      "tag": "PER_ALIEN",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_2"
-      ],
-      "minCount": 1,
-      "maxCount": 1,
-      "rarity": 30
-    },
-    {
-      "tag": "ROBOT",
-      "type": "ROBOT_FORM",
-      "faces": [
-        "FACE_2"
-      ],
-      "minCount": 1,
-      "maxCount": 4,
-      "rarity": 30
-    },
-    {
-      "tag": "CEIL_SWINGER",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_1",
-        "FACE_3"
-      ],
-      "minCount": 1,
-      "maxCount": 3,
-      "rarity": 12,
-      "rarity2": 32,
-      "with": [
-        "STARBURST",
-        "HORNED_DOG"
-      ],
-      "with2": [
-        "STARBURST",
-        "TRUNK",
-        "TWISTER"
-      ]
-    },
-    {
-      "tag": "WEIRD_ALIEN",
-      "comment": "duplicate below?",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_1",
-        "FACE_3"
-      ],
-      "minCount": 1,
-      "maxCount": 2,
-      "rarity": 12,
-      "rarity2": 16,
-      "with": [
-        "PINK_WINGS"
-      ],
-      "with2": [
-        "WEIRD_ALIEN"
-      ]
-    },
-    {
-      "tag": "STARBURST",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_1",
-        "FACE_3"
-      ],
-      "minCount": 1,
-      "maxCount": 3,
-      "rarity": 12,
-      "rarity2": 32,
-      "with": [
-        "CEIL_SWINGER",
-        "HORNED_DOG"
-      ],
-      "with2": [
-        "CEIL_SWINGER",
-        "TRUNK",
-        "TWISTER"
-      ]
-    },
-    {
-      "tag": "TRUNK",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_3"
-      ],
-      "minCount": 1,
-      "maxCount": 3,
-      "rarity": 26,
-      "with": [
-        "CEIL_SWINGER",
-        "STARBURST",
-        "TWISTER"
-      ]
-    },
-    {
-      "tag": "TREE_ALIEN",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_3"
-      ],
-      "minCount": 1,
-      "maxCount": 2,
-      "rarity": 32
-    },
-    {
-      "tag": "WEIRD_ALIEN",
-      "comment": "duplicate above?",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_3"
-      ],
-      "minCount": 1,
-      "maxCount": 2,
-      "rarity": 16,
-      "with": [
-        "WEIRD_ALIEN"
-      ]
-    },
-    {
-      "tag": "FROG_BOT",
-      "type": "ROBOT_FORM",
-      "faces": [
-        "FACE_3"
-      ],
-      "minCount": 3,
-      "maxCount": 7,
-      "rarity": 25
-    },
-    {
-      "tag": "TWISTER",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_3"
-      ],
-      "minCount": 1,
-      "maxCount": 3,
-      "rarity": 26,
-      "with": [
-        "CEIL_SWINGER",
-        "STARBURST",
-        "TRUNK"
-      ]
-    },
-    {
-      "tag": "BARRICADE",
-      "type": "UNKNOWN_ALIEN",
-      "minCount": 0,
-      "maxCount": 0,
-      "rarity": 0,
-      "rarity2": 165
-    },
-    {
-      "tag": "WORMS",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_1"
-      ],
-      "minCount": 3,
-      "maxCount": 6,
-      "rarity": 26
-    },
-    {
-      "tag": "PROBOT",
-      "type": "ROBOT_FORM",
-      "faces": [
-        "FACE_1"
-      ],
-      "minCount": 1,
-      "maxCount": 1,
-      "rarity": 26
-    },
-    {
-      "tag": "ARMOR_ALIEN",
-      "type": "UNKNOWN_ALIEN",
-      "faces": [
-        "FACE_1",
-        "FACE_4"
-      ],
-      "minCount": 1,
-      "maxCount": 4,
-      "rarity": 26,
-      "rarity2": 24
-    },
-    {
-      "tag": "HORNED_DOG",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_1",
-        "FACE_4"
-      ],
-      "minCount": 1,
-      "maxCount": 3,
-      "rarity": 12,
-      "rarity2": 14,
-      "with": [
-        "CEIL_SWINGER",
-        "STARBURST"
-      ],
-      "with2": [
-        "OILER",
-        "BLOW_DART",
-        "LITTLE_BUG",
-        "CEILING_FAN"
-      ]
-    },
-    {
-      "tag": "PINK_WINGS",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_1",
-        "FACE_4"
-      ],
-      "minCount": 1,
-      "maxCount": 2,
-      "rarity": 26,
-      "rarity2": 14,
-      "with": [
-        "WEIRD_ALIEN",
-        "SQUINTER",
-        "CROSS_BOW"
-      ],
-      "with2": [
-        "SQUINTER"
-      ]
-    },
-    {
-      "tag": "SQUINTER",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_1",
-        "FACE_4"
-      ],
-      "minCount": 2,
-      "maxCount": 3,
-      "rarity": 26,
-      "rarity2": 14,
-      "with": [
-        "PINK_WINGS",
-        "CROSS_BOW"
-      ],
-      "with2": [
-        "PINK_WINGS"
-      ]
-    },
-    {
-      "tag": "PLATFORM",
-      "type": "UNKNOWN_ROBOT",
-      "faces": [
-        "FACE_1"
-      ],
-      "minCount": 1,
-      "maxCount": 2,
-      "rarity": 26
-    },
-    {
-      "tag": "CROSS_BOW",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_1"
-      ],
-      "minCount": 1,
-      "maxCount": 1,
-      "rarity": 26,
-      "with": [
-        "PINK_WINGS",
-        "SQUINTER"
-      ]
-    },
-    {
-      "tag": "HOLSTER",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_4",
-        "FACE_5"
-      ],
-      "minCount": 1,
-      "maxCount": 1,
-      "rarity": 25,
-      "rarity2": 4,
-      "with": [
-        "SLEEPY"
-      ],
-      "with2": [
-        "SLEEPY",
-        "WORMS"
-      ]
-    },
-    {
-      "tag": "OILER",
-      "type": "ROBOT_FORM",
-      "faces": [
-        "FACE_4",
-        "FACE_5"
-      ],
-      "minCount": 1,
-      "maxCount": 2,
-      "rarity": 25,
-      "rarity2": 4,
-      "with": [
-        "BLOW_DART",
-        "LITTLE_BUG",
-        "CEILING_FAN",
-        "HORNED_DOG"
-      ],
-      "with2": [
-        "CLAPPER"
-      ]
-    },
-    {
-      "tag": "SLEEPY",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_4",
-        "FACE_5"
-      ],
-      "minCount": 2,
-      "maxCount": 4,
-      "rarity": 25,
-      "rarity2": 4,
-      "with": [
-        "HOLSTER"
-      ],
-      "with2": [
-        "HOLSTER",
-        "WORMS"
-      ]
-    },
-    {
-      "tag": "HANGING_BOT",
-      "type": "ROBOT_FORM",
-      "faces": [
-        "FACE_4"
-      ],
-      "minCount": 1,
-      "maxCount": 3,
-      "rarity": 25
-    },
-    {
-      "tag": "BLOW_DART",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_4"
-      ],
-      "minCount": 1,
-      "maxCount": 2,
-      "rarity": 25,
-      "with": [
-        "OILER",
-        "LITTLE_BUG",
-        "CEILING_FAN",
-        "HORNED_DOG"
-      ]
-    },
-    {
-      "tag": "AIR_SWIMMER",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_4"
-      ],
-      "minCount": 1,
-      "maxCount": 1,
-      "rarity": 13
-    },
-    {
-      "tag": "LITTLE_BUG",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_4"
-      ],
-      "minCount": 1,
-      "maxCount": 7,
-      "rarity": 14,
-      "with": [
-        "OILER",
-        "BLOW_DART",
-        "CEILING_FAN",
-        "HORNED_DOG"
-      ]
-    },
-    {
-      "tag": "CEILING_FAN",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_4"
-      ],
-      "minCount": 1,
-      "maxCount": 3,
-      "rarity": 25,
-      "with": [
-        "OILER",
-        "BLOW_DART",
-        "LITTLE_BUG",
-        "HORNED_DOG"
-      ]
-    },
-    {
-      "tag": "RUUIKS_MEN",
-      "comment": "if not index $23, change RUUIK.S",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_5"
-      ],
-      "minCount": 4,
-      "maxCount": 8,
-      "rarity": 69
-    },
-    {
-      "tag": "BIRD_INSECT",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_5",
-        "FACE_6"
-      ],
-      "minCount": 1,
-      "maxCount": 2,
-      "rarity": 27,
-      "rarity2": 26,
-      "with": [
-        "SIX_ARM",
-        "STRINGY_HAND"
-      ],
-      "with2": [
-        "STINKY"
-      ]
-    },
-    {
-      "tag": "CLAPPER",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_5",
-        "FACE_6"
-      ],
-      "minCount": 2,
-      "maxCount": 3,
-      "rarity": 27,
-      "rarity2": 20,
-      "with": [
-        "OILER"
-      ],
-      "with2": [
-        "ROBIEN"
-      ]
-    },
-    {
-      "tag": "CLUBBER",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_5",
-        "FACE_6"
-      ],
-      "minCount": 1,
-      "maxCount": 2,
-      "rarity": 27,
-      "rarity2": 14
-    },
-    {
-      "tag": "SPACE_SHIP",
-      "type": "UNKNOWN_ROBOT",
-      "faces": [
-        "FACE_5",
-        "FACE_6"
-      ],
-      "minCount": 1,
-      "maxCount": 3,
-      "rarity": 18,
-      "rarity2": 7
-    },
-    {
-      "tag": "WORMS",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_5",
-        "FACE_6"
-      ],
-      "minCount": 2,
-      "maxCount": 3,
-      "rarity": 18,
-      "rarity2": 7,
-      "with": [
-        "HOLSTER",
-        "SLEEPY"
-      ],
-      "with2": [
-        "PARTICLE_MAN",
-        "HOLSTER"
-      ]
-    },
-    {
-      "tag": "GAS_CLOUD",
-      "type": "UNKNOWN_ALIEN",
-      "faces": [
-        "FACE_5",
-        "FACE_6"
-      ],
-      "minCount": 5,
-      "maxCount": 9,
-      "rarity": 4,
-      "rarity2": 3
-    },
-    {
-      "tag": "SIX_ARM",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_5"
-      ],
-      "minCount": 2,
-      "maxCount": 4,
-      "rarity": 27,
-      "with": [
-        "BIRD_INSECT",
-        "STRINGY_HAND"
-      ]
-    },
-    {
-      "tag": "STRINGY_HAND",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_5"
-      ],
-      "minCount": 1,
-      "maxCount": 2,
-      "rarity": 27,
-      "with": [
-        "BIRD_INSECT",
-        "SIX_ARM"
-      ]
-    },
-    {
-      "tag": "FINGERS",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_6"
-      ],
-      "minCount": 1,
-      "maxCount": 2,
-      "rarity": 26,
-      "with": [
-        "STICKY"
-      ]
-    },
-    {
-      "tag": "PEEKER",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_6"
-      ],
-      "minCount": 1,
-      "maxCount": 1,
-      "rarity": 7
-    },
-    {
-      "tag": "STINKY",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_6"
-      ],
-      "minCount": 1,
-      "maxCount": 3,
-      "rarity": 20,
-      "with": [
-        "BIRD_INSECT"
-      ]
-    },
-    {
-      "tag": "PARTICLE_MAN",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_6"
-      ],
-      "minCount": 2,
-      "maxCount": 3,
-      "rarity": 26,
-      "with": [
-        "WORMS",
-        "HOLSTER"
-      ]
-    },
-    {
-      "tag": "BARRICADE",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_6"
-      ],
-      "minCount": 5,
-      "maxCount": 5,
-      "rarity": 26
-    },
-    {
-      "tag": "PROBOT",
-      "type": "ROBOT_FORM",
-      "faces": [
-        "FACE_6"
-      ],
-      "minCount": 1,
-      "maxCount": 1,
-      "rarity": 20
-    },
-    {
-      "tag": "HOLSTER",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_6"
-      ],
-      "minCount": 1,
-      "maxCount": 2,
-      "rarity": 14,
-      "with": [
-        "PARTICLE_MAN",
-        "WORMS"
-      ]
-    },
-    {
-      "tag": "ROBIEN",
-      "type": "UNKNOWN_ROBOT",
-      "faces": [
-        "FACE_6"
-      ],
-      "minCount": 1,
-      "maxCount": 2,
-      "rarity": 26,
-      "with": [
-        "CLAPPER"
-      ]
-    },
-    {
-      "tag": "STICKY",
-      "type": "ALIEN_FORM",
-      "faces": [
-        "FACE_6"
-      ],
-      "minCount": 1,
-      "maxCount": 1,
-      "rarity": 14,
-      "with": [
-        "FINGERS"
-      ]
-    }
-  ]
-}
+[
+  {
+    "tag": "SPACE_MAN",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_2",
+      "FACE_3"
+    ],
+    "minCount": 1,
+    "maxCount": 2,
+    "rarity": 30,
+    "rarity2": 26,
+    "with": [
+      "ONE_EYE",
+      "BTWN_LEGS",
+      "RAG_ALIEN"
+    ]
+  },
+  {
+    "tag": "AIR_SWIMMER",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_2",
+      "FACE_4"
+    ],
+    "minCount": 1,
+    "maxCount": 1,
+    "rarity": 30,
+    "rarity2": 13
+  },
+  {
+    "tag": "SHIELD",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_2"
+    ],
+    "minCount": 2,
+    "maxCount": 4,
+    "rarity": 30
+  },
+  {
+    "tag": "ONE_EYE",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_2"
+    ],
+    "minCount": 1,
+    "maxCount": 2,
+    "rarity": 30,
+    "with": [
+      "SPACE_MAN",
+      "BTWN_LEGS",
+      "RAG_ALIEN"
+    ]
+  },
+  {
+    "tag": "HANGING_BOT",
+    "type": "ROBOT_FORM",
+    "faces": [
+      "FACE_2",
+      "FACE_3"
+    ],
+    "minCount": 1,
+    "maxCount": 3,
+    "rarity": 30,
+    "rarity2": 25
+  },
+  {
+    "tag": "BTWN_LEGS",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_2"
+    ],
+    "minCount": 1,
+    "maxCount": 2,
+    "rarity": 16,
+    "with": [
+      "SPACE_MAN",
+      "ONE_EYE",
+      "RAG_ALIEN"
+    ]
+  },
+  {
+    "tag": "RAG_ALIEN",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_2"
+    ],
+    "minCount": 1,
+    "maxCount": 2,
+    "rarity": 30,
+    "with": [
+      "SPACE_MAN",
+      "ONE_EYE",
+      "BTWN_LEGS"
+    ]
+  },
+  {
+    "tag": "PER_ALIEN",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_2"
+    ],
+    "minCount": 1,
+    "maxCount": 1,
+    "rarity": 30
+  },
+  {
+    "tag": "ROBOT",
+    "type": "ROBOT_FORM",
+    "faces": [
+      "FACE_2"
+    ],
+    "minCount": 1,
+    "maxCount": 4,
+    "rarity": 30
+  },
+  {
+    "tag": "CEIL_SWINGER",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_1",
+      "FACE_3"
+    ],
+    "minCount": 1,
+    "maxCount": 3,
+    "rarity": 12,
+    "rarity2": 32,
+    "with": [
+      "STARBURST",
+      "HORNED_DOG"
+    ],
+    "with2": [
+      "STARBURST",
+      "TRUNK",
+      "TWISTER"
+    ]
+  },
+  {
+    "tag": "WEIRD_ALIEN",
+    "comment": "duplicate below?",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_1",
+      "FACE_3"
+    ],
+    "minCount": 1,
+    "maxCount": 2,
+    "rarity": 12,
+    "rarity2": 16,
+    "with": [
+      "PINK_WINGS"
+    ],
+    "with2": [
+      "WEIRD_ALIEN"
+    ]
+  },
+  {
+    "tag": "STARBURST",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_1",
+      "FACE_3"
+    ],
+    "minCount": 1,
+    "maxCount": 3,
+    "rarity": 12,
+    "rarity2": 32,
+    "with": [
+      "CEIL_SWINGER",
+      "HORNED_DOG"
+    ],
+    "with2": [
+      "CEIL_SWINGER",
+      "TRUNK",
+      "TWISTER"
+    ]
+  },
+  {
+    "tag": "TRUNK",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_3"
+    ],
+    "minCount": 1,
+    "maxCount": 3,
+    "rarity": 26,
+    "with": [
+      "CEIL_SWINGER",
+      "STARBURST",
+      "TWISTER"
+    ]
+  },
+  {
+    "tag": "TREE_ALIEN",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_3"
+    ],
+    "minCount": 1,
+    "maxCount": 2,
+    "rarity": 32
+  },
+  {
+    "tag": "WEIRD_ALIEN",
+    "comment": "duplicate above?",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_3"
+    ],
+    "minCount": 1,
+    "maxCount": 2,
+    "rarity": 16,
+    "with": [
+      "WEIRD_ALIEN"
+    ]
+  },
+  {
+    "tag": "FROG_BOT",
+    "type": "ROBOT_FORM",
+    "faces": [
+      "FACE_3"
+    ],
+    "minCount": 3,
+    "maxCount": 7,
+    "rarity": 25
+  },
+  {
+    "tag": "TWISTER",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_3"
+    ],
+    "minCount": 1,
+    "maxCount": 3,
+    "rarity": 26,
+    "with": [
+      "CEIL_SWINGER",
+      "STARBURST",
+      "TRUNK"
+    ]
+  },
+  {
+    "tag": "BARRICADE",
+    "type": "UNKNOWN_ALIEN",
+    "minCount": 0,
+    "maxCount": 0,
+    "rarity": 0,
+    "rarity2": 165
+  },
+  {
+    "tag": "WORMS",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_1"
+    ],
+    "minCount": 3,
+    "maxCount": 6,
+    "rarity": 26
+  },
+  {
+    "tag": "PROBOT",
+    "type": "ROBOT_FORM",
+    "faces": [
+      "FACE_1"
+    ],
+    "minCount": 1,
+    "maxCount": 1,
+    "rarity": 26
+  },
+  {
+    "tag": "ARMOR_ALIEN",
+    "type": "UNKNOWN_ALIEN",
+    "faces": [
+      "FACE_1",
+      "FACE_4"
+    ],
+    "minCount": 1,
+    "maxCount": 4,
+    "rarity": 26,
+    "rarity2": 24
+  },
+  {
+    "tag": "HORNED_DOG",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_1",
+      "FACE_4"
+    ],
+    "minCount": 1,
+    "maxCount": 3,
+    "rarity": 12,
+    "rarity2": 14,
+    "with": [
+      "CEIL_SWINGER",
+      "STARBURST"
+    ],
+    "with2": [
+      "OILER",
+      "BLOW_DART",
+      "LITTLE_BUG",
+      "CEILING_FAN"
+    ]
+  },
+  {
+    "tag": "PINK_WINGS",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_1",
+      "FACE_4"
+    ],
+    "minCount": 1,
+    "maxCount": 2,
+    "rarity": 26,
+    "rarity2": 14,
+    "with": [
+      "WEIRD_ALIEN",
+      "SQUINTER",
+      "CROSS_BOW"
+    ],
+    "with2": [
+      "SQUINTER"
+    ]
+  },
+  {
+    "tag": "SQUINTER",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_1",
+      "FACE_4"
+    ],
+    "minCount": 2,
+    "maxCount": 3,
+    "rarity": 26,
+    "rarity2": 14,
+    "with": [
+      "PINK_WINGS",
+      "CROSS_BOW"
+    ],
+    "with2": [
+      "PINK_WINGS"
+    ]
+  },
+  {
+    "tag": "PLATFORM",
+    "type": "UNKNOWN_ROBOT",
+    "faces": [
+      "FACE_1"
+    ],
+    "minCount": 1,
+    "maxCount": 2,
+    "rarity": 26
+  },
+  {
+    "tag": "CROSS_BOW",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_1"
+    ],
+    "minCount": 1,
+    "maxCount": 1,
+    "rarity": 26,
+    "with": [
+      "PINK_WINGS",
+      "SQUINTER"
+    ]
+  },
+  {
+    "tag": "HOLSTER",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_4",
+      "FACE_5"
+    ],
+    "minCount": 1,
+    "maxCount": 1,
+    "rarity": 25,
+    "rarity2": 4,
+    "with": [
+      "SLEEPY"
+    ],
+    "with2": [
+      "SLEEPY",
+      "WORMS"
+    ]
+  },
+  {
+    "tag": "OILER",
+    "type": "ROBOT_FORM",
+    "faces": [
+      "FACE_4",
+      "FACE_5"
+    ],
+    "minCount": 1,
+    "maxCount": 2,
+    "rarity": 25,
+    "rarity2": 4,
+    "with": [
+      "BLOW_DART",
+      "LITTLE_BUG",
+      "CEILING_FAN",
+      "HORNED_DOG"
+    ],
+    "with2": [
+      "CLAPPER"
+    ]
+  },
+  {
+    "tag": "SLEEPY",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_4",
+      "FACE_5"
+    ],
+    "minCount": 2,
+    "maxCount": 4,
+    "rarity": 25,
+    "rarity2": 4,
+    "with": [
+      "HOLSTER"
+    ],
+    "with2": [
+      "HOLSTER",
+      "WORMS"
+    ]
+  },
+  {
+    "tag": "HANGING_BOT",
+    "type": "ROBOT_FORM",
+    "faces": [
+      "FACE_4"
+    ],
+    "minCount": 1,
+    "maxCount": 3,
+    "rarity": 25
+  },
+  {
+    "tag": "BLOW_DART",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_4"
+    ],
+    "minCount": 1,
+    "maxCount": 2,
+    "rarity": 25,
+    "with": [
+      "OILER",
+      "LITTLE_BUG",
+      "CEILING_FAN",
+      "HORNED_DOG"
+    ]
+  },
+  {
+    "tag": "AIR_SWIMMER",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_4"
+    ],
+    "minCount": 1,
+    "maxCount": 1,
+    "rarity": 13
+  },
+  {
+    "tag": "LITTLE_BUG",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_4"
+    ],
+    "minCount": 1,
+    "maxCount": 7,
+    "rarity": 14,
+    "with": [
+      "OILER",
+      "BLOW_DART",
+      "CEILING_FAN",
+      "HORNED_DOG"
+    ]
+  },
+  {
+    "tag": "CEILING_FAN",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_4"
+    ],
+    "minCount": 1,
+    "maxCount": 3,
+    "rarity": 25,
+    "with": [
+      "OILER",
+      "BLOW_DART",
+      "LITTLE_BUG",
+      "HORNED_DOG"
+    ]
+  },
+  {
+    "tag": "RUUIKS_MEN",
+    "comment": "if not index $23, change RUUIK.S",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_5"
+    ],
+    "minCount": 4,
+    "maxCount": 8,
+    "rarity": 69
+  },
+  {
+    "tag": "BIRD_INSECT",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_5",
+      "FACE_6"
+    ],
+    "minCount": 1,
+    "maxCount": 2,
+    "rarity": 27,
+    "rarity2": 26,
+    "with": [
+      "SIX_ARM",
+      "STRINGY_HAND"
+    ],
+    "with2": [
+      "STINKY"
+    ]
+  },
+  {
+    "tag": "CLAPPER",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_5",
+      "FACE_6"
+    ],
+    "minCount": 2,
+    "maxCount": 3,
+    "rarity": 27,
+    "rarity2": 20,
+    "with": [
+      "OILER"
+    ],
+    "with2": [
+      "ROBIEN"
+    ]
+  },
+  {
+    "tag": "CLUBBER",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_5",
+      "FACE_6"
+    ],
+    "minCount": 1,
+    "maxCount": 2,
+    "rarity": 27,
+    "rarity2": 14
+  },
+  {
+    "tag": "SPACE_SHIP",
+    "type": "UNKNOWN_ROBOT",
+    "faces": [
+      "FACE_5",
+      "FACE_6"
+    ],
+    "minCount": 1,
+    "maxCount": 3,
+    "rarity": 18,
+    "rarity2": 7
+  },
+  {
+    "tag": "WORMS",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_5",
+      "FACE_6"
+    ],
+    "minCount": 2,
+    "maxCount": 3,
+    "rarity": 18,
+    "rarity2": 7,
+    "with": [
+      "HOLSTER",
+      "SLEEPY"
+    ],
+    "with2": [
+      "PARTICLE_MAN",
+      "HOLSTER"
+    ]
+  },
+  {
+    "tag": "GAS_CLOUD",
+    "type": "UNKNOWN_ALIEN",
+    "faces": [
+      "FACE_5",
+      "FACE_6"
+    ],
+    "minCount": 5,
+    "maxCount": 9,
+    "rarity": 4,
+    "rarity2": 3
+  },
+  {
+    "tag": "SIX_ARM",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_5"
+    ],
+    "minCount": 2,
+    "maxCount": 4,
+    "rarity": 27,
+    "with": [
+      "BIRD_INSECT",
+      "STRINGY_HAND"
+    ]
+  },
+  {
+    "tag": "STRINGY_HAND",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_5"
+    ],
+    "minCount": 1,
+    "maxCount": 2,
+    "rarity": 27,
+    "with": [
+      "BIRD_INSECT",
+      "SIX_ARM"
+    ]
+  },
+  {
+    "tag": "FINGERS",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_6"
+    ],
+    "minCount": 1,
+    "maxCount": 2,
+    "rarity": 26,
+    "with": [
+      "STICKY"
+    ]
+  },
+  {
+    "tag": "PEEKER",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_6"
+    ],
+    "minCount": 1,
+    "maxCount": 1,
+    "rarity": 7
+  },
+  {
+    "tag": "STINKY",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_6"
+    ],
+    "minCount": 1,
+    "maxCount": 3,
+    "rarity": 20,
+    "with": [
+      "BIRD_INSECT"
+    ]
+  },
+  {
+    "tag": "PARTICLE_MAN",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_6"
+    ],
+    "minCount": 2,
+    "maxCount": 3,
+    "rarity": 26,
+    "with": [
+      "WORMS",
+      "HOLSTER"
+    ]
+  },
+  {
+    "tag": "BARRICADE",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_6"
+    ],
+    "minCount": 5,
+    "maxCount": 5,
+    "rarity": 26
+  },
+  {
+    "tag": "PROBOT",
+    "type": "ROBOT_FORM",
+    "faces": [
+      "FACE_6"
+    ],
+    "minCount": 1,
+    "maxCount": 1,
+    "rarity": 20
+  },
+  {
+    "tag": "HOLSTER",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_6"
+    ],
+    "minCount": 1,
+    "maxCount": 2,
+    "rarity": 14,
+    "with": [
+      "PARTICLE_MAN",
+      "WORMS"
+    ]
+  },
+  {
+    "tag": "ROBIEN",
+    "type": "UNKNOWN_ROBOT",
+    "faces": [
+      "FACE_6"
+    ],
+    "minCount": 1,
+    "maxCount": 2,
+    "rarity": 26,
+    "with": [
+      "CLAPPER"
+    ]
+  },
+  {
+    "tag": "STICKY",
+    "type": "ALIEN_FORM",
+    "faces": [
+      "FACE_6"
+    ],
+    "minCount": 1,
+    "maxCount": 1,
+    "rarity": 14,
+    "with": [
+      "FINGERS"
+    ]
+  }
+]

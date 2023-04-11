@@ -1,264 +1,262 @@
-{
-  "table": [
-    {
-      "tag": "DUAL_HEAD",
-      "comment": "Dualtronic Robot",
-      "type": "ROBOT_FORM",
-      "minCount": 1,
-      "maxCount": 3,
-      "rarity": 17,
-      "with": [
-        "CENTAUR"
-      ]
-    },
-    {
-      "tag": "CENTAUR",
-      "comment": "Centaurian Robot",
-      "type": "ROBOT_FORM",
-      "minCount": 1,
-      "maxCount": 3,
-      "rarity": 17,
-      "with": [
-        "DUAL_HEAD"
-      ]
-    },
-    {
-      "tag": "SWAMP_THING",
-      "comment": "Slime Creature",
-      "type": "ALIEN_FORM",
-      "minCount": 1,
-      "maxCount": 4,
-      "rarity": 17,
-      "with": [
-        "FUNGUS"
-      ]
-    },
-    {
-      "tag": "ALIEN_ON",
-      "comment": "Taluma And Mount",
-      "type": "ALIEN_FORM",
-      "minCount": 2,
-      "maxCount": 5,
-      "rarity": 17,
-      "with": [
-        "PUNKER",
-        "SHIFTER",
-        "GREMLIN"
-      ]
-    },
-    {
-      "tag": "LIGHT_ALIEN",
-      "comment": "Spectramite",
-      "type": "ALIEN_FORM",
-      "minCount": 1,
-      "maxCount": 2,
-      "rarity": 17,
-      "with": [
-        "PUNKER",
-        "EARS",
-        "SHIFTER",
-        "GREMLIN"
-      ]
-    },
-    {
-      "tag": "PUNKER",
-      "comment": "\"Spike\"",
-      "type": "ALIEN_FORM",
-      "minCount": 2,
-      "maxCount": 3,
-      "rarity": 17,
-      "with": [
-        "LIGHT_ALIEN",
-        "EARS",
-        "SHIFTER",
-        "GREMLIN"
-      ]
-    },
-    {
-      "tag": "EARS",
-      "comment": "Solician",
-      "type": "ALIEN_FORM",
-      "minCount": 1,
-      "maxCount": 3,
-      "rarity": 17,
-      "with": [
-        "LIGHT_ALIEN",
-        "PUNKER",
-        "SHIFTER",
-        "GREMLIN"
-      ]
-    },
-    {
-      "tag": "WANDERING",
-      "comment": "Wanderin Thought",
-      "type": "UNKNOWN_ALIEN",
-      "minCount": 1,
-      "maxCount": 3,
-      "rarity": 10
-    },
-    {
-      "tag": "KAMIKAZE",
-      "comment": "Intruder Missile",
-      "type": "UNKNOWN_ROBOT",
-      "minCount": 3,
-      "maxCount": 5,
-      "rarity": 12
-    },
-    {
-      "tag": "REFLEX_ALIEN",
-      "comment": "\"Speedo\"",
-      "type": "ALIEN_FORM",
-      "minCount": 1,
-      "maxCount": 3,
-      "rarity": 12,
-      "with": [
-        "SHIFTER"
-      ]
-    },
-    {
-      "tag": "SHIFTER",
-      "comment": "Shifter",
-      "type": "ALIEN_FORM",
-      "minCount": 1,
-      "maxCount": 3,
-      "rarity": 12,
-      "with": [
-        "LIGHT_ALIEN",
-        "PUNKER",
-        "EARS",
-        "GREMLIN"
-      ]
-    },
-    {
-      "tag": "GREMLIN",
-      "comment": "Adharan Gremlin",
-      "type": "ALIEN_FORM",
-      "minCount": 1,
-      "maxCount": 1,
-      "rarity": 12,
-      "with": [
-        "LIGHT_ALIEN",
-        "PUNKER",
-        "EARS",
-        "SHIFTER"
-      ]
-    },
-    {
-      "tag": "WIND_TUNNEL",
-      "comment": "Air Circulator",
-      "type": "ROBOT_FORM",
-      "minCount": 1,
-      "maxCount": 1,
-      "rarity": 6,
-      "with": [
-        "COOLER"
-      ]
-    },
-    {
-      "tag": "DRILLER",
-      "comment": "Station Driller",
-      "type": "ROBOT_FORM",
-      "minCount": 1,
-      "maxCount": 1,
-      "rarity": 6,
-      "with": [
-        "CENTAUR"
-      ]
-    },
-    {
-      "tag": "INVISIBLE",
-      "comment": "Invisible Alien",
-      "type": "UNKNOWN_ALIEN",
-      "minCount": 1,
-      "maxCount": 6,
-      "rarity": 7
-    },
-    {
-      "tag": "COOLER",
-      "comment": "Cooling Unit",
-      "type": "ROBOT_FORM",
-      "minCount": 1,
-      "maxCount": 1,
-      "rarity": 7,
-      "with": [
-        "WIND_TUNNEL"
-      ]
-    },
-    {
-      "tag": "HEATER",
-      "comment": "Thermal Unit",
-      "type": "ROBOT_FORM",
-      "minCount": 1,
-      "maxCount": 1,
-      "rarity": 7,
-      "with": [
-        "HOT_HEAD"
-      ]
-    },
-    {
-      "tag": "GLOWER",
-      "comment": "Infra-Flourinoid",
-      "type": "ALIEN_FORM",
-      "minCount": 1,
-      "maxCount": 1,
-      "rarity": 8,
-      "with": [
-        "PUNKER",
-        "SHIFTER",
-        "GREMLIN"
-      ]
-    },
-    {
-      "tag": "POISON_SUIT",
-      "comment": "\"Gasser\"",
-      "type": "ALIEN_FORM",
-      "minCount": 2,
-      "maxCount": 4,
-      "rarity": 8
-    },
-    {
-      "tag": "FUNGUS",
-      "comment": "TRACC Fungus",
-      "type": "ALIEN_FORM",
-      "minCount": 1,
-      "maxCount": 2,
-      "rarity": 8,
-      "with": [
-        "SWAMP_THING"
-      ]
-    },
-    {
-      "tag": "QUEEN_INSECT",
-      "comment": "Queen Insect",
-      "type": "ALIEN_FORM",
-      "minCount": 1,
-      "maxCount": 1,
-      "rarity": 10,
-      "with": [
-        "INSECT"
-      ]
-    },
-    {
-      "tag": "HOT_HEAD",
-      "comment": "Hameler Hot Head",
-      "type": "ALIEN_FORM",
-      "minCount": 3,
-      "maxCount": 5,
-      "rarity": 12,
-      "with": [
-        "HEATER"
-      ]
-    },
-    {
-      "tag": "INSECT",
-      "comment": "Fighter Insect",
-      "type": "ALIEN_FORM",
-      "minCount": 8,
-      "maxCount": 8,
-      "rarity": 0,
-      "with": [
-        "QUEEN_INSECT"
-      ]
-    }
-  ]
-}
+[
+  {
+    "tag": "DUAL_HEAD",
+    "comment": "Dualtronic Robot",
+    "type": "ROBOT_FORM",
+    "minCount": 1,
+    "maxCount": 3,
+    "rarity": 17,
+    "with": [
+      "CENTAUR"
+    ]
+  },
+  {
+    "tag": "CENTAUR",
+    "comment": "Centaurian Robot",
+    "type": "ROBOT_FORM",
+    "minCount": 1,
+    "maxCount": 3,
+    "rarity": 17,
+    "with": [
+      "DUAL_HEAD"
+    ]
+  },
+  {
+    "tag": "SWAMP_THING",
+    "comment": "Slime Creature",
+    "type": "ALIEN_FORM",
+    "minCount": 1,
+    "maxCount": 4,
+    "rarity": 17,
+    "with": [
+      "FUNGUS"
+    ]
+  },
+  {
+    "tag": "ALIEN_ON",
+    "comment": "Taluma And Mount",
+    "type": "ALIEN_FORM",
+    "minCount": 2,
+    "maxCount": 5,
+    "rarity": 17,
+    "with": [
+      "PUNKER",
+      "SHIFTER",
+      "GREMLIN"
+    ]
+  },
+  {
+    "tag": "LIGHT_ALIEN",
+    "comment": "Spectramite",
+    "type": "ALIEN_FORM",
+    "minCount": 1,
+    "maxCount": 2,
+    "rarity": 17,
+    "with": [
+      "PUNKER",
+      "EARS",
+      "SHIFTER",
+      "GREMLIN"
+    ]
+  },
+  {
+    "tag": "PUNKER",
+    "comment": "\"Spike\"",
+    "type": "ALIEN_FORM",
+    "minCount": 2,
+    "maxCount": 3,
+    "rarity": 17,
+    "with": [
+      "LIGHT_ALIEN",
+      "EARS",
+      "SHIFTER",
+      "GREMLIN"
+    ]
+  },
+  {
+    "tag": "EARS",
+    "comment": "Solician",
+    "type": "ALIEN_FORM",
+    "minCount": 1,
+    "maxCount": 3,
+    "rarity": 17,
+    "with": [
+      "LIGHT_ALIEN",
+      "PUNKER",
+      "SHIFTER",
+      "GREMLIN"
+    ]
+  },
+  {
+    "tag": "WANDERING",
+    "comment": "Wanderin Thought",
+    "type": "UNKNOWN_ALIEN",
+    "minCount": 1,
+    "maxCount": 3,
+    "rarity": 10
+  },
+  {
+    "tag": "KAMIKAZE",
+    "comment": "Intruder Missile",
+    "type": "UNKNOWN_ROBOT",
+    "minCount": 3,
+    "maxCount": 5,
+    "rarity": 12
+  },
+  {
+    "tag": "REFLEX_ALIEN",
+    "comment": "\"Speedo\"",
+    "type": "ALIEN_FORM",
+    "minCount": 1,
+    "maxCount": 3,
+    "rarity": 12,
+    "with": [
+      "SHIFTER"
+    ]
+  },
+  {
+    "tag": "SHIFTER",
+    "comment": "Shifter",
+    "type": "ALIEN_FORM",
+    "minCount": 1,
+    "maxCount": 3,
+    "rarity": 12,
+    "with": [
+      "LIGHT_ALIEN",
+      "PUNKER",
+      "EARS",
+      "GREMLIN"
+    ]
+  },
+  {
+    "tag": "GREMLIN",
+    "comment": "Adharan Gremlin",
+    "type": "ALIEN_FORM",
+    "minCount": 1,
+    "maxCount": 1,
+    "rarity": 12,
+    "with": [
+      "LIGHT_ALIEN",
+      "PUNKER",
+      "EARS",
+      "SHIFTER"
+    ]
+  },
+  {
+    "tag": "WIND_TUNNEL",
+    "comment": "Air Circulator",
+    "type": "ROBOT_FORM",
+    "minCount": 1,
+    "maxCount": 1,
+    "rarity": 6,
+    "with": [
+      "COOLER"
+    ]
+  },
+  {
+    "tag": "DRILLER",
+    "comment": "Station Driller",
+    "type": "ROBOT_FORM",
+    "minCount": 1,
+    "maxCount": 1,
+    "rarity": 6,
+    "with": [
+      "CENTAUR"
+    ]
+  },
+  {
+    "tag": "INVISIBLE",
+    "comment": "Invisible Alien",
+    "type": "UNKNOWN_ALIEN",
+    "minCount": 1,
+    "maxCount": 6,
+    "rarity": 7
+  },
+  {
+    "tag": "COOLER",
+    "comment": "Cooling Unit",
+    "type": "ROBOT_FORM",
+    "minCount": 1,
+    "maxCount": 1,
+    "rarity": 7,
+    "with": [
+      "WIND_TUNNEL"
+    ]
+  },
+  {
+    "tag": "HEATER",
+    "comment": "Thermal Unit",
+    "type": "ROBOT_FORM",
+    "minCount": 1,
+    "maxCount": 1,
+    "rarity": 7,
+    "with": [
+      "HOT_HEAD"
+    ]
+  },
+  {
+    "tag": "GLOWER",
+    "comment": "Infra-Flourinoid",
+    "type": "ALIEN_FORM",
+    "minCount": 1,
+    "maxCount": 1,
+    "rarity": 8,
+    "with": [
+      "PUNKER",
+      "SHIFTER",
+      "GREMLIN"
+    ]
+  },
+  {
+    "tag": "POISON_SUIT",
+    "comment": "\"Gasser\"",
+    "type": "ALIEN_FORM",
+    "minCount": 2,
+    "maxCount": 4,
+    "rarity": 8
+  },
+  {
+    "tag": "FUNGUS",
+    "comment": "TRACC Fungus",
+    "type": "ALIEN_FORM",
+    "minCount": 1,
+    "maxCount": 2,
+    "rarity": 8,
+    "with": [
+      "SWAMP_THING"
+    ]
+  },
+  {
+    "tag": "QUEEN_INSECT",
+    "comment": "Queen Insect",
+    "type": "ALIEN_FORM",
+    "minCount": 1,
+    "maxCount": 1,
+    "rarity": 10,
+    "with": [
+      "INSECT"
+    ]
+  },
+  {
+    "tag": "HOT_HEAD",
+    "comment": "Hameler Hot Head",
+    "type": "ALIEN_FORM",
+    "minCount": 3,
+    "maxCount": 5,
+    "rarity": 12,
+    "with": [
+      "HEATER"
+    ]
+  },
+  {
+    "tag": "INSECT",
+    "comment": "Fighter Insect",
+    "type": "ALIEN_FORM",
+    "minCount": 8,
+    "maxCount": 8,
+    "rarity": 0,
+    "with": [
+      "QUEEN_INSECT"
+    ]
+  }
+]

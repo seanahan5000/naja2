@@ -1,984 +1,982 @@
-{
-  "aliens": [
-    {
-      "tag": "MAGNET",
-      "name": "MAGNETIC_SWEEPER",
-      "topview": {
-        "extra": [
-          "DB  animated+notcompiled+frame0",
-          "DB  $22",
-          "BYTE    special;upstop",
-          "BYTE    repeat0;normalspeed"
-        ],
-        "frames": [
-          {
-            "width": 4,
-            "height": 3,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "4038385818D8",
-              "135B5B1300FB",
-              "495B5B4900DF",
-              "031D1D1B189B",
-              "58581858581860",
-              "7B7B787B7B7B7A",
-              "5F5F1F5EDF",
-              "1B1B181B1B1906",
-              "787860004080",
-              "7A7A7A7B7B7800",
-              "5F5F5F5F5F1F00",
-              "1E1E06010380"
-            ]
-          },
-          {
-            "width": 4,
-            "height": 3,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "4038385818D8",
-              "135B5B1300FB",
-              "495B5B4900DF",
-              "031D1D1B189B",
-              "58581858581860",
-              "7B7B787B7B7B7A",
-              "5F5F1F5EDF",
-              "1B1B181B1B1906",
-              "787860004080",
-              "0A6A1A7B7B7800",
-              "585B5B585F1F00",
-              "1E1E06010380"
-            ]
-          },
-          {
-            "width": 4,
-            "height": 3,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "4038385818D8",
-              "135B5B1300FB",
-              "495B5B49005C5A",
-              "031D1D1B189B",
-              "58581858581860",
-              "7B7B787B7B7B7A",
-              "524E0E4C56515F",
-              "1B1B181B1B1906",
-              "787860004080",
-              "0A6A1A7B7B7800",
-              "585B5B585F1F00",
-              "1E1E06010380"
-            ]
-          },
-          {
-            "width": 4,
-            "height": 3,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "4038385818D8",
-              "135B5B13007B0B",
-              "495B5B49005C5A",
-              "031D1D1B189B",
-              "58581858581860",
-              "6B33487B0B6B6A",
-              "524E0E4C56515F",
-              "1B1B181B1B1906",
-              "787860004080",
-              "6A6A623B437800",
-              "585A5A585F1F00",
-              "1E1E06010380"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "MISER",
-      "name": "\"MISER\"",
-      "topview": {
-        "frames": [
-          {
-            "width": 1,
-            "height": 2,
-            "offsetX": 4,
-            "offsetY": 0,
-            "data": [
-              "09060F16183878",
-              "787080"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "ROBED_SELLER",
-      "name": "EBKAL'EE",
-      "topview": {
-        "frames": [
-          {
-            "width": 5,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "0000007E7F7F40",
-              "1C36606D5B3B17",
-              "386C06767B7D79",
-              "000000776F7701",
-              "00000000010100",
-              "80",
-              "60784080",
-              "071F0380",
-              "1E7F6080",
-              "00000180"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "SCREAMER",
-      "name": "\"SCREECHER\"",
-      "topview": {
-        "frames": [
-          {
-            "width": 4,
-            "height": 2,
-            "offsetX": 1,
-            "offsetY": 7,
-            "data": [
-              "361F3B3F73665C",
-              "00000000000173",
-              "6040606070385C",
-              "060F0D0F0C0603",
-              "700060004080",
-              "7D7E7C730D2620",
-              "7B07330C1B0600",
-              "80"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "TF_BAIT",
-      "name": "\"MAULER\"",
-      "topview": {
-        "frames": [
-          {
-            "width": 2,
-            "height": 3,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "183366767C6030",
-              "0C6633371F0306",
-              "5356367C385C36",
-              "6535361F0E1D36",
-              "6633584C0C1810",
-              "33660D19180C04"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "PROG_CHANGER",
-      "name": "MEM-PLACER_ROBOT",
-      "topview": {
-        "frames": [
-          {
-            "width": 2,
-            "height": 3,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "406070385C5E27",
-              "0103070E1D3D72",
-              "7B275F5E3D6D5B",
-              "6F727D3D5E5B6D",
-              "5B3336666C5840",
-              "6D6636331B0D01"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "SPARKLES",
-      "name": "SPARKLE",
-      "topview": {
-        "extra": [
-          "DB  animated+notcompiled+frame0",
-          "DB  $21",
-          "BYTE    blink;updown",
-          "BYTE    repeat1;normalspeed"
-        ],
-        "frames": [
-          {
-            "width": 4,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 1,
-            "data": [
-              "000000003280",
-              "00081040774010",
-              "011009036F0309",
-              "000000004D80",
-              "80",
-              "0880",
-              "100180",
-              "80"
-            ]
-          },
-          {
-            "width": 3,
-            "height": 2,
-            "offsetX": 3,
-            "offsetY": 1,
-            "data": [
-              "400000007480",
-              "0003567C7E7C56",
-              "040301005D0001",
-              "004080",
-              "0380",
-              "030480"
-            ]
-          },
-          {
-            "width": 2,
-            "height": 2,
-            "offsetX": 6,
-            "offsetY": 1,
-            "data": [
-              "08306040004060",
-              "40301D0F070F1D",
-              "300880",
-              "304080"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "CLOAKED_ALIEN",
-      "name": "ENCEPHALOID",
-      "topview": {
-        "frames": [
-          {
-            "width": 2,
-            "height": 1,
-            "offsetX": 0,
-            "offsetY": 1,
-            "data": [
-              "701C6E77681E70",
-              "071C3B770B3C07"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "GLASS_GUY",
-      "name": "TRANSPARENT",
-      "topview": {
-        "frames": [
-          {
-            "width": 2,
-            "height": 1,
-            "offsetX": 0,
-            "offsetY": 3,
-            "data": [
-              "70186C5C3C6C0C",
-              "070C1B1D1E1B18"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "ACID_SPITTER",
-      "name": "ACID_SPITTER",
-      "topview": {
-        "frames": [
-          {
-            "width": 2,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "0060385C5CDE",
-              "00030E1D1DBD",
-              "3E760E80",
-              "3E373880"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "SEVEN_CLAWS",
-      "name": "ZETOC",
-      "topview": {
-        "frames": [
-          {
-            "width": 4,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "301C7E40007018",
-              "0060397F1E7F0C",
-              "607F000F784303",
-              "00000C0700033E",
-              "180C4480",
-              "0C070180",
-              "0E181880",
-              "80"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "PHASOID",
-      "name": "PHASOID",
-      "topview": {
-        "extra": [
-          "DB  animated+notcompiled+frame0",
-          "DB  $11",
-          "BYTE    special;upstop",
-          "BYTE    repeat0;normalspeed"
-        ],
-        "frames": [
-          {
-            "width": 1,
-            "height": 1,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "80"
-            ]
-          },
-          {
-            "width": 2,
-            "height": 1,
-            "offsetX": 0,
-            "offsetY": 3,
-            "data": [
-              "603030187080",
-              "0306060C0780"
-            ]
-          },
-          {
-            "width": 2,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 1,
-            "data": [
-              "60707838381870",
-              "03070F0E0E0C07",
-              "6080",
-              "0380"
-            ]
-          },
-          {
-            "width": 2,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 1,
-            "data": [
-              "60707A3B3B1A70",
-              "03072F6E6E2C07",
-              "6080",
-              "0380"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "FAKER",
-      "name": "PSEUDOMORT",
-      "topview": {
-        "extra": [
-          "DB  animated+notcompiled+frame0",
-          "DB  $11",
-          "BYTE    special;upstop",
-          "BYTE    repeat0;normalspeed"
-        ],
-        "frames": [
-          {
-            "width": 4,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "0060404000603E",
-              "7841011F787F7C",
-              "007F787F63752D",
-              "0000397F5D3B1B",
-              "40701C80",
-              "0F0180",
-              "4C7880",
-              "0380"
-            ]
-          },
-          {
-            "width": 2,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "004000701C6E2E",
-              "000100071C3B3A",
-              "5E461680",
-              "1D011880"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "TANGIBLE_GAS",
-      "name": "TANGIBLE_GAS",
-      "topview": {
-        "frames": [
-          {
-            "width": 4,
-            "height": 3,
-            "offsetX": 2,
-            "offsetY": 0,
-            "data": [
-              "00402452441244",
-              "00000200020912",
-              "00102010000040",
-              "00010409020905",
-              "2000406060B0",
-              "6856572F5E7E7C",
-              "637F1F07070703",
-              "0180",
-              "28102412081209",
-              "0012240280",
-              "142208402880",
-              "80"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "GREEN_PUDDLE",
-      "name": "PUDDLE_CREATURE",
-      "topview": {
-        "extra": [
-          "DB  animated+notcompiled+frame0",
-          "DB  $12",
-          "BYTE    attack;updown ;is this sequence correct",
-          "BYTE    repeat1;normalspeed"
-        ],
-        "frames": [
-          {
-            "width": 5,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 1,
-            "data": [
-              "0000607C3E5F7F",
-              "00477F7F7F7E7F",
-              "7C7F7F7160717F",
-              "001F7F776B7F3F",
-              "000000010180",
-              "7E7C80",
-              "4380",
-              "0F80",
-              "0F80",
-              "80"
-            ]
-          },
-          {
-            "width": 5,
-            "height": 1,
-            "offsetX": 0,
-            "offsetY": 2,
-            "data": [
-              "00607C3E5F7E78",
-              "7E7F7F3F7EFF",
-              "7F7F787078FF",
-              "0F7F776B7F1F07",
-              "0000010180"
-            ]
-          },
-          {
-            "width": 4,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 1,
-            "data": [
-              "000060787C3C7C",
-              "787C7F3F1E3D7F",
-              "00477F7C787C7F",
-              "000F3F7B753F1F",
-              "7880",
-              "7F3E80",
-              "7F7080",
-              "0780"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "DIODE_ROBOT",
-      "name": "ION_DIODE_ROBOT",
-      "topview": {
-        "frames": [
-          {
-            "width": 4,
-            "height": 2,
-            "offsetX": 1,
-            "offsetY": 0,
-            "data": [
-              "00000000607F63",
-              "406030586D766D",
-              "000103066D5B6D",
-              "00000000013F31",
-              "03070380",
-              "58306080",
-              "06030180",
-              "30383080"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "EXPLODER",
-      "name": "VEGAN_EXPLODER",
-      "topview": {
-        "extra": [
-          "DB  animated+notcompiled+frame0",
-          "DB  $11",
-          "BYTE    attack;uparound",
-          "BYTE    repeat0;normalspeed"
-        ],
-        "frames": [
-          {
-            "width": 1,
-            "height": 1,
-            "offsetX": 4,
-            "offsetY": 2,
-            "data": [
-              "0C1221120C80"
-            ]
-          },
-          {
-            "width": 1,
-            "height": 1,
-            "offsetX": 4,
-            "offsetY": 2,
-            "data": [
-              "0C1233120C80"
-            ]
-          },
-          {
-            "width": 1,
-            "height": 1,
-            "offsetX": 4,
-            "offsetY": 2,
-            "data": [
-              "0C1E331E0C80"
-            ]
-          },
-          {
-            "width": 1,
-            "height": 1,
-            "offsetX": 4,
-            "offsetY": 2,
-            "data": [
-              "0C1E3F1E0C80"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "CARNIVORE",
-      "name": "CARNIVORE",
-      "topview": {
-        "extra": [
-          "DB  animated+iscompiled+frame0",
-          "DB  $12",
-          "BYTE    blink;updown",
-          "BYTE    repeat1;normalspeed"
-        ],
-        "frames": [
-          {
-            "width": 2,
-            "height": 3,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "007C60C0",
-              "00000306058D",
-              "40606070303C3E",
-              "0D0E0E0E0F1F3F",
-              "3E5F6F6B5B3302",
-              "3E7D7B6B6D6620"
-            ]
-          },
-          {
-            "width": 2,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "403C200000A0",
-              "01030003008B",
-              "2010504008C0",
-              "0B0801010081"
-            ]
-          },
-          {
-            "width": 2,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "0020201010D0",
-              "000202040485",
-              "50404848C0",
-              "0501090981"
-            ]
-          },
-          {
-            "width": 2,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "4060006000E8",
-              "011E02000082",
-              "6808404000C0",
-              "020405010881"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "ATOM_SHIFTER",
-      "name": "ATOM_ARRANGER",
-      "topview": {
-        "extra": [
-          "DB  animated+notcompiled+frame0",
-          "DB  $22",
-          "BYTE    special;uparound",
-          "BYTE    repeat0;normalspeed"
-        ],
-        "frames": [
-          {
-            "width": 4,
-            "height": 3,
-            "offsetX": 1,
-            "offsetY": 0,
-            "data": [
-              "00004060600060",
-              "000007790E777B",
-              "383E601F78F7",
-              "0000000000070F",
-              "783C1C1C387830",
-              "077C0038400007",
-              "180F000D4F0E00",
-              "7F0E1F0E0F3E07",
-              "7070706080",
-              "0F0F0F0780",
-              "00604060603010",
-              "0F03030180"
-            ]
-          },
-          {
-            "width": 4,
-            "height": 3,
-            "offsetX": 0,
-            "offsetY": 1,
-            "data": [
-              "0060783C0E7E07",
-              "3E4F751B6D761B",
-              "7C3F1C1B1D6E77",
-              "1F306060603033",
-              "030040404080",
-              "677F0F07070737",
-              "6B3C0100701C06",
-              "1B181830316366",
-              "80",
-              "4E7806060380",
-              "031C7080",
-              "66630180"
-            ]
-          },
-          {
-            "width": 4,
-            "height": 3,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "000E7E7C786000",
-              "003E4F741B6D76",
-              "707C3F1C1B1D2E",
-              "071F80",
-              "80",
-              "1B677F0F87",
-              "776B7C0180",
-              "00030380",
-              "000040707C7C78",
-              "07070F3FFF",
-              "00000000010100",
-              "80"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "LITTLE_MEN",
-      "name": "LITTLE_MEN",
-      "topview": {
-        "extra": [
-          "DB  animated+notcompiled+frame0",
-          "DB  $11",
-          "BYTE    damage;upstop",
-          "BYTE    repeat0;normalspeed"
-        ],
-        "frames": [
-          {
-            "width": 2,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "0033000C003300",
-              "18006006001800",
-              "40000C80",
-              "61000680"
-            ]
-          },
-          {
-            "width": 2,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "000C0000300003",
-              "060060001880",
-              "00003080",
-              "06006080"
-            ]
-          },
-          {
-            "width": 2,
-            "height": 1,
-            "offsetX": 0,
-            "offsetY": 1,
-            "data": [
-              "30000000030040",
-              "00600000180001"
-            ]
-          },
-          {
-            "width": 2,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 1,
-            "data": [
-              "0C80",
-              "000000000680",
-              "003080",
-              "80"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "TAIL_FIGHTER",
-      "name": "BETEIGUESEN",
-      "topview": {
-        "frames": [
-          {
-            "width": 2,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "707C1E6F376E5E",
-              "030F1C3B363732",
-              "7880",
-              "11101080"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "SHARP_SHOOTER",
-      "name": "\"SHARP_SHOOTER\"",
-      "topview": {
-        "frames": [
-          {
-            "width": 4,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "00000000703800",
-              "00701C605F601E",
-              "000F38077B0778",
-              "000000000F1C00",
-              "80",
-              "76060480",
-              "6F602080",
-              "80"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "CYLINDER_BOT",
-      "name": "TRIPED_IV_ROBOT",
-      "topview": {
-        "frames": [
-          {
-            "width": 4,
-            "height": 3,
-            "offsetX": 0,
-            "offsetY": 3,
-            "data": [
-              "604080",
-              "01030F4F763840",
-              "000060675F3877",
-              "0E0703030180",
-              "7C7C0C0C0C000C",
-              "5F5F2070402040",
-              "46377867070807",
-              "000001071E7830",
-              "80",
-              "80",
-              "03030380",
-              "180C060380"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "WEB_THING",
-      "name": "WEBBED_PARASITE",
-      "topview": {
-        "frames": [
-          {
-            "width": 2,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "0030587C5E7606",
-              "00070D1E3D3730",
-              "060C0C80",
-              "30181880"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "WORKER",
-      "name": "WORKER_INSECT",
-      "topview": {
-        "frames": [
-          {
-            "width": 2,
-            "height": 3,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "000040605EE0",
-              "000001033D83",
-              "605E6070706F70",
-              "033D0307077B07",
-              "70106E366686",
-              "07043B66634000"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "FIGHTER",
-      "name": "FIGHTER_INSECT",
-      "topview": {
-        "frames": [
-          {
-            "width": 2,
-            "height": 3,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "000040605EE0",
-              "000001033D83",
-              "605E6070706F70",
-              "033D0307077B07",
-              "70106E366686",
-              "07043B66634000"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "TREE_HANGER",
-      "name": "OKKAR_MARSUPIAL",
-      "topview": {
-        "frames": [
-          {
-            "width": 2,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "01034E7478386C",
-              "04030101731F01",
-              "0C0C0880",
-              "80"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "OKKAR_PLANT",
-      "name": "OKKAR_PLANT",
-      "topview": {
-        "frames": [
-          {
-            "width": 2,
-            "height": 3,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "60404000000001",
-              "0041713B1F0E06",
-              "071E38707E4F31",
-              "070707031B7747",
-              "78381C1C363660",
-              "0E1C38704080"
-            ]
-          }
-        ]
-      }
+[
+  {
+    "tag": "MAGNET",
+    "name": "MAGNETIC_SWEEPER",
+    "topview": {
+      "extra": [
+        "DB  animated+notcompiled+frame0",
+        "DB  $22",
+        "BYTE    special;upstop",
+        "BYTE    repeat0;normalspeed"
+      ],
+      "frames": [
+        {
+          "width": 4,
+          "height": 3,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "4038385818D8",
+            "135B5B1300FB",
+            "495B5B4900DF",
+            "031D1D1B189B",
+            "58581858581860",
+            "7B7B787B7B7B7A",
+            "5F5F1F5EDF",
+            "1B1B181B1B1906",
+            "787860004080",
+            "7A7A7A7B7B7800",
+            "5F5F5F5F5F1F00",
+            "1E1E06010380"
+          ]
+        },
+        {
+          "width": 4,
+          "height": 3,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "4038385818D8",
+            "135B5B1300FB",
+            "495B5B4900DF",
+            "031D1D1B189B",
+            "58581858581860",
+            "7B7B787B7B7B7A",
+            "5F5F1F5EDF",
+            "1B1B181B1B1906",
+            "787860004080",
+            "0A6A1A7B7B7800",
+            "585B5B585F1F00",
+            "1E1E06010380"
+          ]
+        },
+        {
+          "width": 4,
+          "height": 3,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "4038385818D8",
+            "135B5B1300FB",
+            "495B5B49005C5A",
+            "031D1D1B189B",
+            "58581858581860",
+            "7B7B787B7B7B7A",
+            "524E0E4C56515F",
+            "1B1B181B1B1906",
+            "787860004080",
+            "0A6A1A7B7B7800",
+            "585B5B585F1F00",
+            "1E1E06010380"
+          ]
+        },
+        {
+          "width": 4,
+          "height": 3,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "4038385818D8",
+            "135B5B13007B0B",
+            "495B5B49005C5A",
+            "031D1D1B189B",
+            "58581858581860",
+            "6B33487B0B6B6A",
+            "524E0E4C56515F",
+            "1B1B181B1B1906",
+            "787860004080",
+            "6A6A623B437800",
+            "585A5A585F1F00",
+            "1E1E06010380"
+          ]
+        }
+      ]
     }
-  ]
-}
+  },
+  {
+    "tag": "MISER",
+    "name": "\"MISER\"",
+    "topview": {
+      "frames": [
+        {
+          "width": 1,
+          "height": 2,
+          "offsetX": 4,
+          "offsetY": 0,
+          "data": [
+            "09060F16183878",
+            "787080"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "ROBED_SELLER",
+    "name": "EBKAL'EE",
+    "topview": {
+      "frames": [
+        {
+          "width": 5,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "0000007E7F7F40",
+            "1C36606D5B3B17",
+            "386C06767B7D79",
+            "000000776F7701",
+            "00000000010100",
+            "80",
+            "60784080",
+            "071F0380",
+            "1E7F6080",
+            "00000180"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "SCREAMER",
+    "name": "\"SCREECHER\"",
+    "topview": {
+      "frames": [
+        {
+          "width": 4,
+          "height": 2,
+          "offsetX": 1,
+          "offsetY": 7,
+          "data": [
+            "361F3B3F73665C",
+            "00000000000173",
+            "6040606070385C",
+            "060F0D0F0C0603",
+            "700060004080",
+            "7D7E7C730D2620",
+            "7B07330C1B0600",
+            "80"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "TF_BAIT",
+    "name": "\"MAULER\"",
+    "topview": {
+      "frames": [
+        {
+          "width": 2,
+          "height": 3,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "183366767C6030",
+            "0C6633371F0306",
+            "5356367C385C36",
+            "6535361F0E1D36",
+            "6633584C0C1810",
+            "33660D19180C04"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "PROG_CHANGER",
+    "name": "MEM-PLACER_ROBOT",
+    "topview": {
+      "frames": [
+        {
+          "width": 2,
+          "height": 3,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "406070385C5E27",
+            "0103070E1D3D72",
+            "7B275F5E3D6D5B",
+            "6F727D3D5E5B6D",
+            "5B3336666C5840",
+            "6D6636331B0D01"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "SPARKLES",
+    "name": "SPARKLE",
+    "topview": {
+      "extra": [
+        "DB  animated+notcompiled+frame0",
+        "DB  $21",
+        "BYTE    blink;updown",
+        "BYTE    repeat1;normalspeed"
+      ],
+      "frames": [
+        {
+          "width": 4,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 1,
+          "data": [
+            "000000003280",
+            "00081040774010",
+            "011009036F0309",
+            "000000004D80",
+            "80",
+            "0880",
+            "100180",
+            "80"
+          ]
+        },
+        {
+          "width": 3,
+          "height": 2,
+          "offsetX": 3,
+          "offsetY": 1,
+          "data": [
+            "400000007480",
+            "0003567C7E7C56",
+            "040301005D0001",
+            "004080",
+            "0380",
+            "030480"
+          ]
+        },
+        {
+          "width": 2,
+          "height": 2,
+          "offsetX": 6,
+          "offsetY": 1,
+          "data": [
+            "08306040004060",
+            "40301D0F070F1D",
+            "300880",
+            "304080"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "CLOAKED_ALIEN",
+    "name": "ENCEPHALOID",
+    "topview": {
+      "frames": [
+        {
+          "width": 2,
+          "height": 1,
+          "offsetX": 0,
+          "offsetY": 1,
+          "data": [
+            "701C6E77681E70",
+            "071C3B770B3C07"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "GLASS_GUY",
+    "name": "TRANSPARENT",
+    "topview": {
+      "frames": [
+        {
+          "width": 2,
+          "height": 1,
+          "offsetX": 0,
+          "offsetY": 3,
+          "data": [
+            "70186C5C3C6C0C",
+            "070C1B1D1E1B18"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "ACID_SPITTER",
+    "name": "ACID_SPITTER",
+    "topview": {
+      "frames": [
+        {
+          "width": 2,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "0060385C5CDE",
+            "00030E1D1DBD",
+            "3E760E80",
+            "3E373880"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "SEVEN_CLAWS",
+    "name": "ZETOC",
+    "topview": {
+      "frames": [
+        {
+          "width": 4,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "301C7E40007018",
+            "0060397F1E7F0C",
+            "607F000F784303",
+            "00000C0700033E",
+            "180C4480",
+            "0C070180",
+            "0E181880",
+            "80"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "PHASOID",
+    "name": "PHASOID",
+    "topview": {
+      "extra": [
+        "DB  animated+notcompiled+frame0",
+        "DB  $11",
+        "BYTE    special;upstop",
+        "BYTE    repeat0;normalspeed"
+      ],
+      "frames": [
+        {
+          "width": 1,
+          "height": 1,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "80"
+          ]
+        },
+        {
+          "width": 2,
+          "height": 1,
+          "offsetX": 0,
+          "offsetY": 3,
+          "data": [
+            "603030187080",
+            "0306060C0780"
+          ]
+        },
+        {
+          "width": 2,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 1,
+          "data": [
+            "60707838381870",
+            "03070F0E0E0C07",
+            "6080",
+            "0380"
+          ]
+        },
+        {
+          "width": 2,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 1,
+          "data": [
+            "60707A3B3B1A70",
+            "03072F6E6E2C07",
+            "6080",
+            "0380"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "FAKER",
+    "name": "PSEUDOMORT",
+    "topview": {
+      "extra": [
+        "DB  animated+notcompiled+frame0",
+        "DB  $11",
+        "BYTE    special;upstop",
+        "BYTE    repeat0;normalspeed"
+      ],
+      "frames": [
+        {
+          "width": 4,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "0060404000603E",
+            "7841011F787F7C",
+            "007F787F63752D",
+            "0000397F5D3B1B",
+            "40701C80",
+            "0F0180",
+            "4C7880",
+            "0380"
+          ]
+        },
+        {
+          "width": 2,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "004000701C6E2E",
+            "000100071C3B3A",
+            "5E461680",
+            "1D011880"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "TANGIBLE_GAS",
+    "name": "TANGIBLE_GAS",
+    "topview": {
+      "frames": [
+        {
+          "width": 4,
+          "height": 3,
+          "offsetX": 2,
+          "offsetY": 0,
+          "data": [
+            "00402452441244",
+            "00000200020912",
+            "00102010000040",
+            "00010409020905",
+            "2000406060B0",
+            "6856572F5E7E7C",
+            "637F1F07070703",
+            "0180",
+            "28102412081209",
+            "0012240280",
+            "142208402880",
+            "80"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "GREEN_PUDDLE",
+    "name": "PUDDLE_CREATURE",
+    "topview": {
+      "extra": [
+        "DB  animated+notcompiled+frame0",
+        "DB  $12",
+        "BYTE    attack;updown ;is this sequence correct",
+        "BYTE    repeat1;normalspeed"
+      ],
+      "frames": [
+        {
+          "width": 5,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 1,
+          "data": [
+            "0000607C3E5F7F",
+            "00477F7F7F7E7F",
+            "7C7F7F7160717F",
+            "001F7F776B7F3F",
+            "000000010180",
+            "7E7C80",
+            "4380",
+            "0F80",
+            "0F80",
+            "80"
+          ]
+        },
+        {
+          "width": 5,
+          "height": 1,
+          "offsetX": 0,
+          "offsetY": 2,
+          "data": [
+            "00607C3E5F7E78",
+            "7E7F7F3F7EFF",
+            "7F7F787078FF",
+            "0F7F776B7F1F07",
+            "0000010180"
+          ]
+        },
+        {
+          "width": 4,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 1,
+          "data": [
+            "000060787C3C7C",
+            "787C7F3F1E3D7F",
+            "00477F7C787C7F",
+            "000F3F7B753F1F",
+            "7880",
+            "7F3E80",
+            "7F7080",
+            "0780"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "DIODE_ROBOT",
+    "name": "ION_DIODE_ROBOT",
+    "topview": {
+      "frames": [
+        {
+          "width": 4,
+          "height": 2,
+          "offsetX": 1,
+          "offsetY": 0,
+          "data": [
+            "00000000607F63",
+            "406030586D766D",
+            "000103066D5B6D",
+            "00000000013F31",
+            "03070380",
+            "58306080",
+            "06030180",
+            "30383080"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "EXPLODER",
+    "name": "VEGAN_EXPLODER",
+    "topview": {
+      "extra": [
+        "DB  animated+notcompiled+frame0",
+        "DB  $11",
+        "BYTE    attack;uparound",
+        "BYTE    repeat0;normalspeed"
+      ],
+      "frames": [
+        {
+          "width": 1,
+          "height": 1,
+          "offsetX": 4,
+          "offsetY": 2,
+          "data": [
+            "0C1221120C80"
+          ]
+        },
+        {
+          "width": 1,
+          "height": 1,
+          "offsetX": 4,
+          "offsetY": 2,
+          "data": [
+            "0C1233120C80"
+          ]
+        },
+        {
+          "width": 1,
+          "height": 1,
+          "offsetX": 4,
+          "offsetY": 2,
+          "data": [
+            "0C1E331E0C80"
+          ]
+        },
+        {
+          "width": 1,
+          "height": 1,
+          "offsetX": 4,
+          "offsetY": 2,
+          "data": [
+            "0C1E3F1E0C80"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "CARNIVORE",
+    "name": "CARNIVORE",
+    "topview": {
+      "extra": [
+        "DB  animated+iscompiled+frame0",
+        "DB  $12",
+        "BYTE    blink;updown",
+        "BYTE    repeat1;normalspeed"
+      ],
+      "frames": [
+        {
+          "width": 2,
+          "height": 3,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "007C60C0",
+            "00000306058D",
+            "40606070303C3E",
+            "0D0E0E0E0F1F3F",
+            "3E5F6F6B5B3302",
+            "3E7D7B6B6D6620"
+          ]
+        },
+        {
+          "width": 2,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "403C200000A0",
+            "01030003008B",
+            "2010504008C0",
+            "0B0801010081"
+          ]
+        },
+        {
+          "width": 2,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "0020201010D0",
+            "000202040485",
+            "50404848C0",
+            "0501090981"
+          ]
+        },
+        {
+          "width": 2,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "4060006000E8",
+            "011E02000082",
+            "6808404000C0",
+            "020405010881"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "ATOM_SHIFTER",
+    "name": "ATOM_ARRANGER",
+    "topview": {
+      "extra": [
+        "DB  animated+notcompiled+frame0",
+        "DB  $22",
+        "BYTE    special;uparound",
+        "BYTE    repeat0;normalspeed"
+      ],
+      "frames": [
+        {
+          "width": 4,
+          "height": 3,
+          "offsetX": 1,
+          "offsetY": 0,
+          "data": [
+            "00004060600060",
+            "000007790E777B",
+            "383E601F78F7",
+            "0000000000070F",
+            "783C1C1C387830",
+            "077C0038400007",
+            "180F000D4F0E00",
+            "7F0E1F0E0F3E07",
+            "7070706080",
+            "0F0F0F0780",
+            "00604060603010",
+            "0F03030180"
+          ]
+        },
+        {
+          "width": 4,
+          "height": 3,
+          "offsetX": 0,
+          "offsetY": 1,
+          "data": [
+            "0060783C0E7E07",
+            "3E4F751B6D761B",
+            "7C3F1C1B1D6E77",
+            "1F306060603033",
+            "030040404080",
+            "677F0F07070737",
+            "6B3C0100701C06",
+            "1B181830316366",
+            "80",
+            "4E7806060380",
+            "031C7080",
+            "66630180"
+          ]
+        },
+        {
+          "width": 4,
+          "height": 3,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "000E7E7C786000",
+            "003E4F741B6D76",
+            "707C3F1C1B1D2E",
+            "071F80",
+            "80",
+            "1B677F0F87",
+            "776B7C0180",
+            "00030380",
+            "000040707C7C78",
+            "07070F3FFF",
+            "00000000010100",
+            "80"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "LITTLE_MEN",
+    "name": "LITTLE_MEN",
+    "topview": {
+      "extra": [
+        "DB  animated+notcompiled+frame0",
+        "DB  $11",
+        "BYTE    damage;upstop",
+        "BYTE    repeat0;normalspeed"
+      ],
+      "frames": [
+        {
+          "width": 2,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "0033000C003300",
+            "18006006001800",
+            "40000C80",
+            "61000680"
+          ]
+        },
+        {
+          "width": 2,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "000C0000300003",
+            "060060001880",
+            "00003080",
+            "06006080"
+          ]
+        },
+        {
+          "width": 2,
+          "height": 1,
+          "offsetX": 0,
+          "offsetY": 1,
+          "data": [
+            "30000000030040",
+            "00600000180001"
+          ]
+        },
+        {
+          "width": 2,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 1,
+          "data": [
+            "0C80",
+            "000000000680",
+            "003080",
+            "80"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "TAIL_FIGHTER",
+    "name": "BETEIGUESEN",
+    "topview": {
+      "frames": [
+        {
+          "width": 2,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "707C1E6F376E5E",
+            "030F1C3B363732",
+            "7880",
+            "11101080"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "SHARP_SHOOTER",
+    "name": "\"SHARP_SHOOTER\"",
+    "topview": {
+      "frames": [
+        {
+          "width": 4,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "00000000703800",
+            "00701C605F601E",
+            "000F38077B0778",
+            "000000000F1C00",
+            "80",
+            "76060480",
+            "6F602080",
+            "80"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "CYLINDER_BOT",
+    "name": "TRIPED_IV_ROBOT",
+    "topview": {
+      "frames": [
+        {
+          "width": 4,
+          "height": 3,
+          "offsetX": 0,
+          "offsetY": 3,
+          "data": [
+            "604080",
+            "01030F4F763840",
+            "000060675F3877",
+            "0E0703030180",
+            "7C7C0C0C0C000C",
+            "5F5F2070402040",
+            "46377867070807",
+            "000001071E7830",
+            "80",
+            "80",
+            "03030380",
+            "180C060380"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "WEB_THING",
+    "name": "WEBBED_PARASITE",
+    "topview": {
+      "frames": [
+        {
+          "width": 2,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "0030587C5E7606",
+            "00070D1E3D3730",
+            "060C0C80",
+            "30181880"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "WORKER",
+    "name": "WORKER_INSECT",
+    "topview": {
+      "frames": [
+        {
+          "width": 2,
+          "height": 3,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "000040605EE0",
+            "000001033D83",
+            "605E6070706F70",
+            "033D0307077B07",
+            "70106E366686",
+            "07043B66634000"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "FIGHTER",
+    "name": "FIGHTER_INSECT",
+    "topview": {
+      "frames": [
+        {
+          "width": 2,
+          "height": 3,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "000040605EE0",
+            "000001033D83",
+            "605E6070706F70",
+            "033D0307077B07",
+            "70106E366686",
+            "07043B66634000"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "TREE_HANGER",
+    "name": "OKKAR_MARSUPIAL",
+    "topview": {
+      "frames": [
+        {
+          "width": 2,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "01034E7478386C",
+            "04030101731F01",
+            "0C0C0880",
+            "80"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "OKKAR_PLANT",
+    "name": "OKKAR_PLANT",
+    "topview": {
+      "frames": [
+        {
+          "width": 2,
+          "height": 3,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "60404000000001",
+            "0041713B1F0E06",
+            "071E38707E4F31",
+            "070707031B7747",
+            "78381C1C363660",
+            "0E1C38704080"
+          ]
+        }
+      ]
+    }
+  }
+]

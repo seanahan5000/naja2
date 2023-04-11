@@ -1,1147 +1,1145 @@
-{
-  "aliens": [
-    {
-      "tag": "DUAL_HEAD",
-      "name": "DUALTRONIC_ROBOT",
-      "topview": {
-        "frames": [
-          {
-            "width": 4,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "6E6C0C7C40407C",
-              "7F403F336D6D33",
-              "7F037D4C37374C",
-              "0776313F03033F",
-              "0C6E6080",
-              "3F407F80",
-              "7D037F80",
-              "31363B80"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "CENTAUR",
-      "name": "CENTAURIAN_ROBOT",
-      "topview": {
-        "frames": [
-          {
-            "width": 2,
-            "height": 3,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "0000701E1E7610",
-              "0000073C3C3704",
-              "70107010701868",
-              "07040704070C0B",
-              "2F6F0B7B3B0302",
-              "7A7B686F6E6020"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "SWAMP_THING",
-      "name": "SLIME_CREATURE",
-      "topview": {
-        "extra": [
-          "DB  animated+iscompiled+frame0",
-          "DB  $22",
-          "BYTE    attack;updown",
-          "BYTE    repeat1;normalspeed"
-        ],
-        "frames": [
-          {
-            "width": 5,
-            "height": 3,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "0040783C7C7E3E",
-              "707F7D5F7F3B7F",
-              "0F7D3F7F6DFF",
-              "00031F3B3F7B7E",
-              "80",
-              "767F6F3F3B7F6F",
-              "4F0B010B2F7E00",
-              "74500051727F00",
-              "7F777F3D7D765E",
-              "0081",
-              "7D777F5B1B3316",
-              "7E3E01030E1903",
-              "00000040701840",
-              "7E367F5B584D65",
-              "01010101010100"
-            ]
-          },
-          {
-            "width": 4,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "80",
-              "0000000000C4",
-              "00000000101000",
-              "00000000000001",
-              "80",
-              "30440820500800",
-              "0B2410020F0800",
-              "0180"
-            ]
-          },
-          {
-            "width": 4,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "80",
-              "00000000000040",
-              "00000000020200",
-              "80",
-              "80",
-              "40306054080800",
-              "000B062D80",
-              "80"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "ALIEN_ON",
-      "name": "TALUMA_AND_MOUNT",
-      "topview": {
-        "frames": [
-          {
-            "width": 2,
-            "height": 3,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "0C0C5A7A766020",
-              "18182D2F370302",
-              "603860266C6C7A",
-              "030E03321B1B2F",
-              "7A6340404080",
-              "2F6301010387"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "LIGHT_ALIEN",
-      "name": "SPECTRAMITE",
-      "topview": {
-        "frames": [
-          {
-            "width": 5,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "0200027B024472",
-              "06737C3F7C7300",
-              "604F3E7C3E4F00",
-              "4001405F40234E",
-              "0000000180",
-              "0C040480",
-              "4080",
-              "0380",
-              "30202080",
-              "80"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "PUNKER",
-      "name": "\"SPIKE\"",
-      "topview": {
-        "frames": [
-          {
-            "width": 2,
-            "height": 1,
-            "offsetX": 0,
-            "offsetY": 2,
-            "data": [
-              "68305F30685844",
-              "0B067D060B0D11"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "EARS",
-      "name": "SOLICIAN",
-      "topview": {
-        "frames": [
-          {
-            "width": 4,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "3C6603437386",
-              "780D703F700C78",
-              "070C037F432C67",
-              "000000000380",
-              "0C1880",
-              "80",
-              "404080",
-              "010180"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "WANDERING",
-      "name": "WANDERIN_THOUGHT",
-      "topview": {
-        "extra": [
-          "DB  animated+notcompiled+frame0",
-          "DB  $22",
-          "BYTE    attack;uparound",
-          "BYTE    repeat0;normalspeed"
-        ],
-        "frames": [
-          {
-            "width": 4,
-            "height": 3,
-            "offsetX": 0,
-            "offsetY": 1,
-            "data": [
-              "00400000480010",
-              "00081004645865",
-              "0800121004360C",
-              "00000200140005",
-              "00042000100008",
-              "6C7A767A6C3510",
-              "772F6E1F671B0C",
-              "10040228401200",
-              "2000401080",
-              "281004400880",
-              "0A0041041080",
-              "0900040180"
-            ]
-          },
-          {
-            "width": 4,
-            "height": 3,
-            "offsetX": 0,
-            "offsetY": 1,
-            "data": [
-              "00400000480010",
-              "00081004645865",
-              "0800121004360C",
-              "00000200140005",
-              "00042000100008",
-              "0C0A060A0C3510",
-              "70206110601B0C",
-              "10040228401200",
-              "2000401080",
-              "281004400880",
-              "0A0041041080",
-              "0900040180"
-            ]
-          },
-          {
-            "width": 4,
-            "height": 3,
-            "offsetX": 0,
-            "offsetY": 1,
-            "data": [
-              "00400000480010",
-              "00081004040001",
-              "08001210002000",
-              "00000200140005",
-              "00042000100008",
-              "60707070600100",
-              "070F0E0F070020",
-              "10040228401200",
-              "2000401080",
-              "081004400880",
-              "000041041080",
-              "0900040180"
-            ]
-          },
-          {
-            "width": 4,
-            "height": 3,
-            "offsetX": 0,
-            "offsetY": 1,
-            "data": [
-              "004000000880",
-              "00000000605864",
-              "0800000008160C",
-              "000000001080",
-              "000480",
-              "6C7A767A6C3410",
-              "772F6E1F671B0C",
-              "100000004080",
-              "2000001080",
-              "200000000880",
-              "0A0000001080",
-              "00000480"
-            ]
-          },
-          {
-            "width": 4,
-            "height": 3,
-            "offsetX": 0,
-            "offsetY": 2,
-            "data": [
-              "00000040001000",
-              "0810046458656C",
-              "00121004360C77",
-              "00020004000500",
-              "00200010000800",
-              "7A767A6C351028",
-              "2F6E1F671B0C0A",
-              "04022800120009",
-              "004080",
-              "10044080",
-              "00410480",
-              "00000180"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "KAMIKAZE",
-      "name": "INTRUDER_MISSILE",
-      "topview": {
-        "extra": [
-          "DB  animated+notcompiled+frame0",
-          "DB  $11",
-          "BYTE    attack;upstop",
-          "BYTE    repeat0;normalspeed"
-        ],
-        "frames": [
-          {
-            "width": 1,
-            "height": 2,
-            "offsetX": 3,
-            "offsetY": 0,
-            "data": [
-              "665A66FE",
-              "3C3C1880"
-            ]
-          },
-          {
-            "width": 2,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 2,
-            "data": [
-              "30503070507668",
-              "06050607070716",
-              "6080",
-              "0B80"
-            ]
-          },
-          {
-            "width": 2,
-            "height": 1,
-            "offsetX": 0,
-            "offsetY": 3,
-            "data": [
-              "325034734A7432",
-              "06354657651E33"
-            ]
-          },
-          {
-            "width": 2,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 2,
-            "data": [
-              "182E3276630E64",
-              "5D643766526D1A",
-              "1880",
-              "0780"
-            ]
-          },
-          {
-            "width": 2,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "1C3622231E1223",
-              "1D246748346664",
-              "636E3080",
-              "161B0C80"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "REFLEX_ALIEN",
-      "name": "\"SPEEDO\"",
-      "topview": {
-        "extra": [
-          "DB  animated+notcompiled+frame0",
-          "DB  $11",
-          "BYTE    move;uparound ;ARE THESE RIGHT???",
-          "BYTE    repeat0;normalspeed"
-        ],
-        "frames": [
-          {
-            "width": 2,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "0C0C761A6C6E36",
-              "606C7B363D1D0B",
-              "662D1B80",
-              "060280"
-            ]
-          },
-          {
-            "width": 2,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "0307731B6F6E30",
-              "0C0C1B160D1D1B",
-              "581080",
-              "392D3680"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "SHIFTER",
-      "name": "SHIFTER",
-      "topview": {
-        "frames": [
-          {
-            "width": 2,
-            "height": 1,
-            "offsetX": 0,
-            "offsetY": 3,
-            "data": [
-              "60381F3B630600",
-              "030E7C6E636030"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "GREMLIN",
-      "name": "ADHARAN_GREMLIN",
-      "topview": {
-        "frames": [
-          {
-            "width": 2,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "60606060600060",
-              "7F6E7F6E7F0001",
-              "786C0C80",
-              "070D0C80"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "WIND_TUNNEL",
-      "name": "AIR_CIRCULATOR",
-      "topview": {
-        "frames": [
-          {
-            "width": 6,
-            "height": 3,
-            "offsetX": 2,
-            "offsetY": 0,
-            "data": [
-              "80",
-              "80",
-              "7C0C7800F8",
-              "0706030083",
-              "80",
-              "80",
-              "00000038000F5B",
-              "0000791D5D602F",
-              "001C1E1F1F6378",
-              "00076F1F3F7843",
-              "0000135717003E",
-              "00000003001E1B",
-              "5B5B0F80",
-              "0F6F404080",
-              "7F7F047F007060",
-              "1F7F243F000100",
-              "3E3E80",
-              "1B1B1E80"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "DRILLER",
-      "name": "STATION_DRILLER",
-      "topview": {
-        "frames": [
-          {
-            "width": 4,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 4,
-            "data": [
-              "007E363636D6",
-              "703D461B637573",
-              "0F3C6318072F4E",
-              "007F6C6D6DEB",
-              "563636367E80",
-              "75631B463D7000",
-              "2F0718633C0F00",
-              "6B6D6D6C7F80"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "INVISIBLE",
-      "name": "INVISIBLE_ALIEN",
-      "topview": {
-        "extra": [
-          "DB  animated+iscompiled+frame0",
-          "DB  $12",
-          "BYTE    blink;updown",
-          "BYTE    repeat1;normalspeed"
-        ],
-        "frames": [
-          {
-            "width": 2,
-            "height": 3,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "040C0C5870E0",
-              "00000F190081",
-              "701060781C4E1F",
-              "0300030F1C397C",
-              "3B733306070C00",
-              "6E676630701800"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "COOLER",
-      "name": "COOLING_UNIT",
-      "topview": {
-        "frames": [
-          {
-            "width": 6,
-            "height": 3,
-            "offsetX": 0,
-            "offsetY": 1,
-            "data": [
-              "703B3B5863FB",
-              "00FD",
-              "406E1E7E0E721C",
-              "073B3C3F38271C",
-              "00DF",
-              "006F6F6F6F614E",
-              "7B3A596B5B3B7B",
-              "7D3C3D1D3D3C7D",
-              "667B7B7D7B7B66",
-              "336F6F5F6F6F33",
-              "1F5E5E1C5E5E5F",
-              "2B6768EF",
-              "7B7B7B797A7B00",
-              "7D7D7D611D7D38",
-              "1C720E7E7E7E00",
-              "1C27383F3F3F00",
-              "4F535D3D3B5B30",
-              "6F6F0F6F6F6F00"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "HEATER",
-      "name": "THERMAL_UNIT",
-      "topview": {
-        "frames": [
-          {
-            "width": 6,
-            "height": 3,
-            "offsetX": 1,
-            "offsetY": 1,
-            "data": [
-              "FB",
-              "FD",
-              "7E7E7E0E721C66",
-              "3F3F3F38271C33",
-              "DF",
-              "EF",
-              "FB",
-              "3D3D1D3D3DFD",
-              "7B7B7D7B7B661C",
-              "6F6F5F6F6F331C",
-              "5E5E5C5E5EDF",
-              "EF",
-              "7B7B7B7B7B80",
-              "7D7D7D7D7D80",
-              "720E7E7E7E80",
-              "27383F3F3F80",
-              "5F5F5F5F5F80",
-              "6F6F6F6F6F80"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "GLOWER",
-      "name": "INFRA-FLOURINOID",
-      "topview": {
-        "frames": [
-          {
-            "width": 4,
-            "height": 3,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "4000000040603C",
-              "037E0C003F80",
-              "781E06030381",
-              "03061C18180C06",
-              "3666634343666C",
-              "404000015F780C",
-              "000040790F3060",
-              "060305060C0C18",
-              "303018584C4C7C",
-              "0C060301010103",
-              "604080",
-              "1C0780"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "POISON_SUIT",
-      "name": "\"GASSER\"",
-      "topview": {
-        "extra": [
-          "DB  animated+notcompiled+frame0",
-          "DB  $21",
-          "BYTE    kill;upstop",
-          "BYTE    repeat0;normalspeed"
-        ],
-        "frames": [
-          {
-            "width": 4,
-            "height": 2,
-            "offsetX": 1,
-            "offsetY": 0,
-            "data": [
-              "00000000046436",
-              "0078765B7B7678",
-              "00071B37371B07",
-              "00000007464666",
-              "1B0F80",
-              "066C6080",
-              "180D0180",
-              "3E80"
-            ]
-          },
-          {
-            "width": 4,
-            "height": 2,
-            "offsetX": 1,
-            "offsetY": 1,
-            "data": [
-              "0000000464361B",
-              "78765B7B767806",
-              "071B3737131F70",
-              "0000074646663C",
-              "0F80",
-              "6C6080",
-              "254180",
-              "050680"
-            ]
-          },
-          {
-            "width": 4,
-            "height": 2,
-            "offsetX": 1,
-            "offsetY": 1,
-            "data": [
-              "0000000464361B",
-              "78765B7B763846",
-              "071B37335C2365",
-              "0000396659266C",
-              "0F80",
-              "0C2080",
-              "330C80",
-              "310E80"
-            ]
-          },
-          {
-            "width": 4,
-            "height": 2,
-            "offsetX": 1,
-            "offsetY": 0,
-            "data": [
-              "00000000042436",
-              "0008704E5B233A",
-              "4076594E024C63",
-              "0F382651605950",
-              "1B0F80",
-              "4E106080",
-              "74590780",
-              "6D390780"
-            ]
-          },
-          {
-            "width": 4,
-            "height": 2,
-            "offsetX": 1,
-            "offsetY": 0,
-            "data": [
-              "00384E5B152336",
-              "3C46714C52213A",
-              "00775904024846",
-              "0F183451304950",
-              "1B7C80",
-              "4E653880",
-              "34490780",
-              "6C390780"
-            ]
-          },
-          {
-            "width": 5,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "0824193209416A",
-              "20046219244224",
-              "0063104903100C",
-              "0C004933401321",
-              "000000010081",
-              "32045080",
-              "1C0B2180",
-              "49110280",
-              "18210480",
-              "0180"
-            ]
-          },
-          {
-            "width": 4,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "08001002084140",
-              "20004200044004",
-              "00001001000800",
-              "00200112400440",
-              "02001080",
-              "100980",
-              "01001080",
-              "11000480"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "FUNGUS",
-      "name": "TRACC_FUNGUS",
-      "topview": {
-        "frames": [
-          {
-            "width": 2,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "02070D18706070",
-              "001070580F067C",
-              "5A4E0280",
-              "270180"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "QUEEN_INSECT",
-      "name": "QUEEN_INSECT",
-      "topview": {
-        "extra": [
-          "DB  animated+iscompiled+frame0",
-          "DB  $22",
-          "BYTE    special;upstop",
-          "BYTE    repeat0;normalspeed"
-        ],
-        "frames": [
-          {
-            "width": 5,
-            "height": 5,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "00006C70787844",
-              "601E7C7B776F5F",
-              "001F6F777B7B7D",
-              "00000337078F",
-              "80",
-              "3C7B7C7C007C7B",
-              "0C33071B00071B",
-              "7C3B407976F8",
-              "1F001F1F6F9F",
-              "80",
-              "7C7880",
-              "070380",
-              "70205C664680",
-              "0F08776C67E0",
-              "80",
-              "80",
-              "80",
-              "80",
-              "80",
-              "80",
-              "80",
-              "80",
-              "80",
-              "80",
-              "80"
-            ]
-          },
-          {
-            "width": 5,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 7,
-            "data": [
-              "00000000000206",
-              "0404082C00082C",
-              "80",
-              "80",
-              "80",
-              "02067C80",
-              "080C0780",
-              "0000000A0A8C",
-              "0000002020E0",
-              "000000010180"
-            ]
-          },
-          {
-            "width": 2,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 7,
-            "data": [
-              "0000000280",
-              "00000000001058",
-              "0000707080",
-              "1010090180"
-            ]
-          },
-          {
-            "width": 5,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 7,
-            "data": [
-              "80",
-              "00000000000030",
-              "80",
-              "80",
-              "80",
-              "00000A08786000",
-              "20203E0E0F0300",
-              "0000000A0A8C",
-              "0000002020E0",
-              "000000010180"
-            ]
-          },
-          {
-            "width": 3,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 14,
-            "data": [
-              "00787C04041C78",
-              "000F1F10101C0F",
-              "0000000A0A8C",
-              "6080",
-              "0180",
-              "80"
-            ]
-          },
-          {
-            "width": 3,
-            "height": 3,
-            "offsetX": 14,
-            "offsetY": 7,
-            "data": [
-              "00000002000206",
-              "0404082C001868",
-              "80",
-              "02000000000206",
-              "20000000002030",
-              "0000000A0A8C",
-              "1C7C786080",
-              "1E1F0F0380",
-              "80"
-            ]
-          },
-          {
-            "width": 5,
-            "height": 4,
-            "offsetX": 0,
-            "offsetY": 7,
-            "data": [
-              "80",
-              "0000000000043A",
-              "80",
-              "80",
-              "80",
-              "007E0A0C641E06",
-              "1C332C18133C30",
-              "0000000A0A8C",
-              "0000002020E0",
-              "000000010180",
-              "0000061E7C7C78",
-              "0000303C1F1F0F",
-              "80",
-              "80",
-              "80",
-              "6080",
-              "0380",
-              "80",
-              "80",
-              "80"
-            ]
-          },
-          {
-            "width": 5,
-            "height": 4,
-            "offsetX": 0,
-            "offsetY": 7,
-            "data": [
-              "80",
-              "00000000000416",
-              "80",
-              "80",
-              "80",
-              "00007070186078",
-              "040003070C030F",
-              "0000000A0A8C",
-              "0000002020E0",
-              "000000010180",
-              "7C7C7E7E7C7C78",
-              "1F1F3F3F1F1F0F",
-              "80",
-              "80",
-              "80",
-              "6080",
-              "0380",
-              "80",
-              "80",
-              "80"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "HOT_HEAD",
-      "name": "HAMELER_HOT_HEAD",
-      "topview": {
-        "extra": [
-          "DB  animated+notcompiled+frame0",
-          "DB  $11",
-          "BYTE    blink;uparound",
-          "BYTE    repeat1;normalspeed"
-        ],
-        "frames": [
-          {
-            "width": 2,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 2,
-            "data": [
-              "582C5E36060414",
-              "0E1D3E36302814",
-              "0880",
-              "0880"
-            ]
-          },
-          {
-            "width": 2,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 2,
-            "data": [
-              "381C5E36060912",
-              "0D1D3C36302024",
-              "0480",
-              "0880"
-            ]
-          },
-          {
-            "width": 2,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 2,
-            "data": [
-              "185C3E36060412",
-              "0D1E3D36302810",
-              "0880",
-              "2480"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "tag": "FIGHTER_INSECT",
-      "name": "FIGHTER_INSECT",
-      "topview": {
-        "extra": [
-          "DB  animated+notcompiled+frame0",
-          "DB  $12",
-          "BYTE    special;upstop",
-          "BYTE    repeat0;normalspeed"
-        ],
-        "frames": [
-          {
-            "width": 2,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "60787C7C7E7E7C",
-              "030F1F1F3F3F1F",
-              "7C786080",
-              "1F0F0380"
-            ]
-          },
-          {
-            "width": 2,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "407078787C7C78",
-              "071F3F3F7F7F3F",
-              "78704080",
-              "3F1F0780"
-            ]
-          },
-          {
-            "width": 2,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "707C7E7E6F6F5E",
-              "01070F0F1F1F0E",
-              "3E7C7080",
-              "0F0680"
-            ]
-          },
-          {
-            "width": 2,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "60786C2C5E5E3C",
-              "030F1F1E3F331D",
-              "7C786080",
-              "1E0C80"
-            ]
-          },
-          {
-            "width": 2,
-            "height": 2,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "707476166F6F5E",
-              "030F1E1F3D3106",
-              "1E5C1060306000",
-              "7B07033F363330"
-            ]
-          },
-          {
-            "width": 2,
-            "height": 3,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "40686C2C5E5E24",
-              "6673591C3B370F",
-              "3C58406060006E",
-              "770F073B07043B",
-              "3666060680",
-              "666380"
-            ]
-          },
-          {
-            "width": 2,
-            "height": 3,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "307476064F6C50",
-              "0375600E0F073B",
-              "605E6070706F70",
-              "033D0307077B07",
-              "70106C366680",
-              "07043B3633B0"
-            ]
-          },
-          {
-            "width": 2,
-            "height": 3,
-            "offsetX": 0,
-            "offsetY": 0,
-            "data": [
-              "000040605EE0",
-              "000001033D83",
-              "605E6070706F70",
-              "033D0307077B07",
-              "70106E366686",
-              "07043B666380"
-            ]
-          }
-        ]
-      }
+[
+  {
+    "tag": "DUAL_HEAD",
+    "name": "DUALTRONIC_ROBOT",
+    "topview": {
+      "frames": [
+        {
+          "width": 4,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "6E6C0C7C40407C",
+            "7F403F336D6D33",
+            "7F037D4C37374C",
+            "0776313F03033F",
+            "0C6E6080",
+            "3F407F80",
+            "7D037F80",
+            "31363B80"
+          ]
+        }
+      ]
     }
-  ]
-}
+  },
+  {
+    "tag": "CENTAUR",
+    "name": "CENTAURIAN_ROBOT",
+    "topview": {
+      "frames": [
+        {
+          "width": 2,
+          "height": 3,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "0000701E1E7610",
+            "0000073C3C3704",
+            "70107010701868",
+            "07040704070C0B",
+            "2F6F0B7B3B0302",
+            "7A7B686F6E6020"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "SWAMP_THING",
+    "name": "SLIME_CREATURE",
+    "topview": {
+      "extra": [
+        "DB  animated+iscompiled+frame0",
+        "DB  $22",
+        "BYTE    attack;updown",
+        "BYTE    repeat1;normalspeed"
+      ],
+      "frames": [
+        {
+          "width": 5,
+          "height": 3,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "0040783C7C7E3E",
+            "707F7D5F7F3B7F",
+            "0F7D3F7F6DFF",
+            "00031F3B3F7B7E",
+            "80",
+            "767F6F3F3B7F6F",
+            "4F0B010B2F7E00",
+            "74500051727F00",
+            "7F777F3D7D765E",
+            "0081",
+            "7D777F5B1B3316",
+            "7E3E01030E1903",
+            "00000040701840",
+            "7E367F5B584D65",
+            "01010101010100"
+          ]
+        },
+        {
+          "width": 4,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "80",
+            "0000000000C4",
+            "00000000101000",
+            "00000000000001",
+            "80",
+            "30440820500800",
+            "0B2410020F0800",
+            "0180"
+          ]
+        },
+        {
+          "width": 4,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "80",
+            "00000000000040",
+            "00000000020200",
+            "80",
+            "80",
+            "40306054080800",
+            "000B062D80",
+            "80"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "ALIEN_ON",
+    "name": "TALUMA_AND_MOUNT",
+    "topview": {
+      "frames": [
+        {
+          "width": 2,
+          "height": 3,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "0C0C5A7A766020",
+            "18182D2F370302",
+            "603860266C6C7A",
+            "030E03321B1B2F",
+            "7A6340404080",
+            "2F6301010387"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "LIGHT_ALIEN",
+    "name": "SPECTRAMITE",
+    "topview": {
+      "frames": [
+        {
+          "width": 5,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "0200027B024472",
+            "06737C3F7C7300",
+            "604F3E7C3E4F00",
+            "4001405F40234E",
+            "0000000180",
+            "0C040480",
+            "4080",
+            "0380",
+            "30202080",
+            "80"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "PUNKER",
+    "name": "\"SPIKE\"",
+    "topview": {
+      "frames": [
+        {
+          "width": 2,
+          "height": 1,
+          "offsetX": 0,
+          "offsetY": 2,
+          "data": [
+            "68305F30685844",
+            "0B067D060B0D11"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "EARS",
+    "name": "SOLICIAN",
+    "topview": {
+      "frames": [
+        {
+          "width": 4,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "3C6603437386",
+            "780D703F700C78",
+            "070C037F432C67",
+            "000000000380",
+            "0C1880",
+            "80",
+            "404080",
+            "010180"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "WANDERING",
+    "name": "WANDERIN_THOUGHT",
+    "topview": {
+      "extra": [
+        "DB  animated+notcompiled+frame0",
+        "DB  $22",
+        "BYTE    attack;uparound",
+        "BYTE    repeat0;normalspeed"
+      ],
+      "frames": [
+        {
+          "width": 4,
+          "height": 3,
+          "offsetX": 0,
+          "offsetY": 1,
+          "data": [
+            "00400000480010",
+            "00081004645865",
+            "0800121004360C",
+            "00000200140005",
+            "00042000100008",
+            "6C7A767A6C3510",
+            "772F6E1F671B0C",
+            "10040228401200",
+            "2000401080",
+            "281004400880",
+            "0A0041041080",
+            "0900040180"
+          ]
+        },
+        {
+          "width": 4,
+          "height": 3,
+          "offsetX": 0,
+          "offsetY": 1,
+          "data": [
+            "00400000480010",
+            "00081004645865",
+            "0800121004360C",
+            "00000200140005",
+            "00042000100008",
+            "0C0A060A0C3510",
+            "70206110601B0C",
+            "10040228401200",
+            "2000401080",
+            "281004400880",
+            "0A0041041080",
+            "0900040180"
+          ]
+        },
+        {
+          "width": 4,
+          "height": 3,
+          "offsetX": 0,
+          "offsetY": 1,
+          "data": [
+            "00400000480010",
+            "00081004040001",
+            "08001210002000",
+            "00000200140005",
+            "00042000100008",
+            "60707070600100",
+            "070F0E0F070020",
+            "10040228401200",
+            "2000401080",
+            "081004400880",
+            "000041041080",
+            "0900040180"
+          ]
+        },
+        {
+          "width": 4,
+          "height": 3,
+          "offsetX": 0,
+          "offsetY": 1,
+          "data": [
+            "004000000880",
+            "00000000605864",
+            "0800000008160C",
+            "000000001080",
+            "000480",
+            "6C7A767A6C3410",
+            "772F6E1F671B0C",
+            "100000004080",
+            "2000001080",
+            "200000000880",
+            "0A0000001080",
+            "00000480"
+          ]
+        },
+        {
+          "width": 4,
+          "height": 3,
+          "offsetX": 0,
+          "offsetY": 2,
+          "data": [
+            "00000040001000",
+            "0810046458656C",
+            "00121004360C77",
+            "00020004000500",
+            "00200010000800",
+            "7A767A6C351028",
+            "2F6E1F671B0C0A",
+            "04022800120009",
+            "004080",
+            "10044080",
+            "00410480",
+            "00000180"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "KAMIKAZE",
+    "name": "INTRUDER_MISSILE",
+    "topview": {
+      "extra": [
+        "DB  animated+notcompiled+frame0",
+        "DB  $11",
+        "BYTE    attack;upstop",
+        "BYTE    repeat0;normalspeed"
+      ],
+      "frames": [
+        {
+          "width": 1,
+          "height": 2,
+          "offsetX": 3,
+          "offsetY": 0,
+          "data": [
+            "665A66FE",
+            "3C3C1880"
+          ]
+        },
+        {
+          "width": 2,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 2,
+          "data": [
+            "30503070507668",
+            "06050607070716",
+            "6080",
+            "0B80"
+          ]
+        },
+        {
+          "width": 2,
+          "height": 1,
+          "offsetX": 0,
+          "offsetY": 3,
+          "data": [
+            "325034734A7432",
+            "06354657651E33"
+          ]
+        },
+        {
+          "width": 2,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 2,
+          "data": [
+            "182E3276630E64",
+            "5D643766526D1A",
+            "1880",
+            "0780"
+          ]
+        },
+        {
+          "width": 2,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "1C3622231E1223",
+            "1D246748346664",
+            "636E3080",
+            "161B0C80"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "REFLEX_ALIEN",
+    "name": "\"SPEEDO\"",
+    "topview": {
+      "extra": [
+        "DB  animated+notcompiled+frame0",
+        "DB  $11",
+        "BYTE    move;uparound ;ARE THESE RIGHT???",
+        "BYTE    repeat0;normalspeed"
+      ],
+      "frames": [
+        {
+          "width": 2,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "0C0C761A6C6E36",
+            "606C7B363D1D0B",
+            "662D1B80",
+            "060280"
+          ]
+        },
+        {
+          "width": 2,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "0307731B6F6E30",
+            "0C0C1B160D1D1B",
+            "581080",
+            "392D3680"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "SHIFTER",
+    "name": "SHIFTER",
+    "topview": {
+      "frames": [
+        {
+          "width": 2,
+          "height": 1,
+          "offsetX": 0,
+          "offsetY": 3,
+          "data": [
+            "60381F3B630600",
+            "030E7C6E636030"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "GREMLIN",
+    "name": "ADHARAN_GREMLIN",
+    "topview": {
+      "frames": [
+        {
+          "width": 2,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "60606060600060",
+            "7F6E7F6E7F0001",
+            "786C0C80",
+            "070D0C80"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "WIND_TUNNEL",
+    "name": "AIR_CIRCULATOR",
+    "topview": {
+      "frames": [
+        {
+          "width": 6,
+          "height": 3,
+          "offsetX": 2,
+          "offsetY": 0,
+          "data": [
+            "80",
+            "80",
+            "7C0C7800F8",
+            "0706030083",
+            "80",
+            "80",
+            "00000038000F5B",
+            "0000791D5D602F",
+            "001C1E1F1F6378",
+            "00076F1F3F7843",
+            "0000135717003E",
+            "00000003001E1B",
+            "5B5B0F80",
+            "0F6F404080",
+            "7F7F047F007060",
+            "1F7F243F000100",
+            "3E3E80",
+            "1B1B1E80"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "DRILLER",
+    "name": "STATION_DRILLER",
+    "topview": {
+      "frames": [
+        {
+          "width": 4,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 4,
+          "data": [
+            "007E363636D6",
+            "703D461B637573",
+            "0F3C6318072F4E",
+            "007F6C6D6DEB",
+            "563636367E80",
+            "75631B463D7000",
+            "2F0718633C0F00",
+            "6B6D6D6C7F80"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "INVISIBLE",
+    "name": "INVISIBLE_ALIEN",
+    "topview": {
+      "extra": [
+        "DB  animated+iscompiled+frame0",
+        "DB  $12",
+        "BYTE    blink;updown",
+        "BYTE    repeat1;normalspeed"
+      ],
+      "frames": [
+        {
+          "width": 2,
+          "height": 3,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "040C0C5870E0",
+            "00000F190081",
+            "701060781C4E1F",
+            "0300030F1C397C",
+            "3B733306070C00",
+            "6E676630701800"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "COOLER",
+    "name": "COOLING_UNIT",
+    "topview": {
+      "frames": [
+        {
+          "width": 6,
+          "height": 3,
+          "offsetX": 0,
+          "offsetY": 1,
+          "data": [
+            "703B3B5863FB",
+            "00FD",
+            "406E1E7E0E721C",
+            "073B3C3F38271C",
+            "00DF",
+            "006F6F6F6F614E",
+            "7B3A596B5B3B7B",
+            "7D3C3D1D3D3C7D",
+            "667B7B7D7B7B66",
+            "336F6F5F6F6F33",
+            "1F5E5E1C5E5E5F",
+            "2B6768EF",
+            "7B7B7B797A7B00",
+            "7D7D7D611D7D38",
+            "1C720E7E7E7E00",
+            "1C27383F3F3F00",
+            "4F535D3D3B5B30",
+            "6F6F0F6F6F6F00"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "HEATER",
+    "name": "THERMAL_UNIT",
+    "topview": {
+      "frames": [
+        {
+          "width": 6,
+          "height": 3,
+          "offsetX": 1,
+          "offsetY": 1,
+          "data": [
+            "FB",
+            "FD",
+            "7E7E7E0E721C66",
+            "3F3F3F38271C33",
+            "DF",
+            "EF",
+            "FB",
+            "3D3D1D3D3DFD",
+            "7B7B7D7B7B661C",
+            "6F6F5F6F6F331C",
+            "5E5E5C5E5EDF",
+            "EF",
+            "7B7B7B7B7B80",
+            "7D7D7D7D7D80",
+            "720E7E7E7E80",
+            "27383F3F3F80",
+            "5F5F5F5F5F80",
+            "6F6F6F6F6F80"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "GLOWER",
+    "name": "INFRA-FLOURINOID",
+    "topview": {
+      "frames": [
+        {
+          "width": 4,
+          "height": 3,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "4000000040603C",
+            "037E0C003F80",
+            "781E06030381",
+            "03061C18180C06",
+            "3666634343666C",
+            "404000015F780C",
+            "000040790F3060",
+            "060305060C0C18",
+            "303018584C4C7C",
+            "0C060301010103",
+            "604080",
+            "1C0780"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "POISON_SUIT",
+    "name": "\"GASSER\"",
+    "topview": {
+      "extra": [
+        "DB  animated+notcompiled+frame0",
+        "DB  $21",
+        "BYTE    kill;upstop",
+        "BYTE    repeat0;normalspeed"
+      ],
+      "frames": [
+        {
+          "width": 4,
+          "height": 2,
+          "offsetX": 1,
+          "offsetY": 0,
+          "data": [
+            "00000000046436",
+            "0078765B7B7678",
+            "00071B37371B07",
+            "00000007464666",
+            "1B0F80",
+            "066C6080",
+            "180D0180",
+            "3E80"
+          ]
+        },
+        {
+          "width": 4,
+          "height": 2,
+          "offsetX": 1,
+          "offsetY": 1,
+          "data": [
+            "0000000464361B",
+            "78765B7B767806",
+            "071B3737131F70",
+            "0000074646663C",
+            "0F80",
+            "6C6080",
+            "254180",
+            "050680"
+          ]
+        },
+        {
+          "width": 4,
+          "height": 2,
+          "offsetX": 1,
+          "offsetY": 1,
+          "data": [
+            "0000000464361B",
+            "78765B7B763846",
+            "071B37335C2365",
+            "0000396659266C",
+            "0F80",
+            "0C2080",
+            "330C80",
+            "310E80"
+          ]
+        },
+        {
+          "width": 4,
+          "height": 2,
+          "offsetX": 1,
+          "offsetY": 0,
+          "data": [
+            "00000000042436",
+            "0008704E5B233A",
+            "4076594E024C63",
+            "0F382651605950",
+            "1B0F80",
+            "4E106080",
+            "74590780",
+            "6D390780"
+          ]
+        },
+        {
+          "width": 4,
+          "height": 2,
+          "offsetX": 1,
+          "offsetY": 0,
+          "data": [
+            "00384E5B152336",
+            "3C46714C52213A",
+            "00775904024846",
+            "0F183451304950",
+            "1B7C80",
+            "4E653880",
+            "34490780",
+            "6C390780"
+          ]
+        },
+        {
+          "width": 5,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "0824193209416A",
+            "20046219244224",
+            "0063104903100C",
+            "0C004933401321",
+            "000000010081",
+            "32045080",
+            "1C0B2180",
+            "49110280",
+            "18210480",
+            "0180"
+          ]
+        },
+        {
+          "width": 4,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "08001002084140",
+            "20004200044004",
+            "00001001000800",
+            "00200112400440",
+            "02001080",
+            "100980",
+            "01001080",
+            "11000480"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "FUNGUS",
+    "name": "TRACC_FUNGUS",
+    "topview": {
+      "frames": [
+        {
+          "width": 2,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "02070D18706070",
+            "001070580F067C",
+            "5A4E0280",
+            "270180"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "QUEEN_INSECT",
+    "name": "QUEEN_INSECT",
+    "topview": {
+      "extra": [
+        "DB  animated+iscompiled+frame0",
+        "DB  $22",
+        "BYTE    special;upstop",
+        "BYTE    repeat0;normalspeed"
+      ],
+      "frames": [
+        {
+          "width": 5,
+          "height": 5,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "00006C70787844",
+            "601E7C7B776F5F",
+            "001F6F777B7B7D",
+            "00000337078F",
+            "80",
+            "3C7B7C7C007C7B",
+            "0C33071B00071B",
+            "7C3B407976F8",
+            "1F001F1F6F9F",
+            "80",
+            "7C7880",
+            "070380",
+            "70205C664680",
+            "0F08776C67E0",
+            "80",
+            "80",
+            "80",
+            "80",
+            "80",
+            "80",
+            "80",
+            "80",
+            "80",
+            "80",
+            "80"
+          ]
+        },
+        {
+          "width": 5,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 7,
+          "data": [
+            "00000000000206",
+            "0404082C00082C",
+            "80",
+            "80",
+            "80",
+            "02067C80",
+            "080C0780",
+            "0000000A0A8C",
+            "0000002020E0",
+            "000000010180"
+          ]
+        },
+        {
+          "width": 2,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 7,
+          "data": [
+            "0000000280",
+            "00000000001058",
+            "0000707080",
+            "1010090180"
+          ]
+        },
+        {
+          "width": 5,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 7,
+          "data": [
+            "80",
+            "00000000000030",
+            "80",
+            "80",
+            "80",
+            "00000A08786000",
+            "20203E0E0F0300",
+            "0000000A0A8C",
+            "0000002020E0",
+            "000000010180"
+          ]
+        },
+        {
+          "width": 3,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 14,
+          "data": [
+            "00787C04041C78",
+            "000F1F10101C0F",
+            "0000000A0A8C",
+            "6080",
+            "0180",
+            "80"
+          ]
+        },
+        {
+          "width": 3,
+          "height": 3,
+          "offsetX": 14,
+          "offsetY": 7,
+          "data": [
+            "00000002000206",
+            "0404082C001868",
+            "80",
+            "02000000000206",
+            "20000000002030",
+            "0000000A0A8C",
+            "1C7C786080",
+            "1E1F0F0380",
+            "80"
+          ]
+        },
+        {
+          "width": 5,
+          "height": 4,
+          "offsetX": 0,
+          "offsetY": 7,
+          "data": [
+            "80",
+            "0000000000043A",
+            "80",
+            "80",
+            "80",
+            "007E0A0C641E06",
+            "1C332C18133C30",
+            "0000000A0A8C",
+            "0000002020E0",
+            "000000010180",
+            "0000061E7C7C78",
+            "0000303C1F1F0F",
+            "80",
+            "80",
+            "80",
+            "6080",
+            "0380",
+            "80",
+            "80",
+            "80"
+          ]
+        },
+        {
+          "width": 5,
+          "height": 4,
+          "offsetX": 0,
+          "offsetY": 7,
+          "data": [
+            "80",
+            "00000000000416",
+            "80",
+            "80",
+            "80",
+            "00007070186078",
+            "040003070C030F",
+            "0000000A0A8C",
+            "0000002020E0",
+            "000000010180",
+            "7C7C7E7E7C7C78",
+            "1F1F3F3F1F1F0F",
+            "80",
+            "80",
+            "80",
+            "6080",
+            "0380",
+            "80",
+            "80",
+            "80"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "HOT_HEAD",
+    "name": "HAMELER_HOT_HEAD",
+    "topview": {
+      "extra": [
+        "DB  animated+notcompiled+frame0",
+        "DB  $11",
+        "BYTE    blink;uparound",
+        "BYTE    repeat1;normalspeed"
+      ],
+      "frames": [
+        {
+          "width": 2,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 2,
+          "data": [
+            "582C5E36060414",
+            "0E1D3E36302814",
+            "0880",
+            "0880"
+          ]
+        },
+        {
+          "width": 2,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 2,
+          "data": [
+            "381C5E36060912",
+            "0D1D3C36302024",
+            "0480",
+            "0880"
+          ]
+        },
+        {
+          "width": 2,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 2,
+          "data": [
+            "185C3E36060412",
+            "0D1E3D36302810",
+            "0880",
+            "2480"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "tag": "FIGHTER_INSECT",
+    "name": "FIGHTER_INSECT",
+    "topview": {
+      "extra": [
+        "DB  animated+notcompiled+frame0",
+        "DB  $12",
+        "BYTE    special;upstop",
+        "BYTE    repeat0;normalspeed"
+      ],
+      "frames": [
+        {
+          "width": 2,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "60787C7C7E7E7C",
+            "030F1F1F3F3F1F",
+            "7C786080",
+            "1F0F0380"
+          ]
+        },
+        {
+          "width": 2,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "407078787C7C78",
+            "071F3F3F7F7F3F",
+            "78704080",
+            "3F1F0780"
+          ]
+        },
+        {
+          "width": 2,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "707C7E7E6F6F5E",
+            "01070F0F1F1F0E",
+            "3E7C7080",
+            "0F0680"
+          ]
+        },
+        {
+          "width": 2,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "60786C2C5E5E3C",
+            "030F1F1E3F331D",
+            "7C786080",
+            "1E0C80"
+          ]
+        },
+        {
+          "width": 2,
+          "height": 2,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "707476166F6F5E",
+            "030F1E1F3D3106",
+            "1E5C1060306000",
+            "7B07033F363330"
+          ]
+        },
+        {
+          "width": 2,
+          "height": 3,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "40686C2C5E5E24",
+            "6673591C3B370F",
+            "3C58406060006E",
+            "770F073B07043B",
+            "3666060680",
+            "666380"
+          ]
+        },
+        {
+          "width": 2,
+          "height": 3,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "307476064F6C50",
+            "0375600E0F073B",
+            "605E6070706F70",
+            "033D0307077B07",
+            "70106C366680",
+            "07043B3633B0"
+          ]
+        },
+        {
+          "width": 2,
+          "height": 3,
+          "offsetX": 0,
+          "offsetY": 0,
+          "data": [
+            "000040605EE0",
+            "000001033D83",
+            "605E6070706F70",
+            "033D0307077B07",
+            "70106E366686",
+            "07043B666380"
+          ]
+        }
+      ]
+    }
+  }
+]
