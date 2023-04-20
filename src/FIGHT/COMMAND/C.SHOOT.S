@@ -1,15 +1,22 @@
-SHOOT           LDA #$01
+SHOOT           JSR CLEAR_CANCEL_IN
+                JSR DRAW_PICT
+                PictTextAt 105;133;(CONFIRM_WEAPON_TO_BE_AIMED)
+                PictEnd
+                LDA #$01
                 JSR SELECT_HAND
                 JSR GETUSCO
-                LDY #$18
-                JSR TEXTER
+                JSR DRAW_PICT
+                PictTextAt 123;142;(AIM_AT_WHICH_SQUARE?)
+                PictEnd
                 JSR BOTTOMR
                 JSR GET_AIM
                 BCS :SKIPA
                 JSR DRAW_GRIDCURS
-                JMP DIDCANC
-:SKIPA          LDY #$18
-                JSR TEXTER
+                JMP DID_CANCEL
+
+:SKIPA          JSR DRAW_PICT
+                PictClear 17;142;35;149
+                PictEnd
                 LDY CURSOR
                 LDX #cmdAIM
                 LDA TIMES+timeAIM
@@ -17,8 +24,11 @@ SHOOT           LDA #$01
                 LDX COMCNT
                 LDA TIMLEFT
                 STA CTIMTAB,X
-                LDY #$1A
-                JSR TEXTER
+                JSR DRAW_PICT
+                PictTextAt 123;132;(FIRE_HOW_MANY_TIMES?)
+                PictTextAt 131;143;(=)
+                PictTextAt 147;143;(OF_SHOTS:)
+                PictEnd
                 LDX #$85
                 LDY #$8F
                 JSR NUMBER_SIGN
@@ -31,6 +41,7 @@ SHOOT           LDA #$01
                 JSR DOTIME
                 JSR SWNSHT_UNDO
                 JMP BACK1
+
 :SKIPB          LDA #cmdSHOOT
                 STA INSTR1
                 JSR CHANDER
@@ -54,4 +65,4 @@ SHOOT           LDA #$01
                 STA TIMTAKE
                 JSR POST_COMMAND
                 JSR DRAW_GRIDCURS
-                JMP DIDCANC
+                JMP DID_CANCEL

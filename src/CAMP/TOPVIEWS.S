@@ -1,17 +1,18 @@
 
-DRAW_GRID       JSR DRAW_PICT
+DRAW_GRID
+                JSR DRAW_PICT
                 PictSetGreen
                 PictRect $07;$47;$55;$B7
                 PictMoveTo $07;$7F
                 PictLineTo $55;$7F
-                PictSetTextHeight $0B
-                PictTextAt $00;$4B;(J\nI\nH\nG\nF\nE\nD\nC\nB\nA)
-                PictSetTextHeight $00
-                PictTextAt $0E;$B9;(1)
-                PictTextAt $1D;$B9;(2)
-                PictTextAt $2C;$B9;(3)
-                PictTextAt $3B;$B9;(4)
-                PictTextAt $4A;$B9;(5)
+;                 PictSetTextHeight 11
+;                 PictTextAt $00;$4B;(J\nI\nH\nG\nF\nE\nD\nC\nB\nA)
+;                 PictSetTextHeight $00
+;                 PictTextAt $0E;$B9;(1)
+;                 PictTextAt $1D;$B9;(2)
+;                 PictTextAt $2C;$B9;(3)
+;                 PictTextAt $3B;$B9;(4)
+;                 PictTextAt $4A;$B9;(5)
                 PictEnd
 
                 ; draw grid dots (no HPLOT anymore)
@@ -46,12 +47,14 @@ DRAW_GRID       JSR DRAW_PICT
                 RTS
 
 ; FROM11                           ; legacy name
-; CPOS_TO_XY
-;                 LDY #position
-;                 LDA (CHARDL),Y
-
+CPOS_TO_XY
+                LDY #position
+                LDA (CHARDL),Y
 ;
 ; On entry:
+;   A: 11 byte position
+;
+; On exit:
 ;   X: grid X position 0 to 4
 ;   Y: grid Y position 0 to 4
 ;
@@ -86,6 +89,7 @@ POS_TO_I25      JSR POS_TO_XY
                 RTS
 
 MUL5            DB  0,5,10,15,20
+                DB  25,30,35,40,45
 
 DIV5            DB  0,0,0,0,0
                 DB  1,1,1,1,1
@@ -107,22 +111,12 @@ DRAW_CHAR_TOPVIEW
                 LSR
                 LSR
                 PHA
-                LDY #position
-                LDA (CHARDL),Y
-                JSR POS_TO_XY
-                PLA
-
-; On entry:
-;   A: prof (already shifted down)
-;   X: grid X
-;   Y: grid Y
-
-; TVIEWIT                             ; legacy name
-                PHA
+                JSR CPOS_TO_XY
                 LDA GRID_XPNTS,X
-                STA XCOORD
-                LDA GRID_YPNTS,Y
-                STA YCOORD
+                TAX
+                LDA CGRID_YPNTS,Y
+                TAY
+                JSR MOVE_TO
                 PLA
                 TAX
                 LDA TCHAR_OFFSETS,X
@@ -134,12 +128,15 @@ DRAW_CHAR_TOPVIEW
                 STA DATPNTH
                 LDX #2
                 LDY #2
-                JMP DRAW_SHAPE
+                JMP OLD_DRAW_SHAPE
 
                 ; pixel positions in top view grid
 
-GRID_XPNTS      DB  #10, #25, #40, #55, #70
-GRID_YPNTS      DB  #128,#139,#150,#161,#172
+GRID_XPNTS      DB  8, 23, 38, 53, 68
+
+AGRID_YPNTS     DB  73,84,95,106,117
+CGRID_YPNTS     DB  128,139,150,161,172
+                DB  183
 
                 ; byte offsets into TCHARS data
 
@@ -199,43 +196,33 @@ TCHAR_ROB       DB  $38,$78,$08,$6F,$69,$69,$6F     ; robot
                 DB  $0E,$0F,$08,$7B,$4B,$4B,$7B
                 DB  $08,$78,$80
                 DB  $08,$0F,$80
-;
-; On entry:
-;   X: grid 25 x position
-;   Y: grid 25 y position
-;
-DRAW_GRID_CURSOR_XY
-                LDA #<GRID_CURSOR
-                STA DATPNTL
-                LDA #>GRID_CURSOR
-                STA DATPNTH
-                BNE DGC_CMN         ; always
 
 ;
 ; On entry:
 ;   A: grid 11 position
 ;
 DRAW_GRID_CURSOR
-                LDX #<GRID_CURSOR
-                STX DATPNTL
-                LDY #>GRID_CURSOR
-                STY DATPNTH
-
                 JSR POS_TO_XY
+                ; fall through
+;
+; On entry:
+;   X: grid 25 x position
+;   Y: grid 25 y position
+;
+DRAW_GRID_CURSOR_XY
+                LDA CGRID_YPNTS,Y
+                TAY
+                LDA GRID_XPNTS,X
+                TAX
+                DEX
+                JSR MOVE_TO
+                LDX #<GRID_CURSOR
+                LDY #>GRID_CURSOR
+                JMP NEW_DRAW_SHAPE
 
-DGC_CMN         LDA GRID_YPNTS,Y
-                CLC
-                ADC #8
-                STA YCOORD
-                LDY GRID_XPNTS,X
-                DEY
-                STY XCOORD
+GRID_CURSOR     DB  $31,$08
 
-                LDX #3
-                LDY #1
-                JMP DRAW_SHAPE
-
-GRID_CURSOR     DB  %00000011
+                DB  %00000011
                 DB  %00000111
                 DB  %01111110
                 DB  %10000000

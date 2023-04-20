@@ -19,6 +19,6 @@
                 PUT CURSORS
 
                 DS  \,$EE
-                ERR $1900-*
+                ERR $1A00-*
 
                 SAV COMMON

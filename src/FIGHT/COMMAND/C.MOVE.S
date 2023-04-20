@@ -1,7 +1,15 @@
+
+; TODO: known bug with multiple moves, followed by BACK1 command,
+;   followed by MOVE command B>ACK ONE COMMAND
+
 MOVE            JSR UNDERS
-                JSR CLRBOX
-                LDY #$07
-                JSR TEXTER
+                JSR CLEAR_WTIME
+
+                JSR DRAW_PICT
+                PictTextAt 108;132;(SELECT_DESTINATION_SQUARE)
+                PictTextAt 126;180;(L>EAVE_MOVE_COMMAND)
+                PictEnd
+
                 LDA #$00
                 STA PASTMOV
                 STA LETBACK+1
@@ -15,15 +23,19 @@ MOVE2           LDA COMCNT
                 LDA LETBACK+1
                 CMP #"B"
                 BEQ PS2
-                LDY #$08
-                JSR TEXTER
+
+                JSR DRAW_PICT
+                PictTextAt 132;171;(B>ACK_ONE_COMMAND)
+                PictEnd
                 LDA #"B"
-                BNE PS2             ;Always
+                BNE PS2                 ; always
+
 FAILS2          LDA LETBACK+1
                 CMP #"B"
                 BNE FSKIP2
-                LDY #$08
-                JSR TEXTER
+                JSR DRAW_PICT
+                PictClear 18;171;34;178
+                PictEnd
 FSKIP2          LDA #$FF            ;Called by USE too
 PS2             STA LETBACK+1
                 LDA #$00
@@ -85,11 +97,11 @@ PICKED1         STY CURSOR
 BLINKGB         LDA #$10
                 JSR WAIT
                 LDA #$F0
-                JSR WAIT2
+                JSR WAIT_KEY
                 BMI GOTKEYX
                 JSR GROUP_CURSOR2
                 LDA #$00
-                JSR WAIT2
+                JSR WAIT_KEY
                 JSR GROUP_CURSOR2
 MENTKEY         LDA KEYBRD
                 BPL BLINKGB
@@ -130,21 +142,24 @@ C2              LDY CURSOR
 GOBACK          JSR GROUP_CURSOR2
                 LDY PLANNER
                 LDA XYSPOTS,Y
-                JSR FROM11B
                 JSR GROUP_CURSOR1
-                LDA #$60
+
+                ; TODO: do something better than this hack
+                LDA #$60                ; RTS
                 STA NOBAKS
                 JSR BACK1
-                LDA #$20
+                LDA #$20                ; JSR
                 STA NOBAKS
                 JMP MOVE2
-GOEND           NOP
+
+GOEND           NOP                     ; modified
                 JSR GROUP_CURSOR2
 GOEND2          JSR UNDERS
-                JSR CLRBOX
+                JSR CLEAR_WTIME
                 JSR OPTIONS
                 JMP GETOP2
-GOENTER         NOP
+
+GOENTER         NOP                     ; modified
                 LDA CURSOR
                 STA PASTMOV
                 JSR GROUP_CURSOR2
@@ -161,7 +176,6 @@ GOENTER         NOP
                 STA CTIMTAB,X
                 LDY PLANNER
                 LDA XYSPOTS,Y
-                JSR FROM11B
                 JSR GROUP_CURSOR1
                 LDA COMCNT
                 CMP #$0F
@@ -171,11 +185,13 @@ GOENTER         NOP
                 BCC GOEND2
                 JMP MOVE2
 
+PASTMOV         DS  1
 LEGCURS         DS  4
 XYSPOTS         DS  7
 CURCORD         DS  4
 
 
+; draw underline cursor for each position in move path
 UNDERS          LDA PLANNER
                 ASL
                 ASL
@@ -192,7 +208,6 @@ UND2            LDY COUNTER
                 BNE DONTDRW
                 INY
                 LDA COMMAND,Y
-                JSR FROM11B
                 JSR GROUP_CURSOR1
 DONTDRW         INC COUNTER
                 LDA COUNTER

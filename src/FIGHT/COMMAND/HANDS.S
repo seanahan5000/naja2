@@ -3,145 +3,147 @@
 *===============================
 
 DRAW_HAND       TAY
-                LDA #$15
-                STA XCOORD
-                LDA #$03
-                STA SHIFT
-                LDA HANDATA,Y
+                LDA HAND_DATA,Y
                 PHA
                 BIT ROBDEN_FLAG
-                BVC NOUPDWN
+                BVC :1
                 LSR
                 LSR
-                CLC
-                ADC #$20
-                TAY
-                JSR YPUTTER
-                JSR TEXTER
-NOUPDWN         PLA
+                JSR GET_HAND_STRING
+                JSR DRAW_TEXTBUF
+:1              PLA
                 AND #$03
                 CLC
-                ADC #$22
-                TAY
-                JSR YPUTTER
-                JMP TEXTER
+                ADC #2
+                JSR GET_HAND_STRING
+                JMP DRAW_TEXTBUF
 
-HANDATA         DB  $00,$01,$04
+HAND_DATA       DB  $00,$01,$04
                 DB  $05,$02,$06
 
-YPUTTER         LDA YPNT
-                STA UPPER+2
-                STA LOWER+2
-                STA LEFT+2
-                STA RIGHT+2
-                STA LEFRIGH+2
-                LDA XCOORD
-                STA LEFT
-                STA RIGHT
-                STA LEFRIGH
-                LDA SHIFT
-                STA LEFT+1
-                STA RIGHT+1
-                STA LEFRIGH+1
-                RTS
+GET_HAND_STRING LDX #<:HAND_STRINGS
+                LDY #>:HAND_STRINGS
+                JMP GET_IND_STRING
 
+:HAND_STRINGS   USR(UPPER_)=
+                USR(LOWER_)=
+                USR(LEFT)=
+                USR(RIGHT)=
+                USR(LEFT/RIGHT)=
 
 *===============================
 *
 *===============================
+;
+; On entry:
+;   A: attack type
+;      0 = swing
+;      1 = shoot
+;      2 = throw
+;      3 = use
+;
 
-SELECT_HAND     STA MANDNUM
-                JSR CLRBOXZ
-                JSR DOTIME
-                JSR CANCEL_IN
-                LDA MANDNUM
-                BNE :SKIPA
-                LDY #$03
-                JSR BOXSUB
-:SKIPA          LDX MANDNUM
-                LDA POSTEX1,X
-                TAY
-                JSR TEXTER
-                LDX MANDNUM
-                LDA POSTEX2,X
-                BMI :SKIPB
-                TAY
-                JSR TEXTER
-:SKIPB          JSR EQUIP_DRAW
-                LDA MANDNUM
-NOADJBL         PHA
+ATTACK_TYPE     =   SWTYPE
+
+SELECT_HAND     STA ATTACK_TYPE
+                JSR EQUIP_DRAW
+                LDA ATTACK_TYPE
                 JSR EQUIP_TYPER
-                PLA
+                LDA ATTACK_TYPE
                 JSR LEGAL_HANDS
-SUBRETN         JSR CONSELT
-                LDX #<HAND_CDEF
+                LDA ATTACK_TYPE
+                BEQ :1
+                JSR CONFIRM_SELECT
+:1              LDX #<HAND_CDEF
                 LDY #>HAND_CDEF
                 JSR FULL_GETKEY
                 BCS NOTCANC
-                LDA MANDNUM
-                BNE STOREE
+                LDA ATTACK_TYPE
+                BNE :2
                 LDY #$03
                 JSR BOXSUB
-STOREE          LDA #$0A
-                STA CONOBJ+3
+:2              PLA
                 PLA
-                PLA
-DIDCANC         JSR CLRBOXZ
-                JSR CANCEL_OUT
-DIDC2           JSR DOTIME
-                JSR OPTIONS
-                JMP GETOP2
-NOTCANC         JMP CLRBOXZ
+                JMP DID_CANCEL
+NOTCANC         JMP CLEAR_WCANCEL
 
 HAND_CDEF       DB  $05
                 DB  $00
                 DW  HAND_CURSOR
+;
+; Count number of usable items in hands.
+;   If many, ask player to select one.
+;
+CONFIRM_SELECT  LDX #$00
+                LDY #$09
+:1              LDA LEGALS,Y
+                BNE :2
+                INX
+:2              DEY
+                BPL :1
+                CPX #$02
+                BCC :3
+                LDY ATTACK_TYPE
+                LDX :XPOS-1,Y
+                LDY #133
+                JSR MOVE_TO
+                JSR DRAW_PICT
+                PictHSave
+                PictText (CONFIRM)
+                PictHRestore
+                PictText (_SELECT)
+                PictEnd
+:3              RTS
 
-POSTEX1         DB  $0E,$1F,$33
-                DB  $33
-
-POSTEX2         DB  $FF,$FF,$35
-                DB  $34
-
+:XPOS           DB  105,102,108,96
 
 *===============================
 *
 *===============================
 
-EQUIP_DRAW      LDY #$38            ;Robot hands text
-                BIT ROBDEN_FLAG
-                BMI :SKIPA
-                LDY #$0C            ;Normal hands text
-                BVC :SKIPA
-                INY                 ;Denebian hands text
-:SKIPA          JSR TEXTER
+EQUIP_DRAW      BIT ROBDEN_FLAG
+                BMI :ROBOT
+                BVS :DENEB
 
-                LDX #0
-                STX COUNT
-:LOOP1          LDA HAND_YPNTS,X
-                STA YPNT
+:NORMAL         JSR DRAW_PICT
+                PictTextAt 111;146;(LEFT:)
+                PictTextAt 105;154;(RIGHT:)
+                PictEnd
+                BNE :COMMON            ; always
+
+:DENEB          JSR DRAW_PICT
+                PictSetTextHeight 8
+                PictTextAt 123;146;(UL:\nUR:\nLL:\nLR:)
+                PictEnd
+                BNE :COMMON            ; always
+
+:ROBOT          JSR DRAW_PICT
+                PictSetTextHeight 8
+                PictTextAt 123;146;(_L:\n__:\n_R:\n__:)
+                PictEnd
+
+:COMMON         LDX #0
+:1              STX COUNT
+                LDY HAND_YPNTS,X
+                JSR VMOVE_TO
                 JSR ONE_EQLINE
                 LDA TEXTBUF
-                CMP #$8D
-                BEQ :SKIPB
-                LDA #$96
-                LDY YPNT
-                JSR LINE
+                CMP #TextLineEnd
+                BEQ :2
+                LDX #$96
+                JSR DRAW_TEXTBUF_X
                 JSR PARSTAT
-                LDA #$24
-                STA XCOORD
-                LDA #$00
-                STA SHIFT
-                JSR LINE2
-:SKIPB          INC COUNT
-                LDX COUNT
+                LDX #$FC
+                JSR DRAW_TEXTBUF_X
+:2              LDX COUNT
+                INX
                 CPX #2
-                BCC :LOOP1
+                BCC :1
                 LDA ROBDEN_FLAG
-                BEQ :EXIT
+                BEQ :3
                 CPX #4
-                BCC :LOOP1
-:EXIT           RTS
+                BCC :1
+:3              RTS
 
 
 *-------------------------------
@@ -160,8 +162,8 @@ ONE_EQLINE      LDY CONVERT_TABLE,X
                 LDA ETABLE
                 CMP #$FF
                 BEQ :EXIT
-                JMP EQUIP1
-:EXIT           LDA #$8D
+                JMP ETABLE_TO_TEXT
+:EXIT           LDA #TextLineEnd
                 STA TEXTBUF
                 RTS
 

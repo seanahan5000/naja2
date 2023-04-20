@@ -1,10 +1,10 @@
-**** FIX THESE EQUATES
+; TODO: clean up these equates
 
-LINENUM         =   $00
-SCRATCH         =   $01
+; LINENUM         =   $00
+; SCRATCH         =   $01
 TIMTAKE         =   $02
-COLUMN          =   $03
-COUNTER         =   $03
+; COLUMN          =   $03
+; COUNTER         =   $03
 ENDLINE         =   $03
 
 XSPOT           =   $11
@@ -34,10 +34,9 @@ USEDLOC         =   ZBLOCK_38+6
 CURHOLD         =   ZBLOCK_38+7
 
 SWTYPE          =   ZBLOCK_28+0
-MANDNUM         =   ZBLOCK_28+0     ;SWTYPE
-PASTMOV         =   ZBLOCK_28+1
-LINECNT         =   ZBLOCK_28+2
-SCRACH2         =   ZBLOCK_28+3
+;PASTMOV        =   ZBLOCK_28+1
+;LINECNT         =   ZBLOCK_28+2
+;SCRACH2         =   ZBLOCK_28+3
 *
 *
 *

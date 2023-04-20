@@ -91,8 +91,7 @@ TAKE_ENERUSE    LDY #energylev
 
 ENUDATE         BIT FLIPPED_FLAG
                 BPL :SKIPA
-                LDA #$40
-                STA PAGE
+                JSR SET_PAGE2
 :SKIPA          LDY #energylev
                 LDA (CHARDL),Y
                 AND #%11110000
@@ -104,17 +103,14 @@ ENUDATE         BIT FLIPPED_FLAG
                 DEX
                 BPL :LOOP1
                 BMI :SKIPC          ;Always
-:SKIPB          JSR POWROUT
-                LDA #$8D
+:SKIPB          JSR ENERGY_TO_TEXT
+                LDA #TextLineEnd
                 STA TEXTBUF+6
-:SKIPC          LDY PLANNER
-                LDA YPOINTS,Y
-                TAY
-                LDA #$C6
-                JSR LINE
-                LDA #$20
-                STA PAGE
-                RTS
+:SKIPC          LDX PLANNER
+                LDY YPOINTS,X
+                LDX #$C6
+                JSR DRAW_TEXTBUF_XY
+                JMP SET_PAGE1
 
 MINUS_TEXT      USR (_MINUS)
 

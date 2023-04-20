@@ -1,63 +1,61 @@
-REFRESH_STATS   JSR CLEAR2
-                LDA #$40
-                STA PAGE
-                LDA #GREEN
-                STA COLOR
-                LDY #$00
-                JSR LINER
-                LDY #$03
-                JSR TEXTER
-                LDA #$02
-                STA YPNT
-                LDY #$03
-                JSR TEXTING
-                LDY #$04
-                JSR TEXTING
-                LDY #$06
-                JSR TEXTING
-                LDA #$00
-                STA COUNT
-NEXTG1          LDY COUNT
-                LDA YPOINTS,Y
-                STA YPNT
-                TYA
-                JSR POINTIT
-                LDA #$0E
-                JSR EPSHLD
-                LDA #$69
-                LDY YPNT
-                JSR LINE
-                LDA #$0F
-                JSR EPSHLD
-                LDA #$79
-                LDY YPNT
-                JSR LINE
-                JSR STATUSR
-                LDA #$87
-                LDY YPNT
-                JSR LINE
-                JSR STATS
-                LDA #$C0
-                LDY YPNT
-                JSR LINE
-                INC COUNT
-                LDA COUNT
-                CMP GRPNUMB
-                BNE NEXTG1
+
+REFRESH_STATS   JSR DRAW_PICT
+                PictSetPage2
+                PictClearPage
+                PictSetGreen
+        do SMALL_GROUP
+                PictRect $01;$01;$115;$44
+                PictMoveTo $01;11
+                PictLineTo $115;11
+                PictVMoveTo 3
+        else
+                PictRect $01;$00;$115;$44
+                PictMoveTo $01;$0A
+                PictLineTo $115;$0A
+                PictVMoveTo 2
+        fin
+                PictHMoveTo 105
+                PictText (EL)
+                PictHMoveTo 121
+                PictText (PH)
+                PictHMoveTo 147
+                PictText (STATUS)
+                PictHMoveTo 192
+                PictText (IQ_ST_LR_UR_OR)
+        do SMALL_GROUP
+                PictVMove 11
+        else
+                PictVMove 10
+        fin
+                PictEnd
+
+                JSR FIRST_CHAR
+:1              LDA #statsShielding+statsStatus
+                JSR STATS_LINE2
+                JSR MORE_STATS
+                LDX #$C0
+                JSR DRAW_TEXTBUF_X
+        do SMALL_GROUP
+                LDY #9
+        else
+                LDY #8
+        fin
+                JSR VMOVE
+                JSR NEXT_CHAR
+                BCC :1
                 LDA #$00
                 STA FLIPPED_FLAG
-                LDA #$20
-                STA PAGE
+                JSR SET_PAGE1
                 RTS
 
 FLIPPED_FLAG    DB  0
 
-STATS           LDY #$0D
-                LDA #$0A
+MORE_STATS      LDY #$0D
+                LDA #TextSpace
 SPACOUT         STA TEXTBUF,Y
                 DEY
                 BPL SPACOUT
-                LDA #$8D
+                LDA #TextLineEnd
                 STA TEXTBUF+14
                 LDA #$00
                 STA COUNTER

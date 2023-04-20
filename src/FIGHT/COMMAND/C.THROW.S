@@ -1,9 +1,10 @@
-THROW           LDA #$EE
-                STA CONOBJ+3
+THROW           JSR CLEAR_CANCEL_IN
+                JSR DRAW_PICT
+                PictTextAt 102;133;(CONFIRM_OBJECT_TO_BE_THROWN)
+                PictEnd
+
                 LDA #$02
                 JSR SELECT_HAND
-                LDA #$0A
-                STA CONOBJ+3
                 LDX CURSOR
                 STX CURHOLD
                 STX USEDLOC
@@ -15,8 +16,9 @@ THROW           LDA #$EE
                 BNE :SKIPA
                 LDX #cmdTHROW+%00010000
 :SKIPA          STX INSTR1
-                LDY #$36
-                JSR TEXTER
+                JSR DRAW_PICT
+                PictTextAt 96;142;(THROW_OBJECT_TO_WHICH_SQUARE?)
+                PictEnd
                 LDX USEDLOC
                 LDA #$FF
                 STA HANDTAB,X
@@ -35,4 +37,4 @@ THROW           LDA #$EE
                 JSR GENERAL_POST
                 JSR TAKE_ENERUSE
 :EXIT           JSR DRAW_GRIDCURS
-                JMP DIDCANC
+                JMP DID_CANCEL

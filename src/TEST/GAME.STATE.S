@@ -59,10 +59,10 @@ CHAR_0          USR (BLASTER___)-
                 HEX EE
 
                 HEX 00002543        ;Credit
-                HEX CC              ;Strength
-                HEX CC              ;Upper Reflex
-                HEX CC              ;Lower Reflex
-                HEX CC              ;Intelligence
+                HEX 99              ;Strength
+                HEX 99              ;Upper Reflex
+                HEX 99              ;Lower Reflex
+                HEX 99              ;Intelligence
                 HEX 10              ;Electrical shielding
                 HEX 21              ;Physical shielding
                 HEX 03              ;Back slots
@@ -121,10 +121,10 @@ CHAR_1          USR (ETRON_____)-
                 HEX EE
 
                 HEX 00000000        ;Credit
-                HEX CC              ;Strength
-                HEX CC              ;Upper Reflex
-                HEX CC              ;Lower Reflex
-                HEX CC              ;Intelligence
+                HEX 99              ;Strength
+                HEX 99              ;Upper Reflex
+                HEX 99              ;Lower Reflex
+                HEX 99              ;Intelligence
                 HEX 12              ;Electrical shielding
                 HEX 18              ;Physical shielding
                 HEX 01              ;Back slots
@@ -183,10 +183,10 @@ CHAR_2          USR (ELECTRODE_)-
                 HEX EE
 
                 HEX 00002854        ;Credit
-                HEX CC              ;Strength
-                HEX CC              ;Upper Reflex
-                HEX CC              ;Lower Reflex
-                HEX CC              ;Intelligence
+                HEX 99              ;Strength
+                HEX 99              ;Upper Reflex
+                HEX 99              ;Lower Reflex
+                HEX 99              ;Intelligence
                 HEX 21              ;Electrical shielding
                 HEX 32              ;Physical shielding
                 HEX 04              ;Back slots
@@ -245,10 +245,10 @@ CHAR_3          USR (RELAYER___)-
                 HEX EE
 
                 HEX 00002836        ;Credit
-                HEX CC              ;Strength
-                HEX CC              ;Upper Reflex
-                HEX CC              ;Lower Reflex
-                HEX CC              ;Intelligence
+                HEX 99              ;Strength
+                HEX 99              ;Upper Reflex
+                HEX 99              ;Lower Reflex
+                HEX 99              ;Intelligence
                 HEX 09              ;Electrical shielding
                 HEX 07              ;Physical shielding
                 HEX 03              ;Back slots
@@ -307,10 +307,10 @@ CHAR_4          USR (CYBORG____)-
                 HEX EE
 
                 HEX 00002940        ;Credit
-                HEX CC              ;Strength
-                HEX CC              ;Upper Reflex
-                HEX CC              ;Lower Reflex
-                HEX CC              ;Intelligence
+                HEX 99              ;Strength
+                HEX 99              ;Upper Reflex
+                HEX 99              ;Lower Reflex
+                HEX 99              ;Intelligence
                 HEX 30              ;Electrical shielding
                 HEX 29              ;Physical shielding
                 HEX 03              ;Back slots
@@ -369,10 +369,10 @@ CHAR_5          USR (BLADE_____)-
                 HEX EE
 
                 HEX 00002766        ;Credit
-                HEX CC              ;Strength
-                HEX CC              ;Upper Reflex
-                HEX CC              ;Lower Reflex
-                HEX CC              ;Intelligence
+                HEX 99              ;Strength
+                HEX 99              ;Upper Reflex
+                HEX 99              ;Lower Reflex
+                HEX 99              ;Intelligence
                 HEX 20              ;Electrical shielding
                 HEX 25              ;Physical shielding
                 HEX 03              ;Back slots

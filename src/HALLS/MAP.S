@@ -59,8 +59,12 @@ ARROW_X         =   MAP_LEFT_BYTE+8*14
         fin
 ARROW_Y         =   MAP_HEIGHT_CELLS/2*CELL_HEIGHT+MAP_TOP_LINE+4
 
+; NOTE: map code expects this to be (MAP_SIZE + 1) * 2 = minimum 36 bytes in size
+BLOCK_BUFFER    ENT
+                DS  64                  ; TODO: move this somewhere else
+                                        ; TODO: how much space is needed?
 ; TODO: use SCRATCH_PAGE buffers instead
-BLOCK_BUFFER2   =   BLOCK_BUFFER+MAP_WIDTH_CELLS+2
+BLOCK_BUFFER2   DS  32                  ; BLOCK_BUFFER+MAP_WIDTH_CELLS+2
 
 ; TODO: generalize/share these
 ARROW_SHAPES    DB  $00,$00,$00,$40,$60,$70,$00     ; up arrow

@@ -14,6 +14,7 @@ FILE_TABLE      DB  fileAlienPics345, $00,$00,$C0
                 DB  fileControl9,     $12,$00,$10
 
                 DB  fileFightLoader,  $13,$00,$10
+                DB  fileFightCommand, $19,$00,$30   ; temporary
                 DB  fileFightAwarder, $21,$00,$10
                 DB  fileDeadGroup,    $22,$00,$0D
                 DB  fileReformat,     $20,$00,$07

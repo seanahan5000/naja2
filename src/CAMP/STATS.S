@@ -15,30 +15,51 @@ DRAW_STATS_BOX_A ENT
                 PHA
                 JSR DRAW_PICT
                 PictSetGreen
+        do SMALL_GROUP
+                PictRect $01;$01;$115;$44
+                PictMoveTo $01;$0B
+                PictLineTo $115;$0B
+                PictVMoveTo 3
+        else
                 PictRect $01;$00;$115;$44
                 PictMoveTo $01;$0A
                 PictLineTo $115;$0A
                 PictVMoveTo 2
+        fin
                 PictEnd
                 PLA
                 STA SELECT
                 JSR STATS_HEADER
+        do SMALL_GROUP
+                LDY #11
+        else
                 LDY #10
+        fin
                 JSR VMOVE
                 JSR FIRST_CHAR
 :1              JSR STATS_LINE
+        do SMALL_GROUP
+                LDY #9
+        else
                 LDY #8
+        fin
                 JSR VMOVE
                 JSR NEXT_CHAR
                 BCC :1
                 RTS
 
-; TODO: swap PROF and NAME
 STATS_HEADER    JSR DRAW_PICT
+        do NAME_FIRST
+                PictHMoveTo 16
+                PictText (NAME)
+                PictHMoveTo 75
+                PictText (PROF)
+        else
                 PictHMoveTo 14
                 PictText (PROF)
                 PictHMoveTo 58
                 PictText (NAME)
+        fin
                 PictHMoveTo 219
                 PictText (ENERGY)
                 PictEnd
@@ -80,15 +101,26 @@ STATS_HEADER2   STA SELECT
                 PictEnd
                 RTS
 
+        do NAME_FIRST
+STATS_LINE      JSR CNAME_TO_TEXT
+                LDX #16
+                JSR DRAW_TEXTBUF_X
+                JSR CPROF_TO_TEXT
+                LDA #TextLineEnd
+                STA TEXT_BUFFER+3
+                LDX #78
+        else
 STATS_LINE      JSR PROFNAME_TO_TEXT
                 LDX #$10
+        fin
                 JSR DRAW_TEXTBUF_X
                 JSR ENERGY_TO_TEXT
                 LDX #$C6
                 JSR DRAW_TEXTBUF_X
                 LDA SELECT
 
-STATS_LINE2     STA SELECT
+STATS_LINE2     ENT
+                STA SELECT
                 BIT SELECT
                 BMI :XY
                 BVC :DAMSTAT
@@ -125,6 +157,8 @@ STATS_LINE2     STA SELECT
 :3              LDX #$8A
                 JMP DRAW_TEXTBUF_X
 
+        do NAME_FIRST
+        else
 PROFNAME_TO_TEXT LDY #profrace
                 LDA (CHARDL),Y
                 LSR
@@ -144,6 +178,7 @@ PROFNAME_TO_TEXT LDY #profrace
                 STA TEXT_BUFFER,X
                 INX
                 BNE NTT_CMN         ; always
+        fin
 
 CNAME_TO_TEXT   ENT
                 LDX #0
@@ -314,7 +349,8 @@ ENERGY_TO_TEXT_L LDX #0
                 LDA #3
                 JSR CHAR_DIGITS_L
                 JMP ETT_CMN
-ENERGY_TO_TEXT  LDX #0
+ENERGY_TO_TEXT  ENT
+                LDX #0
                 LDY #energylev
                 LDA #3
                 JSR CHAR_DIGITS_R
@@ -420,29 +456,7 @@ FORCE_LEFT      LDX #0
 CSTATUS_TO_TEXT_C
                 LDY #status
                 LDA (CHARDL),Y
-STATUS_TO_TEXT_C
-                TAX
-                AND #critical
-                BNE :1
-                TXA
-                CMP #rundown
-                BEQ :1
-                AND #%00111100
-                CMP #illA
-                BEQ :1
-                TXA
-                AND #%00111111
-:1
-                LDX #0
-:2              CMP STATUS_NUMS,X
-                BEQ :FOUND_STATUS
-                INX
-                BNE :2                  ; always
-
-:FOUND_STATUS   TXA
-                LDX #<STATUS_NAMES
-                LDY #>STATUS_NAMES
-                JMP GET_IND_STRING
+                JMP STATUS_TO_TEXT_C
 
 MAJOR_STATUS    JSR BAD_STATUS
                 BCS :1
@@ -464,52 +478,6 @@ BAD_STATUS      ENT
 :1              CLC
                 LDY #status         ;Make BEQ false
                 RTS
-
-STATUS_NUMS     DB  healthy,dead
-                DB  abandoned,broken
-                DB  intracc,compressd
-                DB  inlimbo,lost
-                DB  corroding,poisoned
-                DB  bleeding,radiated
-                DB  illA,blind
-                DB  confused,smotherin
-                DB  fast,strong
-                DB  slipping,numb
-                DB  ranaway,onfire
-                DB  dizzy,stunned
-                DB  immobile,controlld
-                DB  choking,critical
-                DB  rundown
-
-STATUS_NAMES    USR (_HEALTHY)=
-                USR (__DEAD)=
-                USR (ABANDONED)=
-                USR (_BROKEN)=
-                USR (IN-TRACC)=
-                USR (COMPRESSD)=
-                USR (IN-LIMBO)=
-                USR (__LOST)=
-                USR (CORRODING)=
-                USR (POISONED)=
-                USR (BLEEDING)=
-                USR (RADIATED)=
-                USR (___ILL)=
-                USR (__BLIND)=
-                USR (CONFUSED)=
-                USR (SMOTHERIN)=
-                USR (__FAST)=
-                USR (_STRONG)=
-                USR (SLIPPING)=
-                USR (__NUMB)=
-                USR (RAN_AWAY)=
-                USR (_ON_FIRE)=
-                USR (__DIZZY)=
-                USR (_STUNNED)=
-                USR (IMMOBILE)=
-                USR (CONTROLLD)=
-                USR (_CHOKING)=
-                USR (CRITICAL)=
-                USR (RUN_DOWN)=
 
 CRACE_TO_TEXT   ENT
                 LDY #profrace

@@ -1,4 +1,12 @@
-SWING           LDA #$00
+SWING           JSR CLEAR_CANCEL_IN
+                JSR DRAW_PICT
+                PictTextAt 111;133;(SWING_WITH_WHICH_HAND/S?)
+                PictEnd
+
+                LDY #$03
+                JSR BOXSUB
+
+                LDA #$00
                 JSR SELECT_HAND
                 JSR GETUSCO
                 JSR SET_LEGALS
@@ -50,19 +58,23 @@ NONWHIP_SWING   JSR PICK_SWING
                 BEQ SWING_COMMON
                 LDY #3
                 JSR BOXSUB
-                LDY #$15
+
                 LDX SWTYPE
                 DEX
-                BEQ :SKIPA
-                DEY
-:SKIPA          STY :MOD1+1
-                JSR TEXTER
-                JSR PICK_OF_3
-:MOD1           LDY #$FF            ;Modified
-                JSR TEXTER
+                BNE :1
+                JSR DRAW_PICT
+                PictTextAt 117;142;(SWING_AT_WHICH_SQUARE?)
+                PictEnd
+                BNE :2                  ; always
+:1              JSR DRAW_PICT
+                PictTextAt 114;142;(THRUST_AT_WHICH_SQUARE?)
+                PictEnd
+:2              JSR PICK_OF_3
+                JSR DRAW_PICT
+                PictClear 16;142;36;149
+                PictEnd
                 LDY TCURSOR
                 TYA
-
 SWING_COMMON    STY DEBOXMOD+1
                 ASL
                 ASL
@@ -71,8 +83,11 @@ SWING_COMMON    STY DEBOXMOD+1
                 CPY #3
                 BEQ :SKIPA
                 JSR BOXSUB
-:SKIPA          LDY #$1C
-                JSR TEXTER
+:SKIPA          JSR DRAW_PICT
+                PictTextAt 120;132;(SWING_HOW_MANY_TIMES?)
+                PictTextAt 125;143;(=)
+                PictTextAt 141;143;(OF_SWINGS:)
+                PictEnd
                 LDX #$7F
                 LDY #$8F
                 JSR NUMBER_SIGN
@@ -85,7 +100,7 @@ DEBOXMOD        LDY #$FF            ;Modified
                 JSR SWNSHT_UNDO
                 PLP
                 BCS :SKIPA
-                JMP DIDCANC
+                JMP DID_CANCEL
 :SKIPA          LDA #cmdSWING
                 STA INSTR1
                 LDX USEDLOC
@@ -134,7 +149,7 @@ DEBOXMOD        LDY #$FF            ;Modified
                 SBC #1
                 CLD
                 BNE :LOOP1
-:EXIT           JMP DIDCANC
+:EXIT           JMP DID_CANCEL
 
 *-------------------------------
 
@@ -204,13 +219,17 @@ LEFTMOST        SBC #$FF            ;Modified
                 BCS :EXIT
                 PLA
                 PLA
-                JMP DIDCANC
+                JMP DID_CANCEL
 :EXIT           RTS
 
 *-------------------------------
 
-PICK_SWING      LDY #$0F
-                JSR TEXTER
+PICK_SWING      JSR DRAW_PICT
+                PictTextAt 111;134;(USE_WHICH_TYPE_OF_SWING?)
+                PictTextAt 150;147;(HORIZONTAL)
+                PictTextAt 150;157;(VERTICAL)
+                PictTextAt 150;167;(THRUST)
+                PictEnd
                 LDX #<SWING_CDEF
                 LDY #>SWING_CDEF
                 JSR FULL_GETKEY
@@ -221,16 +240,17 @@ PICK_SWING      LDY #$0F
                 JSR BOXSUB
                 PLA
                 PLA
-                JMP DIDCANC
-:EXIT           JMP CLRBOXZ
+                JMP DID_CANCEL
+:EXIT           JMP CLEAR_WCANCEL
 
-SWING_CDEF      DB  $02
+SWING_CDEF      DB  $03
                 DB  $00
                 DW  :SWING_CURS
-:SWING_CURS     LDX CURSOR
-                LDY :YTABLE,X
+
+:SWING_CURS     LDY :YTABLE,X
                 LDX #$88
-                JMP ARROWER
+                JMP DRAW_ARROW
+
 :YTABLE         DB  $93,$9D,$A7
 
 *-------------------------------

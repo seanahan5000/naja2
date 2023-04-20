@@ -1,7 +1,8 @@
 
 * Quick fight mode versus "tactical" mode
 * Consider 5 or 6 instead of 7 group members, for balancing purposes
-    * (Wizardry had 6)
+    X (Wizardry had 6)
+    * (Might and Magic had 4)
     * Also shortens combat loop
 * Identifying aliens adds them to Alien Catalog
     * May also add aliens by finding data cards, etc.
@@ -15,12 +16,15 @@ X Change DAMAGE to HEALTH in stats (easier for player)
     * Let player decide to be strict/not about death
 * Always allow escape key to cancel/leave a screen
 * Work total credits into some camp screen
-* Center status when flipping w/damage in stats box
-* Get rid of "flip stats" when possible
-    * XY information is not useful
-    * Maybe just blink status text
-* Consider not showing shielding values in general stats box
-    * really only useful in individual stats screen
+* Stats box rework
+    X Center status when flipping w/damage in stats box
+    X Put Name before Prof
+    X Get rid of XY coordinates completely
+    * Get rid of "flip stats" when possible
+        * XY information is not useful
+        * Maybe just blink status text
+    * Consider not showing shielding values in general stats box
+        * really only useful in individual stats screen
 * Make 'S' stats key also close out stats menu
 X Scroll through individuals in camp with <- and -> arrows
 * Better alien masking when drawing over tunnels
@@ -43,16 +47,36 @@ X Scroll through individuals in camp with <- and -> arrows
     * Recheck specials on exit
 * Make map display more "dynamic" -- at least blink current position?
 * Make '?' bring up key help on any screen
-* Does Electro-medic class still make sense?
+* Does Electro-medic class still make sense? Secondary professions in general?
 * Different (less D&D) name for Warrior?
     * Soldier, Grunt, Combat Specialist
 * Remove "no encounter" squares and check for them programmatically
 * Tell player when somebody has gone up a level
 * Limit credits and experience to 6 digits instead of 8 (3 bytes)
 * Show hallway structure in fight grid
-    * Get rid of XY coordinates completely
     * Maybe make bigger once extra characters are gone
-* Put name before prof in stats box
+* Rework fight grid to show actual hall configuration
+    * Mimic map display
+    X Remove row and column coordinates
+* FROG_BOT - lots of them in a certain area, like pests? Easy to kill?
+* Limit juicer max energy area in fight based on level
+* Make grenades something that don't take up separate equipment slots
+* In fight
+    * EXCHANGE could be SWAP or EQUIP, to save column space
+    * Is DELAY really needed? (especially if fast mode added)
+    * Is OTHER needed? Useful to see other character's fight plan?
+    * Is TESSERACT really needed?
+    * Are more than 10 commands necessary?
+    * Instead of USE, HEAL?
+    * Fold IDENTIFY and HEAL together?
+    * Require Physician to be next to character to heal?
+    * Rename FLIP to STATS?
+    * Use shape instead of ">" before alien names (small left arrow?)
+    * Rename OTHER to PLANS?
+    * Move PARRY to top/center so it's easier to get to
+    * Allow juicer to charge other characters -- not just alien damage
+* Shorten max alien name length?
+    * Adds space in fight screens and alien info
 
 =================================
 Old notes from /WORK1.PO/TF.NOTES
@@ -66,7 +90,7 @@ Changes to Professions:
           - deals with core
           - computer terminals
           - no longer controls a robot
-     Androids - Alien life forms/languages/scanners,etc - skills related to zenologist.  Needs new name!!!
+     Androids - Alien life forms/languages/scanners,etc - skills related to xenologist.  Needs new name!!!
      Warrior - specializes in fighting, strategy, tactics, weapons systems (also needs new name)
 Limit number of characters in group to 5!!!
 

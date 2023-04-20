@@ -78,12 +78,16 @@ NOSPECIAL       ; LDX #fLoader2
                 JSR MAKE_ALLMONS
                 JSR FIGHT_SCREEN
                 ; JSR SURPRISE_SUB
-                ; LDA #$62
-                ; PHA
-                ; LDA #$FF
-                ; PHA
-                ; LDX #fCommand
-                ; JMP FLOAD_FILE
+
+        do 1
+                LDA #$62
+                PHA
+                LDA #$FF
+                PHA
+                LDA #fileFightCommand
+                LDY #$63
+                JMP LOAD_FILE
+        fin
 
                 JSR DRAW_PICT
                 PictSetPage1

@@ -60,6 +60,7 @@ DRAW_PICT       ENT
                 RTS                     ; BNE always true
 
 OP_TABLE        DW  OP_SET_COLOR
+                DW  OP_MOVE
                 DW  OP_MOVE_TO
                 DW  OP_MOVE_TO_H
                 DW  OP_HMOVE
@@ -70,6 +71,8 @@ OP_TABLE        DW  OP_SET_COLOR
                 DW  OP_HLINE_TO
                 DW  OP_HLINE_TO_H
                 DW  OP_VLINE_TO
+                DW  OP_HSAVE
+                DW  OP_HRESTORE
                 DW  OP_RECT
                 DW  OP_RECT_H
                 DW  OP_FILLRECT
@@ -161,7 +164,7 @@ OP_VMOVE_TO     LDA (OP_PTR),Y
                 INY
                 STY OP_INDEX
                 TAY
-VMOVE_TO        ENT
+VMOVE_TO        ENT                     ; MOVE assumes X is unchanged
                 STY YCOORD
                 RTS
 
@@ -200,7 +203,7 @@ OP_VMOVE        LDA (OP_PTR),Y
                 INY
                 STY OP_INDEX
                 TAY
-VMOVE           ENT
+VMOVE           ENT                     ; MOVE assumes X is unchanged
                 TYA
                 CLC
                 ADC YCOORD
@@ -228,6 +231,32 @@ HMOVE           ENT
                 ADC #7
                 STA XSHIFT
                 DEC XCOORD
+                RTS
+
+OP_MOVE         LDA (OP_PTR),Y
+                INY
+                TAX
+                LDA (OP_PTR),Y
+                INY
+                STY OP_INDEX
+                TAY
+MOVE            JSR VMOVE
+                JMP HMOVE
+
+OP_HSAVE
+HSAVE           ENT
+                LDA XCOORD
+                STA XMOD0+1
+                LDA XSHIFT
+                STA XMOD1+1
+                RTS
+
+OP_HRESTORE
+HRESTORE        ENT
+XMOD0           LDA #$FF
+                STA XCOORD
+XMOD1           LDA #$FF
+                STA XSHIFT
                 RTS
 
 ;-------------------------------------------------------------------------------
@@ -464,63 +493,6 @@ OP_HLINE_COM    TAX
 
 ;-------------------------------------------------------------------------------
 
-OP_VLINE_TO     LDA (OP_PTR),Y
-                INY
-                STY OP_INDEX
-                CMP YCOORD
-                LDX YCOORD
-                BCS :1
-                STX BOTTOM
-                TAX
-                BCC :2              ; always
-:1              STA BOTTOM
-:2              STA YCOORD
-
-        do 0    ; enable to allow for black vertical lines
-                LDY XSHIFT
-                LDA BIT_TABLE,Y
-                ORA #$80
-                STA LEFT_MASK
-                LDY OP_COLOR
-                LDA COLOR_TABLE,Y
-                ; TODO: toggle color by column here
-                TAY
-                EOR #$FF
-                AND LEFT_MASK
-                EOR #$FF
-                STA AND_MASK
-                TYA
-                AND LEFT_MASK
-                STA LEFT_MASK
-        else
-                LDY OP_COLOR
-                LDA COLOR_TABLE,Y
-                AND #$80
-                EOR #$FF
-                STA AND_MASK
-                EOR #$FF
-                LDY XSHIFT
-                ORA BIT_TABLE,Y
-                STA LEFT_MASK
-        fin
-
-                LDY XCOORD
-:3              LDA LOBYTES,X
-                STA SCREENL
-                LDA HIBYTES,X
-                STA SCREENH
-                LDA (SCREENL),Y
-                AND AND_MASK
-                ORA LEFT_MASK
-                STA (SCREENL),Y
-                INX
-                CPX BOTTOM
-                BCC :3
-                BEQ :3
-                RTS
-
-;-------------------------------------------------------------------------------
-
 OP_CLEAR        LDA (OP_PTR),Y
                 INY
                 STA :LEFT_MOD+1
@@ -550,6 +522,65 @@ OP_CLEAR        LDA (OP_PTR),Y
                 BNE :1
                 SAME_PAGE_AS :1
                 RTS
+
+;-------------------------------------------------------------------------------
+
+OR_MASK         =   LEFT_MASK
+
+OP_VLINE_TO     LDA (OP_PTR),Y
+                INY
+                STY OP_INDEX
+                TAY
+VLINE_TO        ENT
+                TYA
+                CMP YCOORD
+                LDX YCOORD
+                BCS :1
+                STX BOTTOM
+                TAX
+                BCC :2                  ; always
+:1              STA BOTTOM
+:2              STA YCOORD
+
+                LDY OP_COLOR
+                LDA COLOR_TABLE,Y
+                ASL
+                BEQ :3
+
+                LDA #$FF
+                ROR
+                STA AND_MASK
+                AND #$80
+                LDY XSHIFT
+                ORA BIT_TABLE,Y
+                STA OR_MASK
+
+:4              LDY XCOORD
+:5              LDA LOBYTES,X
+                STA SCREENL
+                LDA HIBYTES,X
+                STA SCREENH
+                LDA (SCREENL),Y
+                AND AND_MASK
+                ORA OR_MASK
+                STA (SCREENL),Y
+                INX
+                CPX BOTTOM
+                BCC :5
+                BEQ :5
+                SAME_PAGE_AS :5
+                RTS
+
+; NOTE: this is here to keep :5 loop on same page
+:3              LDA #$00
+                ROR
+                STA OR_MASK
+                EOR #$80
+                LDY XSHIFT
+                ORA BIT_TABLE,Y
+                EOR #$FF
+                STA AND_MASK
+                BNE :4                  ; always
 
 ;-------------------------------------------------------------------------------
 ;

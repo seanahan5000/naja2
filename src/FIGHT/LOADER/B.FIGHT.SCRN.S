@@ -13,15 +13,13 @@ FIGHT_SCREEN    JSR DRAW_PICT
                 PictLineTo $115;$7F
                 PictMoveTo $CB;$48
                 PictLineTo $CB;$7E
-                PictSetTextHeight 11
-                PictTextAt 92;74;(>\n>\n>\n>\n>)
-                PictSetTextHeight 0
+                ; PictSetTextHeight 11
+                ; PictTextAt 92;74;(>\n>\n>\n>\n>)
                 PictEnd
                 JSR DRAW_GRID
                 JSR DRAW_ALLMONS
                 JSR DRAW_MNAMES
-                LDA #statsXY+statsDamage
-                JMP DRAW_STATS_BOX_A
+                JMP DRAW_STATS_BOX
 
 *-------------------------------
 *
@@ -41,67 +39,86 @@ DRAW_ALLMONS    LDA #0
 *
 *-------------------------------
 
-DRAW_MNAMES     LDA #$06
-                STA YCOUNT
-                LDA #4
-                STA ZCOUNT
-:LOOP1          LDA #$FF
-                STA MNAME_HOLD
-                STA XCOUNT
-
+DRAW_MNAMES     LDX #4
                 LDA #0
-                STA MONS_NUMBER
-:LOOP2          JSR GET_MONSPTR
-                LDY #monPOSITION
-                LDA (TEMP),Y
-                AND #%00001111
-                CMP YCOUNT
-                BNE :SKIPA
-                LDA (TEMP),Y
-                CMP XCOUNT
-                BCS :SKIPA
-                STA XCOUNT
-                LDY #monNUMBER
-                LDA (TEMP),Y
-                TAX
-                LDA ALTYPE1,X
-                AND #%11000000
-                STA MNAME_HOLD
-:SKIPA          INC MONS_NUMBER
-                LDA MONS_NUMBER
-                CMP MONS_TOTAL
-                BNE :LOOP2
+:1              STA MNAME_TABLE,X
+                DEX
+                BPL :1
 
-                LDX ZCOUNT
-                LDA MNAME_HOLD
+                LDX #0
+:2              TXA
+                STA MONS_NUMBER
+                JSR POINTTO
+
+                LDY #monNUMBER
+                LDA (MONS_PTR),Y
+                TAX
+                LDY TV_HEIGHTS,X
+                DEY
+                STY :MOD2+1
+
+                LDY #monPOSITION
+                LDA (MONS_PTR),Y
+                AND #%00001111
+                STA :MOD1+1
+                LDA #10
+                SEC
+:MOD1           SBC #$FF
+                CLC
+:MOD2           ADC #$FF
+                STA YCOUNT
+                TAX
+
+                LDA MNAME_TABLE,X
+                BNE :4
+
+                LDY #monNUMBER
+                LDA (MONS_PTR),Y
+                TAY
+                LDA ALTYPE1,Y
+                AND #%11000000
                 STA MNAME_TABLE,X
-                CMP #$FF
-                BEQ :SKIPC
+                CLC
                 ROL
                 ROL
                 ROL
                 CMP #%00000011
-                BNE :SKIPB
+                BNE :3
                 LDA #0
-:SKIPB          LDX #<MONSTER_NAMES
+:3              LDX #<MONSTER_NAMES
                 LDY #>MONSTER_NAMES
                 JSR GET_IND_STRING
-                LDX ZCOUNT
-                LDA GRID_YPNTS,X
-                SEC
-                SBC #$36
-                TAY
+
+                LDX YCOUNT
+                LDY AGRID_YPNTS,X
                 LDX #102
                 JSR DRAW_TEXTBUF_XY
-:SKIPC          INC YCOUNT
-                DEC ZCOUNT
-                BPL :LOOP1
-                RTS
+                LDX #92
+                JSR HMOVE_TO
+                JSR DRAW_SMALL_ARROW
 
-MNAME_HOLD      DB  0
+:4              LDX MONS_NUMBER
+                INX
+                CPX MONS_TOTAL
+                BNE :2
+                RTS
 
 MONSTER_NAMES   USR (UNKNOWN)=
                 USR (ALIEN)=
                 USR (ROBOT)=
+
+; TODO: move this elsewhere
+DRAW_SMALL_ARROW
+                LDX #<SMALL_ARROW
+                LDY #>SMALL_ARROW
+                JMP DRAW_TILE
+
+SMALL_ARROW     DB  %00000000
+                DB  %00110000
+                DB  %00111100
+                DB  %00111111
+                DB  %00111100
+                DB  %00110000
+                DB  %00000000
 
 *-------------------------------

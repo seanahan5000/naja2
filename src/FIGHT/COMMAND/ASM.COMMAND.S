@@ -1,28 +1,41 @@
-                ERR ($310)-$AA
-                TR  ON
-                EXP OFF
-                LST OFF
 
-                USE /NAJA/VARS/MACROS
-                PUT /NAJA/VARS/ZPAGE
-                PUT /NAJA/VARS/NDOS.VARS
-                PUT /NAJA/VARS/NCOM.VARS
-                PUT /NAJA/VARS/MISC.VARS
+                EXP OFF
+
+TEMP            =   $00                 ; ,$01
+
+POINTL          =   $12
+POINTH          =   $13
+
+ZBLOCK_28       =   $28
+ZBLOCK_30       =   $30
+ZBLOCK_38       =   $38
+ZBLOCK_40       =   $40
+ZBLOCK_48       =   $48
+
+INSTR1          =   $C0
+INSTR2          =   $C1
+
+                PUT /COMMON/VARS
+                PUT /COMMON/EXT
+
+                PUT /HALLS/VARS
+                PUT /HALLS/EXT
+
+                PUT /CAMP/EXT
+
                 PUT /NAJA/VARS/CONSTANTS
-                PUT /NAJA/VARS/THALL.VARS
-                PUT /NAJA/VARS/CAMP.VARS
-                PUT /NAJA/VARS/FIGHT.CONSTS
-                PUT /NAJA/VARS/FIGHT.ZPAGE
+                PUT /FIGHT/FIGHT.CONSTS
+                PUT /FIGHT/FIGHT.ZPAGE
 
                 ORG $6300
                 DSK FIGHT.COMMAND
 
                 PUT /FIGHT/COMMAND/EQUATES
-                PAGE
                 PUT /FIGHT/COMMAND/CONTROL
-                PAGE
+
 *=========================================================+
 *   Command:  SWING (0)                                   |
+*  Mnemonic:  "SWN xF"                                    |
 *  Mnemonic:  "SWN xF"                                    |
 *      Time:  upTime                                      |
 *---------------------------------------------------------+
@@ -56,7 +69,7 @@
 *=========================================================+
 
                 PUT /FIGHT/COMMAND/C.SWING
-                PAGE
+
 *=========================================================+
 *   Command:  SHOOT (1)                                   |
 *  Mnemonic:  "SHT ##"                                    |
@@ -98,7 +111,7 @@
 *=========================================================+
 
                 PUT /FIGHT/COMMAND/C.SHOOT
-                PAGE
+
 *=========================================================+
 *   Command:  ENERGY (2)                                  |
 *  Mnemonic:  "ENR   "                                    |
@@ -134,7 +147,7 @@
 *=========================================================+
 
                 PUT /FIGHT/COMMAND/C.ENERGY
-                PAGE
+
 *=========================================================+
 *   Command:  THROW (3)                                   |
 *  Mnemonic:  "THW xy"                                    |
@@ -160,7 +173,7 @@
 *=========================================================+
 
                 PUT /FIGHT/COMMAND/C.THROW
-                PAGE
+
 *=========================================================+
 *   Command:  USE (4)                                     |
 *  Mnemonic:  "USE hh"                                    |
@@ -188,7 +201,7 @@
 *=========================================================+
 
                 PUT /FIGHT/COMMAND/C.USE
-                PAGE
+
 *=========================================================+
 *   Command:  MOVE (7)                                    |
 *  Mnemonic:  "MOV xy"                                    |
@@ -208,7 +221,7 @@
 *=========================================================+
 
                 PUT /FIGHT/COMMAND/C.MOVE
-                PAGE
+
 *=========================================================+
 *   Command:  IDENTIFY (8)                                |
 *  Mnemonic:  "IDN xy"         (one square)               |
@@ -233,7 +246,7 @@
 *=========================================================+
 
                 PUT /FIGHT/COMMAND/C.IDENTIFY
-                PAGE
+
 *=========================================================+
 *   Command:  EXCHANGE (9)                                |
 *  Mnemonic:  "EXC hh"                                    |
@@ -255,7 +268,7 @@
 *=========================================================+
 
                 PUT /FIGHT/COMMAND/C.EXCHANGE
-                PAGE
+
 *=========================================================+
 *   Command:  PARRY (10)                                  |
 *  Mnemonic:  "PAR ##"                                    |
@@ -272,7 +285,7 @@
 *=========================================================+
 
                 PUT /FIGHT/COMMAND/C.PARRY
-                PAGE
+
 *=========================================================+
 *   Command:  RUN (11)                                    |
 *  Mnemonic:  "RUN   "                                    |
@@ -286,36 +299,24 @@
 *=========================================================+
 
                 PUT /FIGHT/COMMAND/C.RUN
-                PAGE
                 PUT /FIGHT/COMMAND/C.END
-                PAGE
                 PUT /FIGHT/COMMAND/C.BACK1
-                PAGE
                 PUT /FIGHT/COMMAND/C.REDO
-                PAGE
                 PUT /FIGHT/COMMAND/C.OTHER
-                PAGE
                 PUT /FIGHT/COMMAND/C.FLIP
-                PAGE
                 PUT /FIGHT/COMMAND/C.DELAY
 
-                PAGE
                 PUT /FIGHT/COMMAND/COMMANDS
-                PAGE
                 PUT /FIGHT/COMMAND/CURSORS
-                PAGE
                 PUT /FIGHT/COMMAND/HANDS
-                PAGE
                 PUT /FIGHT/COMMAND/GET.MULTIPLE
-                PAGE
                 PUT /FIGHT/COMMAND/TEXT.DIGITS
-                PAGE
                 PUT /FIGHT/COMMAND/ENERGY.SUBS
-                PAGE
                 PUT /FIGHT/COMMAND/MISC.SUBS
-                PAGE
                 PUT /FIGHT/COMMAND/STATS
-                PAGE
-                PUT /FIGHT/COMMAND/SCREEN.SUBS
-                PAGE
-                PUT /FIGHT/COMMAND/DATA
+
+                PUT /CAMP/TOPVIEWS.S
+
+; TODO: these were zpage, should be saved settings
+DELAY_TIME      DB  $25
+DELAY_MODE      DB  $01

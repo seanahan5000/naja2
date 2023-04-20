@@ -36,7 +36,7 @@ TEXT_INIT       PHA
                 BCC :SKIPA
 
                 LDY #5
-                LDA #$0A
+                LDA #TextSpace
 :LOOP2          STA (TEMP),Y        ;Same as OLDPTR
                 INY
                 CPY #11
@@ -68,29 +68,29 @@ TEXT_UPDATE     JSR POINTERS
 :LOOP1          LDA (OLDPTR),Y
                 CMP (NEWPTR),Y
                 BNE :SKIPA
-                LDA #$0A
+                LDA #TextSpace
 :SKIPA          STA TEXTBUF,Y
                 DEY
                 BPL :LOOP1
 
-                LDA #$8D
+                LDA #TextLineEnd
                 STA TEXTBUF+6
-                LDA TEXT_XHOLD
+                LDX TEXT_XHOLD
                 LDY TEXT_YPNT
-                JSR LINE
+                JSR DRAW_TEXTBUF_XY
 
                 LDY #5
 :LOOP2          LDA (NEWPTR),Y
                 CMP (OLDPTR),Y
                 BNE :SKIPB
-                LDA #$0A
+                LDA #TextSpace
 :SKIPB          STA TEXTBUF,Y
                 DEY
                 BPL :LOOP2
 
-                LDA TEXT_XHOLD
+                LDX TEXT_XHOLD
                 LDY TEXT_YPNT
-                JSR LINE
+                JSR DRAW_TEXTBUF_XY
 
                 LDY #5
 :LOOP3          LDA (NEWPTR),Y
@@ -150,7 +150,7 @@ SPLITTER        LDY #0
                 LDY #0
 :LOOP2          PLA
                 BNE :SKIPB
-                LDA #$0A
+                LDA #TextSpace
                 STA (NEWPTR),Y
                 INY
                 CPY #5

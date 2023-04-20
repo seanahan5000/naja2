@@ -1,8 +1,9 @@
-IDENTIFY        JSR CLRBOXZ
-                JSR DOTIME
-                JSR CANCEL_IN
-                LDY #$3E
-                JSR TEXTER
+IDENTIFY        JSR CLEAR_CANCEL_IN
+                JSR DRAW_PICT
+                PictTextAt 112;141;(DO_YOU_WANT_TO_I.D._SCAN)
+                PictTextAt 138;154;(AN_INDIVIDUAL_SQUARE)
+                PictTextAt 138;164;(THE_ENTIRE_AREA)
+                PictEnd
                 LDX #<ID_CDEF
                 LDY #>ID_CDEF
                 JSR FULL_GETKEY
@@ -13,9 +14,10 @@ IDENTIFY        JSR CLRBOXZ
                 STA INSTR2
                 LDA CURSOR
                 BNE :SKIPA
-                JSR CLRBOXZ
-                LDY #$3F
-                JSR TEXTER
+                JSR CLEAR_WCANCEL
+                JSR DRAW_PICT
+                PictTextAt 115;152;(I.D._SCAN_WHICH_SQUARE?)
+                PictEnd
                 JSR GET_AIM
                 PHP
                 JSR DRAW_GRIDCURS
@@ -29,17 +31,20 @@ IDENTIFY        JSR CLRBOXZ
                 JSR ENERUSE
                 JSR TAKE_ENERUSE
                 JSR POST_COMMAND
-:SKIPB          JMP DIDCANC
+:SKIPB          JMP DID_CANCEL
 
 WHERE_IDSCAN    DB  0
 
 *-------------------------------
-ID_CDEF         DB  $01
-                DB  $80
+
+ID_CDEF         DB  $82
+                DB  $00
                 DW  :ID_CURS
-:ID_CURS        LDX CURSOR
-                LDY :YTABLE,X
+
+:ID_CURS        LDY :YTABLE,X
                 LDX #$7C
-                JMP ARROWER
+                JMP DRAW_ARROW
+
 :YTABLE         DB  $9A,$A4
+
 *-------------------------------

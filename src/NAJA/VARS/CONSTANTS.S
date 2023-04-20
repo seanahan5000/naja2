@@ -1,6 +1,8 @@
 
 ORIGINAL		=	1
 DEBUG_KEYS		=	1				; enable debug features tied to alt/option keys
+SMALL_GROUP     =   1
+NAME_FIRST      =   1
 
 human			=	0
 orn				=	1
@@ -249,8 +251,9 @@ fileControl11   =   $36
 fileControl9    =   $37
 
 fileFightLoader =   $38
-fileFightAwarder =  $39
-fileDeadGroup   =   $3A
+fileFightCommand =  $39
+fileFightAwarder =  $3A
+fileDeadGroup   =   $3B
 
 fileElevator    =   $40
 fileViewport    =   $41

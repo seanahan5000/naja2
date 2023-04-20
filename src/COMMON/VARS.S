@@ -143,42 +143,45 @@ HIRES           =   $C057
 PBUTTON0        =   $C061               ; open-apple
 
 OpSetColor      =   0
-OpMoveTo        =   1
-OpMoveToHigh    =   2
-OpHMove         =   3
-OpHMoveTo       =   4
-OpHMoveToHigh   =   5
-OpVMove         =   6
-OpVMoveTo       =   7
-OpHLineTo       =   8
-OpHLineToHigh   =   9
-OpVLineTo       =   10
-OpRect          =   11
-OpRectHigh      =   12
-OpFillRect      =   13
-OpFillRectHigh  =   14
-OpSetTextHeight =   15
-OpSetTextBox    =   16
-OpSetTextBoxHigh =  17
-OpText          =   18
-OpTextAt        =   19
-OpTextIn        =   20
-OpTextbuf       =   21
-OpTextbufRet    =   22
-OpImage         =   23
-OpImageFill     =   24
-OpTile          =   25
-OpClear         =   26
-OpCopyTo        =   27
-OpSwap          =   28
+OpMove          =   1
+OpMoveTo        =   2
+OpMoveToHigh    =   3
+OpHMove         =   4
+OpHMoveTo       =   5
+OpHMoveToHigh   =   6
+OpVMove         =   7
+OpVMoveTo       =   8
+OpHLineTo       =   9
+OpHLineToHigh   =   10
+OpVLineTo       =   11
+OpHSave         =   12
+OpHRestore      =   13
+OpRect          =   14
+OpRectHigh      =   15
+OpFillRect      =   16
+OpFillRectHigh  =   17
+OpSetTextHeight =   18
+OpSetTextBox    =   19
+OpSetTextBoxHigh =  20
+OpText          =   21
+OpTextAt        =   22
+OpTextIn        =   23
+OpTextbuf       =   24
+OpTextbufRet    =   25
+OpImage         =   26
+OpImageFill     =   27
+OpTile          =   28
+OpClear         =   29
+OpCopyTo        =   30
+OpSwap          =   31
 
-OpSetPage1      =   29
-OpSetPage2      =   30
-OpSetPageX      =   31
-OpShowPage      =   32
-OpClearPage     =   33
-OpCopyToPage    =   34
-OpCall          =   35
+OpSetPage1      =   32
+OpSetPage2      =   33
+OpSetPageX      =   34
+OpShowPage      =   35
+OpClearPage     =   36
+OpCopyToPage    =   37
+OpCall          =   38
 
 OpEnd           =   $FF
 
@@ -221,6 +224,12 @@ PictSetBlue     MAC
 
 PictSetWhite2   MAC
                 DB  OpSetColor,OpColorWhite2
+                EOM
+
+PictMove        MAC
+                DB  OpMove,]1,]2
+]X              =   0
+]Y              =   0
                 EOM
 
 PictHMove       MAC
@@ -279,6 +288,14 @@ PictHLineTo     MAC
                 DB  OpHLineTo,<]1
             FIN
 ]X              =   ]1
+                EOM
+
+PictHSave       MAC
+                DB  OpHSave
+                EOM
+
+PictHRestore    MAC
+                DB  OpHRestore
                 EOM
 
 PictRect        MAC

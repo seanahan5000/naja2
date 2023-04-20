@@ -1,45 +1,59 @@
-FIGHT_COMMAND   LDA #$20
-                STA PAGE
-                JSR CLRBOX
+FIGHT_COMMAND   JSR SET_PAGE1
+                JSR CLEAR_WTIME
                 LDA ROUND
                 BNE NOTRAP
-                LDA #GREEN
-                STA COLOR
-                LDY #$00
-                JSR LINER
+
+                ; TODO: different than normal stats box?
+                ; TODO: should loader be doing this?
+                JSR DRAW_PICT
+                PictSetGreen
+                PictRect $01;$00;$115;$44
+                PictMoveTo $01;$0A
+                PictLineTo $115;$0A
+                PictEnd
+
                 LDA MONS_TOTAL
                 STA ATALLY
 
-                LDA ALIEN1          ;*17
-                CMP #$02            ;*17
-                BEQ NOTRAP          ;*17
-                CMP #$20            ;*17
-                BEQ NOTRAP          ;*17
-                CMP #$23            ;*17
-                BEQ NOTRAP          ;*17
-GETKEY1         BIT KEYBRD
-                BPL GETKEY1
+;                 LDA ALIEN1          ;*17
+;                 CMP #$02            ;*17
+;                 BEQ NOTRAP          ;*17
+;                 CMP #$20            ;*17
+;                 BEQ NOTRAP          ;*17
+;                 CMP #$23            ;*17
+;                 BEQ NOTRAP          ;*17
+; GETKEY1         BIT KEYBRD
+;                 BPL GETKEY1
 NOTRAP          BIT UNSTROB
 
-                LDY #$40
-                LDA SUPRISED_FLAG
-                BEQ :2
-                BMI :1
-                LDY #$41
+                LDA ROUND
+                BNE SURPRISE_DONE
+                LDA SURPRISED_FLAG
+                BNE SURPRISE_DONE
+                BMI :2
                 LDX MONS_TOTAL
                 DEX
-                BEQ :1
-                INY
-:1              LDA ROUND
-                BNE :2
-                JSR TEXTER
-                LDY #$43
-                JSR TEXTER
-:2
-                STA PRIMARY
+                BNE :1
+                JSR DRAW_PICT
+                PictTextAt 124;152;(THE_ATTACKER_HAS_THE)
+                PictEnd
+                BNE :3                  ; always
+:1              JSR DRAW_PICT
+                PictTextAt 118;152;(THE_ATTACKERS_HAVE_THE)
+                PictEnd
+                BNE :3                  ; always
+:2              JSR DRAW_PICT
+                PictTextAt 148;152;(YOU_HAVE_THE)
+                PictEnd
+:3              JSR DRAW_PICT
+                PictTextAt 130;161;(ELEMENT_OF_SUPRISE)
+                PictEnd
+
+SURPRISE_DONE   JSR SHOW_PAGE
+
                 JSR REFRESH_STATS
 
-                LDA SUPRISED_FLAG
+                LDA SURPRISED_FLAG
                 BEQ :6
                 BMI :4
                 LDX #0
@@ -59,16 +73,15 @@ NOTRAP          BIT UNSTROB
                 BNE :6
                 LDX #$03
 :5              LDA #0              ;*** THIS SHOULD BE
-                JSR WAIT2           ;  CHANGED TO A KEYPRESS LATER !!!
+                JSR WAIT_KEY        ;  CHANGED TO A KEYPRESS LATER !!!
                 BMI :6
                 DEX
                 BPL :5
 :6
-                LDY #$00
-                JSR TEXTER
-                JSR LINBACK
+                JSR TUNITS_LABEL
+                JSR TIME_NOTCH_IN
                 BIT UNSTROB
-                JSR CLRBOXZ
+                JSR CLEAR_WCANCEL
 REDSPOT         LDX #$1F
                 LDA #$FF
 ENTLOOP         STA ENTABLE,X
@@ -78,123 +91,149 @@ ENTLOOP         STA ENTABLE,X
                 STA PLANNER
                 STA ORIGRED
 NXTPLAN         LDA PLANNER
-                JSR POINTIT
+                JSR SET_CHAR
                 JSR BAD_STATUS
                 BEQ NEXTMAN
-NOMNEXT         JSR FROM11
-                JSR GROUP_CURSOR1
-                LDY PLANNER
+NOMNEXT         JSR GROUP_CURSOR1C
+                LDX PLANNER
                 JSR CHAR_SQUARE
-                LDY PLANNER
+                LDX PLANNER
                 JSR CHAR_POINT
                 JSR PLANSUB
-                JSR FROM11
-                JSR GROUP_CURSOR1
-                LDY PLANNER
+                JSR GROUP_CURSOR1C
+                LDX PLANNER
                 JSR CHAR_POINT
 NEXTMAN         INC PLANNER
                 LDA PLANNER
                 CMP GRPNUMB
                 BEQ DOOVER
                 JMP NXTPLAN
-DOOVER          JSR CLRBOX2
-                JSR CLRBOX
-                JSR LINFRTH
-                LDY #$06
-                JSR TEXTER
-                LDA #$00
-                STA MAXTEXT
-                JSR INPUT2
-KEYCHK          LDA TEXTBUF
-                CMP #"A"
+
+DOOVER          JSR CLEAR_TUNITS_BOX
+                JSR CLEAR_WTIME
+                JSR DRAW_PICT
+                ; TIME_NOTCH_OUT
+                PictSetBlack1
+                PictMoveTo $105;$BE
+                PictLineTo $105;$B7
+                PictLineTo $114;$B7
+                PictSetGreen
+                PictMoveTo $106;$BF
+                PictLineTo $115;$BF
+                PictLineTo $115;$B8
+                PictTextAt 97;140;(ORDER_ENTRY_PHASE_IS_COMPLETE)
+                PictTextAt 97;159;(WILL_YOU_A>CCEPT_THESE_ORDERS)
+                PictTextAt 133;169;(OR_R>EDO_THEM?_)
+                PictEnd
+
+                JSR GET_INPUT_KEY
+KEYCHK          CMP #"A"
                 BEQ HITA
                 CMP #"R"
                 BEQ HITR
-                CMP #$8D
-                BNE NORETN
-                JSR CHAROUT
-NORETN          JSR RECALL
+                JSR REGET_INPUT
                 JMP KEYCHK
-HITA            JSR CLRBOX
-                BIT FLIPPED_FLAG
-                BPL HASKIP
-                JSR FLIPPER
-HASKIP          JSR DEBOX
+HITA            JSR CLEAR_WTIME
+                JSR UNFLIP_STATS
+                JSR CLEAR_MARKERS
 SUPOVER         LDA #$00
                 STA PLANNER
-                LDA #$62
-                PHA
-                LDA #$FF
-                PHA
-                LDX #fReNarrate
-                LDA ROUND
-                BNE :1
-                LDX #fNarrate
-:1              JMP SLOAD_FILE
-
-LINFRTH         LDA #BLACK1
-                STA COLOR
-                LDY #$01
-                JSR LINER
-                LDA #GREEN
-                STA COLOR
-                LDY #$04
-                JMP LINER
-
-DEBOX           LDA #$00
-                STA COUNT
-TTLOOP1         JSR POINTIT
-                JSR BAD_STATUS
-                BEQ DEDSKIP
-                LDY COUNT
-                JSR CHAR_SQUARE
-DEDSKIP         INC COUNT
-                LDA COUNT
-                CMP GRPNUMB
-                BNE TTLOOP1
+;                 LDA #$62
+;                 PHA
+;                 LDA #$FF
+;                 PHA
+;                 LDX #fReNarrate
+;                 LDA ROUND
+;                 BNE :1
+;                 LDX #fNarrate
+; :1              JMP SLOAD_FILE
                 RTS
 
-HITR            JSR CLRBOX
-                LDY #$37
-                JSR TEXTER
+; put time notch in lower right corner box
+TIME_NOTCH_IN   JSR DRAW_PICT
+                PictSetBlack1
+                PictMoveTo $106;$BF
+                PictLineTo $115;$BF
+                PictLineTo $115;$B8
+                PictSetGreen
+                PictMoveTo $105;$BE
+                PictLineTo $105;$B7
+                PictLineTo $114;$B7
+                PictEnd
+                RTS
+
+DRAW_TUNITS_BOX JSR CLEAR_TUNITS_BOX
+                ; fall through
+TUNITS_LABEL    JSR DRAW_PICT
+                PictTextAt 208;76;(T.UNITS)
+                PictTextAt 253;76;(=)
+                PictEnd
+                RTS
+
+CLEAR_TUNITS_BOX JSR DRAW_PICT
+                PictSetBlack1
+                PictFillRect 204;72;276;126
+                PictEnd
+                RTS
+
+; remove marker square from each character in stats box
+CLEAR_MARKERS   JSR FIRST_CHAR
+:1              JSR BAD_STATUS
+                BEQ :2
+                LDX CHAR_INDEX
+                JSR CHAR_SQUARE
+:2              JSR NEXT_CHAR
+                BCC :1
+                RTS
+
+HITR            JSR CLEAR_WTIME
+                JSR DRAW_PICT
+                PictTextAt 124;139;(DO_YOU_WANT_TO_REDO)
+                PictTextAt 136;153;(THE_ENTIRE_GROUP)
+                PictTextAt 136;163;(ONE_GROUP_MEMBER)
+                PictTextAt 136;173;(CANCEL)
+                PictEnd
+
                 LDX #<REDO_CDEF
                 LDY #>REDO_CDEF
-                JSR INIT_CURSOR
-                JSR GETKEY
-                LDX CURSOR
-                BEQ ENTIRE
+                JSR MENU_INIT
+                JSR MENU_SELECT
                 DEX
-                BEQ ONEMEMB
-                JSR CLRBOX
+                BMI ENTIRE
+                DEX
+                BMI ONEMEMB
+                JSR CLEAR_WTIME
                 JMP DOOVER
 
 *-------------------------------
-REDO_CDEF       DB  $02
-                DB  $80
+
+REDO_CDEF       DB  $83
+                DB  $00
                 DW  :REDO_CURS
-:REDO_CURS      LDX CURSOR
-                LDY :YTABLE,X
+
+:REDO_CURS      LDY :YTABLE,X
                 LDX #$7A
-                JMP ARROWER
+                JMP DRAW_ARROW
+
 :YTABLE         DB  $99,$A3,$AD
+
 *-------------------------------
 
-ENTIRE          JSR LINBACK
-                JSR DEBOX
-                LDY #$00
-                JSR TEXTER
+ENTIRE          JSR TIME_NOTCH_IN
+                JSR CLEAR_MARKERS
+                JSR TUNITS_LABEL
                 JMP REDSPOT
-ONEMEMB         JSR CLRBOX
-                JSR LINBACK
+
+ONEMEMB         JSR CLEAR_WTIME
+                JSR TIME_NOTCH_IN
                 JSR CANCEL_IN
-                LDY #$3D
-                JSR TEXTER
+                JSR DRAW_PICT
+                PictTextAt 118;152;(REDO_WHOSE_FIGHT_PLAN?)
+                PictEnd
                 JSR OTHER_SUB
                 LDA #$EE
                 STA ORIGRED
-                LDY PLANNER
-                DEY
-                TYA
+                LDA PLANNER
                 JSR SELECT_CHAR
                 BCS :SKIPA
                 JSR CHAR_CURSOR2
@@ -202,14 +241,13 @@ ONEMEMB         JSR CLRBOX
                 JMP DOOVER
 :SKIPA          JSR CHAR_CURSOR2
                 JSR CANCEL_OUT
-                JSR CLRBOX
+                JSR CLEAR_WTIME
                 LDA PLANNER
                 PHA
-                LDY #$00
-                JSR TEXTER
+                JSR TUNITS_LABEL
                 LDA CURSOR
                 STA PLANNER
-                JSR POINTIT
+                JSR SET_CHAR
                 JSR DENERGY
                 JSR PLANSUB
                 LDA PLANNER
@@ -218,15 +256,6 @@ ONEMEMB         JSR CLRBOX
                 STA PLANNER
                 JSR CHAR_CURSOR2
                 JMP DOOVER
-
-LINBACK         LDA #BLACK1
-                STA COLOR
-                LDY #$04
-                JSR LINER
-                LDA #GREEN
-                STA COLOR
-                LDY #$01
-                JMP LINER
 
 PLANSUB         LDA PLANNER
                 ASL
@@ -244,7 +273,7 @@ PLANSUB         LDA PLANNER
                 LDY #$1E
                 LDA (CHARDL),Y
                 STA XYSPOTS,X
-                JSR CLRBOX
+                JSR CLEAR_WTIME
                 JSR OPTIONS
                 LDX #$3F
                 LDA #$FF
@@ -261,6 +290,12 @@ TOCHEN1         LDA CHENTAB,X
                 DEX
                 BPL TOCHEN1
                 JMP ENUDATE
+
+DID_CANCEL      JSR CLEAR_WCANCEL
+                JSR CANCEL_OUT
+                JSR DOTIME
+                JSR OPTIONS
+                JMP GETOP2
 
 GETOPTS         LDA #$00
                 STA OPTSPOT
@@ -297,11 +332,11 @@ GETOP3          JSR OPT_CURSOR
 OPT_BLINK       LDA #$10
                 JSR WAIT
                 LDA #$F0
-                JSR WAIT2
+                JSR WAIT_KEY
                 BMI OPT_GOTKEY
                 JSR OPT_CURSOR
                 LDA #$00
-                JSR WAIT2
+                JSR WAIT_KEY
                 JSR OPT_CURSOR
 OPT_MOVEKEY     LDA KEYBRD
                 BPL OPT_BLINK
@@ -361,7 +396,8 @@ OPT_RIGHT       JSR OPT_CURSOR
                 ADC #7
                 CMP #21
                 BCC OPT_COM1
-                SBC #21             ;Carry assumed set
+;               SEC
+                SBC #21
 OPT_COM1        STA OPTSPOT
                 JSR RANGER
 OPT_COM2        JSR OPT_CURSOR
@@ -421,15 +457,17 @@ OPT_CURSOR      LDX #$64
                 CMP #7
                 BCC :SKIPA
                 LDX #$9F
-                SBC #7              ;Carry assumed set
+;               SEC
+                SBC #7
                 CMP #7
                 BCC :SKIPA
                 LDX #$E6
-                SBC #7              ;Carry assumed set
+;               SEC
+                SBC #7
 :SKIPA          TAY
                 LDA OPTY,Y
                 TAY
-                JMP ARROWER
+                JMP DRAW_ARROW
 
 OPTY            DB  $81,$8A,$93
                 DB  $9C,$A5,$AE

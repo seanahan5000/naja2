@@ -1,5 +1,3 @@
-
-                PUT /NAJA/VARS/CONSTANTS
 ;
 ; On entry:
 ;   A: character index

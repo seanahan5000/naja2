@@ -1,38 +1,44 @@
 OTHER           JSR OTHER_SUB
                 LDA PLANNER
-                JSR POINTIT
+                JSR SET_CHAR
                 LDX PLANNER
                 BIT ORIGRED
                 BPL :SKIPA
                 LDA #$FF
                 STA LEGALS,X
                 LDX GRPNUMB
-:SKIPA          DEX
-                TXA
+:SKIPA          TXA
                 PHA
-                JSR CLRBOX
-                JSR DOTIME
-                JSR CANCEL_IN
-                LDY #$04
-                JSR TEXTER
+                JSR CLEAR_CANCEL_IN
+                JSR DRAW_PICT
+                PictTextAt 114;152;(SEE_WHOSE_FIGHTING_PLAN?)
+                PictEnd
                 PLA
                 JSR SELECT_CHAR
                 PHP
                 JSR CANCEL_OUT
                 PLP
-                BCC KOUTOF
-                JSR CLRBOX
+                BCC :CANCEL
+                JSR CLEAR_WTIME
                 JSR DOCOM3
-                LDY #$05
-                JSR TEXTER
-KEYSPAC         JSR SPACE_WAIT
-                BCC KEYSPAC
-KOUTOF          JSR CLRBOX
-                LDA #BLACK1
-                STA COLOR
-                LDY #$05
-                JSR LINER
-                JSR CHAR_CURSOR2
+                JSR DRAW_PICT
+                PictTextAt 107;152;(<SPACE>)
+                PictTextAt 104;162;(TO_LEAVE)
+                PictEnd
+:KEYLOOP         JSR SPACE_WAIT
+                BCC :KEYLOOP
+                BCS :OKAY               ; always
+
+:CANCEL         JSR CHAR_CURSOR2
+:OKAY           JSR DRAW_PICT
+                ; NOTE: CLEAR_WTIME not used because a full width
+                ;   clear is needed here
+                PictSetBlack1
+                PictFillRect 91;128;276;182
+                PictMoveTo $A5;$80
+                PictLineTo $A5;$B7
+                PictLineTo $104;$B7
+                PictEnd
                 JSR DOTIME
                 JSR OPTIONS
                 JMP GETOP2
@@ -62,14 +68,26 @@ DFOUND          CPX #$0B
                 BCS FULLBOX
                 LDA #$05
                 STA CFLAG
-FULLBOX         LDA #GREEN
-                STA COLOR
+FULLBOX
                 LDA CFLAG
                 AND #$01
-                CLC
-                ADC #$05
-                TAY
-                JSR LINER
+                BNE :1
+
+                JSR DRAW_PICT
+                PictSetGreen
+                PictMoveTo $A5;$80
+                PictLineTo $A5;$B7
+                PictLineTo $104;$B7
+                PictEnd
+                BNE DOC2                ; always
+
+:1              JSR DRAW_PICT
+                PictSetGreen
+                PictMoveTo $CB;$80
+                PictLineTo $CB;$B7
+                PictLineTo $104;$B7
+                PictEnd
+
 DOC2            LDY POINTR2
                 LDA COMMAND,Y
                 CMP #$8A
@@ -81,14 +99,13 @@ DOC2            LDY POINTR2
                 STA INSTR2
                 INC POINTR2
                 LDY CFLAG
-                LDA COMXS,Y
-                STA XPNT
+                LDX COMXS,Y
                 LDA COMYS,Y
                 CLC
                 ADC #$38
-                STA YPNT
+                TAY
                 INC CFLAG
-                JSR COMR2
+                JSR DRAW_CMD2
                 JMP DOC2
 DOOUT           RTS
 
@@ -101,7 +118,7 @@ OTHER_SUB       JSR SET_LEGALS
 :LOOP1          LDA #$00
                 STA LEGALS,X
                 TXA
-                JSR POINTIT
+                JSR SET_CHAR
                 JSR BAD_STATUS
                 BNE :SKIPB
 :SKIPA          LDA #$FF

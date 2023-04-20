@@ -1,12 +1,14 @@
-REDO            JSR CLRBOX
-                JSR DOTIME
-                JSR CANCEL_IN
-                LDA #RED
-                STA COLOR
-                LDY #$07
-                JSR LINER
-                LDY #$09
-                JSR TEXTER
+REDO            JSR CLEAR_CANCEL_IN
+                JSR DRAW_PICT
+                PictSetOrange
+                PictMoveTo $9D;$9C
+                PictLineTo $CF;$9C
+                PictMoveTo $A1;$9E
+                PictLineTo $CB;$9E
+                PictTextAt 159;147;(>>REDO<<)
+                PictTextAt 114;165;(PRESS_<SPACE>_TO_VERIFY)
+                PictEnd
+
                 JSR SPACE_WAIT
                 BCC NOTSURE
                 LDY COMPNTR
@@ -14,26 +16,12 @@ REDO            JSR CLRBOX
                 STA COMMAND,Y
                 JSR DENERGY
                 JSR CANCEL_OUT
-                JSR CLRBOX
-                LDA COMCNT
-                CMP #$0B
-                BCC SMALL1
-                LDA #$40
-                STA PAGE
-                JSR CLRBOX2
-                LDY #$00
-                JSR TEXTER
-                JSR SWAP
-                LDA #$20
-                STA PAGE
-                BNE REDCOMN         ;Always
-SMALL1          JSR CLRBOX2
-                LDY #$00
-                JSR TEXTER
-REDCOMN         PLA
+                JSR CLEAR_WTIME
+                JSR SHRINK_TUNITS
+                PLA
                 PLA
                 JMP PLANSUB
-NOTSURE         JMP DIDCANC
+NOTSURE         JMP DID_CANCEL
 
 *-------------------------------
 

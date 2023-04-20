@@ -42,6 +42,7 @@ COPY_DOWN       LDX #0
                 RTS
 
 *-------------------------------
+
 STATS_MENU      DB  $83             ; min 0, max 2, clear LEGALS
                 DB  $00
                 DW  :STATS_CURS
@@ -56,6 +57,7 @@ STATS_MENU      DB  $83             ; min 0, max 2, clear LEGALS
 :STATS_JUMPS    DW  STATS_MORE
                 DW  STATS_FLIP
                 DW  STATS_EXIT
+
 *-------------------------------
 
 STATS_EXIT      JSR DRAW_PICT
@@ -154,6 +156,7 @@ CAMP_MARKER     LDY CAMP_YPNTS,X
                 JMP DRAW_MARKER
 
 *-------------------------------
+
 CAMP_MENU_MS    DB  $84
 CCURPOS_MS      DB  $00
                 DW  CAMP_CURS
@@ -228,7 +231,11 @@ TO_ALIENS       LDA #fileAlienId
 :1              JMP IDENTIFIED_ALIENS
 
 TO_ISTATS		JSR DRAW_PICT
+		do SMALL_GROUP
+				PictTextAt 16;71;(CANCEL)
+		else
 				PictTextAt 16;70;(CANCEL)
+		fin
 				PictTextAt 63;96;(INDIVIDUAL_STATS_FOR_WHOM?)
 				PictEnd
 				JSR	PICK_CHAR
@@ -240,7 +247,11 @@ TO_ISTATS		JSR DRAW_PICT
 				JMP	DOSTATS
 
 :CANCEL			JSR DRAW_PICT
+		do SMALL_GROUP
+                PictClear 2;71;8;78
+        else
                 PictClear 2;70;8;77
+        fin
                 PictClear 9;96;32;103
                 PictEnd
                 ; TODO: clean this up after switch to JSR MENU_SELECT
@@ -253,8 +264,13 @@ PICK_CHAR		JSR	RESET_CHRLIST
 				JMP	MENU_SELECT
 
 *-------------------------------
+
 PRE_ARROW		LDA #$00
+		do SMALL_GROUP
+				STA LEGALS+7		; TODO: eventually adjust
+		else
 				STA LEGALS+7
+		fin
 				LDX	#<:PRE_DEF
 				LDY	#>:PRE_DEF
 				JMP	MENU_INIT
@@ -269,10 +285,18 @@ PRE_ARROW		LDA #$00
 
 ; NOTE: was in KEY.COMMONS.S
 YPOINTS			ENT
+		do SMALL_GROUP
+				DB  14,23,32
+				DB	41,50,59
+				DB	0					; TODO: eventually remove
+				DB	71					; cancel
+		else
 				DB	$0C,$14,$1C
 				DB	$24,$2C,$34
 				DB	$3C
 				DB	$46					; cancel
+		fin
+
 *-------------------------------
 
 ; caller has already set Y position

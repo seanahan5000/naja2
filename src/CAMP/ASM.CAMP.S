@@ -1,3 +1,6 @@
+                EXP OFF
+
+                PUT /NAJA/VARS/CONSTANTS
 
                 PUT /COMMON/VARS
                 PUT /COMMON/EXT
@@ -46,6 +49,13 @@ ETABLE_TO_TEXT  ENT
                 JSR _ETABLE_TO_TEXT
                 JMP BANK_2
 
+STATUS_TO_TEXT_C ENT
+                TAX
+                JSR BANK_1
+                TXA
+                JSR _STATUS_TO_TEXT_C
+                JMP BANK_2
+
 ; TODO: move later
 BANK_1          LDA $C08B
                 LDA $C08B
@@ -60,6 +70,7 @@ BANK_2          LDA $C083
                 ORG $D000           ; bank 1
                 PUT C.TRADE         ; calls EQUIPMENT directly
                 PUT EQUIPMENT
+                PUT STATS2
                 SAV CAMP.D000.M1
 
                 ORG $D000           ; bank 2
@@ -70,12 +81,12 @@ BANK_2          LDA $C083
                 PUT C.ISTATS.DATA
                 SAV CAMP.D000.M2
 
-                ORG $1900
+                ORG $1A00
                 PUT CHARACTERS
                 PUT STATS
                 DS  \,$EE
                 ERR $1E00-*
-                SAV CAMP.1900
+                SAV CAMP.1A00
 
                 ORG $A000
 REFORMAT_FILE   DB  fileReformat

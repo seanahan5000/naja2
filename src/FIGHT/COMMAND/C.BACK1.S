@@ -32,7 +32,7 @@ NEBACK          JSR DOTIME3
                 STA INSTR1
                 LDA COMMAND+1,Y
                 STA INSTR2
-                JSR COMMER
+                JSR DRAW_CMD
                 JSR COLLAPS
                 LDY COMPNTR
                 LDA COMMAND,Y
@@ -84,7 +84,7 @@ NOSPEC1         LDY COMCNT
                 CMP #cmdAIM
                 BNE NOBAKS
                 JMP BACK1
-NOBAKS          JSR CLRBOX          ;MODIFIED POINT
+NOBAKS          JSR CLEAR_WTIME          ; modified: must be JSR
                 JSR OPTIONS
                 LDA #$0F
                 STA OPTSPOT
@@ -96,9 +96,9 @@ CABACK          JMP GETOP2
 COLLAPS         LDA COMCNT
                 CMP #$0A
                 BNE COLLOUT
-                LDA #$40
-                STA PAGE
-                JSR CLRBOX2
+                JSR SET_PAGE2
+                JSR CLEAR_TUNITS_BOX
+
                 LDA COMDAT
                 STA MOVMOD+1
                 LDA COMDAT+1
@@ -113,8 +113,9 @@ COLLAPS         LDA COMCNT
                 LDA CMDAT2+1
                 STA MOVMOD+2
 COLLOUT         RTS
-COMDAT          DW  COMMER
-CMDAT2          DW  COMR2
+
+COMDAT          DW  DRAW_CMD
+CMDAT2          DW  DRAW_CMD2
 
 SPENSUB         ASL
                 ASL

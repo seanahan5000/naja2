@@ -8,9 +8,9 @@
 
 GET_MULTIPLE    STX LIMIT_SUB+1
                 STY LIMIT_SUB+2
-                LDY #$1B
-                JSR TEXTER
-
+                JSR DRAW_PICT
+                PictTextAt 129;152;(ENERGY_USED:)
+                PictEnd
                 LDX #$00
                 STX HOWCUR1
                 INX
@@ -38,11 +38,11 @@ GET_MULTIPLE    STX LIMIT_SUB+1
 NBLINK          LDA #$10
                 JSR WAIT
                 LDA #$F0
-                JSR WAIT2
+                JSR WAIT_KEY
                 BMI NGOTKEY
                 JSR DRAWHOW
                 LDA #$00
-                JSR WAIT2
+                JSR WAIT_KEY
                 JSR DRAWHOW
                 BIT KEYBRD
                 BPL NBLINK
@@ -126,19 +126,18 @@ MULT_UPDWN      LDA #1
 
 DRAWHOW         LDA HOWCUR1
                 BNE :SKIPA
-                LDA #$0A
+                LDA #TextSpace
 :SKIPA          STA TEXTBUF
                 LDA HOWCUR2
                 STA TEXTBUF+1
-                LDA #$8D
+                LDA #TextLineEnd
                 STA TEXTBUF+2
-                LDA #$E1
+                LDX #$E1
                 LDY #$8F
-                JMP LINE
+                JMP DRAW_TEXTBUF_XY
 
 HOWCUR1         DB  0
 HOWCUR2         DB  0
-
 
 *-------------------------------
 * ON ENTRY:
@@ -194,12 +193,10 @@ HOLD_TIME       DB  0
 
 *-------------------------------
 
-NUMBER_SIGN     STX XPNT
-                STY YPNT
-                LDA #0
+NUMBER_SIGN     JSR MOVE_TO
                 LDX #<NUMBER_SHAPE
                 LDY #>NUMBER_SHAPE
-                JMP DRAW_SHAPES
+                JMP DRAW_TILE
 
 NUMBER_SHAPE    DB  %00011011
                 DB  %00011011

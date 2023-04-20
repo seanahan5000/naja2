@@ -1,15 +1,18 @@
-PARRY           JSR CLRBOX
-                LDY #$0A
-                JSR TEXTER
+PARRY           JSR CLEAR_WTIME
+                JSR DRAW_PICT
+                PictTextAt 102;150;(PARRY_FOR_HOW_MANY_T.UNITS?)
+                PictTextAt 138;162;(<MAXIMUM:_)
+                PictEnd
                 LDA TIMLEFT
                 JSR DIGIT_DRAW
-                LDA #$32
+                LDA #TextGT
                 STA TEXTBUF+2
-                LDA #$0A
+                LDA #TextSpace
                 STA TEXTBUF+3
-                LDA #$8D
+                LDA #TextLineEnd
                 STA TEXTBUF+4
-                JSR LINE2
+                JSR DRAW_TEXTBUF
+
                 LDA TIMLEFT
                 JSR INPUT_SUB
                 BCC NOMIND
@@ -26,7 +29,7 @@ NOBEFOR         LDA TIMTAKE
                 STA INSTR2
                 LDA #cmdPARRY
                 STA INSTR1
-                BNE GOCO1           ;Always
+                BNE GOCO1               ; always
 BEFORE          STA INSTR1
                 LDA COMMAND-1,Y
                 STA INSTR2
@@ -44,6 +47,6 @@ BEFORE          STA INSTR1
                 CLD
                 STA INSTR2
 GOCO1           JSR POST_COMMAND
-NOMIND          JSR CLRBOX
+NOMIND          JSR CLEAR_WTIME
                 JSR OPTIONS
                 JMP GETOP2

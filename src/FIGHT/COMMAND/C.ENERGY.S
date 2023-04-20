@@ -1,28 +1,25 @@
 ENERGY          JSR PICKECT
-                JSR CLRBOX
-                JSR DOTIME
-                JSR CANCEL_IN
-                LDY #$25
-                JSR TEXTER
-                LDY #$27
-                JSR TEXTER
+                JSR CLEAR_CANCEL_IN
+                JSR DRAW_PICT
+                PictTextAt 111;146;(SELECT_UPPER-LEFT_CORNER)
+                PictTextAt 120;156;(OF_ENERGY_STRIKE_ZONE)
+                PictEnd
                 JSR GET_UL_EZONE
                 BCS :SKIPA
                 JSR DRAW_GRIDCURS
-                JMP DIDCANC
+                JMP DID_CANCEL
 
-:SKIPA          LDY #$25
-                JSR TEXTER
-                LDY #$26
-                JSR TEXTER
-
+:SKIPA          JSR DRAW_PICT
+                PictClear 15;146;37;153
+                PictTextAt 108;146;(SELECT_LOWER-RIGHT_CORNER)
+                PictEnd
                 LDA CURSOR
                 STA MARGIN
                 JSR GET_LR_EZONE
                 BCS :SKIPB
                 JMP ENERGY_EXIT
 
-:SKIPB          JSR CLRBOXZ
+:SKIPB          JSR CLEAR_WCANCEL
                 LDY MARGIN
                 LDA ENERGY_INDEX
                 ASL
@@ -35,8 +32,12 @@ ENERGY          JSR PICKECT
                 JSR GENERAL_POST
                 LDA CURSOR
                 PHA
-                LDY #$32
-                JSR TEXTER
+                JSR DRAW_PICT
+                PictTextAt 105;134;(EMIT_WHICH_TYPE_OF_ENERGY?)
+                PictTextAt 150;147;(ELECTRICAL)
+                PictTextAt 150;157;(HEAT)
+                PictTextAt 150;167;(LIGHT)
+                PictEnd
                 LDX #<ENERGY_CDEF
                 LDY #>ENERGY_CDEF
                 JSR FULL_GETKEY
@@ -49,19 +50,26 @@ ENERGY          JSR PICKECT
                 JMP ENERGY_EXIT
 
 *-------------------------------
-ENERGY_CDEF     DB  $02
-                DB  $80
+
+ENERGY_CDEF     DB  $83
+                DB  $00
                 DW  :ENERGY_CURS
+
 :ENERGY_CURS    LDX CURSOR
                 LDY :YTABLE,X
                 LDX #$88
-                JMP ARROWER
+                JMP DRAW_ARROW
+
 :YTABLE         DB  $93,$9D,$A7
+
 *-------------------------------
 
-EPICKED         JSR CLRBOXZ
-                LDY #$28
-                JSR TEXTER
+EPICKED         JSR CLEAR_WCANCEL
+                JSR DRAW_PICT
+                PictTextAt 120;135;(EMIT_HOW_MUCH_ENERGY?)
+                PictTextAt 129;153;(PER_SQUARE:)
+                PictTextAt 159;163;(TOTAL:)
+                PictEnd
                 LDA MARGIN
                 AND #$F0
                 STA SCRATCH
@@ -129,11 +137,11 @@ ADLOOP          PLA
 HBLINK          LDA #$10
                 JSR WAIT
                 LDA #$F0
-                JSR WAIT2
+                JSR WAIT_KEY
                 BMI HGOTKEY
                 JSR VARROW_CURSOR
                 LDA #$00
-                JSR WAIT2
+                JSR WAIT_KEY
 HMOVKEY1        JSR VARROW_CURSOR
 HMOVKEY2        LDA KEYBRD
                 BPL HBLINK
@@ -204,11 +212,11 @@ HENLOOP         LDA PER_VALUE,Y
                 LDA TIMLEFT
                 STA CTIMTAB,X
                 JMP HCANC2
-HCANCEL         LDA #$60
+HCANCEL         LDA #$60                ; RTS
                 STA NOBAKS
                 INC ENERGY_INDEX
                 JSR BACK1
-                LDA #$20
+                LDA #$20                ; JSR
                 STA NOBAKS
                 JSR DE_ENERLEV
 HCANC2          LDA MARGIN2
@@ -219,7 +227,7 @@ ENERGY_EXIT     JSR DRAW_GRIDCURS
                 LDA MARGIN
                 STA CURSOR
                 JSR DRAW_GRIDCURS
-                JMP DIDCANC
+                JMP DID_CANCEL
 
 HUP             LDX #$02
                 CLC
@@ -333,14 +341,12 @@ TOTAL_AMOUNT    DS  3
 *-------------------------------
 
 VARROW_CURSOR   LDY CURSOR
-                LDA :XTABLE,Y
-                STA XPNT
-                LDA #$91
-                STA YPNT
-                LDA #0
+                LDX :XTABLE,Y
+                LDY #$91
+                JSR MOVE_TO
                 LDX #<VARROW_SHAPE
                 LDY #>VARROW_SHAPE
-                JMP DRAW_SHAPES
+                JMP DRAW_TILE
 
 :XTABLE         DB  $C9,$CF,$D5
                 DB  $DB,$E1,$E7

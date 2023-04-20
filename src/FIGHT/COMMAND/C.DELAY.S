@@ -1,16 +1,23 @@
-DELAY           JSR CLRBOX
-                LDY #$01
-                JSR TEXTER
+DELAY           JSR CLEAR_WTIME
+
+                JSR DRAW_PICT
+                PictTextAt 132;146;(MAXIMUM_DELAY:_99)
+                PictTextAt 132;156;(CURRENT_DELAY:_)
+                PictEnd
+
                 LDA DELAY_TIME
                 JSR DIGIT_DRAW
-                JSR LINE2
-                LDY #$02
-                JSR TEXTER
+                JSR DRAW_TEXTBUF
+
+                JSR DRAW_PICT
+                PictTextAt 156;166;(NEW_DELAY:_)
+                PictEnd
+
                 LDA #$99
                 JSR INPUT_SUB
-                BCC :SKIPA
+                BCC :1
                 STA DELAY_TIME
-:SKIPA          JSR CLRBOX
+:1              JSR CLEAR_WTIME
                 JSR OPTIONS
                 JMP GETOP2
 
@@ -19,70 +26,38 @@ DIGIT_DRAW      PHA
                 LSR
                 LSR
                 LSR
-                BNE :SKIPA
-                LDA #$0A
-:SKIPA          STA TEXTBUF
+                BNE :1
+                LDA #TextSpace
+:1              STA TEXTBUF+0
                 PLA
                 AND #$0F
                 STA TEXTBUF+1
-                LDA #$8D
+                LDA #TextLineEnd
                 STA TEXTBUF+2
                 RTS
-
+;
+; On entry:
+;   A: max input value
+;
 INPUT_SUB       STA SCRATCH
                 LDA #$02
-                STA MAXTEXT
-                JSR INPUT2
-DELAYIN         STX HOLDIT
-                LDA TEXTBUF
-                CMP #$8D
-                BEQ NONEW1
-                LDA TEXTBUF
-                STA SCREENL
-                LDA TEXTBUF+1
-                STA SCREENH
-                CMP #$A0
-                BEQ NJSKIP3
-                CMP #$8D
-                BNE NOJUST1
-NJSKIP3         LDA SCREENL
-                STA SCREENH
-                LDA #$A0
-                STA SCREENL
-NOJUST1         LDA SCREENL
-                CMP #$A0
-                BNE NOJUST2
-                CMP SCREENH
-                BEQ NONEW1
-NOJUST2         JSR CONVERT
-                CPX #$FF
-                BEQ DEFAIL
-                CPX #$0A
-                BEQ NJSKIP2
-                BCS DEFAIL
-                BCC NJSKIP1         ;Always
-NJSKIP2         LDX #$00
-NJSKIP1         STX SCREENL
-                LDA SCREENH
-                JSR CONVERT
-                CPX #$FF
-                BEQ DEFAIL
-                CPX #$0A
-                BCS DEFAIL
-                STX SCREENH
-                LDA SCREENL
+                JSR GET_NUMBER_LIMIT
+:1              DEX
+                BMI :4
+                LDA TEXT_BUFFER+0
+                DEX
+                BMI :2
                 ASL
                 ASL
                 ASL
                 ASL
-                ORA SCREENH
-                CMP SCRATCH
-                BEQ OKNEW
-                BCS DEFAIL
-OKNEW           SEC
+                ORA TEXT_BUFFER+1
+:2              CMP SCRATCH
+                BEQ :3
+                BCS :5
+:3              SEC
                 RTS
-NONEW1          CLC
+:4              CLC
                 RTS
-DEFAIL          JSR CHAROUT
-                JSR RECALL
-                JMP DELAYIN
+:5              JSR REGET_INPUT
+                JMP :1

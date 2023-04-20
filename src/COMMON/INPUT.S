@@ -11,18 +11,30 @@ DELAYH          =   $17
 ; TODO: option to allow <escape>?
 
 ;-------------------------------------------------------------------------------
+; On entry:
+;   A: maximum characters allowed
+;
+; On exit:
+;   X: length of string
+;   TEXT_BUFFER: string in Naja format
+;
+GET_NUMBER_LIMIT ENT
+                LDY #$0A
+                BNE INPUT_CMN1          ; always
+
+;-------------------------------------------------------------------------------
 ; continue input process where it left off
 ;
 REGET_INPUT     ENT
                 JSR DRAW_CURSOR
-                JMP INPUT_CMN
+                JMP INPUT_CMN2
 ;-------------------------------------------------------------------------------
 ; On exit:
 ;   A: key pressed in ASCII format
 ;
 GET_INPUT_KEY   ENT
                 LDA #0
-                BEQ GET_INPUT_LIMIT ; always
+                BEQ GET_INPUT_LIMIT     ; always
 ;-------------------------------------------------------------------------------
 ; On exit:
 ;   X: length of string
@@ -40,6 +52,8 @@ GET_INPUT       ENT
 ;   TEXT_BUFFER: string in Naja format
 ;
 GET_INPUT_LIMIT ENT
+                LDY #$FF
+INPUT_CMN1      STY IN_NUM_MOD+1
                 STA MAX_TEXT
 
                 LDA #0
@@ -47,24 +61,27 @@ GET_INPUT_LIMIT ENT
                 STA INPUT_INDEX
                 JSR SHOW_CURSOR
 
-INPUT_CMN
-:KEYLOOP        JSR ANIMATE_CURSOR
+INPUT_CMN2
+IN_KEYLOOP      JSR ANIMATE_CURSOR
                 LDA KEYBRD
-                BPL :KEYLOOP
+                BPL IN_KEYLOOP
                 BIT UNSTROB
                 CMP #$8D
-                BEQ :RETURN
+                BEQ IN_RETURN
                 CMP #$88            ; back arrow key
-                BEQ :BACKSPACE
+                BEQ IN_BACKSPACE
                 CMP #$FF            ; delete key
-                BEQ :BACKSPACE
+                BEQ IN_BACKSPACE
 
                 LDX INPUT_INDEX
                 CPX MAX_TEXT
-                BEQ :ATLIMIT
+                BEQ IN_ATLIMIT
 
                 JSR FROM_ASCII
-                BCC :KEYLOOP
+                BCC IN_KEYLOOP
+
+IN_NUM_MOD      CMP #$FF
+                BCS IN_KEYLOOP
 
                 STA TEXTBUF,X
                 INX
@@ -75,10 +92,10 @@ INPUT_CMN
                 JSR RESET_CURSOR
                 PLA
                 JSR DRAW_LETTER
-                JMP :KEYLOOP
+                JMP IN_KEYLOOP
 
-:BACKSPACE      LDX INPUT_INDEX
-                BEQ :KEYLOOP        ; line is empty
+IN_BACKSPACE    LDX INPUT_INDEX
+                BEQ IN_KEYLOOP        ; line is empty
 
                 JSR DRAW_CURSOR     ; erase cursor
                 JSR RESET_CURSOR
@@ -88,17 +105,17 @@ INPUT_CMN
                 LDA TEXTBUF,X
                 JSR DRAW_LETTER
                 JSR RETREAT
-                JMP :KEYLOOP
+                JMP IN_KEYLOOP
 
-:ATLIMIT        CPX #0
-                BNE :KEYLOOP
-:MAXZERO        PHA
+IN_ATLIMIT      CPX #0
+                BNE IN_KEYLOOP
+                PHA
                 JSR DRAW_CURSOR     ; erase cursor
                 ; return ASCII key pressed in A
                 PLA
                 RTS
 
-:RETURN         JSR DRAW_CURSOR     ; erase cursor
+IN_RETURN       JSR DRAW_CURSOR     ; erase cursor
                 LDX INPUT_INDEX
                 LDA #TextLineEnd
                 STA TEXTBUF,X

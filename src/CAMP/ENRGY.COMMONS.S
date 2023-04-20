@@ -3,14 +3,17 @@
 *
 ********************************
 
-ENERGY_USAGE	DB	$00,$00,$00		;Must be consecutive
-PERWHAT			DB	$00				;   in this order
+ENERGY_USAGE	ENT
+				DB	$00,$00,$00		;Must be consecutive
+PERWHAT			ENT
+				DB	$00				;   in this order
 
 ; On entry:
 ;	A: TextSpace or TextEmpty
 ;	XCOORD/XSHIFT/YCOORD: position to draw text
 ;
-DRAW_ENERGY_PER	STA :FILL_MOD+1
+DRAW_ENERGY_PER	ENT
+				STA :FILL_MOD+1
 				LDX #6
 				LDA	ETABLE+0
 				AND	#eq_identified
@@ -62,7 +65,8 @@ PERTEXTS		USR	(/SWING)=
 				USR	(/THROW)=
 				USR	(??????/?????)=
 
-PARSTAT			LDA	#TextLT
+PARSTAT			ENT
+				LDA	#TextLT
 				STA	TEXTBUF
 				LDA	#TextGT
 				STA	TEXTBUF+2
@@ -106,12 +110,14 @@ NISKIP			STX	TEXTBUF+1
 ; "profession usable" table
 ; TODO: this belongs with equipment-related code
 ; TODO: rename
-PROUSAB			DB	$01,$02,$04
+PROUSAB			ENT
+				DB	$01,$02,$04
 				DB	$08,$10,$FF
 				DB	$40,$80,$20
 
 ; TODO: rename
-ENERUSE			LDX	#$00
+ENERUSE			ENT
+				LDX	#$00
 :LOOP1			LDA	(CHARDL),Y
 				STA	ETABLE,X
 				INY
@@ -120,7 +126,8 @@ ENERUSE			LDX	#$00
 				BNE	:LOOP1
 
 ; TODO: rename
-ENERGY2			LDA	#$00
+ENERGY2			ENT
+				LDA	#$00
 				LDX	#$02
 :LOOP0			STA	ENERGY_USAGE,X
 				DEX

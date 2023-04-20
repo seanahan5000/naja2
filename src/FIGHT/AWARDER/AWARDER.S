@@ -359,21 +359,10 @@ ECURSIT         LDX EPOINT
 ECURS2          LDX EPOINT
                 LDY EYPNTS,X
                 LDX #$A6
-                JSR MOVE_TO
-                LDX #<ARROW_TIP
-                LDY #>ARROW_TIP
-                JMP DRAW_TILE
+                JMP DRAW_MARKER_TIP
 
 EYPNTS          DB  $93,$9B,$A3
                 DB  $AB,$B3
-
-ARROW_TIP       DB  %00000000
-                DB  %00000000
-                DB  %00000011
-                DB  %00001111
-                DB  %00000011
-                DB  %00000000
-                DB  %00000000
 
 *-------------------------------
 

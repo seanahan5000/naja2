@@ -35,6 +35,8 @@ $ASM ALIENS ALIEN.DESC.345
 
 $ASM FIGHT  ASM.FIGHT   -lst $OBJ/FIGHT.LST
 
+$ASM FIGHT/COMMAND  ASM.COMMAND   -lst $OBJ/COMMAND.LST
+
 $ASM LEVELS INIT        -lst $OBJ/INIT.LST
 $ASM LEVELS ASM.17      -lst $OBJ/CONTROL17.LST
 $ASM LEVELS ASM.15      -lst $OBJ/CONTROL15.LST
@@ -78,6 +80,7 @@ $A2NIB_T2 $OBJ/ELEVATOR        -t 15 -s 08   #  8 sectors
 $A2NIB_T1 $OBJ/CONTROL17       -t 10 -s 00   # 16 sectors (trim)
 $A2NIB_T1 $OBJ/CONTROL15       -t 11 -s 00   # 12 sectors (trim)
 $A2NIB_T1 $OBJ/FIGHT.LOADER    -t 13 -s 00   #  3 sectors
+$A2NIB_T1 $OBJ/FIGHT.COMMAND   -t 19 -s 00   # 48+ sectors
 
 # shell 17
 $A2NIB_T1 $OBJ/VIEWPORT        -t 16 -s 00   #  9 sectors
@@ -93,6 +96,7 @@ $A2NIB_T2 $OBJ/CONTROL11       -t 11 -s 00   # 12 sectors (trim)
 $A2NIB_T2 $OBJ/CONTROL9        -t 12 -s 00   # 12 sectors (trim)
                                              #  4 sectors
 $A2NIB_T2 $OBJ/FIGHT.LOADER    -t 13 -s 00   #  3 sectors
+$A2NIB_T2 $OBJ/FIGHT.COMMAND   -t 19 -s 00   # 48+ sectors
 
 # shell 9
 $A2NIB_T2 $OBJ/KEY.DOOR        -t 16 -s 00   # 13 sectors

@@ -10,8 +10,9 @@
     { "fileName": "CONTROL11.LST", "bins": [{ "fileName": "CONTROL11", "loadAt": "0x7800", "enabled": false }]},
     { "fileName": "CONTROL9.LST",  "bins": [{ "fileName": "CONTROL9",  "loadAt": "0x7800", "enabled": false }]},
     { "fileName": "FIGHT.LST" },
+    { "fileName": "COMMAND.LST" },
     { "fileName": "CAMP.LST", "bins": [
-      { "fileName": "CAMP.1900",    "loadAt": "0x1900" },
+      { "fileName": "CAMP.1A00",    "loadAt": "0x1A00" },
       { "fileName": "CAMP.D000.M1", "loadAt": "0xD000", "bank": 1 },
       { "fileName": "CAMP.D000.M2", "loadAt": "0xD000", "bank": 2 },
       { "fileName": "CAMP.E000",    "loadAt": "0xE000" }

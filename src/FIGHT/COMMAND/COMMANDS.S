@@ -39,63 +39,57 @@ COMND2          LDA COMCNT
                 STA INSTR2
                 PLA
                 STA INSTR1
-GOCOMR          JSR COMMER
+GOCOMR          JSR DRAW_CMD
                 INC COMCNT
                 RTS
 
 DOTIME3         LDA TIMLEFT
-                LSR
-                LSR
-                LSR
-                LSR
-                STA TEXTBUF
-                LDA TIMLEFT
-                AND #$0F
-                STA TEXTBUF+1
-                LDA #$8D
-                STA TEXTBUF+2
-                LDA #$25
-                STA XCOORD
-                LDA #$03
-                STA SHIFT
-                LDA #$4C
-                STA YCOORD
-                JMP LINE2
+                JSR TWO_DIGITS
+                JSR DRAW_PICT
+                PictMoveTo 262;76
+                PictTextbuf
+                PictEnd
+                RTS
 
-COMMER          LDY COMCNT
+TWO_DIGITS      PHA
+                LSR
+                LSR
+                LSR
+                LSR
+                STA TEXT_BUFFER+0
+                PLA
+                AND #$0F
+                STA TEXT_BUFFER+1
+                LDA #TextLineEnd
+                STA TEXT_BUFFER+2
+                RTS
+
+DRAW_CMD        LDY COMCNT
                 LDA COMYS,Y
-                STA YPNT
+                PHA
                 CPY #$0A
-                BCS ISFINE
+                BCS :1
                 TYA
                 CLC
                 ADC #$05
                 TAY
-ISFINE          LDA COMXS,Y
-                STA XPNT
-COMR2           JSR COMANDR
-                LDA XPNT
-                LDY YPNT
-                JSR LINE
-                LDX #$06
-                LDY #$02
-SLIDIT          LDA TEXTBUF,X
-                STA TEXTBUF,Y
+:1              LDX COMXS,Y
+                PLA
+                TAY
+DRAW_CMD2       JSR MOVE_TO
+                JSR BUILD_CMD
+                JSR DRAW_TEXTBUF
+                LDX #3
+                LDA #TextEmpty
+:3              STA TEXT_BUFFER,X
                 DEX
-                DEY
-                BPL SLIDIT
-                LDA XPNT
-                CLC
-                ADC #$14
-                BCS OFLOW
-                LDY YPNT
-                JMP LINE
-OFLOW           LDA #$05
-                STA SHIFT
-                LDA #$25
-                STA XCOORD
-                JMP LINE2
+                BPL :3
+                LDX #2
+                JSR HMOVE
+                JMP DRAW_TEXTBUF
 
+; TODO: use move logic to get rid of these tables
+; TODO: also used in C.USER.S
 COMYS           DFB $57,$5F,$67
                 DFB $6F,$77,$57
                 DFB $5F,$67,$6F
@@ -107,33 +101,36 @@ COMXS           DFB $A8,$A8,$A8
                 DFB $CE,$F4,$F4
                 DFB $F4,$F4,$F4
 
-INSTR1          DFB $00
-INSTR2          DFB $00
-
-COMANDR         LDA INSTR1
+BUILD_CMD       LDA INSTR1
                 AND #$0F
-                STA SCRATCH
-                ASL
-                CLC
-                ADC SCRATCH
-                TAY
-                LDX #$00
-WORDER          LDA WORD3,Y
-                STA TEXTBUF,X
-                INY
-                INX
-                CPX #$03
-                BNE WORDER
-                LDA #$8D
-                STA TEXTBUF+3
+                PHA
+                LDX #<CMD_WORDS
+                LDY #>CMD_WORDS
+                JSR GET_IND_STRING
+                LDA #TextLineEnd
                 STA TEXTBUF+6
-                LDY SCRATCH
+                PLA
+                TAY
                 LDX TYPE2,Y
                 LDA TYPES+1,X
                 PHA
                 LDA TYPES,X
                 PHA
                 RTS
+
+CMD_WORDS       USR (SWN)=
+                USR (SHT)=
+                USR (ENR)=
+                USR (THW)=
+                USR (USE)=
+                USR (XXX)=
+                USR (AIM)=
+                USR (MOV)=
+                USR (IDN)=
+                USR (EXC)=
+                USR (PAR)=
+                USR (RUN)=
+                USR (TES)=
 
 TYPES           DW  CXY-1
                 DW  CXF-1
@@ -215,7 +212,7 @@ NTS2            LSR
                 RTS
 
 QST             NOP
-NOT             LDA #$0A
+NOT             LDA #TextSpace
                 STA TEXTBUF+4
                 STA TEXTBUF+5
                 RTS
@@ -226,22 +223,16 @@ TYPE2           DFB $02,$06,$08
                 DFB $04,$06,$0A
                 DFB $0A
 
-MOVOVER         LDA #$40
-                STA PAGE
-                LDA #$80
-                STA PRESTOP+1
-                LDX #$48
-                JSR CLROOP2
-                LDA #$BF
-                STA PRESTOP+1
-                LDA #GREEN
-                STA COLOR
-                LDY #$02
-                JSR LINER
-                LDY #$03
-                JSR LINER
-MOVBACK         LDY #$00
-                JSR TEXTER
+MOVOVER         JSR DRAW_PICT
+                PictSetPage2
+                PictClear 23;71;40;128
+                PictSetGreen
+                PictRect 159;71;277;127
+                PictMoveTo 165;72
+                PictLineTo 165;126
+                PictEnd
+
+MOVBACK         JSR TUNITS_LABEL
                 JSR DOTIME3
                 LDA COMCNT
                 PHA
@@ -260,58 +251,47 @@ MVLOOP          LDY COMPNTR
                 STA INSTR1
                 DEC COMPNTR
                 LDY COMCNT
+                LDX COMXS,Y
                 LDA COMYS,Y
-                STA YPNT
-                LDA COMXS,Y
-                STA XPNT
-MOVMOD          JSR COMR2
+                TAY
+MOVMOD          JSR DRAW_CMD2
                 DEC COMCNT
                 BPL MVLOOP
-                JSR SWAP
-                LDA #$20
-                STA PAGE
+
+                JSR DRAW_PICT
+                PictSwap $17;$48;$28;$7E
+                PictSetPage1
+                PictEnd
                 PLA
                 STA COMPNTR
                 PLA
                 STA COMCNT
                 RTS
 
-WORD3           USR (SWN)-
-                USR (SHT)-
-                USR (ENR)-
-                USR (THW)-
-                USR (USE)-
-                USR (XXX)-
-                USR (AIM)-
-                USR (MOV)-
-                USR (IDN)-
-                USR (EXC)-
-                USR (PAR)-
-                USR (RUN)-
-                USR (TES)-
+SHRINK_TUNITS   LDA COMCNT
+                CMP #$0B
+                BCC :1
+                JSR DRAW_PICT
+                PictSetPage2
+                PictCall DRAW_TUNITS_BOX
+                PictSwap $17;$48;$28;$7E
+                PictSetPage1
+                PictEnd
+                RTS
+:1              JMP DRAW_TUNITS_BOX
+
 
 DOTIME2         LDX OPTSPOT
                 LDY TIME_TYPES,X
                 LDA TIMES,Y
                 STA CURTIME
 DOTIME          LDA CURTIME
-                LSR
-                LSR
-                LSR
-                LSR
-                STA TEXTBUF
-                LDA CURTIME
-                AND #$0F
-                STA TEXTBUF+1
-                LDA #$8D
-                STA TEXTBUF+2
-                LDA #$25
-                STA XCOORD
-                LDA #$06
-                STA SHIFT
-                LDA #$B9
-                STA YCOORD
-                JMP LINE2
+                JSR TWO_DIGITS
+                JSR DRAW_PICT
+                PictMoveTo 265;185
+                PictTextbuf
+                PictEnd
+                RTS
 
 TIME_TYPES      DB  timeSWING
                 DB  timeAimSHOOT
@@ -337,71 +317,62 @@ TIME_TYPES      DB  timeSWING
                 DB  noTime
                 DB  noTime
 
-OPTIONS         JSR TIMTABL
+INDEX           =   COLUMN
+
+OPTIONS         JSR TIME_TABLE
                 JSR CAN_CANT
-                LDA #$72
-                STA COLUMN
-                LDA #$81
-                STA LINECNT
-                LDA #$00
-                STA COUNT
-NOTHOPT         LDY COUNT
-                LDA OPT_LEGALS,Y
-                BMI DOSKWAR
-                LDX OFFSET,Y
-                LDY #$00
-MOROPT          LDA OPT0,X
-                STA TEXTBUF,Y
-                INX
+                LDY #-1
+                STY INDEX
                 INY
-                CMP #$8D
-                BNE MOROPT
-                LDA COLUMN
-                LDY LINECNT
-                JSR LINE
-                JMP NODO
-DOSKWAR         LDA COUNT
-                CMP #$06
-                BEQ NODO
-                CMP #$0D
-                BEQ NODO
-                LDA LINECNT
-                STA YPNT
-                LDA COLUMN
-                STA XPNT
-                LDA #0
-                LDX #<MARKER_SHAPE
-                LDY #>MARKER_SHAPE
-                JSR DRAW_SHAPES
-NODO            INC COUNT
-                LDA LINECNT
-                CLC
-                ADC #$09
-                STA LINECNT
-                LDA COUNT
-                CMP #$07
-                BNE NOTCOL2
-                LDA #$AD
-                STA COLUMN
-                BNE ISCOL23         ;Always
-NOTCOL2         CMP #$0E
-                BNE NOTCOL3
-                LDA #$F4
-                STA COLUMN
-ISCOL23         LDA #$81
-                STA LINECNT
-                BNE NOTHOPT         ;Always
-NOTCOL3         CMP #$14
-                BNE NOTHOPT
+                BEQ :11                 ; always
+:1              LDX #<:COL_NAMES
+                LDY #>:COL_NAMES
+                JSR GET_IND_STRING
+                LDY TEXT_BUFFER+0
+                CPY #TextSpace
+                BCS :2
+:11             LDX :COL_X,Y
+                LDY #129
+                JSR MOVE_TO
+                JSR HSAVE
+                JMP :4
+:2              JSR HRESTORE
+                LDX INDEX
+                LDA OPT_LEGALS,X
+                BMI :3
+                JSR DRAW_TEXTBUF_RET
+                JMP :4
+:3              JSR DRAW_MARKER_TILE
+                LDY #9
+                JSR VMOVE
+:4              INC INDEX
+                LDA INDEX
+                CMP #20
+                BNE :1
                 RTS
 
-MARKER_SHAPE    DB  %00000000
-                DB  %00111111
-                DB  %00111111
-                DB  %00111111
-                DB  %00111111
-                DB  %00111111
-                DB  %00000000
+:COL_X          DB  114,173,244
+
+:COL_NAMES      USR (SWING)=
+                USR (SHOOT)=
+                USR (ENERGY)=
+                USR (THROW)=
+                USR (USE)=
+                USR (_)=
+                USR (1)=
+                USR (MOVE)=
+                USR (IDENTIFY)=
+                USR (EXCHANGE)=
+                USR (PARRY)=
+                USR (RUN)=
+                USR (TESSERACT)=        ; TODO: get rid of
+                USR (2)=
+                USR (END)=
+                USR (BACK1)=
+                USR (REDO)=
+                USR (OTHER)=
+                USR (FLIP)=
+                USR (DELAY)=
 
 CAN_CANT        JSR SET_HANDFLAGS
                 JSR MAKE_CONVERT
@@ -478,7 +449,7 @@ CSKIP4          LDA PLANNER
                 BEQ CSKIP4B
                 LDX #$00
 CSLOOP4         TXA
-                JSR POINTIT
+                JSR SET_CHAR
                 JSR BAD_STATUS
                 BNE CSKIP5
 :SKIPA          INX
@@ -490,7 +461,7 @@ CSKIP4B         LDX #$FF
 * ENERGY
 *-------------------------------
 CSKIP5          LDA PLANNER
-                JSR POINTIT
+                JSR SET_CHAR
                 JSR PICKECT
                 CMP #$FF
                 BEQ CANT5
@@ -572,6 +543,7 @@ CSKIP11         LDX #$FF
 CSKIP12         LDA COMCNT
                 BNE CANSOUT
                 STX OPT_LEGALS+cmdREDO
+
 CANSOUT         RTS
 *-------------------------------
 
@@ -581,12 +553,12 @@ FIND_IDSCAN     LDA (CHARDL),Y
                 BNE :EXIT
                 INY
                 LDA (CHARDL),Y
-*            CMP  #$00            ;I.D. SCANNER
+;               CMP  #$00            ;I.D. SCANNER
 :EXIT           RTS
 
 
-TIMTABL         LDA PLANNER
-                JSR POINTIT
+TIME_TABLE      LDA PLANNER
+                JSR SET_CHAR
                 LDY #upreflex
                 JSR MUCH_TIME
                 STA TIMES+upTime

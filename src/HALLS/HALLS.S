@@ -370,7 +370,8 @@ LOAD_MAP_DATA   LDY MAP_X
 
 MOVE_LEFT       JSR TURN_LEFT
                 JSR MOVE_FORWARD
-TURN_RIGHT      LDX MAP_DIR
+TURN_RIGHT      ENT
+                LDX MAP_DIR
                 INX
                 TXA
                 AND #$03
@@ -379,16 +380,19 @@ TURN_RIGHT      LDX MAP_DIR
 
 MOVE_RIGHT      JSR TURN_RIGHT
                 JSR MOVE_FORWARD
-TURN_LEFT       LDX MAP_DIR
+TURN_LEFT       ENT
+                LDX MAP_DIR
                 DEX
                 TXA
                 AND #$03
                 STA MAP_DIR
                 RTS
 
-MOVE_BACKWARD   JSR TURN_AROUND
+MOVE_BACKWARD   ENT
+                JSR TURN_AROUND
                 JSR MOVE_FORWARD
-TURN_AROUND     LDX MAP_DIR
+TURN_AROUND     ENT
+                LDX MAP_DIR
                 INX
                 INX
                 TXA
@@ -396,7 +400,8 @@ TURN_AROUND     LDX MAP_DIR
                 STA MAP_DIR
                 RTS
 
-MOVE_FORWARD    LDX MAP_DIR
+MOVE_FORWARD    ENT
+                LDX MAP_DIR
                 DEX
                 BPL :ESW
 

@@ -18,7 +18,7 @@ RESET_COM		STA	TEMP
 				BMI	CSCAN_NOTPROF
 				RTS
 
-LEGALS
+LEGALS			ENT
 MENU_DISABLES	ENT
 CHAR_LIST		ENT
 				DS	7,0
@@ -179,7 +179,8 @@ TEMP_HOLD		DB	0
 ********************************
 
 
-EQUIP_LIST		DS	16
+EQUIP_LIST		ENT
+				DS	16
 
 RESET_EQLIST	ENT
 				LDX	#15
@@ -393,7 +394,8 @@ ESCAN_DROPABL	JSR	ESCAN_FULSLOT	;Only full slots
 * Eliminate all but the hand and
 *   back slots
 
-ESCAN_HANDBCK	LDA	#$FF
+ESCAN_HANDBCK	ENT
+				LDA	#$FF
 				STA	EQUIP_LIST+head
 				STA	EQUIP_LIST+slot
 				STA	EQUIP_LIST+armor

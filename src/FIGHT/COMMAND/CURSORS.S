@@ -2,10 +2,9 @@
 *
 *-------------------------------
 
-FULL_GETKEY     JSR INIT_CURSOR
+FULL_GETKEY     JSR MENU_INIT
                 JSR SET_INTERCEPT
-                JMP GETKEY
-
+                JMP MENU_SELECT
 
 *-------------------------------
 *
@@ -13,16 +12,14 @@ FULL_GETKEY     JSR INIT_CURSOR
 
 SET_INTERCEPT   LDX #<:LOOK_FOR_C
                 LDY #>:LOOK_FOR_C
-                STX INTERCEPT+1
-                STY INTERCEPT+2
-                RTS
-:LOOK_FOR_C     CMP #$C3
+                JMP MENU_SET_FILTER
+
+:LOOK_FOR_C     CMP #"C"
                 BEQ :EXIT
                 SEC
                 RTS
 :EXIT           CLC
                 RTS
-
 
 *-------------------------------
 * Used by ENERGY to select upper
@@ -92,11 +89,11 @@ GET_GRIDCURS    STA WRAP_FLAG
 GRID_BLINK      LDA #$10
                 JSR WAIT
                 LDA #$F0
-                JSR WAIT2
+                JSR WAIT_KEY
                 BMI GRID_KEY
                 JSR DRAW_GRIDCURS
                 LDA #$00
-                JSR WAIT2
+                JSR WAIT_KEY
                 JSR DRAW_GRIDCURS
 GRID_LOOP       LDA KEYBRD
                 BPL GRID_BLINK
@@ -178,8 +175,6 @@ GRID_COMMON2    PHA
 GRID_COMMON3    JMP GRID_LOOP
 
 *-------------------------------
-*
-*-------------------------------
 
 SET_GCURSOR     STX DRAW_GRIDCURS+1
                 STY DRAW_GRIDCURS+2
@@ -191,357 +186,196 @@ WRAP_FLAG       DB  0
 LIMIT_UL        DB  0
 LIMIT_LR        DB  0
 
-
-*-------------------------------
-*
 *-------------------------------
 
 EZONE_CURSOR    LDA CURSOR
                 SEC
                 SBC #$05
-                JSR FROM11B
-                LDA XPNTS,X
-                STA XPNT
-                LDA YPNTS,Y
-                SEC
-                SBC #$37
-                STA YPNT
-                LDA XPNT
+                JSR POS_TO_XY
+
+                LDA GRID_XPNTS,X
                 PHA
-                DEC XPNT
-                BIT EZONE_FLAG
-                BPL :SKIPA
-                LDA XPNT
-                CLC
-                ADC #$0F
-                STA XPNT
-:SKIPA          LDA #0
-                LDX #<EZONE_SHAPES
-                LDY #>EZONE_SHAPES
-                JSR DRAW_SHAPES
-                LDA YPNT
+                TAX
+                LDA AGRID_YPNTS,Y
                 PHA
-                CLC
-                ADC #$05
-                STA YPNT
-                LDA #0
-                JSR REDRAW_SHAPES
-                PLA
-                STA YPNT
-                DEC YPNT
-                PLA
-                STA XPNT
+                TAY
+                DEX
                 BIT EZONE_FLAG
-                BPL :SKIPB
-                LDA YPNT
+                BPL :1
+                TXA
                 CLC
-                ADC #$0B
-                STA YPNT
-:SKIPB          LDA #1
-                JSR REDRAW_SHAPES
-                LDA XPNT
+                ADC #15                 ; grid cell width
+                TAX
+:1              JSR MOVE_TO
+                LDX #<EZONE_VERT
+                LDY #>EZONE_VERT
+                JSR NEW_DRAW_SHAPE
+
+                PLA
+                TAY
+                PLA
+                TAX
+                DEY
+                BIT EZONE_FLAG
+                BPL :2
+                TYA
                 CLC
-                ADC #$07
-                STA XPNT
-                LDA #1
-                JMP REDRAW_SHAPES
+                ADC #11                 ; grid cell height
+                TAY
+:2              JSR MOVE_TO
+                LDX #<EZONE_HORZ
+                LDY #>EZONE_HORZ
+                JMP NEW_DRAW_SHAPE
 
 EZONE_FLAG      DB  0
 
-EZONE_SHAPES    DB  %00000001
+EZONE_VERT      DB  $12,$00
+                DB  %10000001
                 DB  %00000001
                 DB  %00000001
                 DB  %00000001
-                DB  %00000001
-                DB  %00000000
-                DB  %00000000
+                DB  %10000000
 
+EZONE_HORZ      DB  $21,$00
                 DB  %01111111
-                DB  %00000000
-                DB  %00000000
-                DB  %00000000
-                DB  %00000000
-                DB  %00000000
-                DB  %00000000
-
+                DB  %10000000
+                DB  %01111111
+                DB  %10000000
 
 *-------------------------------
-*
-*-------------------------------
 
-BOX_CURSOR      LDA #$7E
-                STA LLCORNR+5
+BOX_CURSOR      LDY #%01111110
                 LDA CURSOR
                 SEC
                 SBC #$05
                 TAX
                 AND #$0F
                 CMP #$01
-                BNE :SKIPA
-                INC LLCORNR+5
-:SKIPA          TXA
-                JSR FROM11B
-                LDA XPNTS,X
-                STA XPNT
-                LDA YPNTS,Y
-                SEC
-                SBC #$37
-                STA YPNT
-                LDA #0
-                STA COUNT
-                DEC XPNT
-                LDA XPNT
-                PHA
-                DEC YPNT
-                DEC YPNT
-:LOOP1          LDA COUNT
-                LDX #<BOX_SHAPES
-                LDY #>BOX_SHAPES
-                JSR DRAW_SHAPES
-                INC COUNT
-                LDA COUNT
-                CMP #3
-                BEQ :SKIPB
-                CMP #6
-                BEQ :EXIT
-                LDA XPNT
-                CLC
-                ADC #$07
-                STA XPNT
-                BNE :LOOP1          ;Always
-:SKIPB          PLA
-                STA XPNT
-                LDA YPNT
-                CLC
-                ADC #$07
-                STA YPNT
-                BNE :LOOP1          ;Always
-:EXIT           RTS
+                BNE :1
+                INY                     ; #%01111111
+:1              STY BOX_MOD
+                TXA
+                JSR POS_TO_XY
+                LDA GRID_XPNTS,X
+                TAX
+                DEX
+                LDA AGRID_YPNTS,Y
+                TAY
+                DEY
+                JSR MOVE_TO
+                LDX #<BOX_SHAPE
+                LDY #>BOX_SHAPE
+                JMP NEW_DRAW_SHAPE
 
-BOX_SHAPES      DB  %00000000
+BOX_SHAPE       DB  $32,$00
+
                 DB  %01111110
-                DB  %00000001
-                DB  %00000001
-                DB  %00000001
-                DB  %00000001
-                DB  %00000001
+                DB  %10000001
 
-                DB  %00000000
                 DB  %01111111
-                DB  %00000000
-                DB  %00000000
-                DB  %00000000
-                DB  %00000000
-                DB  %00000000
+                DB  %10000000
 
-                DB  %00000000
                 DB  %00000001
-                DB  %00000010
-                DB  %00000010
-                DB  %00000010
-                DB  %00000010
-                DB  %00000010
+                DB  %10000010
 
-LLCORNR         DB  %00000001
                 DB  %00000001
                 DB  %00000001
                 DB  %00000001
                 DB  %00000001
-                DB  %01111110
-                DB  %00000000
+BOX_MOD         DB  %01111110
+                DB  %10000000
 
-                DB  %00000000
                 DB  %00000000
                 DB  %00000000
                 DB  %00000000
                 DB  %00000000
                 DB  %01111111
-                DB  %00000000
+                DB  %10000000
 
-                DB  %00000010
                 DB  %00000010
                 DB  %00000010
                 DB  %00000010
                 DB  %00000010
                 DB  %00000001
-                DB  %00000000
-
+                DB  %10000000
 
 *-------------------------------
-*
-*-------------------------------
 
-CHAR_CURSOR1    LDY CURSOR
+CHAR_CURSOR1    LDX CURSOR
                 JSR CHAR_SQUARE
-CHAR_CURSOR2    LDY CURSOR
+CHAR_CURSOR2    LDX CURSOR
                 JSR CHAR_POINT
                 LDA CURSOR
-                JSR POINTIT
-                JSR FROM11
-                JSR GROUP_CURSOR1
+                JSR SET_CHAR
+                JSR GROUP_CURSOR1C
                 LDA PLANNER
-                JMP POINTIT
+                JMP SET_CHAR
 
-CHAR_SQUARE     LDA YPOINTS,Y
-                STA YPNT
-                LDA #$05
-                STA XPNT
-                LDA #4
-                JMP SPCHARS
+CHAR_SQUARE     LDY YPOINTS,X
+                LDX #$05
+                JMP DRAW_MARKER
 
-CHAR_POINT      LDA YPOINTS,Y
-                STA YPNT
-                LDA #$0A
-                STA XPNT
-                LDA #0
-                LDX #<CHAR_SHAPES
-                LDY #>CHAR_SHAPES
-                JMP DRAW_SHAPES
-
-CHAR_SHAPES     DB  %00000000
-                DB  %00000000
-                DB  %00000011
-                DB  %00001111
-                DB  %00000011
-                DB  %00000000
-                DB  %00000000
-
+CHAR_POINT      LDY YPOINTS,X
+                LDX #$0A
+                JMP DRAW_MARKER_TIP
 
 *-------------------------------
-*
-*-------------------------------
 
-GROUP_CURSOR1   LDA XPNTS,X
-                STA XPNT
-                DEC XPNT
-                LDA YPNTS,Y
-                CLC
-                ADC #$08
-                STA YPNT
-                LDA #$00
-                STA COUNT
-NEXTOF3         LDA COUNT
-                LDX #<GROUP_SHAPES1
-                LDY #>GROUP_SHAPES1
-                JSR DRAW_SHAPES
-                LDA XPNT
-                CLC
-                ADC #$07
-                STA XPNT
-                LDA COUNT
-                INC COUNT
-                CMP #$02
-                BNE NEXTOF3
-                RTS
+; NOTE: legacy name GROUP_CURSOR1, with CPOS_TO_XY already called
+; TODO: rename this and call directly?
 
-GROUP_SHAPES1   DB  %00000011
-                DB  %00000111
-                DB  %01111110
-                DB  %00000000
-                DB  %00000000
-                DB  %00000000
-                DB  %00000000
+GROUP_CURSOR1C  JSR CPOS_TO_XY
+                JMP DRAW_GRID_CURSOR_XY
 
-                DB  %00000000
-                DB  %01000000
-                DB  %01111111
-                DB  %00000000
-                DB  %00000000
-                DB  %00000000
-                DB  %00000000
+GROUP_CURSOR1   JSR POS_TO_XY
+                JMP DRAW_GRID_CURSOR_XY
 
-                DB  %00000011
-                DB  %00000011
-                DB  %00000001
-                DB  %00000000
-                DB  %00000000
-                DB  %00000000
-                DB  %00000000
-
-
-*-------------------------------
-*
 *-------------------------------
 
 GROUP_CURSOR2   LDY CURSOR
                 LDA CURCORD,Y
-                JSR FROM11B
-                LDA XPNTS,X
-                STA XPNT
-                LDA YPNTS,Y
-                STA YPNT
-                LDA #0
-                LDX #<GROUP_SHAPES2
-                LDY #>GROUP_SHAPES2
-                JSR DRAW_SHAPES
-                LDA XPNT
-                PHA
-                CLC
-                ADC #$07
-                STA XPNT
-                LDA #0
-                JSR REDRAW_SHAPES
-                LDY XPNT
-                PLA
-                STA XPNT
-                TYA
-                PHA
-                LDA YPNT
-                CLC
-                ADC #$07
-                STA YPNT
-                LDA #1
-                JSR REDRAW_SHAPES
-                PLA
-                STA XPNT
-                LDA #2
-                JMP REDRAW_SHAPES
+                JSR POS_TO_XY
+                LDA GRID_XPNTS,X
+                TAX
+                LDA CGRID_YPNTS,Y
+                TAY
+                JSR MOVE_TO
+                LDX #<GROUP_SHAPE
+                LDY #>GROUP_SHAPE
+                JMP NEW_DRAW_SHAPE
 
-GROUP_SHAPES2   DB  %01111111
-                DB  %01111111
-                DB  %01111111
-                DB  %01111111
-                DB  %01111111
-                DB  %01111111
-                DB  %01111111
+GROUP_SHAPE     DB  $22,$00
+
+                DB  %11111111
+                DB  %11111111
 
                 DB  %01111111
                 DB  %01111110
                 DB  %01111100
-                DB  %00000000
-                DB  %00000000
-                DB  %00000000
-                DB  %00000000
+                DB  %10000000
 
                 DB  %01111111
                 DB  %00111111
                 DB  %00011111
-                DB  %00000000
-                DB  %00000000
-                DB  %00000000
-                DB  %00000000
-
+                DB  %10000000
 
 *-------------------------------
-*
-*-------------------------------
 
-HAND_CURSOR     LDY CURSOR
-                CPY #$04
+HAND_CURSOR     LDX CURSOR
+                CPX #4
                 BCC :SKIPB
                 BNE :SKIPA
-                LDY #$00
+                LDX #0
                 JSR :SKIPB
-                LDY #$01
-                BNE :SKIPB          ;Always
-:SKIPA          LDY #$02
+                LDX #1
+                BNE :SKIPB              ; always
+:SKIPA          LDX #2
                 JSR :SKIPB
-                LDY #$03
-:SKIPB          LDA HAND_YPNTS,Y
-                STA YPNT
-                LDA #$8E
-                STA XPNT
-                LDA #2
-                JMP SPCHARS
+                LDX #3
+:SKIPB          LDY HAND_YPNTS,X
+                LDX #$8E
+                JMP DRAW_TRIANGLE
 
 HAND_YPNTS      DB  $92,$9A,$A2,$AA
+
+*-------------------------------

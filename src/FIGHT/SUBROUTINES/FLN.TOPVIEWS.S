@@ -11,14 +11,13 @@ DRAW_ALIEN_AT	SEC
 				LSR
 				CLC
 				ADC GRID_XPNTS,X
-				STA XCOORD
+				TAX
 				LDA	TVIEW_OFFSET
 				AND #$0F
 				CLC
-				ADC GRID_YPNTS,Y
-				SEC
-				SBC	#$37
-				STA YCOORD
+				ADC AGRID_YPNTS,Y
+				TAY
+				JSR MOVE_TO
 				LDX	TVIEW_HOLDPTR
 				LDY	TVIEW_HOLDPTR+1
 				STX DATPNTL
@@ -33,4 +32,6 @@ DRAW_ALIEN_AT	SEC
 				LSR
 				LSR
 				TAX
-				JMP DRAW_SHAPE
+				JMP OLD_DRAW_SHAPE
+
+;*** convert to NEW_DRAW_SHAPE by pointing directly at data ***

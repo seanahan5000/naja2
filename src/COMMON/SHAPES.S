@@ -1,11 +1,55 @@
-
-; XCOORD:
-; YCOORD:
-; XCOUNT:
-; YCOUNT:
-; DATPNTL,H:
-
-DRAW_SHAPE      ENT
+;
+; On entry:
+;   X: pointer to encoded shape (low)
+;   Y: pointer to encoded shape (high)
+;   XCOORD,XSHIFT,YCOORD: draw location
+;
+NEW_DRAW_SHAPE  ENT
+                STX DATPNTL
+                STY DATPNTH
+                LDY #0
+                LDA (DATPNTL),Y         ; width/height
+                PHA
+                INY
+                LDA (DATPNTL),Y         ; offset x/y
+                BEQ :1
+                TAX
+                AND #$0F
+                TAY
+                TXA
+                LSR
+                LSR
+                LSR
+                LSR
+                TAX
+                JSR MOVE
+:1              PLA
+                TAX
+                AND #$0F
+                TAY
+                TXA
+                LSR
+                LSR
+                LSR
+                LSR
+                TAX
+                LDA DATPNTL
+                CLC
+                ADC #2
+                STA DATPNTL
+                BCC :2
+                INC DATPNTH
+:2              ; fall through
+;
+; On entry:
+;   X: width in tiles
+;   Y: height in tiles
+;   DATPNTL,H: pointer to tile data
+;   XCOORD,XSHIFT,YCOORD: draw location
+;
+; *** TODO: get rid of this entry point? ***
+;
+OLD_DRAW_SHAPE  ENT
                 STX XCOUNT
                 STY YCOUNT
                 LDA #<TILE_BUFFER
@@ -13,19 +57,11 @@ DRAW_SHAPE      ENT
                 LDA #>TILE_BUFFER
                 STA TILE_SRC_MOD+2
 
-FIRST_TLINE     LDA XCOUNT
-                LDX XCOORD
-
+FIRST_TLINE     JSR HSAVE
+                LDA XCOUNT
 NEXT_TLINE      PHA
                 STA XCOUNT
-                TXA
-                PHA
-
-                LDA DIV7,X
-                STA XCOORD
-                LDA MOD7,X
-                STA XSHIFT
-
+                JSR HRESTORE
                 JSR TABLER
 
 NEXT_TCOL       LDY #0
@@ -40,17 +76,13 @@ NEXT_TCOL       LDY #0
                 INX
                 CPX #7
                 BNE :1
-
-                ; advance data pointer to next cell
-
                 TYA
                 CLC
                 ADC DATPNTL
                 STA DATPNTL
                 BCC :4
                 INC DATPNTH
-:4
-                JSR BLIT_TILE
+:4              JSR BLIT_TILE
                 DEC XCOUNT
                 BNE NEXT_TCOL
 
@@ -58,8 +90,6 @@ NEXT_TCOL       LDY #0
                 CLC
                 ADC #7
                 STA YCOORD
-                PLA                 ; pull XCOORD
-                TAX
                 PLA                 ; pull XCOUNT
                 DEC YCOUNT
                 BNE NEXT_TLINE

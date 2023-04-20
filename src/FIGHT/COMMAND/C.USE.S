@@ -1,4 +1,9 @@
-USE             LDA #$03
+USE             JSR CLEAR_CANCEL_IN
+                JSR DRAW_PICT
+                PictTextAt 108;133;(CONFIRM_OBJECT_TO_BE_USED)
+                PictEnd
+
+                LDA #$03
                 JSR SELECT_HAND
                 JSR GETUSCO
                 LDA CURSOR
@@ -16,19 +21,21 @@ USE             LDA #$03
                 CMP #$63            ;Miscellaneous
                 BNE :SKIPA
                 JSR POST_COMMAND
-                JMP DIDCANC
+                JMP DID_CANCEL
 
-:SKIPA          JSR CLRBOXZ
-                LDY #$1E
-                JSR TEXTER
+:SKIPA          JSR CLEAR_WCANCEL
+                JSR DRAW_PICT
+                PictTextAt 114;137;(SELECT_SQUARE_TO_DIRECT)
+                PictTextAt 132;146;(TREATMENT_TOWARDS)
+                PictEnd
                 JSR BOTTOMR
-                LDA #$60
+                LDA #$60                ; RTS
                 STA GOEND
                 STA GOENTER
                 LDA #"C"
                 STA LETCANC+1
                 JSR FSKIP2
-                LDX #$EA
+                LDX #$EA                ; NOP
                 STX GOEND
                 STX GOENTER
                 LDX #"L"
@@ -36,7 +43,8 @@ USE             LDA #$03
                 CMP #"C"
                 BNE NOUCANC
                 JSR GROUP_CURSOR2
-                JMP DIDCANC
+                JMP DID_CANCEL
+
 NOUCANC         LDA CURSOR
                 ASL
                 ASL
@@ -45,11 +53,11 @@ NOUCANC         LDA CURSOR
                 AND #$30
                 ORA INSTR1
                 STA INSTR1
-
-                LDY #$1E
-                JSR TEXTER
-                LDY #$1D
-                JSR TEXTER
+                JSR DRAW_PICT
+                PictClear 16;137;36;153
+                PictTextAt 120;132;(HEAL_HOW_MUCH_DAMAGE?)
+                PictTextAt 117;143;(DAMAGE_HEALED:)
+                PictEnd
                 LDX #<LIMIT_USE
                 LDY #>LIMIT_USE
                 JSR GET_MULTIPLE
@@ -58,7 +66,7 @@ NOUCANC         LDA CURSOR
                 PLP
                 BCS :SKIPA
                 JSR DE_ENERLEV
-                JMP DIDCANC
+                JMP DID_CANCEL
 :SKIPA          LDA HOWCUR1
                 ASL
                 ASL
@@ -67,4 +75,4 @@ NOUCANC         LDA CURSOR
                 ORA HOWCUR2
                 STA INSTR2
                 JSR POST_COMMAND
-                JMP DIDCANC
+                JMP DID_CANCEL

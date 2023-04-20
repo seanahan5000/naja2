@@ -158,7 +158,7 @@ Xloaddata3      =   %00010000
 *-------------------------------
 
                 ; TODO: move this
-                DUMMY   $9100       ;(Through $AFFF) TODO: was $9000
+                DUMMY   $9400       ;(Through $AFFF) TODO: was $9000
 DATA_BUFR       DS  $300            ;* These must
 RARITY          DS  $100            ;*   begin on
 PICT_BUFR                           ;*   page
