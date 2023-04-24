@@ -2,10 +2,17 @@
 ; TODO:
 ; - option to scroll UDLR in map using arrow keys?
 ; - option to rotate to direction faced?
+; - option to flip full face row vs partial face row (cmd-up/down arrow?)
 ; - background fill pattern?
+; - blink current position arrow
+; - move SAVE_MAPPED/RESTORE_MAPPED elsewhere?
 
 ThickWalls      =   0
 WhiteWalls      =   0
+
+;*** MAKE THESE COMMON BLIT ZPAGE VARS ***
+SRC_LINE        =   $D0
+DST_LINE        =   $D1
 
 ; TODO: make this more like a camp module
 ; TODO: use camp zpage, not hall zpage
@@ -40,13 +47,14 @@ WEST_FACE       =   (FACE * 64)
 WEST_DOOR       =   (DOOR * 64)
 WEST_WALL       =   (WALL * 64)
 
-MAP_TOP_LINE    =   6
+MAP_TOP_PAD     =   6
+MAP_BOTTOM_PAD  =   4
         do ThickWalls
 MAP_LEFT_BYTE   =   1
 MAP_WIDTH_CELLS =   19
         else
-MAP_LEFT_BYTE   =   2
-MAP_WIDTH_CELLS =   18
+MAP_LEFT_BYTE   =   0
+MAP_WIDTH_CELLS =   20
         fin
 CELL_HEIGHT     =   13
 MAP_HEIGHT_CELLS =  14
@@ -55,10 +63,11 @@ MAX_MAP_SIZE    =   17
         do ThickWalls
 ARROW_X         =   MAP_LEFT_BYTE+8*14+7
         else
-ARROW_X         =   MAP_LEFT_BYTE+8*14
+ARROW_X         =   MAP_WIDTH_CELLS/2*14
         fin
-ARROW_Y         =   MAP_HEIGHT_CELLS/2*CELL_HEIGHT+MAP_TOP_LINE+4
+ARROW_Y         =   MAP_HEIGHT_CELLS/2*CELL_HEIGHT+MAP_TOP_PAD+4
 
+;*** move this ***
 ; NOTE: map code expects this to be (MAP_SIZE + 1) * 2 = minimum 36 bytes in size
 BLOCK_BUFFER    ENT
                 DS  64                  ; TODO: move this somewhere else
@@ -79,7 +88,91 @@ ARROW_SHAPES    DB  $00,$00,$00,$40,$60,$70,$00     ; up arrow
                 DB  $00,$00,$40,$70,$40,$00,$00     ; left arrow
                 DB  $18,$1E,$1F,$1F,$1F,$1E,$18
 
+LOCAL_Y         =   $80                 ; relative to top of face, in cells
+LOCAL_X         =   $81                 ; relative to left of face, in cells
+FACE_SCREEN_Y   =   $82                 ; position of current face, in screen cells
+FACE_SCREEN_X   =   $83
+
+CENTER_CELL_X   =   MAP_WIDTH_CELLS/2
+CENTER_CELL_Y   =   MAP_HEIGHT_CELLS/2
+
+
+; CUR_SCREEN_X/Y
+; CUR_LOCAL_XY
+
+; give a CUR_SCREEN_X/Y, move from current map position to that position
+
+;                 LDA START_SCREEN_X
+;                 STA CUR_SCREEN_X
+
+
+;                 INC CUR_SCREEN_X
+;                 LDA CUR_SCREEN_X
+;                 CMP END_SCREEN_X
+;                 BEQ :ROW_DONE
+
+;                 LDX CUR_LOCAL_X
+;                 INX
+;                 CPX MAP_SIZE
+;                 BNE :99
+;                 LDX #0
+; :99             STX CUR_LOCAL_X
+
+
+; if in full row
+    ; if CUR_LOCAL_X == 0 && screen_x == FACE_SCREEN_X + MAP_SIZE
+        ; use previous cell.east instead of current cell.west
+
+
+; if in partial row
+    ;*** if first row of bottom partial, use cell-above.south instead of cell.north
+    ; if screen_x < face_screen_x
+        ; fill cell with mapped-empty
+        ;*** what about bottom edge of prev full row?
+    ; else if screen_x == face_screen_x + map_width
+        ;*** special edge case
+    ; else if screen_x > face_screen_x + map_width
+        ; fill cell with mapped-empty
+        ;*** what about bottom edge of prev full row?
+    ; else
+        ; fill cell normally
+
+:ROW_DONE
+
+
 SHOW_MAP        ENT
+
+                ; LOCAL_X/Y = MAP_X/Y adjusted for rotation
+
+                LDA MAP_X
+                STA LOCAL_X
+                LDA MAP_Y
+                STA LOCAL_Y
+                LDA MAP_ROTATION
+                AND #3
+                TAX
+                BEQ :2
+:1              LDY LOCAL_X
+                LDA MAP_SIZE
+                CLC                     ; - 1
+                SBC LOCAL_Y
+                STA LOCAL_X             ; X = MAP_SIZE-1-Y
+                STY LOCAL_Y             ; Y = X
+                DEX
+                BNE :1
+:2
+                ; FACE_SCREEN_X/Y = CENTER_CELL_X/Y - LOCAL_X/Y
+
+                LDA #CENTER_CELL_X
+                SEC
+                SBC LOCAL_X
+                STA FACE_SCREEN_X
+                LDA #CENTER_CELL_Y
+                SEC
+                SBC LOCAL_Y
+                STA FACE_SCREEN_Y
+
+                ;*** force FACE_SCREEN_X <= MAP_SIZE ***
 
 :DRAW_LOOP      JSR DRAW_PICT
                 PictSetPageX
@@ -111,29 +204,29 @@ SHOW_MAP        ENT
                 ; TODO: make this normalization code common?
                 LDA PAGE
                 CMP #$20
-                BEQ :1
+                BEQ :3
                 JSR DRAW_PICT
                 PictSetPageX
                 PictCopyToPage
                 PictShowPage
                 PictEnd
-:1              SEC
+:3              SEC
                 RTS
 
-:UP             ; TODO: handle simple up
+:UP             JSR MAP_MOVE_UP
                 JMP :KEY_LOOP
 
-:DOWN           ; TODO: handle simple down
+:DOWN           JSR MAP_MOVE_DOWN
                 JMP :KEY_LOOP
 
 :LEFT           LDA PBUTTON0            ; open-apple
                 BMI :ROT_CCW
-                ; TODO: handle simple left
+                JSR MAP_MOVE_LEFT
                 JMP :KEY_LOOP
 
 :RIGHT          LDA PBUTTON0            ; open-apple
                 BMI :ROT_CW
-                ; TODO: handle simple right
+                JSR MAP_MOVE_RIGHT
                 JMP :KEY_LOOP
 
 :ROT_CCW        LDX MAP_ROTATION
@@ -162,8 +255,8 @@ DRAW_MAP        JSR PUSH_MAP_STATE      ; save actual map position
                 DEC BLOCK_COUNT
                 BNE :1
 
-; If MAP_FACE is 1, 2, 3, or 4 and a different face will be visible above it,
-;   then start with filtering that northern face.
+;*** If MAP_FACE is 1, 2, 3, or 4 and a different face will be visible above it,
+;***   then start with filtering that northern face.
 
                 LDX #$FF
                 PLA
@@ -185,7 +278,7 @@ DRAW_MAP        JSR PUSH_MAP_STATE      ; save actual map position
 
                 JSR PUSH_MAP_STATE      ; save left map position
 
-                LDA #MAP_TOP_LINE
+                LDA #MAP_TOP_PAD
                 STA SCREEN_Y
 
                 LDX #MAX_MAP_SIZE+3     ; clear prev line and left/right padding
@@ -742,7 +835,7 @@ ADVANCE_ROW     INC MAP_Y
                 RTS
 :NEXT_FACE      INC MAP_FACE
                 LDA MAP_FACE
-                CMP #6
+                CMP #6                  ;*** should use map data count instead
                 BEQ :MAP_DONE
                 LDA #0
                 STA MAP_Y
@@ -755,3 +848,188 @@ ADVANCE_ROW     INC MAP_Y
                 RTS
 :MAP_DONE       SEC
                 RTS
+
+MAP_MOVE_LEFT   LDA MAP_SIZE
+                ASL
+;               CLC
+                ADC FACE_SCREEN_X
+                CMP #MAP_WIDTH_CELLS+1
+                BCC :1
+                LDA FACE_SCREEN_X
+                CLC
+                ADC LOCAL_X
+                CMP #1
+                BCC :1
+                DEC FACE_SCREEN_X
+                JSR SCROLL_LEFT
+                JSR COPY_BACK
+:1              RTS
+
+MAP_MOVE_UP     LDA MAP_SIZE
+                ASL
+;               CLC
+                ADC FACE_SCREEN_Y
+                CMP #MAP_HEIGHT_CELLS+1
+                BCC :1
+                LDA FACE_SCREEN_Y
+                CLC
+                ADC LOCAL_Y
+                CMP #1
+                BCC :1
+                DEC FACE_SCREEN_Y
+                JSR SCROLL_UP
+                JSR COPY_BACK
+:1              RTS
+
+MAP_MOVE_RIGHT  LDA FACE_SCREEN_X
+                BMI :1
+                CMP MAP_SIZE
+                BCS :2
+:1              CLC
+                ADC LOCAL_X
+                CMP #MAP_WIDTH_CELLS-1
+                BCS :2
+                INC FACE_SCREEN_X
+                JSR SCROLL_RIGHT
+                JSR COPY_BACK
+:2              RTS
+
+MAP_MOVE_DOWN   LDA FACE_SCREEN_Y
+                BMI :1
+                CMP MAP_SIZE
+                BCS :2
+:1              CLC
+                ADC LOCAL_Y
+                CMP #MAP_HEIGHT_CELLS-1
+                BCS :2
+                INC FACE_SCREEN_Y
+                JSR SCROLL_DOWN
+                JSR COPY_BACK
+:2              RTS
+
+SCROLL_UP       LDX #0
+:0              JSR SET_DEST_OFF
+                JSR CLEAR_FULL_LINE
+                INX
+                CPX #MAP_TOP_PAD
+                BNE :0
+                LDA #MAP_TOP_PAD+CELL_HEIGHT
+                STA SRC_LINE
+:1              STX DST_LINE
+                JSR SET_DEST_OFF
+                LDX SRC_LINE
+                JSR SET_SOURCE_LINE
+                JSR COPY_FULL_LINE
+                INC SRC_LINE
+                LDX DST_LINE
+                INX
+                CPX #192-CELL_HEIGHT-MAP_BOTTOM_PAD
+                BNE :1
+:2              JSR SET_DEST_OFF
+                JSR CLEAR_FULL_LINE
+                INX
+                CPX #192
+                BNE :2
+                RTS
+
+SCROLL_DOWN     LDX #191
+:0              JSR SET_DEST_OFF
+                JSR CLEAR_FULL_LINE
+                DEX
+                CPX #191-MAP_BOTTOM_PAD
+                BNE :0
+                STX DST_LINE
+                LDX #192-CELL_HEIGHT-MAP_BOTTOM_PAD
+:1              DEX
+                STX SRC_LINE
+                JSR SET_SOURCE_LINE
+                LDX DST_LINE
+                JSR SET_DEST_OFF
+                JSR COPY_FULL_LINE
+                DEX
+                STX DST_LINE
+                LDX SRC_LINE
+                BNE :1
+                LDX DST_LINE
+:2              JSR SET_DEST_OFF
+                JSR CLEAR_FULL_LINE
+                DEX
+                BPL :2
+                RTS
+
+SCROLL_LEFT     LDX #0
+:1              LDY HIBYTES,X
+                LDA LOBYTES,X
+                CLC
+                ADC #2
+                STA SCREENL
+;               BCC :2
+;               INY
+:2              STY SCREENH
+                JSR SET_DEST_OFF
+                LDY #0
+        do ThickWalls
+                TYA
+                STA (DESTINL),Y
+                INY
+                STA (DESTINL),Y
+                INY
+        else
+        fin
+:3              LDA (SCREENL),Y
+                STA (DESTINL),Y
+                INY
+                CPY #38
+                BNE :3
+                SAME_PAGE_AS :3
+                LDA #0
+                STA (DESTINL),Y
+                INY
+                STA (DESTINL),Y
+                INX
+                CPX #192
+                BNE :1
+                RTS
+
+SCROLL_RIGHT    LDX #0
+:1              LDY HIBYTES,X
+                LDA LOBYTES,X
+                SEC
+                SBC #2
+                STA SCREENL
+                BCS :2
+                DEY
+:2              STY SCREENH
+                JSR SET_DEST_OFF
+                LDY #0
+                TYA
+                STA (DESTINL),Y
+                INY
+                STA (DESTINL),Y
+                INY
+:3              LDA (SCREENL),Y
+                STA (DESTINL),Y
+                INY
+        do ThickWalls
+                CPY #38
+                BNE :3
+                SAME_PAGE_AS :3
+                LDA #0
+                STA (DESTINL),Y
+                INY
+                STA (DESTINL),Y
+        else
+                CPY #40
+                BNE :3
+                SAME_PAGE_AS :3
+        fin
+                INX
+                CPX #192
+                BNE :1
+                RTS
+
+COPY_BACK       JSR DRAW_PICT           ;***
+                PictCopyToPage
+                PictEnd
+                RTS                     ;***
+
