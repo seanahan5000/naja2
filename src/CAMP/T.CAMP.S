@@ -7,6 +7,54 @@
 *                                                        *
 **********************************************************
 
+        do MINI_CAMP
+ENTER_CAMP      ENT
+                JSR DRAW_PICT
+                PictSetPage2
+                PictClearPage
+                PictCall DRAW_STATS_BOX
+                PictCall COPY_DOWN
+                PictSwap 0;191;40;122
+                PictSetPage1
+                PictEnd
+
+                LDA SHELL
+                BNE :TRACC
+
+:MOTHER         JSR DRAW_PICT
+                PictSetBlue
+                ; TODO: this will eventually need to be tested in
+                ;	Mothership and adjusted accordingly
+                ; TODO: too close to edge of byte
+                PictRect 106;14;174;35
+                PictTextAt 123;17;()-
+                USR (MEMBERS\n)-
+                USR (LEAVE)
+                PictEnd
+                LDA #0
+                STA CCURPOS_MS
+                LDX #<CAMP_MENU_MS
+                LDY #>CAMP_MENU_MS
+                BNE :COMMON             ; always
+
+:TRACC          JSR DRAW_PICT
+                PictSetViolet
+                ; TODO: too close to edge of byte
+                PictRect 106;14;174;53
+                PictTextAt 123;17;()-
+                USR (MEMBERS\n)-
+                USR (FORMAT\n)-
+                USR (CODEX\n)-
+                USR (LEAVE)
+                PictEnd
+                LDA #0
+                STA CCURPOS_TRACC
+                LDX #<CAMP_MENU_TRACC
+                LDY #>CAMP_MENU_TRACC
+:COMMON         JSR MENU_INIT
+                JSR MENU_SELECT
+                JMP MENU_TARGET
+        else
 ENTER_CAMP      ENT
                 JSR DRAW_PICT
                 PictSetPage2
@@ -19,12 +67,12 @@ ENTER_CAMP      ENT
                 PictRect $72;$21;$A6;$3F
                 PictTextAt 131;36;(MORE\nFLIP\nEXIT)
                 PictEnd
-
                 LDX #<STATS_MENU
                 LDY #>STATS_MENU
                 JSR MENU_INIT
                 JSR MENU_SELECT
                 JMP MENU_TARGET
+        fin
 
 ; copy stats box from normal top-of-screen location to bottom of screen
 ; TODO: generalize this if anything other than CAMP also does it
@@ -40,6 +88,51 @@ COPY_DOWN       LDX #0
                 CPX #70
                 BNE :1
                 RTS
+
+        do MINI_CAMP
+
+*-------------------------------
+
+CAMP_MENU_MS    DB  $82
+CCURPOS_MS      DB  $00
+                DW  CAMP_CURS
+                DW  :CAMP_JUMPS_MS
+
+:CAMP_JUMPS_MS  DW  TO_MEMBERS
+                DW  GO_LEAVE
+
+CAMP_MENU_TRACC DB  $84
+CCURPOS_TRACC   DB  $00
+                DW  CAMP_CURS
+                DW  :CAMP_JUMPS_T
+
+:CAMP_JUMPS_T   DW  TO_MEMBERS
+                DW  TO_REFORMAT
+                DW  TO_ALIENS
+                DW  GO_LEAVE
+
+CAMP_CURS       LDY CAMP_YPNTS,X
+                LDX #109
+                JMP DRAW_ARROW
+
+CAMP_YPNTS		DB	17,26,35,44
+
+*-------------------------------
+
+; TODO: reconcile with full leave
+GO_LEAVE        JSR DRAW_PICT
+				PictClear 15;14;25;54
+                PictSwap 0;122;40;191
+                PictEnd
+                RTS
+
+TO_MEMBERS
+RECAMP
+CAMP_MARKER
+COPTION
+				RTS
+
+        else
 
 *-------------------------------
 
@@ -67,14 +160,20 @@ STATS_EXIT      JSR DRAW_PICT
                 RTS
 
 STATS_FLIP      JSR DRAW_PICT
+        do SMALL_GROUP
+                PictVMoveTo 125
+        else
                 PictVMoveTo 124
+        fin
                 PictEnd
                 JSR FLIP_STATS
                 JSR MENU_SELECT
                 JMP MENU_TARGET
 
-FORCE_CAMP      JSR SET_PAGE2       ; TODO: bring back SET_AND_CLEAR_PAGE2?
-                JSR CLEAR_PAGE
+FORCE_CAMP      JSR DRAW_PICT
+				PictSetPage2
+				PictClearPage
+				PictEnd
                 JSR DRAW_STATS_BOX
 
 STATS_MORE      LDA SHELL
@@ -145,7 +244,7 @@ CAMP_MENU_BOX   LDA SHELL
                 USR (TRADE\n)-
                 USR (REFORMAT_GROUP\n)-
                 USR (INDIVIDUAL_STATISTICS\n)-
-                USR (ALIEN_ENCOUNTER_LOG\n)-
+                USR (ALIEN_COMPENDIUM\n)-
                 USR (FLIP_STATS_TABLE\n)-
                 USR (LEAVE)
                 PictEnd
@@ -193,7 +292,11 @@ TO_TRADE		JSR BANK_1
 				JMP TRADE
 
 GOFLOP          JSR DRAW_PICT
+        do SMALL_GROUP
+                PictVMoveTo 3
+        else
                 PictVMoveTo 2
+        fin
                 PictEnd
                 JSR FLIP_STATS
                 LDX CURSOR
@@ -215,20 +318,6 @@ EXIT_CAMP		JSR	DRAW_PICT
 				PictShowPage
 				PictEnd
 				RTS
-
-TO_REFORMAT		LDA #fileReformat
-                CMP REFORMAT_FILE
-                BEQ :1
-                LDY #>REFORMAT_FILE
-                JSR LOAD_FILE
-:1				JMP REFORMAT
-
-TO_ALIENS       LDA #fileAlienId
-                CMP ALIEN_ID_FILE
-                BEQ :1
-                LDY #>ALIEN_ID_FILE
-                JSR LOAD_FILE
-:1              JMP IDENTIFIED_ALIENS
 
 TO_ISTATS		JSR DRAW_PICT
 		do SMALL_GROUP
@@ -258,6 +347,52 @@ TO_ISTATS		JSR DRAW_PICT
                 LDX CCURPOS_MS
 				JSR CAMP_MARKER
                 JMP	CMENU
+
+*-------------------------------
+
+; caller has already set Y position
+FLIP_STATS      LDA SELECT
+                LDX SHELL
+                BNE :1
+                AND #$03
+                STA SELECT_FLIP
+                EOR #$03
+                BPL :2					; always
+:1				STA SELECT_FLIP
+				EOR #$C3
+:2				PHA
+				LDA SELECT_FLIP
+				JSR STATS_HEADER2
+				PLA
+				PHA
+				JSR STATS_HEADER2
+                JSR DRAW_PICT
+        do SMALL_GROUP
+                PictVMove 11
+        else
+                PictVMove 10
+        fin
+                PictEnd
+                JSR FIRST_CHAR
+:3				LDA SELECT_FLIP
+				JSR STATS_LINE2
+				PLA
+				PHA
+				JSR STATS_LINE2
+                JSR DRAW_PICT
+        do SMALL_GROUP
+                PictVMove 9
+        else
+                PictVMove 8
+        fin
+                PictEnd
+                JSR NEXT_CHAR
+                BCC :3
+                PLA
+                STA SELECT
+                RTS
+
+        fin ; MINI_CAMP
 
 PICK_CHAR		JSR	RESET_CHRLIST
 				JSR	PRE_ARROW
@@ -299,39 +434,21 @@ YPOINTS			ENT
 
 *-------------------------------
 
-; caller has already set Y position
-FLIP_STATS      LDA SELECT
-                LDX SHELL
-                BNE :1
-                AND #$03
-                STA SELECT_FLIP
-                EOR #$03
-                BPL :2					; always
-:1				STA SELECT_FLIP
-				EOR #$C3
-:2				PHA
-				LDA SELECT_FLIP
-				JSR STATS_HEADER2
-				PLA
-				PHA
-				JSR STATS_HEADER2
-                JSR DRAW_PICT
-                PictVMove 10
-                PictEnd
-                JSR FIRST_CHAR
-:3				LDA SELECT_FLIP
-				JSR STATS_LINE2
-				PLA
-				PHA
-				JSR STATS_LINE2
-                JSR DRAW_PICT
-                PictVMove 8
-                PictEnd
-                JSR NEXT_CHAR
-                BCC :3
-                PLA
-                STA SELECT
-                RTS
+TO_REFORMAT		LDA #fileReformat
+                CMP REFORMAT_FILE
+                BEQ :1
+                LDY #>REFORMAT_FILE
+                JSR LOAD_FILE
+:1				JMP REFORMAT
+
+TO_ALIENS       LDA #fileAlienId
+                CMP ALIEN_ID_FILE
+                BEQ :1
+                LDY #>ALIEN_ID_FILE
+                JSR LOAD_FILE
+:1              JMP IDENTIFIED_ALIENS
+
+*-------------------------------
 
             DO 0
 LOOSE_ENDS

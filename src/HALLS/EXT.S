@@ -4,6 +4,7 @@ SET_HALL_FILTER  =   $60B5
 GET_NSEW         =   $60C1
 PUSH_MAP_STATE   =   $618A
 PULL_MAP_STATE   =   $619D
+SWAP_MAP_STATE   =   $61B2
 MARK_MAPPED      =   $61FF
 TURN_RIGHT       =   $623C
 TURN_LEFT        =   $624B

@@ -46,7 +46,11 @@ SET_CONTROL     LDX #<FILE_HOOK
                 CLC
                 RTS
 
-:GO_FIGHT       JMP LOAD_FIGHT
+:GO_FIGHT       JSR CAN_ENCOUNTER
+                BCC :1
+                JMP LOAD_FIGHT
+:1              CLC
+                RTS
 
 ; TODO: Needs to have checked DISPATCH first for any specials
 :GO_MAP         JSR SHOW_MAP
@@ -59,16 +63,7 @@ SET_CONTROL     LDX #<FILE_HOOK
                 RTS
 
                 PUT DISPATCH
-
-; TODO: move this or use symbol directly
-FIGHT_LOADER    =   $8400
-
-LOAD_FIGHT      LDA #NOT_SPINNING+KEEP_SPINNING
-                JSR SET_NEXT_ON_OFF
-                LDA #fileFightLoader
-                LDY #>FIGHT_LOADER
-                JSR LOAD_FILE
-                JMP FIGHT_LOADER
+                PUT ENCOUNTER
 
 
                 DO 0

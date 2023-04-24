@@ -291,7 +291,8 @@ PULL_MAP_STATE  ENT
                 STX MAP_STATE_PTR
                 RTS
 
-SWAP_MAP_STATE  LDX MAP_STATE_PTR
+SWAP_MAP_STATE  ENT
+                LDX MAP_STATE_PTR
                 LDY #0
 :1              LDA MAP_STATE_STACK,X
                 PHA

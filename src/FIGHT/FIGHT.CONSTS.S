@@ -171,7 +171,7 @@ SCODE_HEADR     DS  $200
                 DUMMY   $B100
 
 MONSTR0         DS  25*20           ;Must be on page boundary
-CHARXY          DS  7
+SAVE_CPOS       DS  7               ; was CHARXY
 MNAME_TABLE     DS  5
 TAKEN_COUNT     DS  1
 TAKEN_ITEMS     DS  20

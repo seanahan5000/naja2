@@ -315,7 +315,8 @@ INSTR2          =   $C1
                 PUT /FIGHT/COMMAND/MISC.SUBS
                 PUT /FIGHT/COMMAND/STATS
 
-                PUT /CAMP/TOPVIEWS.S
+                PUT /CAMP/TOPVIEWS
+                PUT /CAMP/GRID
 
 ; TODO: these were zpage, should be saved settings
 DELAY_TIME      DB  $25

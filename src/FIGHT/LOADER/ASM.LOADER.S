@@ -18,6 +18,7 @@ POSSIBLE        DS  18
                 PUT SUBROUTINES/FLN.TOPVIEWS
                 PUT SUBROUTINES/FLN.GRIDS
                 PUT /CAMP/TOPVIEWS
+                PUT /CAMP/GRID
 
                 PUT LOADER/B.LOAD.DATA
                 PUT LOADER/B.MAKE.MONS

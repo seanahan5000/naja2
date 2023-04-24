@@ -13,10 +13,8 @@ FIGHT_SCREEN    JSR DRAW_PICT
                 PictLineTo $115;$7F
                 PictMoveTo $CB;$48
                 PictLineTo $CB;$7E
-                ; PictSetTextHeight 11
-                ; PictTextAt 92;74;(>\n>\n>\n>\n>)
                 PictEnd
-                JSR DRAW_GRID
+                JSR DRAW_GRID2
                 JSR DRAW_ALLMONS
                 JSR DRAW_MNAMES
                 JMP DRAW_STATS_BOX

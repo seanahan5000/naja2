@@ -270,7 +270,7 @@ PLANSUB         LDA PLANNER
                 STA TIMLEFT
                 JSR DOTIME3
                 LDX PLANNER
-                LDY #$1E
+                LDY #position
                 LDA (CHARDL),Y
                 STA XYSPOTS,X
                 JSR CLEAR_WTIME

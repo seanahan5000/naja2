@@ -4,7 +4,7 @@
     X (Wizardry had 6)
     * (Might and Magic had 4)
     * Also shortens combat loop
-* Identifying aliens adds them to Alien Catalog
+* Identifying aliens adds them to Alien Catalog (Compendium? Codex?)
     * May also add aliens by finding data cards, etc.
     * Could start with a few common aliens already identified
 X Remove per-character credits and pooling credits UI
@@ -26,6 +26,7 @@ X Change DAMAGE to HEALTH in stats (easier for player)
     * Consider not showing shielding values in general stats box
         * really only useful in individual stats screen
 * Make 'S' stats key also close out stats menu
+* Remove main camp screen and fold options into in-tunnel menu
 X Scroll through individuals in camp with <- and -> arrows
 * Better alien masking when drawing over tunnels
     * Trade having fewer aliens for better masking information
@@ -52,6 +53,7 @@ X Scroll through individuals in camp with <- and -> arrows
     * Soldier, Grunt, Combat Specialist
 * Remove "no encounter" squares and check for them programmatically
 * Tell player when somebody has gone up a level
+    * At least show a "+" on level in camp?
 * Limit credits and experience to 6 digits instead of 8 (3 bytes)
 * Show hallway structure in fight grid
     * Maybe make bigger once extra characters are gone
@@ -70,11 +72,16 @@ X Scroll through individuals in camp with <- and -> arrows
     * Instead of USE, HEAL?
     * Fold IDENTIFY and HEAL together?
     * Require Physician to be next to character to heal?
-    * Rename FLIP to STATS?
+    * Rename FLIP to STATS? Or get rid of STATS?
     * Use shape instead of ">" before alien names (small left arrow?)
     * Rename OTHER to PLANS?
     * Move PARRY to top/center so it's easier to get to
     * Allow juicer to charge other characters -- not just alien damage
+    * Somehow give feedback on how damaged aliens are?
+        * Android skill?
+    X Point alien name at bottom of tall topviews instead of the top
+        * Consider making this controllable from the topview itself
+        * (Depends on where the "body" of the alien is)
 * Shorten max alien name length?
     * Adds space in fight screens and alien info
 

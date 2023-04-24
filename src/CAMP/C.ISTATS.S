@@ -680,13 +680,21 @@ BIG_STATS_BOX	LDA #$42
 				PictLineTo $115;$0A
 				PictVMoveTo 2
 				PictCall STATS_HEADER
+        do SMALL_GROUP
+                PictVMove 11
+        else
                 PictVMove 10
+        fin
 				PictEnd
 
                 JSR FIRST_CHAR
 :1              JSR STATS_LINE
                 JSR DRAW_PICT
+        do SMALL_GROUP
+                PictVMove 9
+        else
                 PictVMove 8
+        fin
                 PictEnd
                 JSR NEXT_CHAR
                 BCC :1

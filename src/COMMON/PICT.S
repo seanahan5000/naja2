@@ -164,7 +164,7 @@ OP_VMOVE_TO     LDA (OP_PTR),Y
                 INY
                 STY OP_INDEX
                 TAY
-VMOVE_TO        ENT                     ; MOVE assumes X is unchanged
+VMOVE_TO        ENT                     ; X must be unchanged
                 STY YCOORD
                 RTS
 
@@ -203,7 +203,7 @@ OP_VMOVE        LDA (OP_PTR),Y
                 INY
                 STY OP_INDEX
                 TAY
-VMOVE           ENT                     ; MOVE assumes X is unchanged
+VMOVE           ENT                     ; X must be unchanged
                 TYA
                 CLC
                 ADC YCOORD

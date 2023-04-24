@@ -3,6 +3,7 @@ ORIGINAL		=	1
 DEBUG_KEYS		=	1				; enable debug features tied to alt/option keys
 SMALL_GROUP     =   1
 NAME_FIRST      =   1
+MINI_CAMP       =   0
 
 human			=	0
 orn				=	1
