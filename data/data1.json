@@ -34,6 +34,7 @@
   {
     "tag": "AIR_SWIMMER",
     "name": "\"AIR_SWIMMER\"",
+    "comment": "duplicated below",
     "positions": {
       "data": [
         "36DD",
@@ -423,6 +424,7 @@
   },
   {
     "tag": "WEIRD_ALIEN",
+    "comment": "duplicated above",
     "name": "ROLLER_ALIEN",
     "positions": {
       "data": [
@@ -989,6 +991,7 @@
   {
     "tag": "HANGING_BOT",
     "name": "MPC9_ROBOT",
+    "comment": "duplicated above",
     "positions": {
       "data": [
         "16CC",
@@ -1050,6 +1053,7 @@
   {
     "tag": "AIR_SWIMMER",
     "name": "\"AIR_SWIMMER\"",
+    "comment": "duplicated above",
     "positions": {
       "data": [
         "36DD",
@@ -1325,6 +1329,7 @@
   {
     "tag": "WORMS",
     "name": "PHASE_WORM",
+    "comment": "duplicated above",
     "positions": {
       "data": [
         "47CC",
@@ -1714,6 +1719,7 @@
   {
     "tag": "PROBOT",
     "name": "PROBE_DROID",
+    "comment": "duplicated above",
     "positions": {
       "data": [
         "E6DD",

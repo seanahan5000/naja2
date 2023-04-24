@@ -1,0 +1,35 @@
+{
+  "pictureFile": "pictures.json",
+  "levels": [
+    {
+      "name": "Shell 17",
+      "mapsFile": "level17v1.json",
+      "tableFile": "table1.json",
+      "dataFile": "data1.json"
+    },
+    {
+      "name": "Shell 15",
+      "mapsFile": "level15v1.json",
+      "tableFile": "table2.json",
+      "dataFile": "data2.json"
+    },
+    {
+      "name": "Shell 13",
+      "mapsFile": "level13v1.json",
+      "tableFile": "table3.json",
+      "dataFile": "data3.json"
+    },
+    {
+      "name": "Shell 11",
+      "mapsFile": "level11v1.json",
+      "tableFile": "table4.json",
+      "dataFile": "data4.json"
+    },
+    {
+      "name": "Shell 9",
+      "mapsFile": "level9v1.json",
+      "tableFile": "table5.json",
+      "dataFile": "data5.json"
+    }
+  ]
+}
