@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Assumes asm6502 and a2nib are on path
+# Add "export PATH=$PATH:~/dev/rpw-tools/bin" to .zprofile
+
 #---------------------------------------
 # Set up environment
 #---------------------------------------
@@ -23,28 +26,36 @@ fi
 # Assemble all source files
 #---------------------------------------
 
-$ASM COMMON ASM.COMMON  -lst $OBJ/COMMON.LST   -ent $SRC/COMMON/EXT.S
-$ASM NDOS   NDOS.525    -lst $OBJ/NDOS.LST     -ent $SRC/NDOS/EXT.S
-$ASM HALLS  ASM.HALLS   -lst $OBJ/HALLS.LST    -ent $SRC/HALLS/EXT.S
-$ASM CAMP   ASM.CAMP    -lst $OBJ/CAMP.LST     -ent $SRC/CAMP/EXT.S
+ERR=0
+$ASM COMMON ASM.COMMON  -lst $OBJ/COMMON.LST   -ent $SRC/COMMON/EXT.S || ERR=1
+$ASM NDOS   NDOS.525    -lst $OBJ/NDOS.LST     -ent $SRC/NDOS/EXT.S   || ERR=1
+$ASM HALLS  ASM.HALLS   -lst $OBJ/HALLS.LST    -ent $SRC/HALLS/EXT.S  || ERR=1
+$ASM CAMP   ASM.CAMP    -lst $OBJ/CAMP.LST     -ent $SRC/CAMP/EXT.S   || ERR=1
 ### TODO: .lst files only needed for sizing information ###
-$ASM ALIENS ASM.PICS    -lst $OBJ/ALIEN.PICS.LST
-$ASM ALIENS ASM.DATA    -lst $OBJ/ALIEN.DATA.LST
-$ASM ALIENS ALIEN.DESC.12
-$ASM ALIENS ALIEN.DESC.345
+$ASM ALIENS ASM.PICS    -lst $OBJ/ALIEN.PICS.LST        || ERR=1
+$ASM ALIENS ASM.DATA    -lst $OBJ/ALIEN.DATA.LST        || ERR=1
+$ASM ALIENS ALIEN.DESC.12                               || ERR=1
+$ASM ALIENS ALIEN.DESC.345                              || ERR=1
 
-$ASM FIGHT  ASM.FIGHT   -lst $OBJ/FIGHT.LST
+$ASM FIGHT  ASM.FIGHT   -lst $OBJ/FIGHT.LST             || ERR=1
 
-$ASM FIGHT/COMMAND  ASM.COMMAND   -lst $OBJ/COMMAND.LST
+$ASM FIGHT/COMMAND  ASM.COMMAND   -lst $OBJ/COMMAND.LST || ERR=1
 
-$ASM LEVELS INIT        -lst $OBJ/INIT.LST
-$ASM LEVELS ASM.17      -lst $OBJ/CONTROL17.LST
-$ASM LEVELS ASM.15      -lst $OBJ/CONTROL15.LST
-$ASM LEVELS ASM.13      -lst $OBJ/CONTROL13.LST
-$ASM LEVELS ASM.11      -lst $OBJ/CONTROL11.LST
-$ASM LEVELS ASM.9       -lst $OBJ/CONTROL9.LST
+$ASM LEVELS INIT        -lst $OBJ/INIT.LST              || ERR=1
+$ASM LEVELS ASM.17      -lst $OBJ/CONTROL17.LST         || ERR=1
+$ASM LEVELS ASM.15      -lst $OBJ/CONTROL15.LST         || ERR=1
+$ASM LEVELS ASM.13      -lst $OBJ/CONTROL13.LST         || ERR=1
+$ASM LEVELS ASM.11      -lst $OBJ/CONTROL11.LST         || ERR=1
+$ASM LEVELS ASM.9       -lst $OBJ/CONTROL9.LST          || ERR=1
 
-$ASM TEST   GAME.STATE
+$ASM TEST   GAME.STATE                                  || ERR=1
+
+if [ "$ERR" == "1" ]; then
+  echo
+  echo "### Assembly errors ###"
+  echo
+  exit
+fi
 
 #---------------------------------------
 # Build disk .nib images
@@ -116,7 +127,13 @@ $A2NIB_T2 $OBJ/DEAD.GROUP      -t 22 -s 00   # 13 sectors
 # Copy all project files
 #---------------------------------------
 
-PROJ="$ROOT/../dbug/projects/naja2"
+PROJECTS="$ROOT/../dbug/projects"
+
+if ! [[ -d "$PROJECTS" ]]; then
+  mkdir $PROJECTS
+fi
+
+PROJ="$PROJECTS/naja2"
 
 if ! [[ -d "$PROJ" ]]; then
   mkdir $PROJ
