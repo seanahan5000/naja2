@@ -76,12 +76,12 @@ CLEAN_FRONT     LDA $3FB4
                 STA $3FB4
                 LDX #10
 :LOOP1          LDA $3FA9,X
-                ORA #VIOLET
+                ORA #$55                ; violet
                 STA $3FA9,X
                 DEX
                 BEQ :EXIT
                 LDA $3FA9,X
-                ORA #GREEN
+                ORA #$2A                ; green
                 STA $3FA9,X
                 DEX
                 BNE :LOOP1          ;Always
@@ -188,6 +188,7 @@ TRACE_SHOT      LDA #$00
                 ADC #$FF            ;Use passed carry
                 STA RICOCHETS
 
+        do 0
                 LDA #$FF            ;Monster shot
                 CPY YCRD
                 BCS :SKIPA
@@ -377,3 +378,6 @@ GET_SQUARE      LDX #5
                 RTS
 
 *-------------------------------
+        else
+                RTS
+        fin

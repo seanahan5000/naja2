@@ -12,12 +12,12 @@ NARR_ROBOTRES
                 BIT BLOCKED
                 BPL RR_HITS
                 JSR FIND_CHAR
-                JSR POINTIT
+                JSR SET_CHAR
                 LDX #0
                 LDY #13             ;S>13 Is.Intercepted.By.Cname.RET
                 JSR SENTENCE_PRET   ;     But.Has.No.Effect
                 LDA CHAR_NUMBER
-                JMP POINTIT
+                JMP SET_CHAR
 :1              LDY #14             ;S>14 Is.Absorbed.By.The.Wall
                 BIT ABSORBED
                 BMI :2

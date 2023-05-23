@@ -36,12 +36,12 @@ JAM_SOMEONE     BIT BLOCKED
 *^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
                 JSR FIND_CHAR
                 STA CHAR_NUMBER
-                JSR POINTIT
+                JSR SET_CHAR
                 LDX #0
                 LDY #70             ;S>70 Into.CharsName.But.Have.No.RET
                 JSR SENTENCE_PRET   ;     Effect
                 LDA CHAR_NUMBER
-                JMP POINTIT         ;RTS
+                JMP SET_CHAR
 
 NO_BLOCKJAM     JSR FIND_MONS
                 STA MONS_NUMBER

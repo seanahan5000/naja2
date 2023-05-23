@@ -6,7 +6,7 @@ MON_SHOOT       LDA #0              ;Normal blaster
                 SEC
                 SBC TVIEW_HEIGHT
                 SBC #4
-                JSR FROM11B
+                JSR POS_TO_XY
                 STY TEMP
                 LDY #aBlastSource
                 LDA (ALIEN_PTR),Y
@@ -20,15 +20,19 @@ MON_SHOOT       LDA #0              ;Normal blaster
                 PLA
                 AND #%00111111
                 CLC
-                ADC XPNTS,X
+                ADC GRID_XPNTS,X
                 TAX
-                LDA YPNTS,Y
+                LDA CGRID_YPNTS,Y
                 SEC
                 SBC TEMP
                 SEC
                 SBC #$2D
-                LDY #0
-                JSR HPOSN
+
+                ; LDY #0
+                ; JSR HPOSN
+                TAY
+                JSR MOVE_TO
+
                 LDY #aBlastDamage
                 LDA (ALIEN_PTR),Y
                 STA EL_DAMAGEH
@@ -135,7 +139,7 @@ MSHOT_BLOCKED   LDA BLOCKED
 
 MSHOT_HITS      JSR FIND_CHAR
                 STA CHAR_NUMBER
-                JSR POINTIT
+                JSR SET_CHAR
                 JSR GET_CDAM_TOTL
                 LDY #34             ;S>34 And.Hits.CharName
                 JSR SENTENCE_INC
@@ -194,14 +198,7 @@ MSHOT_DONE      JSR DELAYER
 *
 *-------------------------------
 
-MSHOOT_GRID     JSR CSBOT2
-                LDA #$40
-                STA PAGE
-                LDA #WHITE1
-                STA COLOR
-                LDY #0
-                JSR LINER
-
+MSHOOT_GRID     JSR DRAW_SHOOTBOX
                 LDA MONS_NUMBER
                 PHA
                 LDA #0
@@ -227,10 +224,8 @@ MSHOOT_GRID     JSR CSBOT2
                 STA MONS_NUMBER     ;  current monster
                 JSR POINTTO
 
-                LDA #0
-                STA COUNT
-:4              JSR POINTIT
-                LDY #status
+                JSR FIRST_CHAR
+:4              LDY #status
                 LDA (CHARDL),Y
                 CMP #dead
                 BEQ :5
@@ -251,12 +246,11 @@ MSHOOT_GRID     JSR CSBOT2
                 LDY #upreflex
                 LDA (CHARDL),Y
                 JSR MUCHT
-                LDA COUNT
-                JSR OVALSUB
-:5              INC COUNT
-                LDA COUNT
-                CMP GRPNUMB
-                BNE :4
+                LDX CHAR_INDEX
+                TYA
+                JSR DRAW_OVAL
+:5              JSR NEXT_CHAR
+                BCC :4
                 JMP COPY_SHOTGRID
 
 *-------------------------------

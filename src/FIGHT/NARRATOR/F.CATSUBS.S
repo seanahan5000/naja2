@@ -4,7 +4,7 @@
 
 WHIZ_SUB        TXA
                 PHA
-:LOOP1          JSR RNDMIZE
+:LOOP1          JSR RANDOM
                 AND #$03
                 LDX ATALLY
                 BNE :SKIPA
@@ -16,7 +16,7 @@ WHIZ_SUB        TXA
                 PLA
                 TAX
                 JSR WORD1_INC
-                LDA RANDOM1
+                JSR RANDOM
                 AND #$03
                 BEQ :EXIT
                 LDY #xPast
@@ -97,7 +97,7 @@ KILL_DESTROY    STX TEMP
                 LDY #xDestroyed
                 LDA ALTYPE1,X
                 BMI :SKIPA
-                JSR RNDMIZE
+                JSR RANDOM
                 AND #$01
                 CLC
                 ADC #xKilled
@@ -112,11 +112,10 @@ KILL_DESTROY    STX TEMP
 *-------------------------------
 
 BLAST_A_SHOT    PHA
-                JSR RNDMIZE
                 JSR CLEAR_TLINE1
                 PLA
                 TAY
-                LDA RANDOM1
+                JSR RANDOM
                 AND #$02
                 CLC
                 ADC #xFire
@@ -126,7 +125,7 @@ BLAST_A_SHOT    PHA
                 INX
                 INX
                 LDY #xShot
-                LDA RANDOM1
+                JSR RANDOM
                 LSR
                 BCS :SKIPA
                 LSR

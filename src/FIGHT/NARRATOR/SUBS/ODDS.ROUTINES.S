@@ -185,7 +185,7 @@ FINAL_ODDS      TYA
 *-------------------------------------------
 
 ODDS_0123       TAY
-:1              JSR RNDMIZE
+:1              JSR RANDOM
                 AND #%00000011
                 BEQ :1
                 STA TEMP
@@ -209,7 +209,7 @@ RND_0_TO_99     LDA #0
                 ASL
                 ASL
 :SUBA           STA TEMP
-:LOOP1          JSR RNDMIZE
+:LOOP1          JSR RANDOM
                 AND #%00001111
                 CMP #$0A
                 BCS :LOOP1
@@ -228,7 +228,7 @@ RND_0_TO_99     LDA #0
 
 RND_DIGIT_0     STA TEMP
                 STX TEMP+1
-:1              JSR RNDMIZE
+:1              JSR RANDOM
                 AND #%00001111
                 CMP TEMP
                 BCC :2

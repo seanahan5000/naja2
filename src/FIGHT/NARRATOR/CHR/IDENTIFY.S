@@ -94,7 +94,7 @@ PICK_A_SQUARE   LDY #24
                 INY
                 CMP #$FF
                 BEQ :EXIT
-:LOOP2          JSR RNDMIZE
+:LOOP2          JSR RANDOM
                 AND #%00011111
                 CMP #25
                 BCS :LOOP2
@@ -117,7 +117,7 @@ PRE_IDENTIFY    JSR RESET_CHLIST    ;Done at start of each round
                 BCC :EXIT
                 TXA
                 STA CHAR_NUMBER
-                JSR POINTIT
+                JSR SET_CHAR
                 LDY #0
                 STY SCOUNTR
 :LOOP1          LDA MASTER_MGRID,Y

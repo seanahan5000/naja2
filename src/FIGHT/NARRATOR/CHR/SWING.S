@@ -89,15 +89,14 @@ HAVE_TARGET     LDY #xAt
                 JSR CHECK_SWING
                 BCS SWING_HITS
 
-SWING_MISSES    JSR RNDMIZE
-                LDX #0
+SWING_MISSES    LDX #0
                 LDY #xMonsName
                 LDA #xBut
                 JSR WORD2_INC
                 LDA WEAPON_TYPE     ;Whips are always BLOCKED/DEFLECTED
                 CMP #3              ;Whip
                 BEQ :SKIPA
-                LDA RANDOM1
+                JSR RANDOM
                 AND #%00000011
                 BEQ :SKIPA
                 LDY #xMisses
@@ -114,22 +113,24 @@ SWING_MISSES    JSR RNDMIZE
 :SKIPA          LDY #8              ;S>8 It.Isnt.RET.Quick.Enough.And
                 JSR SENTENCE_INC
 
-                LDA RANDOM1
+                JSR RANDOM
                 AND #%00001100
                 BNE :SKIPB
                 LDY #xMisses
-                LDA #xBadly
-                BIT RANDOM1
+                LDX #xBadly
+                JSR RANDOM
                 BMI :SKIPC
+                TXA
                 JSR WORD1_PRDRET
                 JMP TAKDELCLRCCOM
 
 :SKIPB          LDY #xIs
-                LDA #xBlocked
-                BIT RANDOM1
+                LDX #xBlocked
+                JSR RANDOM
                 BPL :SKIPC
-                LDA #xDeflected
-:SKIPC          JSR WORD2_PRDRET
+                LDX #xDeflected
+:SKIPC          TXA
+                JSR WORD2_PRDRET
                 JMP TAKDELCLRCCOM
 
 SWING_HITS      JSR CALC_SWINGDAM
@@ -141,7 +142,7 @@ SWING_HITS      JSR CALC_SWINGDAM
                 JSR SENTENCE_PRET   ;     Is.So.Weak.That.It.Causes.RET
                 JMP TAKDELCLRCCOM   ;     No.Damage
 
-SWING_DAMAGES   JSR RNDMIZE
+SWING_DAMAGES
 *^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 * "<monsname> AND | INFLICTS |
 *                 | CAUSES   |
@@ -152,14 +153,13 @@ SWING_DAMAGES   JSR RNDMIZE
                 LDY #xMonsName
                 LDA #xAnd
                 JSR WORD2_INC
-                LDA RANDOM1
+                JSR RANDOM
                 AND #%00000011
                 CLC
                 ADC #xInflicts
                 TAY
                 PHA
                 JSR WORD1_RET
-                JSR RNDMIZE
                 LDX #0
                 PLA
                 CMP #xConnects
@@ -174,7 +174,7 @@ SWING_DAMAGES   JSR RNDMIZE
 *  |     |   | DEVASTATING | | STRIKE |
 *            | DESTRUCTIVE |
 *^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-BIG_SWING       LDA RANDOM1
+BIG_SWING       JSR RANDOM
                 AND #$03
                 BNE :SKIPA
                 LDA #$01
@@ -183,7 +183,7 @@ BIG_SWING       LDA RANDOM1
                 LDY #xA
                 JSR WORD2_INC
                 LDY #xStrike
-                BIT RANDOM1
+                JSR RANDOM
                 BPL :SKIPB
                 LDY #xBlow
 :SKIPB          LDA #xOf
@@ -215,12 +215,12 @@ HINDERD_SWING   PHP
                 PLP
                 BCS :1
 :MOD1           LDA #$FF            ;Modified
-                JSR POINTIT
+                JSR SET_CHAR
                 LDY #xCharsName
                 LDA #xIs
                 JSR WORD2_RET
                 LDA CHAR_NUMBER
-                JSR POINTIT
+                JSR SET_CHAR
                 JMP :2
 :1              LDY #28             ;S>28 A.Wall.Is
                 JSR SENTENCE_RET
@@ -255,7 +255,7 @@ RIFLES          LDX SWING_TYPE
                 RTS
 :TABLE1         DB  xPokes,xHacks,xSwipes
 
-HANDS           JSR RNDMIZE
+HANDS           JSR RANDOM
                 AND #$01
                 TAX
                 LDY :TABLE1,X
@@ -263,7 +263,7 @@ HANDS           JSR RNDMIZE
 :TABLE1         DB  xPunches,xThrashes
 
 DAGGERS
-SWORDS          JSR RNDMIZE
+SWORDS          JSR RANDOM
                 AND #%00000011
                 LDX SWING_TYPE
                 ORA #%00000100

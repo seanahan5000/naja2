@@ -95,18 +95,18 @@ IMMOB_AFFS      PHA
 *
 *-------------------------------
 
-IMMOB_BLINK     LDA #$40
-                STA PAGE
-                JSR CSBOT2
+IMMOB_BLINK     JSR DRAW_PICT
+                PictSetPage2
+                PictClear 0;64;40;192
+                PictEnd
                 JSR DRAW_ALIEN
 
                 LDX #$47
 :1              LDA LOBYTES,X
                 STA SCREENL
                 LDA HIBYTES,X
-                ORA #$40
                 STA SCREENH
-                LDA #GREEN
+                LDA #$2A                ; GREEN
                 STA TEMP
                 LDY #$0C
 :2              LDA (SCREENL),Y
@@ -121,11 +121,10 @@ IMMOB_BLINK     LDA #$40
                 CPX #$80
                 BNE :1
 
-                LDA #$20
-                STA PAGE
+                JSR SET_PAGE1
                 JSR EOR_SHOT
                 LDA #$C0
-                JSR WAIT2
+                JSR WAIT_KEY
                 JSR :SUBA
                 JSR :SUBA
                 JMP EOR_SHOT
@@ -135,5 +134,5 @@ IMMOB_BLINK     LDA #$40
                 JSR :SUBB
 :SUBB           JSR DRAW_ALIEN
                 LDA #$C0
-                JSR WAIT2
+                JSR WAIT_KEY
 :EXIT           RTS

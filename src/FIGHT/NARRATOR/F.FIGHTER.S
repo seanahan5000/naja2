@@ -16,7 +16,7 @@ INIT_MCOMMAND   JSR COPY_FBYTES
                 LDA (MONS_PTR),Y
                 AND #runtestedbit!$FF   ;Clear runtested bit
                 STA (MONS_PTR),Y
-:1              LDA SUPRISED_FLAG   ;See if alien is suprised
+:1              LDA SURPRISED_FLAG  ;See if alien is suprised
                 BPL :2
                 LDA #$36            ;  yes, parry for 36 time units
                 JMP POST_MPARRY
@@ -251,7 +251,7 @@ MOVE_LORR       AND #dLeft
                 BNE MOVE_LEFT
                 BEQ MOVE_RIGHT      ;Always
 
-RND_LEFTRIGHT   JSR RNDMIZE
+RND_LEFTRIGHT   JSR RANDOM
                 BMI MOVE_LEFT
 
 MOVE_RIGHT      LDA #$10
@@ -336,7 +336,7 @@ FORWARD         PHA                 ;See if moving forwards is possible
                 STA DIRCTN_BYTE
 :1              PLA
 
-LEFT_RIGHT      PHA                 ;See if moving left is possible
+LEFT_RIGHTx     PHA                 ;See if moving left is possible
                 CMP #$20
                 BCC :1              ;  it's never possible from left row
                 SEC
@@ -392,7 +392,7 @@ PICK_SWINGEE    JSR SWING_SUB2
 SWING_SUB       JSR GET_HITABLES
                 CLC
                 BEQ SWING_OUT
-SWING_SUB2      JSR RNDMIZE
+SWING_SUB2      JSR RANDOM
                 AND #%00000111
                 CMP #5
                 BCS SWING_SUB2
@@ -489,7 +489,7 @@ AIM_SUB         JSR IMAGE_FOOLED
                 TYA
                 BEQ :7
                 STA TEMP
-:5              JSR RNDMIZE         ;Randomly pick a square from
+:5              JSR RANDOM          ;Randomly pick a square from
                 AND #%00001111      ;  the newly created list
                 CMP TEMP
                 BCS :5

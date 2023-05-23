@@ -17,8 +17,8 @@ DO_EXPLOSION    LDA SQUARE_HIT
                 LDA #$B5
                 STA BOTMOD+1
                 TXA
-                JSR FROM11B
-                LDA YPNTS,Y
+                JSR POS_TO_XY
+                LDA CGRID_YPNTS,Y
                 BNE EXPLODE_COM     ;Always
 
 :SKIPA          LDA #$49            ;In alien grid
@@ -28,16 +28,14 @@ DO_EXPLOSION    LDA SQUARE_HIT
                 TXA
                 SEC
                 SBC #$05
-                JSR FROM11B
-                LDA YPNTS,Y
-                SEC
-                SBC #$37
+                JSR POS_TO_XY
+                LDA AGRID_YPNTS,Y
 
 EXPLODE_COM     CLC
                 ADC #$04
                 STA YCOUNT
                 TAY
-                LDA XPNTS,X
+                LDA GRID_XPNTS,X
                 CLC
                 ADC #$06
                 STA XCOUNT
@@ -58,7 +56,7 @@ OUTWARD         PHP
                 LDA #$00
                 STA COUNT
 :LOOP1          LDA #$38
-                JSR WAIT2
+                JSR WAIT_KEY
                 PLP
                 PHP
                 JSR ALLFOUR
@@ -73,7 +71,7 @@ INWARD          PHP
                 LDA #$03
                 STA COUNT
 :LOOP1          LDA #$38
-                JSR WAIT2
+                JSR WAIT_KEY
                 PLP
                 PHP
                 JSR ALLFOUR
@@ -153,12 +151,11 @@ TOPMOD          CPY #$49            ;Modified
                 SEC
                 SBC #$05
                 TAY
-                LDA #$2D
+                LDA #TextPeriod
                 STA TEXTBUF
-                LDA #$8D
+                LDA #TextLineEnd
                 STA TEXTBUF+1
-                TXA
-                JMP LINE
+                JMP DRAW_TEXTBUF_XY
 NODOTS          RTS
 
 STRAITX         DB  $04,$08,$0C,$50

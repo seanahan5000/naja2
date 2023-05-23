@@ -102,22 +102,27 @@ MOD5            DB  0,1,2,3,4
                 DB  0,1,2,3,4
                 DB  0,1,2,3,4
                 DB  0,1,2,3,4
+;
+; On entry:
+;   X: grid X position
+;   Y: character grid Y position
+;
+CGRID_MOVETO    LDA GRID_XPNTS,X
+                TAX
+                LDA CGRID_YPNTS,Y
+                TAY
+                JMP MOVE_TO
 
 DRAW_CHAR_TOPVIEW
+                JSR CPOS_TO_XY
+                JSR CGRID_MOVETO
+DRAW_PROF_TOPVIEW
                 LDY #profrace
                 LDA (CHARDL),Y
                 LSR
                 LSR
                 LSR
                 LSR
-                PHA
-                JSR CPOS_TO_XY
-                LDA GRID_XPNTS,X
-                TAX
-                LDA CGRID_YPNTS,Y
-                TAY
-                JSR MOVE_TO
-                PLA
                 TAX
                 LDA TCHAR_OFFSETS,X
                 CLC
@@ -196,6 +201,9 @@ TCHAR_ROB       DB  $38,$78,$08,$6F,$69,$69,$6F     ; robot
                 DB  $0E,$0F,$08,$7B,$4B,$4B,$7B
                 DB  $08,$78,$80
                 DB  $08,$0F,$80
+
+
+;*** FIGHT.COMMAND and REFORMAT but not FIGHT.NARRATOR ***
 
 ;
 ; On entry:

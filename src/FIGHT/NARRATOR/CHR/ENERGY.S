@@ -123,7 +123,7 @@ CHR_ENERGY
                 LDA ECORES,Y
                 TAY
                 JSR WORD1_INC
-                LDA RANDOM1
+                JSR RANDOM
                 AND #$07
                 CMP #$02
                 BCS :SKIPA
@@ -165,7 +165,7 @@ CHR_ENERGY
                 DEY
                 BPL :LOOP4
                 LDA #4
-                JSR LEFT_DIGITS
+                JSR DIGITS_L
 
                 INX
                 LDY ENTYPE
@@ -445,10 +445,13 @@ PER_TABLE       HEX 0360            ;36/10?
 *
 *-------------------------------
 
+; TODO: share with /FIGHT/COMMAND/CURSORS.S
+
 ZONE            LDX COMPNTR
                 LDA COMMAND-1,X
                 CLC
                 JSR CURZONE
+
                 LDX COMPNTR
                 LDA COMMAND+1,X
                 TAX
@@ -465,75 +468,77 @@ ZONE            LDX COMPNTR
                 SEC
                 SBC CURSOR
                 SEC
+
 CURZONE         PHP
                 STA CURSOR
-                SEC
-                SBC #$05
-                JSR FROM11B
-                LDA XPNTS,X
-                STA XPNT
-                LDA YPNTS,Y
-                SEC
-                SBC #$37
-                STA YPNT
-                PLP
-                PHP
-                LDA XPNT
-                PHA
-                DEC XPNT
-                BCC :SKIPA
-                CLC
-                ADC #$0E
-                STA XPNT
-:SKIPA          LDA #0
-                LDX #<BOUNDS_SHAPES
-                LDY #>BOUNDS_SHAPES
-                JSR DRAW_SHAPES
-                LDA YPNT
-                PHA
-                CLC
-                ADC #$05
-                STA YPNT
-                LDA #0
-                JSR REDRAW_SHAPES
-                PLA
-                STA YPNT
-                DEC YPNT
-                PLA
-                STA XPNT
-                PLP
-                BCC :SKIPB
-                LDA YPNT
-                CLC
-                ADC #$0B
-                STA YPNT
-                CMP #$7F
-                BNE :SKIPB
-:SKIPB          LDA #1
-                JSR REDRAW_SHAPES
-                LDA XPNT
-                CLC
-                ADC #$07
-                STA XPNT
-                LDA #1
-                JSR REDRAW_SHAPES
+
+; EZONE_CURSOR
+;                 SEC
+;                 SBC #$05
+;                 JSR POS_TO_XY
+
+;                 LDA GRID_XPNTS,X
+;                 STA XPNT
+;                 LDA AGRID_YPNTS,Y
+;                 STA YPNT
+;                 PLP
+;                 PHP
+;                 LDA XPNT
+;                 PHA
+;                 DEC XPNT
+;                 BCC :SKIPA
+;                 CLC
+;                 ADC #$0E
+;                 STA XPNT
+; :SKIPA          LDA #0
+;                 LDX #<BOUNDS_SHAPES
+;                 LDY #>BOUNDS_SHAPES
+;                 JSR DRAW_SHAPES
+;                 LDA YPNT
+;                 PHA
+;                 CLC
+;                 ADC #$05
+;                 STA YPNT
+;                 LDA #0
+;                 JSR REDRAW_SHAPES
+;                 PLA
+;                 STA YPNT
+;                 DEC YPNT
+;                 PLA
+;                 STA XPNT
+;                 PLP
+;                 BCC :SKIPB
+;                 LDA YPNT
+;                 CLC
+;                 ADC #GCELL_HEIGHT
+;                 STA YPNT
+;                 ; CMP #$7F
+;                 ; BNE :SKIPB
+; :SKIPB          LDA #1
+;                 JSR REDRAW_SHAPES
+;                 LDA XPNT
+;                 CLC
+;                 ADC #$07
+;                 STA XPNT
+;                 LDA #1
+;                 JSR REDRAW_SHAPES
                 JMP CLEAN_FRONT
 
-BOUNDS_SHAPES   DB  %00000001
-                DB  %00000001
-                DB  %00000001
-                DB  %00000001
-                DB  %00000001
-                DB  %00000000
-                DB  %00000000
+; BOUNDS_SHAPES   DB  %00000001
+;                 DB  %00000001
+;                 DB  %00000001
+;                 DB  %00000001
+;                 DB  %00000001
+;                 DB  %00000000
+;                 DB  %00000000
 
-                DB  %01111111
-                DB  %00000000
-                DB  %00000000
-                DB  %00000000
-                DB  %00000000
-                DB  %00000000
-                DB  %00000000
+;                 DB  %01111111
+;                 DB  %00000000
+;                 DB  %00000000
+;                 DB  %00000000
+;                 DB  %00000000
+;                 DB  %00000000
+;                 DB  %00000000
 
 *-------------------------------
 

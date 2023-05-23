@@ -117,19 +117,19 @@ TAKE_ENERGY     JSR :SUBA
                 JSR DRAIN_DIRECT2
                 BPL :SUBA
                 PHA
-                JSR STATWRD
+                JSR STATUS_WORD
                 LDY #status
                 PLA
                 STA (CHARDL),Y
-                JSR STATWRD
+                JSR STATUS_WORD
                 DEC OUT_OF_ENERGY
-:SUBA           JSR POWROUT
-                LDA #$8D
+:SUBA           JSR ENERGY_TO_TEXT
+                LDA #TextLineEnd
                 STA TEXTBUF+6
                 LDX CHAR_NUMBER
                 LDY YPOINTS,X
-                LDA #$C6
-                JMP LINE
+                LDX #$C6
+                JMP DRAW_TEXTBUF_XY
 
 OUT_OF_ENERGY   DB  0               ;MAKE ZPAGE LATER?
 

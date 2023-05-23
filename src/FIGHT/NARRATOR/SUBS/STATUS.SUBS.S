@@ -160,7 +160,7 @@ DESTATUS_MONS   LDY #monSTATUS
 *
 *-------------------------------
 
-DESTATUS_CHAR   JSR STATUSR
+DESTATUS_CHAR   JSR CSTATUS_TO_TEXT_L
                 JSR TRAP_WORD
                 JSR CLEAR_TLINE1
                 LDY #xCharsName

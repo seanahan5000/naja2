@@ -129,6 +129,8 @@ EQUIP_INDEX     DB  0               ;COULD BE MOVED
 *   and return it in Y register.
 *-------------------------------
 
+; TODO: use MONPOS_TO_I25 and POS_TO_I25
+
 CCMD_INDEXER    LDX COMPNTR
                 LDA COMMAND+1,X
 ANY_INDEXER     TAX
@@ -138,7 +140,7 @@ ANY_INDEXER     TAX
                 BCC CHAR_INDEXER
 MON_INDEXER     SEC
                 SBC #$05
-CHAR_INDEXER    JSR FROM11B
+CHAR_INDEXER    JSR POS_TO_XY
                 STX TEMP
                 LDA TIMES5,Y
                 CLC

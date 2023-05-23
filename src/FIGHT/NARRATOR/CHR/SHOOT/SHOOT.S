@@ -24,10 +24,10 @@ CHR_SHOOT       JSR GET_EP_ENUSE    ;Get EL,PH_DAMAGEL,H and ENERGY_L,H
 *   hand the shot is originating from (left,right,both)
                 LDX CHAR_NUMBER
                 LDA TEMPCHAR_XY,X
-                JSR FROM11B
-                LDA XPNTS,X
+                JSR POS_TO_XY
+                LDA GRID_XPNTS,X
                 STA XCOORD
-                LDA YPNTS,Y
+                LDA CGRID_YPNTS,Y
                 STA YCOORD
                 DEC YCOORD
                 LDY #6              ;Six pixels right (both hands)
@@ -44,9 +44,10 @@ CHR_SHOOT       JSR GET_EP_ENUSE    ;Get EL,PH_DAMAGEL,H and ENERGY_L,H
                 CLC
                 ADC XCOORD
                 TAX
-                LDY #0
-                LDA YCOORD
-                JSR HPOSN           ;Set source coordinate
+                ; LDY #0
+                ; LDA YCOORD
+                ; JSR HPOSN           ;Set source coordinate
+                JSR MOVE_TO
 
 * Get destination coordinate for shot, using
 *   +/- AIM * 2 for a randomizing factor
@@ -93,13 +94,7 @@ SHOT_CALL       LDX #0
 *
 *-------------------------------
 
-MAKE_CHITGRID   LDA #$40
-                STA PAGE
-                JSR CSBOT2          ;CHANGE THIS NAME
-                LDA #WHITE1
-                STA COLOR
-                LDY #0              ;Shot containment lines
-                JSR LINER
+MAKE_CHITGRID   JSR DRAW_SHOOTBOX
 
                 LDX COMPNTR
                 LDA COMMAND-1,X
@@ -131,21 +126,21 @@ MAKE_CHITGRID   LDA #$40
                 LDA #0
                 STA COUNT
 :LOOP2          STA CHAR_NUMBER
-                JSR POINTIT
+                JSR SET_CHAR
                 LDY #status
                 LDA (CHARDL),Y
                 CMP #dead
                 BEQ :SKIPC
-                LDA COUNT
-                LDY #2
-                JSR OVALSUB
+                LDX COUNT
+                LDA #2
+                JSR DRAW_OVAL
 :SKIPC          INC COUNT
                 LDA COUNT
                 CMP GRPNUMB
                 BNE :LOOP2
                 PLA
                 STA CHAR_NUMBER
-                JSR POINTIT         ;Restore CHARDL,H to shooting char
+                JSR SET_CHAR            ;Restore CHARDL,H to shooting char
                 JMP COPY_SHOTGRID
 
 *-------------------------------
@@ -199,21 +194,25 @@ SHT_SIZES       HEX 0080            ;tiny
 
 AIM_DESTSUB     ASL
                 JSR RND_DIGIT_0
-                BIT RANDOM1
+                TAX
+                JSR RANDOM
                 BPL :1
+                TXA
                 EOR #$FF
                 CLC
                 ADC #$01
-:1              CLC
+                TAX
+:1              TXA
+                CLC
                 ADC #$06
                 PHA
                 LDA YPNT
-                JSR FROM11B
+                JSR POS_TO_XY
                 PLA
                 CLC
-                ADC XPNTS,X
+                ADC GRID_XPNTS,X
                 TAX
-                LDA YPNTS,Y
+                LDA CGRID_YPNTS,Y
                 CLC
                 ADC #4
                 TAY

@@ -68,6 +68,7 @@ DAM_TOTL_COM    LDX PH_DAMAGEL
 *
 *-------------------------------
 
+;*** fix spelling ***
 SUSEPTABILITY   STX TEMP
                 STY TEMP+1
                 JSR GET_SUSEPT
@@ -105,6 +106,7 @@ SUSEPTABILITY   STX TEMP
 *
 *-------------------------------
 
+;*** fix spelling ***
 GET_SUSEPT      TAY                 ;Must not use TEMP,+1
                 AND #%00000011
                 TAX
@@ -128,6 +130,7 @@ GET_SUSEPT      TAY                 ;Must not use TEMP,+1
 
 *-------------------------------
 
+;*** fix spelling ***
 GET_SIZE_2      LDY #aSusepts+1
                 LDA (ALIEN_PTR),Y
                 AND #%00000011

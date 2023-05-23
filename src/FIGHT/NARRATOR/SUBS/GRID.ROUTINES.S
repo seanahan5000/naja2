@@ -157,10 +157,9 @@ UPDATE_MNAMES   LDA #4
                 BNE :LOOP2
 
                 LDY YCOUNT
-                LDA YPNTS,Y
-                SEC
-                SBC #$36
-                STA YPNT
+                LDX AGRID_YPNTS,Y
+                INX
+                STX YPNT
                 LDA MNAME_TABLE,Y
                 CMP MNAME_TYPE
                 BEQ :SKIPD
@@ -192,9 +191,9 @@ PRINT_MNAME     TAY
                 JSR POINTALN
                 LDX #0
                 JSR MNAME_IDENTIF
-:SKIPB          LDA #$66
+:SKIPB          LDX #$66
                 LDY YPNT
-                JSR LINE
+                JSR DRAW_TEXTBUF_XY
 :EXIT           RTS
 
 MNAME_TYPE      DB  0
@@ -216,16 +215,14 @@ CREATE_CGRID    LDX #24
                 DEX
                 BPL :LOOP1
 
-                LDA #0
-                STA COUNT
-:LOOP2          JSR POINTIT
-                JSR BAD_STATUS
+                JSR FIRST_CHAR
+:LOOP2          JSR BAD_STATUS
                 BEQ :SKIPA
-                LDX COUNT
+                LDX CHAR_INDEX
                 LDA TEMPCHAR_XY,X
                 JSR CHAR_INDEXER
                 STX TEMP
-                LDA COUNT
+                LDA CHAR_INDEX
                 STA MASTER_CGRID,Y
                 TAX
                 LDA IMAGENS,X
@@ -237,16 +234,13 @@ CREATE_CGRID    LDX #24
                 LDA MASTER_CGRID,Y
                 CMP #$FF
                 BNE :SKIPA
-                LDA COUNT
+                LDA CHAR_INDEX
                 ORA #$80
                 STA MASTER_CGRID,Y
-:SKIPA          INC COUNT
-                LDA COUNT
-                CMP GRPNUMB
-                BNE :LOOP2
+:SKIPA          JSR NEXT_CHAR
+                BCC :LOOP2
                 LDA CHAR_NUMBER     ;Take note of this
-                JSR POINTIT
-                RTS
+                JMP SET_CHAR
 
 *-------------------------------
 
@@ -259,7 +253,7 @@ CAPTURE_CGRID   LDX #$18
 
 *-------------------------------
 
-UPDATE_CGRID    LDA #$00
+UPDATE_CGRID    LDA #0
                 STA XCOUNT
                 STA YCOUNT
                 STA COUNT
@@ -267,6 +261,11 @@ UPDATE_CGRID    LDA #$00
                 LDA OLD_CGRID,X
                 CMP MASTER_CGRID,X
                 BEQ :SKIPA
+                PHA
+                LDX XCOUNT
+                LDY YCOUNT
+                JSR CGRID_MOVETO
+                PLA
                 JSR :SUBA
                 LDX COUNT
                 LDA MASTER_CGRID,X
@@ -283,27 +282,19 @@ UPDATE_CGRID    LDA #$00
                 CMP #25
                 BNE :LOOP1
                 LDA CHAR_NUMBER     ;Take note of this
-                JSR POINTIT
+                JSR SET_CHAR
                 RTS
 
 :SUBA           TAY
                 CMP #$FF
-                BEQ :EXIT
-                AND #$80
-                STA SCRATCH
+                BEQ :2
                 TYA
                 AND #$7F
-                JSR POINTIT
-                LDY #profrace
-                LDA (CHARDL),Y
-                LSR
-                LSR
-                LSR
-                LSR
-                ORA SCRATCH
-                LDX XCOUNT
-                LDY YCOUNT
-                JMP TVIEWIT
-:EXIT           RTS
+                JSR SET_CHAR
+                TYA
+                BMI :1
+                JMP DRAW_PROF_TOPVIEW
+:1              JMP DRAW_PROF_IMAGEN
+:2              RTS
 
 *-------------------------------

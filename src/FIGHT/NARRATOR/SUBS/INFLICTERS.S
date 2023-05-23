@@ -104,16 +104,15 @@ DAMAGE_CHAR     JSR CDAMAGE_SUB
                 TAY
                 JMP WORD1_PRDRET
 
-
+; TODO: use VMOVE
 CDAMAGE_SUB     LDA CHAR_NUMBER
-                JSR POINTIT
-                JSR DAMAGR2
-                LDY CHAR_NUMBER
-                LDA YPOINTS,Y
-                STA YPNT
-                TAY
-                LDA #$8A
-                JSR LINE
+                JSR SET_CHAR
+                JSR DAMAGE_STATUS
+                LDX CHAR_NUMBER
+                LDY YPOINTS,X
+                STY YPNT
+                LDX #$8A
+                JSR DRAW_TEXTBUF_XY
                 LDX TOTAL_DAMAGEL
                 LDY TOTAL_DAMAGEH
                 SEC
@@ -123,15 +122,15 @@ CDAMAGE_SUB     LDA CHAR_NUMBER
                 LDA #%00000000
 :SKIPA          ROR
                 STA DEAD_FLAG
-                JSR DAMAGR2
-                LDA #$8A
+                JSR DAMAGE_STATUS
+                LDX #$8A
                 LDY YPNT
-                JSR LINE
+                JSR DRAW_TEXTBUF_XY
                 BIT DEAD_FLAG
                 BPL :EXIT
                 JSR CHANGE_CGRID
                 LDA CHAR_NUMBER
-                JSR POINTIT
+                JSR SET_CHAR
                 JSR DEAD_PLACER
                 JSR DRAW_IF_DEAD
 :EXIT           RTS

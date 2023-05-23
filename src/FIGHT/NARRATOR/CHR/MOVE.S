@@ -32,13 +32,13 @@ CHR_MOVE        JSR CCMD_INDEXER
                 CMP CHAR_NUMBER
                 BEQ :LOOP1
 
-:SKIPA          LDX CHAR_NUMBER     ;Destination is okay
-                LDA TEMPCHAR_XY,X   ;   so do the move
-                JSR XYTEXT
+:SKIPA          ; LDX CHAR_NUMBER     ;Destination is okay
+                ; LDA TEMPCHAR_XY,X   ;   so do the move
+                ; JSR XYTEXT
                 JSR GET_CMD_XY
                 LDX CHAR_NUMBER
                 STA TEMPCHAR_XY,X
-                JSR XYTEXT
+                ; JSR XYTEXT
                 JSR CHANGE_CGRID
                 JMP CCOM
 

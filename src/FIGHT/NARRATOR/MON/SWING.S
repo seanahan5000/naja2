@@ -23,7 +23,7 @@ MON_SWING       JSR VERBS_AT
                 LDA MASTER_CGRID-1,Y
                 BPL FULL_MSWING
 
-EMPTY_MSWING    JSR RNDMIZE
+EMPTY_MSWING    JSR RANDOM
                 AND #%00000011
                 TAX
                 LDY :WORDS,X
@@ -35,7 +35,7 @@ EMPTY_MSWING    JSR RNDMIZE
 
 FULL_MSWING     STA CHAR_NUMBER
                 PHA
-                JSR POINTIT
+                JSR SET_CHAR
                 PLA
                 JSR COMCALC         ;Get COMPNTR for character
 
@@ -54,7 +54,7 @@ FULL_MSWING     STA CHAR_NUMBER
                 BCC SMISSES
                 JMP MSWING_HITS
 
-SMISSES         JSR RNDMIZE
+SMISSES         JSR RANDOM
                 BMI SMISS2
 
 *^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -72,7 +72,7 @@ SMISS1          LDX #0
                 JSR SENTENCE_PRD    ;    Enough
                 JSR CHAR_NAME
                 INX
-                LDA RANDOM1
+                JSR RANDOM
                 AND #%00000011
                 CLC
                 ADC #xDodges
@@ -81,7 +81,7 @@ SMISS1          LDX #0
                 LDY #22             ;S>22 The.RET.Attack.And.Is.Not
                 JSR SENTENCE_INC
                 STX TEMP
-:2              JSR RNDMIZE
+:2              JSR RANDOM
                 AND #%00000011
                 BEQ :2
                 CLC
@@ -100,8 +100,8 @@ SMISS2          LDX #0
                 LDA #xBut
                 JSR WORD2_INC
                 LDY #xMisses
-                BIT RANDOM1
-                BVC :1
+                JSR RANDOM
+                BMI :1
                 JSR WORD1_INC
                 LDY #xBadly
 :1              JSR WORD1_PRDRET
@@ -123,7 +123,7 @@ MSWING_DAMAGE   LDY #xCharsName
                 LDA #xAnd
                 JSR WORD2_INC
                 STX TEMP
-                JSR RNDMIZE
+                JSR RANDOM
                 AND #%00000011
                 PHA
                 TAX
@@ -168,12 +168,12 @@ VERBS_AT        JSR CLEAR_TLINE1
                 LDY #xSwings
                 LDA TEMP
                 BEQ :4
-:2              JSR RNDMIZE
+:2              JSR RANDOM
                 AND #%00000011
                 BEQ :2
                 TAY
                 DEY
-:3              JSR RNDMIZE
+:3              JSR RANDOM
                 AND #%00000111
                 STA TEMP
                 TAX

@@ -11,7 +11,7 @@ RETURN          JSR NARLINE
 SENTENCE_PRD    JSR SENTENCE
 PERIOD          CPX #lastTextCol+1
                 BCS :EXIT
-                LDA #$2D
+                LDA #TextPeriod
                 STA TEXTBUF,X
                 INX
                 INX
@@ -23,12 +23,12 @@ PERIOD          CPX #lastTextCol+1
 CLEAR_TLINE1    LDA #1
 CLEAR_TLINE     STA TLINE
 CLEAR_TEXT      LDX #30             ;Must not change Y register
-                LDA #$0A
+                LDA #TextSpace
 :LOOP1          STA TEXTBUF,X
                 DEX
                 BPL :LOOP1
                 INX
-                LDA #$8D
+                LDA #TextLineEnd
                 STA TEXTBUF+31
                 RTS
 
@@ -36,11 +36,10 @@ TLINE           DB  0
 
 *-------------------------------
 
-NARLINE         LDY TLINE
-                LDA LINEYS,Y
-                TAY
-                LDA #$5D
-                JMP LINE
+NARLINE         LDX TLINE
+                LDY LINEYS,X
+                LDX #$5D
+                JMP DRAW_TEXTBUF_XY
 
 LINEYS          DB  $81,$8A,$93
                 DB  $9C,$A5,$AE
@@ -134,8 +133,7 @@ DAMAGE_OUT      LDA TOTAL_DAMAGEL
                 LDA TOTAL_DAMAGEH
                 PHA
                 LDA #2
-                JSR LEFT_DIGITS
-                RTS
+                JMP DIGITS_L
 :SKIPB          LDY #xNo
                 BNE WORD1           ;Always
 
@@ -150,7 +148,7 @@ CHAR_NAME       LDY #0
                 BNE :LOOP1
 :LOOP2          DEX
                 LDA TEXTBUF,X
-                CMP #$0A
+                CMP #TextSpace
                 BEQ :LOOP2
                 INX
                 RTS
@@ -185,7 +183,7 @@ MNAME_IDENTIF   LDY #aName
                 BNE :LOOP1
 :LOOP2          DEX
                 LDA TEXTBUF,X
-                CMP #$0A
+                CMP #TextSpace
                 BEQ :LOOP2
                 INX
                 RTS
@@ -193,7 +191,7 @@ MNAME_IDENTIF   LDY #aName
 *-------------------------------
 
 BACKSPACE       DEX
-                LDA #$0A
+                LDA #TextSpace
                 STA TEXTBUF,X
                 RTS
 
@@ -202,7 +200,7 @@ BACKSPACE       DEX
 APOSTROPHE_S    LDA #$28            ;apostrophe
                 STA TEXTBUF,X
                 INX
-                LDA #$1D            ;s
+                LDA #TextS
                 STA TEXTBUF,X
                 INX
                 INX
@@ -222,7 +220,7 @@ VOWEL_CHECK     STY :MOD1+1
                 DEY
                 BPL :LOOP1
 :MOD1           LDY #$FF            ;Modified
-                LDA #$EE
+                LDA #TextEmpty
                 STA TEXTBUF,Y
 :EXIT           RTS
 

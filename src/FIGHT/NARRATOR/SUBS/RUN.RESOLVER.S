@@ -15,25 +15,25 @@ OPEN_FRONTS     JSR MONS_OPENROWS
 
 :0              LDA #$7F            ;Retreat
                 STA CHAR_ADVFLAG
-                LDY #2
-                JSR TEXTER
-                LDA #0
-                STA MAXTEXT
-                JSR INPUT2
-:1              LDA TEXTBUF
-                CMP #"A"
+
+                JSR DRAW_PICT
+                PictTextAt 99;143;(THERE_IS_SPACE_IN_THE_FRONT)
+                PictTextAt 99;152;(ROW_TO_BE_OCCUPIED._WILL_THE)
+                PictTextAt 99;161;(GROUP_A>DVANCE_OR)
+                PictTextAt 135;170;(R>ETREAT?_)
+                PictEnd
+
+                JSR GET_INPUT_KEY
+:1              CMP #"A"
                 BEQ :3
                 CMP #"R"
                 BEQ :4
-                CMP #$8D
-                BNE :2
-                JSR CHAROUT
-:2              JSR RECALL
+:2              JSR REGET_INPUT
                 JMP :1
 :3              LDA #$FF            ;Advance
                 STA CHAR_ADVFLAG
 :4              JSR CLRBOX
-
+                ; fall through
 
 *-------------------------------
 *
@@ -65,9 +65,8 @@ RUN_RESOLVER    JSR MRUN_DECIDER
 DO_CHARODDS     LDA #0
                 STA TEMP
                 STA TEMP+1
-                STA COUNT
-:1              JSR POINTIT
-                LDY #lwreflex
+                JSR FIRST_CHAR
+:1              LDY #lwreflex
                 LDA (CHARDL),Y
                 SED
                 CLC
@@ -76,10 +75,9 @@ DO_CHARODDS     LDA #0
                 STA TEMP
                 BCC :2
                 INC TEMP+1
-:2              INC COUNT
-                LDA COUNT
-                CMP GRPNUMB
-                BNE :1
+:2              JSR NEXT_CHAR
+                BCC :1
+                LDA GRPNUMB
                 JSR CMODDS_SUB      ;On entry A = GRPNUMB
                 TAX
                 BNE :3              ;Make sure character
@@ -253,7 +251,7 @@ CHAR_CAUGHT     LDA #2
                 JSR WORD2
                 JSR APOSTROPHE_S
                 LDA #%01000000
-COME_BACK       STA SUPRISED_FLAG
+COME_BACK       STA SURPRISED_FLAG
                 LDY #58             ;S>58 Attempt.To.Retreat.RET
                 JSR SENTENCE_PRET   ;     Is.Unsuccessful.
                 JSR DELAYER
@@ -264,7 +262,7 @@ COME_BACK       STA SUPRISED_FLAG
 
 M_FORWARD       LDA MONS_ADVFLAG
                 BEQ :2
-:1              JSR RNDMIZE
+:1              JSR RANDOM
                 AND #%00001111
                 CMP #10
                 BCS :1
@@ -283,7 +281,7 @@ M_FORWARD       LDA MONS_ADVFLAG
 
 M_BACKWARD      DEC M_HEADSTART
                 BPL :2
-:1              JSR RNDMIZE
+:1              JSR RANDOM
                 AND #%00001111
                 CMP #10
                 BCS :1
@@ -296,7 +294,7 @@ M_BACKWARD      DEC M_HEADSTART
 
 C_FORWARD       LDA #0
                 STA CHANGE_FLAG
-:1              JSR RNDMIZE
+:1              JSR RANDOM
                 AND #%00001111
                 CMP #10
                 BCS :1
@@ -316,7 +314,7 @@ C_BACKWARD      DEC C_HEADSTART
                 BPL :2
                 LDA #0
                 STA CHANGE_FLAG
-:1              JSR RNDMIZE
+:1              JSR RANDOM
                 AND #%00001111
                 CMP #10
                 BCS :1
@@ -456,7 +454,7 @@ RUN_CONCLUDE
 *-------------------------------
 
 RUN_UPDATE      LDA #$30
-                JSR WAIT2
+                JSR WAIT_KEY
                 BIT UNSTROB
 FAST_UPDATE     LDA CDST_TOP        ;Current top and bottom lines
                 STA OLD_CDST_TOP    ;  become old top and bottom lines
@@ -687,15 +685,16 @@ COPY_GRID       LDX #71
 *
 *-------------------------------
 
+; TODO: no longer valid with new grid
+
 ERASE_MNAMES    LDA MONS_ADVFLAG
                 ORA MOFFSET
                 BEQ :2
                 LDY #0
                 STY YCOUNT
-:1              LDA YPNTS,Y
-                SEC
-                SBC #$36
-                STA YPNT
+:1              LDX AGRID_YPNTS,Y
+                INX
+                STX YPNT
                 LDA MNAME_TABLE,Y
                 PHA
                 LDA #$FF
@@ -712,6 +711,8 @@ ERASE_MNAMES    LDA MONS_ADVFLAG
 *-------------------------------
 *
 *-------------------------------
+
+; TODO: no longer valid with new grid
 
 EOR_GRID_DOTS   LDA #83
                 STA TEMP
@@ -865,7 +866,7 @@ MRUN_DECIDER
 *
 *     - Pick a random number
 *
-                JSR RNDMIZE
+                JSR RANDOM
                 BPL :6
 *
 *       - If random is true then

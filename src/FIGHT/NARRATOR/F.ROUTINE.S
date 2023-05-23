@@ -12,11 +12,11 @@ GET_CMD_XY      LDX COMPNTR
                 STA SQUARE_HIT
                 RTS
 
+;*** TODO: convert to PictFillRect
 CLRBOX          LDX #$80
 CLOOP2          LDA LOBYTES,X
                 STA SCREENL
                 LDA HIBYTES,X
-                ORA PAGE
                 STA SCREENH
                 LDA #$00
                 LDY #$0D
@@ -32,15 +32,15 @@ CLRLOOP         STA (SCREENL),Y
                 BNE CLOOP2
                 RTS
 
-XYTEXT          PHA
-                LDY CHAR_NUMBER
-                LDA YPOINTS,Y
-                STA YPNT
-                PLA
-                JSR DOXY2
-                LDA #$71
-                LDY YPNT
-                JMP LINE
+; XYTEXT          PHA
+;                 LDY CHAR_NUMBER
+;                 LDA YPOINTS,Y
+;                 STA YPNT
+;                 PLA
+;                 JSR DOXY2
+;                 LDX #$71
+;                 LDY YPNT
+;                 JMP DRAW_TEXTBUF_XY
 
 COMCALC         TAX
                 ASL
@@ -55,35 +55,44 @@ COMCALC         TAX
                 LDA COMMAND,X
                 AND #$0F
                 RTS
-
-OVALSUB         TAX                 ;MAKE THIS ROUTINE USE DRAW_TOPVIEW
+;
+; Draw oval representing a character in the hit grid.
+; The more difficult to hit, the smaller the oval.
+;
+; On entry:
+;   X: character index
+;   A: oval shape index
+;
+DRAW_OVAL       PHA
                 LDA TEMPCHAR_XY,X
+                JSR POS_TO_XY
+                LDA GRID_XPNTS,X
                 TAX
-                TYA
-                PHA
-                TXA
-                JSR FROM11B
-                LDA XPNTS,X
-                STA XPNT
-                LDA YPNTS,Y
-                STA YPNT
-                INC YPNT
+                LDA CGRID_YPNTS,Y
+                TAY
+                JSR MOVE_TO
                 PLA
-                ASL
-                PHA
-                LDX #<OVAL_DATA
-                LDY #>OVAL_DATA
-                JSR DRAW_SHAPES
-                LDA XPNT
-                CLC
-                ADC #$07
-                STA XPNT
-                PLA
-                CLC
-                ADC #$01
-                JMP REDRAW_SHAPES
+                TAY
+                LDX OVAL_SHAPES_L,Y
+                LDA OVAL_SHAPES_H,Y
+                TAY
+                JMP NEW_DRAW_SHAPE
 
-OVAL_DATA       DB  %01111000
+OVAL_SHAPES_L   DB  <OVAL_0
+                DB  <OVAL_1
+                DB  <OVAL_2
+                DB  <OVAL_3
+                DB  <OVAL_4
+
+OVAL_SHAPES_H   DB  >OVAL_0
+                DB  >OVAL_1
+                DB  >OVAL_2
+                DB  >OVAL_3
+                DB  >OVAL_4
+
+OVAL_0          DB  $21,$01
+
+                DB  %01111000
                 DB  %00001100
                 DB  %00000110
                 DB  %00000110
@@ -99,6 +108,8 @@ OVAL_DATA       DB  %01111000
                 DB  %00011000
                 DB  %00001111
 
+OVAL_1          DB  $21,$01
+
                 DB  %01110000
                 DB  %00011000
                 DB  %00001100
@@ -115,53 +126,34 @@ OVAL_DATA       DB  %01111000
                 DB  %00001100
                 DB  %00000111
 
-                DB  %00000000
-                DB  %01110000
-                DB  %00011000
-                DB  %00011000
-                DB  %00011000
-                DB  %01110000
-                DB  %00000000
+OVAL_2          DB  $21,$32
+
+                DB  %01111110
+                DB  %01000011
+                DB  %01000011
+                DB  %01000011
+                DB  %01111110
+                DB  %10000000
 
                 DB  %00000000
-                DB  %00000111
-                DB  %00001100
-                DB  %00001100
-                DB  %00001100
-                DB  %00000111
-                DB  %00000000
+                DB  %00000001
+                DB  %00000001
+                DB  %00000001
+                DB  %10000000
 
-                DB  %00000000
-                DB  %00000000
-                DB  %01100000
-                DB  %00110000
-                DB  %01100000
-                DB  %00000000
-                DB  %00000000
+OVAL_3          DB  $11,$43
 
-                DB  %00000000
-                DB  %00000000
-                DB  %00000011
+                DB  %00011110
+                DB  %00110011
+                DB  %00011110
+                DB  %10000000
+
+OVAL_4          DB  $11,$53
+
                 DB  %00000110
-                DB  %00000011
-                DB  %00000000
-                DB  %00000000
-
-                DB  %00000000
-                DB  %00000000
-                DB  %01000000
-                DB  %01100000
-                DB  %01000000
-                DB  %00000000
-                DB  %00000000
-
-                DB  %00000000
-                DB  %00000000
-                DB  %00000001
-                DB  %00000011
-                DB  %00000001
-                DB  %00000000
-                DB  %00000000
+                DB  %00001111
+                DB  %00000110
+                DB  %10000000
 
 DELAYER         LDA DELAY_MODE
                 BNE SPCWAIT
@@ -184,47 +176,50 @@ DELOOP          LDA SCREENH
                 CLD
                 STA SCREENH
                 LDA #$08
-                JSR WAIT2
+                JSR WAIT_KEY
                 BPL DELOOP
 KEYAHIT         LDA KEYBRD
                 BIT UNSTROB
-                CMP #$A0
+                CMP #" "
                 BNE DELOOP
+
 SPACING         LDA #$01
                 STA DELAY_MODE
-                LDY #0
-                JSR TEXTER
-                LDY #1
-                JSR TEXTER
+                ;*** SWAP DELAY/STEP MESSAGE ***
+                ; LDY #0
+                ; JSR TEXTER
+                ; LDY #1
+                ; JSR TEXTER
                 JMP DELAYER
+
 SPCWAIT         LDA KEYBRD
                 BPL SPCWAIT
                 BIT UNSTROB
                 CMP #$9B            ;TEMP***
                 BEQ ABORT           ;TEMP***
-                CMP #$A0
+                CMP #" "
                 BEQ TIMESUP
                 CMP #$8D
                 BNE SPCWAIT
+
                 LDA #$00
                 STA DELAY_MODE
-                LDY #1
-                JSR TEXTER
-                LDY #0
-                JMP TEXTER
+                ;*** SWAP DELAY/STEP MESSAGE ***
+                ; LDY #1
+                ; JSR TEXTER
+                ; LDY #0
+                ; JMP TEXTER
+
 TIMESUP         RTS
+
 ABORT           BIT $C061           ;TEMP***
                 BPL :2              ;TEMP***
-                LDA #0              ;TEMP***
-                STA COUNT           ;TEMP***
-:1              JSR POINTIT         ;TEMP***
-                LDY #status         ;TEMP***
+                JSR FIRST_CHAR      ;TEMP***
+:1              LDY #status         ;TEMP***
                 LDA #dead           ;TEMP***
                 STA (CHARDL),Y      ;TEMP***
-                INC COUNT           ;TEMP***
-                LDA COUNT           ;TEMP***
-                CMP GRPNUMB         ;TEMP***
-                BNE :1              ;TEMP***
+                JSR NEXT_CHAR       ;TEMP***
+                BCC :1              ;TEMP***
 :2              JMP BATTLE_OVER     ;TEMP***
 
 GETIME          LDX POINTER
@@ -312,84 +307,47 @@ MAXCUTS         DB  $16,$33,$50
 TMUNITS         DB  $36,$18,$12
                 DB  $09,$07,$06
 
-CSBOT2          LDX #$40
-CSLOOPB         LDA LOBYTES,X
-                STA SCREENL
-                LDA HIBYTES,X
-                ORA #$40
-                STA SCREENH
-                LDY #$27
-                LDA #$00
-CSLOOPA         STA (SCREENL),Y
-                DEY
-                BPL CSLOOPA
-                INX
-                CPX #$C0
-                BNE CSLOOPB
+; TEXTER          TYA
+;                 ASL
+;                 TAY
+;                 LDA TEXTS,Y
+;                 STA POINTL
+;                 LDA TEXTS+1,Y
+;                 STA POINTH
+;                 JMP TEXTOUT
+
+; TEXTS           DW  TDELMOD
+;                 DW  TSPAMOD
+;                 DW  OPEN_TEXT       ;In Running code
+
+; TDELMOD         PLOTAT  210;75;(DELAY_MODE)
+;                 PLOTAT  207;109;(<SPACE>_FOR)
+;                 PLOTAT  213;117;(STEP_MODE)+
+
+; TSPAMOD         PLOTAT  213;75;(STEP_MODE)
+;                 PLOTAT  225;85;(PRESS)
+;                 PLOTAT  219;93;(<SPACE>)
+;                 PLOTAT  207;109;(<RETRN>_FOR)
+;                 PLOTAT  210;117;(DELAY_MODE)+
+
+DRAW_SHOOTBOX   JSR DRAW_PICT
+                PictSetPage2
+                PictClear 0;64;40;192
+                PictSetWhite1
+                PictRect $07;$47;$55;$B7
+                PictMoveTo $06;$47
+                PictLineTo $06;$B7
+                PictMoveTo $56;$47
+                PictLineTo $56;$B7
+                PictMoveTo $59;$47
+                PictLineTo $59;$B7
+                PictMoveTo $00;$40
+                PictLineTo $00;$46
+                PictMoveTo $01;$46
+                PictLineTo $01;$40
+                PictLineTo $5B;$40
+                PictLineTo $5B;$46
+                PictMoveTo $5C;$40
+                PictLineTo $5C;$46
+                PictEnd
                 RTS
-
-TEXTER          TYA
-                ASL
-                TAY
-                LDA TEXTS,Y
-                STA POINTL
-                LDA TEXTS+1,Y
-                STA POINTH
-                JMP TEXTOUT
-
-TEXTS           DW  TDELMOD
-                DW  TSPAMOD
-                DW  OPEN_TEXT       ;In Running code
-
-TDELMOD         PLOTAT  210;75;(DELAY_MODE)
-                PLOTAT  207;109;(<SPACE>_FOR)
-                PLOTAT  213;117;(STEP_MODE)+
-
-TSPAMOD         PLOTAT  213;75;(STEP_MODE)
-                PLOTAT  225;85;(PRESS)
-                PLOTAT  219;93;(<SPACE>)
-                PLOTAT  207;109;(<RETRN>_FOR)
-                PLOTAT  210;117;(DELAY_MODE)+
-
-LINER           TYA
-                ASL
-                TAY
-                LDA LINES,Y
-                STA POINTL
-                LDA LINES+1,Y
-                STA POINTH
-                JMP LINEOUT
-
-LINES           DW  SHOOTBX
-                DW  DIVIDER
-
-SHOOTBX         DB  $00,$07,$47
-                DB  $00,$55,$47
-                DB  $00,$55,$B7
-                DB  $00,$07,$B7
-                DB  $00,$07,$47
-                DB  $FE
-                DB  $00,$06,$47
-                DB  $00,$06,$B7
-                DB  $FE
-                DB  $00,$56,$47
-                DB  $00,$56,$B7
-                DB  $FE
-                DB  $00,$59,$47
-                DB  $00,$59,$B7
-                DB  $FE
-                DB  $00,$00,$40
-                DB  $00,$00,$46
-                DB  $FE
-                DB  $00,$01,$46
-                DB  $00,$01,$40
-                DB  $00,$5B,$40
-                DB  $00,$5B,$46
-                DB  $FE
-                DB  $00,$5C,$40
-                DB  $00,$5C,$46
-                DB  $FF
-
-DIVIDER         DB  $00,$CE,$68
-                DB  $01,$11,$68
-                DB  $FF

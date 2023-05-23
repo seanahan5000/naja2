@@ -16,8 +16,8 @@ NARR_CBLASTER
 *^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
                 LDY #xAn
                 JSR WORD1_INC
-                JSR EQUIP2
-                LDA #$0A
+                JSR ETABLE_TO_TEXT_X
+                LDA #TextSpace
                 STA TEXTBUF,X
                 INX
                 LDA TEXTBUF+3
@@ -38,7 +38,7 @@ NARR_CBLASTER
                 JSR WORD1_INC
                 LDY #6              ;S>6 Absorbed.By.The.Wall
                 JSR SENTENCE
-                LDA #$1D
+                LDA #TextS
                 STA TEXTBUF,X
                 INX
                 JMP PERIOD_RETURN   ;RTS
@@ -57,7 +57,7 @@ NO_ABSORBS      LDA RICOCHETS
                 LDA RICOCHETS
                 CMP #$01
                 BEQ ONE_WALL
-                LDA #$1D
+                LDA #TextS
                 STA TEXTBUF,X
                 INX
 ONE_WALL        INX
@@ -95,7 +95,7 @@ SOMEONE_HIT     BIT BLOCKED
                 PHA
                 JSR FIND_CHAR
                 STA CHAR_NUMBER
-                JSR POINTIT
+                JSR SET_CHAR
                 JSR GET_CDAM_TOTL
                 LDX #0
                 LDY #xIs
@@ -109,7 +109,7 @@ SOMEONE_HIT     BIT BLOCKED
                 JSR DELAYER
                 PLA
                 STA CHAR_NUMBER
-                JMP POINTIT         ;RTS
+                JMP SET_CHAR
 
 *^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 * If HITS then

@@ -1,4 +1,7 @@
-BATTLER         JSR CLEAR2
+BATTLER         JSR DRAW_PICT
+                PictSetPage2
+                PictClearPage
+                PictEnd
                 JSR CLRBOX
 
                 LDA ROUND           ;*** MOVE THIS TO LOADER ???
@@ -8,15 +11,12 @@ BATTLER         JSR CLEAR2
                 DEX
                 BPL :1
 :2
-                BIT SUPRISED_FLAG
+                BIT SURPRISED_FLAG
                 BVC START
                 LDA #$37
                 STA ROUND_LENGTH+1
-START           LDA #0
-                STA COUNT
-:LOOP1          JSR POINTIT
-                LDX COUNT
-                LDY #position
+START           JSR FIRST_CHAR
+:1              LDY #position
                 LDA (CHARDL),Y
                 STA TEMPCHAR_XY,X
                 LDA #$00
@@ -39,13 +39,10 @@ START           LDA #0
                 BNE :SKIPB          ;Always
 :SKIPA          LDA #$00            ;Don't have image generator
 :SKIPB          STA IMAGENS,X
-                INC COUNT
-                LDA COUNT
-                CMP GRPNUMB
-                BNE :LOOP1
+                JSR NEXT_CHAR
+                BCC :1
 
-                LDA #GREEN
-                JSR MODE_SUB
+                JSR DRAW_MODE_MSG
                 JSR PECKING_ORDER
 
 INIT_GRIDS      JSR CREATE_MGRID
@@ -61,7 +58,7 @@ INIT_CHARS      LDA #0
                 BPL :SKIPA
                 AND #$7F
                 STA CHAR_NUMBER
-                JSR POINTIT
+                JSR SET_CHAR
                 JSR GETIME
                 LDX CHAR_NUMBER
                 STA CTIME_COUNTS,X
@@ -147,7 +144,7 @@ CHARPEC         LSR
                 STA CHAR_NUMBER
                 JSR COMCALC
                 LDA CHAR_NUMBER
-                JSR POINTIT
+                JSR SET_CHAR
                 JSR BAD_STATUS
                 BCS NOTIME
                 LDX CHAR_NUMBER
@@ -209,7 +206,7 @@ ROUND_OVER      JSR ABANDON
                 LDX ATALLY
                 BEQ BATTLE_OVER2
                 LDA #0
-                STA SUPRISED_FLAG
+                STA SURPRISED_FLAG
                 JSR OPEN_FRONTS     ;Does not always return here
                 INC ROUND
                 BNE :1
@@ -217,21 +214,20 @@ ROUND_OVER      JSR ABANDON
 :1              JSR UPDATE_STAT
                 JSR DRAW_IMAGENS
                 JSR UPDATE_POSITN
-                LDA #BLACK1
-                JSR MODE_SUB
+                JSR CLEAR_MODE_MSG
                 LDA #$62
                 PHA
                 LDA #$FF
                 PHA
-                LDX #fCommand
-                JMP SLOAD_FILE
+                LDA #fileFightCommand
+                LDY #$63
+                JMP LOAD_FILE
 
 BATTLE_OVER     JSR ABANDON
                 JSR GROUP_TYPER
 BATTLE_OVER2    JSR RESTOR_POSITN
                 JSR REMOVE_STATS
-                LDA #BLACK1
-                JSR MODE_SUB
+                JSR CLEAR_MODE_MSG
 
                 BIT GROUP_STATUS
                 BVS ALL_DEAD
@@ -241,52 +237,49 @@ BATTLE_OVER2    JSR RESTOR_POSITN
                 BMI FORCE_DEAD
             fin
 
-                LDA #$8F
+                LDA #$9F
                 PHA
                 LDA #$FF
                 PHA
-                LDX #fAwarder
-                JMP SLOADER_FILE
+                LDA #NOT_SPINNING+KEEP_SPINNING
+                JSR SET_NEXT_ON_OFF
+                LDA #fileFightAwarder
+                LDY #$A0
+                JMP LOAD_FILE
 
             do  DEBUG_KEYS
 FORCE_DEAD      LDA #$00
                 STA GRPNUMB
             fin
 
-ALL_DEAD        LDA #$7F
+ALL_DEAD        LDA #$9F
                 PHA
                 LDA #$FF
                 PHA
-                LDX #fDeadGroup
-                JMP SLOAD_FILE
+                LDA #fileDeadGroup
+                LDY #$A0
+                JMP LOAD_FILE
 
 *-------------------------------
 
 RESTOR_POSITN   LDX #7
-:LOOP1          LDA CHARXY,X
+:1              LDA SAVE_CPOS,X
                 STA TEMPCHAR_XY,X
                 DEX
-                BPL :LOOP1
+                BPL :1
 
-UPDATE_POSITN   LDA #0
-                STA COUNT
-:LOOP1          JSR POINTIT
-                LDX COUNT
-                LDA TEMPCHAR_XY,X
+UPDATE_POSITN   JSR FIRST_CHAR
+:1              LDA TEMPCHAR_XY,X
                 LDY #position
                 STA (CHARDL),Y
-                INC COUNT
-                LDA COUNT
-                CMP GRPNUMB
-                BNE :LOOP1
+                JSR NEXT_CHAR
+                BCC :1
                 RTS
 
 *-------------------------------
 
-UPDATE_STAT     LDA #0
-                STA COUNT
-:LOOP1          JSR POINTIT
-                LDY #status
+UPDATE_STAT     JSR FIRST_CHAR
+:1              LDY #status
                 LDA (CHARDL),Y
                 AND #%00100000      ;Fight only status
                 BEQ :SKIPB
@@ -300,7 +293,7 @@ UPDATE_STAT     LDA #0
                 JSR CLEAR_TLINE1
                 LDY #37             ;SENTENCE 37
                 JSR SENTENCE_RET
-                JSR STATUSR
+                JSR CSTATUS_TO_TEXT_L
                 JSR PERIOD_RETURN
                 JSR DELAYER
                 JSR CLRBOX
@@ -314,23 +307,16 @@ UPDATE_STAT     LDA #0
                 SBC #$01
                 CLD
                 STA (CHARDL),Y
-:SKIPB          INC COUNT
-                LDA COUNT
-                CMP GRPNUMB
-                BNE :LOOP1
+:SKIPB          JSR NEXT_CHAR
+                BCC :1
                 RTS
 
 *-------------------------------
 
-REMOVE_STATS    LDA #0
-                STA COUNT
-:LOOP1          LDA COUNT
-                JSR POINTIT
-                JSR DEFIGHT_STAT
-                INC COUNT
-                LDA COUNT
-                CMP GRPNUMB
-                BNE :LOOP1
+REMOVE_STATS    JSR FIRST_CHAR
+:1              JSR DEFIGHT_STAT
+                JSR NEXT_CHAR
+                BCC :1
                 RTS
 
 *-------------------------------
@@ -368,7 +354,7 @@ ABANDON         LDA #0
                 RTS
 
 ABANDONABLE     TAX
-                JSR POINTIT
+                JSR SET_CHAR
                 LDY #profrace
                 LDA (CHARDL),Y
                 CLC
@@ -379,22 +365,19 @@ ABANDONABLE     TAX
                 TXA
                 PHA
 
-                LDA #0
-                STA COUNT
-:LOOP1          JSR POINTIT
-                LDY #disklocation
+                JSR FIRST_CHAR
+:LOOP1          LDY #disklocation
                 LDA (CHARDL),Y
                 CMP TEMP
                 BEQ :SKIPA
-                INC COUNT
-                LDA COUNT
-                BNE :LOOP1          ;Always
+                JSR NEXT_CHAR
+                BCC :LOOP1          ;Always
 
 :SKIPA          JSR BAD_STATUS
                 PLA
                 STA COUNT
                 PHP
-                JSR POINTIT
+                JSR SET_CHAR
                 PLP
 :EXIT           RTS
 
@@ -409,19 +392,15 @@ ABANDONABLE     TAX
 *     Overflow set: IS time to leave narrator
 *----------------------------------------------
 
-GROUP_TYPER     LDA #0
-                STA COUNT
-:LOOP1          JSR POINTIT
-                LDY #status
+GROUP_TYPER     JSR FIRST_CHAR
+:1              LDY #status
                 LDA (CHARDL),Y
                 AND #%00111111
                 BEQ :SKIPA          ;healthy
                 AND #%00111100
                 BNE :SKIPA          ;dead,broken,abandoned
-                INC COUNT
-                LDA COUNT
-                CMP GRPNUMB
-                BNE :LOOP1
+                JSR NEXT_CHAR
+                BCC :1
                 LDA #%01000000
                 ORA GROUP_STATUS
                 STA GROUP_STATUS
@@ -433,23 +412,44 @@ GROUP_TYPER     LDA #0
 *
 *-------------------------------
 
-MODE_SUB        STA COLOR
-                LDY #0
-                LDA DELAY_MODE
-                BEQ :SKIPA
-                INY
-:SKIPA          JSR TEXTER
-                LDY #1
-                JMP LINER
+DRAW_MODE_MSG   JSR DRAW_PICT
+                PictSetGreen
+                PictMoveTo $CE;104
+                PictLineTo $111;104
+                PictEnd
 
+                LDA DELAY_MODE
+                BNE :1
+                JSR DRAW_PICT
+                PictTextAt 210;75;(DELAY_MODE)
+                PictTextAt 207;109;(<SPACE>_FOR)
+                PictTextAt 213;117;(STEP_MODE)
+                PictEnd
+                RTS
+
+:1              JSR DRAW_PICT
+                PictTextAt 213;75;(STEP_MODE)
+                PictTextAt 225;85;(PRESS)
+                PictTextAt 219;93;(<SPACE>)
+                PictTextAt 207;109;(<RETRN>_FOR)
+                PictTextAt 210;117;(DELAY_MODE)
+                PictEnd
+                RTS
+
+CLEAR_MODE_MSG  JSR DRAW_PICT
+                ;*** PictClear ***
+                PictEnd
+                RTS
 
 *-------------------------------
 *
 *-------------------------------
 
+; TODO: convert to FIRST_CHAR/NEXT_CHAR
+
 PECKING_ORDER   LDA #0
                 STA POINTER
-:LOOP1          JSR POINTIT
+:LOOP1          JSR SET_CHAR
                 LDX POINTER
                 TXA
                 ORA #$80

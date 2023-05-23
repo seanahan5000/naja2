@@ -24,11 +24,11 @@ HEALING         LDX COMPNTR
                 LDA MASTER_CGRID,Y
                 BPL HAVE_PATIENT
 NO_HEALING      LDA CHAR_NUMBER     ;No patient in destination square
-                JSR POINTIT
+                JSR SET_CHAR
                 JMP CCOM
 
 HAVE_PATIENT    STA PATIENT
-                JSR POINTIT
+                JSR SET_CHAR
                 LDY #profrace
                 LDA (CHARDL),Y
                 EOR HEAL_TYPE
@@ -43,7 +43,7 @@ HAVE_PATIENT    STA PATIENT
                 BCS :SKIPA
                 STA HEAL_AMOUNT
 :SKIPA          LDA CHAR_NUMBER
-                JSR POINTIT
+                JSR SET_CHAR
                 LDA HEAL_AMOUNT
                 BNE MAY_HEAL
                 JMP NO_HEALING
@@ -86,19 +86,18 @@ DOES_HEAL       LDA PRODUCT_3+2
                 LDA #xOf
                 JSR WORD2_RET
                 LDA PATIENT
-                JSR POINTIT
+                JSR SET_CHAR
                 JSR CHAR_NAME
                 JSR APOSTROPHE_S
                 LDY #xDamage
                 JSR WORD1_PRDRET
 
-                JSR DAMAGR2
-                LDY PATIENT
-                LDA YPOINTS,Y
-                STA YPNT
-                TAY
-                LDA #$8A
-                JSR LINE
+                JSR DAMAGE_STATUS
+                LDX PATIENT
+                LDY YPOINTS,X
+                JSR VMOVE_TO
+                LDX #$8A
+                JSR DRAW_TEXTBUF_X
 
                 LDY #damagelev+1    ;Heal the damage
                 SEC
@@ -130,12 +129,11 @@ DOES_HEAL       LDA PRODUCT_3+2
                 AND #$FF-critical
                 STA (CHARDL),Y
 :SKIPB          CLD
-                JSR DAMAGR2
-                LDY YPNT
-                LDA #$8A
-                JSR LINE
+                JSR DAMAGE_STATUS
+                LDX #$8A
+                JSR DRAW_TEXTBUF_X
                 LDA CHAR_NUMBER
-                JSR POINTIT
+                JSR SET_CHAR
                 JMP TAKDELCLRCCOM
 
 PATIENT         DB  0

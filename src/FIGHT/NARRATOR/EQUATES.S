@@ -13,8 +13,8 @@ runtestedbit    =   %01000000
 
 lastTextCol     =   29
 
-SCRATCH         =   $00
-COUNTER         =   $01
+; SCRATCH         =   $00
+; COUNTER         =   $01
 
 *** Short term variables
 WIDTH           =   ZBLOCK_28+0     ;Topviews

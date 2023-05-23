@@ -89,6 +89,7 @@ BOGUS_MONARR
                 INX
                 RTS
 
+;*** use grid mul5 table
 MULT5           DB  0,5,10,15,20,25
 
 BTEXT           USR (SWING)-
