@@ -1,8 +1,4 @@
 
-divDVND			=	$14				;$15
-divQUOT			=	$16				;$17
-divADD			=	$18				;$19
-
 EPOINT			=	XCOUNT
 ; * YCOUNT is used as a non-volatile counter
 

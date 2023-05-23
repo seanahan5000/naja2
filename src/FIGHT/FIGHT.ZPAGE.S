@@ -1,4 +1,4 @@
-CHAR_NUMBER     =   ZBLOCK_40+0
+CHAR_NUMBER     =   ZBLOCK_40+0         ; TODO: phase out and use CHAR_INDEX
 MONS_NUMBER     =   ZBLOCK_40+1
 ALIEN_PTR       =   ZBLOCK_40+2     ;+3
 MONS_PTR        =   ZBLOCK_40+4     ;+5

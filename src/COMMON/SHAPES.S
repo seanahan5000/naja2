@@ -82,7 +82,9 @@ NEXT_TCOL       LDY #0
                 STA DATPNTL
                 BCC :4
                 INC DATPNTH
-:4              JSR BLIT_TILE
+:4
+BLIT_TILE_MOD   ENT
+                JSR BLIT_TILE
                 DEC XCOUNT
                 BNE NEXT_TCOL
 
@@ -96,7 +98,8 @@ NEXT_TCOL       LDY #0
                 RTS
 
 ; TODO: move this? maybe to page $02?
-TILE_BUFFER     DS  7
+TILE_BUFFER     ENT
+                DS  7
 
 ;-------------------------------------------------------------------------------
 ; Input:
@@ -227,7 +230,8 @@ DRAW_TILE       ENT
 
 SHIFT_BITS      =   LOCAL_TEMP
 
-BLIT_TILE       LDX #6
+BLIT_TILE       ENT
+                LDX #6
 BLTLOOP1        LDA #0
                 STA SHIFT_BITS
                 LDA TABLER_L,X

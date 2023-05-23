@@ -19,6 +19,8 @@ DRAW_ENERGY_PER	ENT
 				AND	#eq_identified
 				BEQ	:4
 
+; TODO: maybe convert back to using DIGITS_L or DIGITS_R
+
 				LDY	#0
 				LDX #0
 :1				LDA	ENERGY_USAGE,Y

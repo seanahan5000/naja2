@@ -165,7 +165,8 @@ PRODUCT_3		ENT
 *
 *-------------------------------
 
-LESS_PERCENT	STA	TEMP
+LESS_PERCENT	ENT
+				STA	TEMP
 				SED
 				LDA	#0
 				SEC
@@ -199,49 +200,53 @@ PERCENT_OF		ENT
 *   X,Y: Quotient (low/high)
 *-------------------------------
 
-; NOTE: only used in AWARDER.S right now (FIGHT.NARRATOR later)
+; NOTE: only used in AWARDER.S and FIGHT.NARRATOR
 
-; DIVIDE_12		ENT
-; 				STX	divDVND+0
-; 				STY	divDVND+1
-; 				LDX	#1
-; 				STX	divADD+1
-; 				DEX
-; 				STX	divADD+0
-; 				STX	TEMP+0
-; 				STX	divQUOT+0
-; 				STX	divQUOT+1
-; 				STA	TEMP+1
-; 				SED
-; 				LDY	#3
-; :1				LDA	divDVND+0
-; 				SEC
-; 				SBC	TEMP+0
-; 				TAX
-; 				LDA	divDVND+1
-; 				SBC	TEMP+1
-; 				BCC	:2
-; 				STX	divDVND+0
-; 				STA	divDVND+1
-; 				LDA	divADD+0
-; 				CLC
-; 				ADC	divQUOT+0
-; 				STA	divQUOT+0
-; 				LDA	divADD+1
-; 				ADC	divQUOT+1
-; 				STA	divQUOT+1
-; 				BCC	:1				;Always
-; :2				LDX	#3
-; :3				LSR	divADD+1
-; 				ROR	divADD+0
-; 				LSR	TEMP+1
-; 				ROR	TEMP+0
-; 				DEX
-; 				BPL	:3
-; 				DEY
-; 				BNE	:1
-; 				CLD
-; 				LDA	divDVND+0
-; 				LDX	divQUOT+0
-; 				LDY	divQUOT+1
-; 				RTS
+divDVND			=	$14				;$15
+divQUOT			=	$16				;$17
+divADD			=	$18				;$19
+
+DIVIDE_12		ENT
+				STX	divDVND+0
+				STY	divDVND+1
+				LDX	#1
+				STX	divADD+1
+				DEX
+				STX	divADD+0
+				STX	TEMP+0
+				STX	divQUOT+0
+				STX	divQUOT+1
+				STA	TEMP+1
+				SED
+				LDY	#3
+:1				LDA	divDVND+0
+				SEC
+				SBC	TEMP+0
+				TAX
+				LDA	divDVND+1
+				SBC	TEMP+1
+				BCC	:2
+				STX	divDVND+0
+				STA	divDVND+1
+				LDA	divADD+0
+				CLC
+				ADC	divQUOT+0
+				STA	divQUOT+0
+				LDA	divADD+1
+				ADC	divQUOT+1
+				STA	divQUOT+1
+				BCC	:1				;Always
+:2				LDX	#3
+:3				LSR	divADD+1
+				ROR	divADD+0
+				LSR	TEMP+1
+				ROR	TEMP+0
+				DEX
+				BPL	:3
+				DEY
+				BNE	:1
+				CLD
+				LDA	divDVND+0
+				LDX	divQUOT+0
+				LDY	divQUOT+1
+				RTS

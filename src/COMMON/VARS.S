@@ -10,6 +10,7 @@ Text1           =   1
 Text9           =   9
 TextSpace       =   10
 TextA           =   11
+TextS           =   29
 TextZ           =   36
 TextFirstSymbol =   37              ; first symbol after {0-9 A-Z}
 TextPercent     =   $27

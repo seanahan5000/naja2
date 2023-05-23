@@ -25,7 +25,8 @@ _CEQUIP_TO_TEXT	LDX	#$00
 				BNE	:LOOP1
 _ETABLE_TO_TEXT							; was EQUIP1
 				LDX	#$00
-EQUIP2			TXA						; called byte fight BLASTER.S
+_ETABLE_TO_TEXT_X						; was EQUIP2, called by fight BLASTER.S
+				TXA
 				CLC
 				ADC	#15
 				STA	TRUNC_MOD+1

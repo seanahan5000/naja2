@@ -140,22 +140,29 @@ STATS_LINE2     ENT
                 JSR DRAW_TEXTBUF_X
 :DAMSTAT        LDA SELECT
                 LSR
-                BCS :STATUS
+                BCS STATUS_WORD
                 LSR
                 BCS :DAMAGE
                 RTS
 
 :DAMAGE         JSR MAJOR_STATUS
-                BCC :1
-                BCS :2              ; always
+                BCC STATUS_WORD_1
+                BCS STATUS_WORD_2   ; always
 
-:STATUS         JSR MAJOR_STATUS
-                BCC :2
-:1              JSR HEALTH_TO_TEXT
-                JMP :3
-:2              JSR CSTATUS_TO_TEXT_C
-:3              LDX #$8A
+STATUS_WORD     ENT
+                JSR MAJOR_STATUS
+                BCC STATUS_WORD_2
+STATUS_WORD_1   JSR HEALTH_TO_TEXT
+                JMP STATUS_WORD_3
+STATUS_WORD_2   JSR CSTATUS_TO_TEXT_C
+STATUS_WORD_3   LDX #$8A
                 JMP DRAW_TEXTBUF_X
+
+DAMAGE_STATUS   ENT                     ; was DAMAGR2
+                JSR MAJOR_STATUS
+                BCC :1
+                JMP CSTATUS_TO_TEXT_C
+:1              JMP HEALTH_TO_TEXT
 
         do NAME_FIRST
         else
@@ -398,46 +405,78 @@ CMN_TO_TEXT_L   JSR CHAR_DIGITS_L
 ;   X: updated TEXT_BUFFER position
 ;
 BYTE_COUNT      =   LOCAL_TEMP+0
-START_INDEX     =   LOCAL_TEMP+1
-END_INDEX       =   LOCAL_TEMP+2
 
 CHAR_DIGITS_L   STA BYTE_COUNT
                 LDA #TextEmpty
-                BNE CHAR_DIG_CMN    ; always
+                BNE CHAR_DIG_CMN        ; always
 CHAR_DIGITS_R   STA BYTE_COUNT
                 LDA #TextSpace
-CHAR_DIG_CMN    STA :FILL_MOD+1
-                STX START_INDEX
+CHAR_DIG_CMN    STA :MOD1+1
+                STX :MOD2+1
+                LDX BYTE_COUNT
 :1              LDA (CHARDL),Y
-                INY
                 PHA
-                LSR
-                LSR
-                LSR
-                LSR
-                STA TEXT_BUFFER,X
-                INX
-                PLA
-                AND #$0F
-                STA TEXT_BUFFER,X
-                INX
-                DEC BYTE_COUNT
-                BNE :1
+                INY
                 DEX
-                STX END_INDEX
-                LDX START_INDEX
-:2              LDA TEXT_BUFFER,X
-                BNE :3
-:FILL_MOD       LDA #$FF
+                BNE :1
+:MOD1           LDY #$FF
+:MOD2           LDX #$FF
+                BPL DIGITS_CMN          ; always
+;
+; On entry:
+;   A: byte (not digit) count
+;   X: TEXT_BUFFER position
+;
+; On exit:
+;   X: updated TEXT_BUFFER position
+;
+DIGITS_L        ENT
+                LDY #TextEmpty
+                HEX 2C
+DIGITS_R        ENT
+                LDY #TextSpace
+                STA BYTE_COUNT
+DIGITS_CMN      PLA
+                CLC
+                ADC #1
+                STA :MOD+1
+                PLA
+                ADC #0
+                STA :MOD+2
+:1              PLA
+                DEC BYTE_COUNT
+                BEQ :2
+                JSR TWO_DIGITS
+                BNE :1                  ; always
+:2              PHA
+                LSR
+                LSR
+                LSR
+                LSR
+                JSR ONE_DIGIT
+                PLA
+                AND #%00001111
                 STA TEXT_BUFFER,X
                 INX
-                CPX END_INDEX
-                BNE :2
-:3              LDX END_INDEX
+:MOD            JMP $FFFF
+
+TWO_DIGITS      PHA
+                LSR
+                LSR
+                LSR
+                LSR
+                JSR ONE_DIGIT
+                PLA
+                AND #%00001111
+ONE_DIGIT       BEQ :1
+                LDY #0
+                BEQ :2                  ; always
+:1              TYA
+:2              STA TEXT_BUFFER,X
                 INX
                 RTS
 
-CSTATUS_TO_TEXT_L
+CSTATUS_TO_TEXT_L ENT
                 JSR CSTATUS_TO_TEXT_C
                 JMP FORCE_LEFT
 

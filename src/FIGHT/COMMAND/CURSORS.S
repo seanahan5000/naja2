@@ -188,6 +188,8 @@ LIMIT_LR        DB  0
 
 *-------------------------------
 
+; TODO: share with /FIGHT/NARRATOR/ENERGY.S
+
 EZONE_CURSOR    LDA CURSOR
                 SEC
                 SBC #$05
@@ -204,7 +206,7 @@ EZONE_CURSOR    LDA CURSOR
                 BPL :1
                 TXA
                 CLC
-                ADC #15                 ; grid cell width
+                ADC #15                 ; GCELL_WIDTH
                 TAX
 :1              JSR MOVE_TO
                 LDX #<EZONE_VERT
@@ -220,7 +222,7 @@ EZONE_CURSOR    LDA CURSOR
                 BPL :2
                 TYA
                 CLC
-                ADC #11                 ; grid cell height
+                ADC #11                 ; GCELL_HEIGHT
                 TAY
 :2              JSR MOVE_TO
                 LDX #<EZONE_HORZ

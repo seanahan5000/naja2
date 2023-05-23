@@ -49,6 +49,11 @@ ETABLE_TO_TEXT  ENT
                 JSR _ETABLE_TO_TEXT
                 JMP BANK_2
 
+ETABLE_TO_TEXT_X ENT
+                JSR BANK_1
+                JSR _ETABLE_TO_TEXT_X
+                JMP BANK_2
+
 STATUS_TO_TEXT_C ENT
                 TAX
                 JSR BANK_1

@@ -318,6 +318,6 @@ INSTR2          =   $C1
                 PUT /CAMP/TOPVIEWS
                 PUT /CAMP/GRID
 
-; TODO: these were zpage, should be saved settings
+; TODO: these were zpage, should be saved in settings, shared with NARRATOR
 DELAY_TIME      DB  $25
 DELAY_MODE      DB  $01

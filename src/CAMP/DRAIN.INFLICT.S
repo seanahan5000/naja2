@@ -1,5 +1,7 @@
-DRAIN_DIRECT2	LDA	#0
-DRAIN_DIRECT3	PHP
+DRAIN_DIRECT2	ENT
+				LDA	#0
+DRAIN_DIRECT3	ENT
+				PHP
 				STX	DRAIN_AMOUNT+2
 				STY	DRAIN_AMOUNT+1
 				STA	DRAIN_AMOUNT+0
@@ -22,7 +24,8 @@ DRAIN_DIRECT3	PHP
 *   Carry Set = Had enough energy
 *   Carry Clear = Did NOT have enough energy
 
-DRAINER_MAIN	PHP
+DRAINER_MAIN	ENT
+				PHP
 				STX	TEMP
 				STY	TEMP+1
 				LDY	#$02
