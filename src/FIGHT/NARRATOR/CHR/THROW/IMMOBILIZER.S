@@ -27,7 +27,7 @@ IMMOBILIZER     PHA
                 DEX
                 BPL :2
                 JSR GET_CMD_XY
-                JSR FIND_MONS
+                JSR FIND_MONSTER
                 BCS IMMOB_HIT
 
 *^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -40,9 +40,7 @@ NO_IMMOB_HIT    LDX #17
                 JSR SENTENCE_PRET   ;     AnEmptySquare
                 JMP TAKDELCLRCCOM
 
-IMMOB_HIT       STA MONS_NUMBER
-                JSR POINTTO
-                LDX #17
+IMMOB_HIT       LDX #17
                 LDY #65             ;S>65 Envelops.RET.The.MonsName
                 JSR SENTENCE
                 LDY #aImmobilized

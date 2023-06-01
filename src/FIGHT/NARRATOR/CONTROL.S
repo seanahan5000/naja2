@@ -1,6 +1,7 @@
 BATTLER         JSR DRAW_PICT
                 PictSetPage2
                 PictClearPage
+                PictSetPage1
                 PictEnd
                 JSR CLRBOX
 
@@ -74,9 +75,7 @@ INIT_ALIENS     JSR PRE_IDENTIFY
                 LDA PECKS,X
                 BMI :2
                 BEQ :3
-                AND #%00111111
-                STA MONS_NUMBER
-                JSR POINTTO
+                JSR SET_MONSTER
                 JSR INIT_MCOMMAND
 :2              INC POINTER
                 BNE :1              ;Always
@@ -98,9 +97,7 @@ COMMAND_LOOP    LDX POINTER
                 BPL CHARPEC
 *-------------------------------
 MONSPEC         LSR
-                AND #%00111111
-                STA MONS_NUMBER
-                JSR POINTTO
+                JSR SET_MONSTER
                 LDY #monSTATUS
                 LDA (MONS_PTR),Y
                 CMP #dead
@@ -215,12 +212,13 @@ ROUND_OVER      JSR ABANDON
                 JSR DRAW_IMAGENS
                 JSR UPDATE_POSITN
                 JSR CLEAR_MODE_MSG
-                LDA #$62
+
+                LDA #$5F
                 PHA
                 LDA #$FF
                 PHA
                 LDA #fileFightCommand
-                LDY #$63
+                LDY #$60
                 JMP LOAD_FILE
 
 BATTLE_OVER     JSR ABANDON
@@ -237,14 +235,14 @@ BATTLE_OVER2    JSR RESTOR_POSITN
                 BMI FORCE_DEAD
             fin
 
-                LDA #$9F
+                LDA #$87
                 PHA
                 LDA #$FF
                 PHA
                 LDA #NOT_SPINNING+KEEP_SPINNING
                 JSR SET_NEXT_ON_OFF
                 LDA #fileFightAwarder
-                LDY #$A0
+                LDY #$88
                 JMP LOAD_FILE
 
             do  DEBUG_KEYS
@@ -396,15 +394,15 @@ GROUP_TYPER     JSR FIRST_CHAR
 :1              LDY #status
                 LDA (CHARDL),Y
                 AND #%00111111
-                BEQ :SKIPA          ;healthy
+                BEQ :2                  ;healthy
                 AND #%00111100
-                BNE :SKIPA          ;dead,broken,abandoned
+                BNE :2                  ;dead,broken,abandoned
                 JSR NEXT_CHAR
                 BCC :1
                 LDA #%01000000
                 ORA GROUP_STATUS
                 STA GROUP_STATUS
-:SKIPA          BIT GROUP_STATUS
+:2              BIT GROUP_STATUS
                 RTS
 
 
@@ -437,7 +435,8 @@ DRAW_MODE_MSG   JSR DRAW_PICT
                 RTS
 
 CLEAR_MODE_MSG  JSR DRAW_PICT
-                ;*** PictClear ***
+                PictSetBlack1
+                PictFillRect 204;75;276;123
                 PictEnd
                 RTS
 
@@ -467,10 +466,8 @@ PECKING_ORDER   LDA #0
                 CMP GRPNUMB
                 BNE :LOOP1
 
-                LDA #$00
-                STA COUNTER
-:LOOP2          JSR POINTTO
-                LDA COUNTER
+                JSR FIRST_MONSTER
+:LOOP2          LDA MONSTER_INDEX
                 ORA #$40
                 LDX POINTER
                 STA PECKS,X
@@ -483,10 +480,8 @@ PECKING_ORDER   LDA #0
                 CLD
                 STA VALUES,X
                 INC POINTER
-                INC COUNTER
-                LDA COUNTER
-                CMP MONS_TOTAL
-                BNE :LOOP2
+                JSR NEXT_MONSTER
+                BCC :LOOP2
 
                 LDX POINTER
                 LDA #0

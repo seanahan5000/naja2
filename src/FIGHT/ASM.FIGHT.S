@@ -1,20 +1,6 @@
 
                 EXP OFF
 
-TEMP            =   $00                 ; ,$01
-
-POINTL          =   $12
-POINTH          =   $13
-
-; TODO: fix these
-ZBLOCK_28       =   $78 ;$28             ;Narrate, Command, Loader
-
-ZBLOCK_30       =   $80 ;$30             ;Narrate, Command, Loader
-ZBLOCK_38       =   $88 ;$38             ;Narrate, Command, Loader
-
-ZBLOCK_40       =   $A0 ;$40             ;Fight common
-ZBLOCK_48       =   $A8 ;$48             ;All fight
-
                 PUT /COMMON/VARS
                 PUT /COMMON/EXT
 
@@ -31,10 +17,13 @@ ZBLOCK_48       =   $A8 ;$48             ;All fight
                 PUT /FIGHT/FIGHT.CONSTS
                 PUT /FIGHT/FIGHT.ZPAGE
 
-                PUT LOADER/ASM.LOADER
+                PUT SHARED/EXT
+
                 PUT AWARDER/ASM.AWARDER
 
+;*** now found on fight disk side ***
+
                 ORG $A000
-DEAD_GROUP_FILE DB  $00                 ; TODO: just so module ID is overwritten
+DEAD_GROUP_FILE DB  $00                 ; no real file number
                 PUT DEAD/DEAD.GROUP
                 SAV DEAD.GROUP

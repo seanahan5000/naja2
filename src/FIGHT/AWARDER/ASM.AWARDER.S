@@ -2,9 +2,8 @@
 EPOINT			=	XCOUNT
 ; * YCOUNT is used as a non-volatile counter
 
-				ORG	$A000
+				ORG	$8800
 
-AWARDER_FILE    DB  $00                 ; TODO: just so module ID is overwritten
 				PUT	AWARDER/AWARDER
 				PUT	AWARDER/AWARD.CREDIT
 				PUT	AWARDER/AWARD.EQUIP

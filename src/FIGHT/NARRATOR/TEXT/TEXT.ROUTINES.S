@@ -133,7 +133,8 @@ DAMAGE_OUT      LDA TOTAL_DAMAGEL
                 LDA TOTAL_DAMAGEH
                 PHA
                 LDA #2
-                JMP DIGITS_L
+                JSR DIGITS_L            ; must be JSR
+                RTS
 :SKIPB          LDY #xNo
                 BNE WORD1           ;Always
 

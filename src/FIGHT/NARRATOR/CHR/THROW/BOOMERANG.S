@@ -31,11 +31,8 @@ BOOMERANG       ASL
                 JSR CLEAR_TLINE1
                 LDY #50             ;S>50 CName.Throws.A.Gyro.RET
                 JSR SENTENCE_RET    ;     Boomerang.That.Arcs.Toward.The
-                JSR FIND_MONS
+                JSR FIND_MONSTER
                 BCC BOOMER_MISS
-
-                STA MONS_NUMBER
-                JSR POINTTO
                 JSR CHECK_SWING     ;Use swing odds routines
                 BCS BOOMER_HIT
                 LDX #0

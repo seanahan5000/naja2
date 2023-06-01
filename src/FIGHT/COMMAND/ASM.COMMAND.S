@@ -1,20 +1,6 @@
 
                 EXP OFF
 
-TEMP            =   $00                 ; ,$01
-
-POINTL          =   $12
-POINTH          =   $13
-
-ZBLOCK_28       =   $28
-ZBLOCK_30       =   $30
-ZBLOCK_38       =   $38
-ZBLOCK_40       =   $40
-ZBLOCK_48       =   $48
-
-INSTR1          =   $C0
-INSTR2          =   $C1
-
                 PUT /COMMON/VARS
                 PUT /COMMON/EXT
 
@@ -23,15 +9,20 @@ INSTR2          =   $C1
 
                 PUT /CAMP/EXT
 
+                PUT /NDOS/VARS
+                PUT /NDOS/EXT
+
                 PUT /NAJA/VARS/CONSTANTS
                 PUT /FIGHT/FIGHT.CONSTS
                 PUT /FIGHT/FIGHT.ZPAGE
 
-                ORG $6300
+                PUT /FIGHT/SHARED/EXT
+
+                ORG $6000
                 DSK FIGHT.COMMAND
 
-                PUT /FIGHT/COMMAND/EQUATES
-                PUT /FIGHT/COMMAND/CONTROL
+                PUT EQUATES
+                PUT CONTROL
 
 *=========================================================+
 *   Command:  SWING (0)                                   |
@@ -68,7 +59,7 @@ INSTR2          =   $C1
 *                                                         |
 *=========================================================+
 
-                PUT /FIGHT/COMMAND/C.SWING
+                PUT C.SWING
 
 *=========================================================+
 *   Command:  SHOOT (1)                                   |
@@ -110,7 +101,7 @@ INSTR2          =   $C1
 *                                                         |
 *=========================================================+
 
-                PUT /FIGHT/COMMAND/C.SHOOT
+                PUT C.SHOOT
 
 *=========================================================+
 *   Command:  ENERGY (2)                                  |
@@ -146,7 +137,7 @@ INSTR2          =   $C1
 *                                                         |
 *=========================================================+
 
-                PUT /FIGHT/COMMAND/C.ENERGY
+                PUT C.ENERGY
 
 *=========================================================+
 *   Command:  THROW (3)                                   |
@@ -172,7 +163,7 @@ INSTR2          =   $C1
 *                                                         |
 *=========================================================+
 
-                PUT /FIGHT/COMMAND/C.THROW
+                PUT C.THROW
 
 *=========================================================+
 *   Command:  USE (4)                                     |
@@ -200,7 +191,7 @@ INSTR2          =   $C1
 *                                                         |
 *=========================================================+
 
-                PUT /FIGHT/COMMAND/C.USE
+                PUT C.USE
 
 *=========================================================+
 *   Command:  MOVE (7)                                    |
@@ -220,7 +211,7 @@ INSTR2          =   $C1
 *                                                         |
 *=========================================================+
 
-                PUT /FIGHT/COMMAND/C.MOVE
+                PUT C.MOVE
 
 *=========================================================+
 *   Command:  IDENTIFY (8)                                |
@@ -245,7 +236,7 @@ INSTR2          =   $C1
 *                                                         |
 *=========================================================+
 
-                PUT /FIGHT/COMMAND/C.IDENTIFY
+                PUT C.IDENTIFY
 
 *=========================================================+
 *   Command:  EXCHANGE (9)                                |
@@ -267,7 +258,7 @@ INSTR2          =   $C1
 *                                                         |
 *=========================================================+
 
-                PUT /FIGHT/COMMAND/C.EXCHANGE
+                PUT C.EXCHANGE
 
 *=========================================================+
 *   Command:  PARRY (10)                                  |
@@ -284,7 +275,7 @@ INSTR2          =   $C1
 *                                                         |
 *=========================================================+
 
-                PUT /FIGHT/COMMAND/C.PARRY
+                PUT C.PARRY
 
 *=========================================================+
 *   Command:  RUN (11)                                    |
@@ -298,25 +289,22 @@ INSTR2          =   $C1
 *                                                         |
 *=========================================================+
 
-                PUT /FIGHT/COMMAND/C.RUN
-                PUT /FIGHT/COMMAND/C.END
-                PUT /FIGHT/COMMAND/C.BACK1
-                PUT /FIGHT/COMMAND/C.REDO
-                PUT /FIGHT/COMMAND/C.OTHER
-                PUT /FIGHT/COMMAND/C.FLIP
-                PUT /FIGHT/COMMAND/C.DELAY
+                PUT C.RUN
+                PUT C.END
+                PUT C.BACK1
+                PUT C.REDO
+                PUT C.OTHER
+                PUT C.FLIP
+                PUT C.DELAY
 
-                PUT /FIGHT/COMMAND/COMMANDS
-                PUT /FIGHT/COMMAND/CURSORS
-                PUT /FIGHT/COMMAND/HANDS
-                PUT /FIGHT/COMMAND/GET.MULTIPLE
-                PUT /FIGHT/COMMAND/TEXT.DIGITS
-                PUT /FIGHT/COMMAND/ENERGY.SUBS
-                PUT /FIGHT/COMMAND/MISC.SUBS
-                PUT /FIGHT/COMMAND/STATS
-
-                PUT /CAMP/TOPVIEWS
-                PUT /CAMP/GRID
+                PUT COMMANDS
+                PUT CURSORS
+                PUT HANDS
+                PUT GET.MULTIPLE
+                PUT TEXT.DIGITS
+                PUT ENERGY.SUBS
+                PUT MISC.SUBS
+                PUT STATS
 
 ; TODO: these were zpage, should be saved in settings, shared with NARRATOR
 DELAY_TIME      DB  $25

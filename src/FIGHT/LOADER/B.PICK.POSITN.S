@@ -1,75 +1,77 @@
 *-------------------------------------------------
 * On Entry:
-*   ALIEN_NUMBER: Number of current alien (0 to 3)
+*   ALIEN_INDEX: Number of current alien (0 to 3)
 *
 * On Exit:
 *   Carry Clear: No positions were picked
 *           Set: At least one position was picked
 *-------------------------------------------------
 
-PICK_POSITNS    LDA #<GRID
+PICK_POSITIONS  LDA #<GRID
                 STA POINTL
                 LDA #>GRID
                 STA POINTH
-                LDX ALIEN_NUMBER
+                LDX ALIEN_INDEX
                 LDY ALIEN1,X
                 INY
                 CLC
                 BEQ :3
-                TXA
-                JSR POINTALN
-                LDA #0                  ; To fake out INIT_TVPTR
-                JSR INIT_TVPTR2
 
-                LDA ALIEN_NUMBER
-                ASL
-                TAX
-                LDA GBUFF_LIST,X
-                STA TEMP
-                LDA GBUFF_LIST+1,X
-                STA TEMP+1
+                LDA :GBUFF_PTRS_L,X
+                STA :MOD+1
+                LDA :GBUFF_PTRS_H,X
+                STA :MOD+2
                 LDY #bytespergroup-1
-:1              LDA (TEMP),Y
-                STA GROUP_BUFF0,Y
+:MOD            LDA $FFFF,Y
+                STA GROUP_BUFF,Y
                 DEY
-                BPL :1
+                BPL :MOD
 
                 JSR POSITIONS
-                LDA MONS_NUMBER
+
+                LDA MONSTER_INDEX       ; per-race monster index
                 CMP HMANY1,X
                 BCS :3
-                LDX ALIEN_NUMBER
-                LDA MONS_NUMBER
-                CMP #1
+                LDX ALIEN_INDEX
+                LDA MONSTER_INDEX
+                CMP #1                  ; create carry result
                 BCS :2
                 LDA #$FF
 :2              STA HMANY1,X
 :3              RTS
 
+:GBUFF_PTRS_L   DB  <GROUP_BUFF1
+                DB  <GROUP_BUFF2
+                DB  <GROUP_BUFF3
+
+:GBUFF_PTRS_H   DB  >GROUP_BUFF1
+                DB  >GROUP_BUFF2
+                DB  >GROUP_BUFF3
+
 *---------------------------------------------------------------
 * On Entry:
-*   GROUP_BUFF0: Grouping format data for current alien
+*   GROUP_BUFF: Grouping format data for current alien
 *
 * On Exit:
-*     MONS_NUMBER: Number of monsters that were positioned
+*   MONSTER_INDEX: Number of monsters that were positioned
 *   POSITION_LIST: Positions that were found for those monsters
 *---------------------------------------------------------------
 
 POSITIONS       LDA #0
-                STA MONS_NUMBER
+                STA MONSTER_INDEX       ; per-race monster index
 :LOOP0          JSR MAKE_FILLGRID
                 BCS :1
                 RTS                 ;No space open
 :1              LDY #0
-:LOOP1          LDA GROUP_BUFF0,Y
+:LOOP1          LDA GROUP_BUFF,Y
                 INY
                 CMP #$DD
                 BNE :LOOP1
                 LDX #0
-:LOOP2          LDA GROUP_BUFF0,Y
+:LOOP2          LDA GROUP_BUFF,Y
                 CMP #$FF
                 BEQ :2              ;branch to branch to :BAD_DATA
-                CMP MONS_NUMBER
+                CMP MONSTER_INDEX
                 BEQ :SKIPF
                 BCS :SKIPA
 :SKIPF          INX
@@ -78,7 +80,7 @@ POSITIONS       LDA #0
 :SKIPA          LDY #0
 :LOOP3          DEX
                 BMI :SKIPB
-:LOOP4          LDA GROUP_BUFF0,Y
+:LOOP4          LDA GROUP_BUFF,Y
                 INY
                 CMP #$DD
 :2              BEQ :BAD_DATA
@@ -87,7 +89,7 @@ POSITIONS       LDA #0
                 BEQ :LOOP3          ;Always
 :SKIPB          STY FIRST_ONE
 :LOOP5          INY
-                LDA GROUP_BUFF0,Y
+                LDA GROUP_BUFF,Y
                 AND #%11101110      ;#$CC or #$DD
                 CMP #$CC
                 BNE :LOOP5
@@ -95,11 +97,11 @@ POSITIONS       LDA #0
 :LOOP6          CPY FIRST_ONE
                 BEQ :SKIPC          ;None found
                 DEY
-                LDA GROUP_BUFF0,Y
+                LDA GROUP_BUFF,Y
                 BEQ :LOOP6
                 BNE :SKIPD          ;One found
 :SKIPC          LDY LAST_ONE
-                LDA GROUP_BUFF0,Y
+                LDA GROUP_BUFF,Y
                 CMP #$DD
                 BEQ :BAD_DATA
                 INY
@@ -112,7 +114,7 @@ POSITIONS       LDA #0
                 CMP LAST_ONE
                 BCS :LOOP7
                 TAY
-                LDA GROUP_BUFF0,Y
+                LDA GROUP_BUFF,Y
                 BEQ :LOOP7
                 STY RND_HOLD
                 PHA
@@ -121,22 +123,22 @@ POSITIONS       LDA #0
                 BCS :SKIPE
                 LDY RND_HOLD
                 LDA #$00
-                STA GROUP_BUFF0,Y
+                STA GROUP_BUFF,Y
                 LDY LAST_ONE
                 BPL :LOOP6          ;Always
 :SKIPE          JSR RAND_POSITION
-                LDX MONS_NUMBER
+                LDX MONSTER_INDEX
                 STA POSITION_LIST,X
                 INX
-                STX MONS_NUMBER
-                LDX ALIEN_NUMBER
+                STX MONSTER_INDEX
+                LDX ALIEN_INDEX
                 LDA HMANY1,X
-                CMP MONS_NUMBER
+                CMP MONSTER_INDEX
                 BEQ :EXIT
                 JMP :LOOP0
 :EXIT           RTS
 
-:BAD_DATA       LDA ALIEN_NUMBER                        ;**
+:BAD_DATA       LDA ALIEN_INDEX                        ;**
                 LDY ALIEN1                      ;**
                 LDX ALIEN2                      ;**
                 ; DEBUG   "Position error"                ;**
@@ -157,7 +159,7 @@ MAKE_FILLGRID   LDX #24
 :LOOP1          STA FILLED_GRID,X
                 DEX
                 BPL :LOOP1
-                LDX ALIEN_NUMBER
+                LDX ALIEN_INDEX
                 LDA TV_WIDTHS,X
                 STA XCOUNT
                 LDA TV_HEIGHTS,X
@@ -226,7 +228,7 @@ RAND_POSITION   STA TEMP+1
                 PLA
                 LDX FILLED_GRID,Y
                 BNE :LOOP1
-                LDX ALIEN_NUMBER
+                LDX ALIEN_INDEX
                 LDY TV_WIDTHS,X
                 STY XCOUNT
                 LDY TV_HEIGHTS,X
@@ -323,8 +325,12 @@ ANY_LEGAL       TAX
 
 *-------------------------------
 
-GBUFF_LIST      DW  GROUP_BUFF1
-                DW  GROUP_BUFF2
-                DW  GROUP_BUFF3
+GBUFF_LIST_L    DB  <GROUP_BUFF1
+                DB  <GROUP_BUFF2
+                DB  <GROUP_BUFF3
+
+GBUFF_LIST_H    DB  >GROUP_BUFF1
+                DB  >GROUP_BUFF2
+                DB  >GROUP_BUFF3
 
 *-------------------------------

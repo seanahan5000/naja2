@@ -100,7 +100,7 @@ MAKE_CHITGRID   JSR DRAW_SHOOTBOX
                 LDA COMMAND-1,X
                 JSR CHAR_INDEXER
                 LDA MASTER_MGRID,Y
-                AND #%00111111
+                AND #%00111111          ; #$3F if empty
                 STA TARGET
 
                 LDA #0
@@ -109,9 +109,7 @@ MAKE_CHITGRID   JSR DRAW_SHOOTBOX
                 LDA PECKS,X
                 BEQ :SKIPB
                 BMI :SKIPA
-                AND #$3F
-                STA MONS_NUMBER
-                JSR POINTTO
+                JSR SET_MONSTER
                 JSR MON_SHOOTABLE
                 BCC :SKIPA
 **** SPECIAL CASE INVISIBLE ALIEN
@@ -169,7 +167,7 @@ MON_SHOOTABLE   LDY #monSTATUS
                 STA BASE+3
                 ADC #0
                 STA BASE+0
-                LDA MONS_NUMBER
+                LDA MONSTER_INDEX
                 CMP TARGET
                 BEQ :SKIPA
                 LDX #$75

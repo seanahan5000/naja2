@@ -15,7 +15,8 @@ TOTALS_OUT		JSR	RESET_CHLIST
 				INX
 				BEQ	:SKIPC
 				TYA
-				JSR	POINTALN
+				TAX
+				JSR	SET_ALIEN_CLASS
 				LDY	#aName+15
 :LOOP3			LDA	(ALIEN_PTR),Y
 				STA	TEXTBUF,Y
@@ -42,23 +43,6 @@ TOTALS_OUT		JSR	RESET_CHLIST
 				LDY	COUNT
 				CPY	#3
 				BNE	:LOOP0
-
-			; 	JSR	SET_CAMPFILES
-			; do ORIGINAL
-			; else
-			; 	LDA	DISK_SIDE
-			; 	SEC
-			; 	SBC	#2
-			; 	STA	DISK_SIDE
-			; fin
-			; 	LDX	#cCtrlCommon
-			; 	JSR	FLOADER_FILE
-			; 	LDX	SHELL
-			; 	JSR	FLOADER_FILE
-			; 	LDX	#cCampCommons
-			; 	JSR	FLOADER_FILE
-			; 	LDX	#cTunnels
-			; 	JSR	FLOAD_FILE
 
 				LDA	#0
 				LDX	#3

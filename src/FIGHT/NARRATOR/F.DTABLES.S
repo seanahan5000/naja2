@@ -25,6 +25,7 @@ YMINUS4         DS  1
 *   $40 to $58 = Actual monster positions
 *   $00 to $18 = Additional space taken up by monsters
 *------------------------------------------------------
+; TODO: rework MASTER_MGRID so $00 is empty
 MASTER_MGRID    DS  25
 
                 DEND

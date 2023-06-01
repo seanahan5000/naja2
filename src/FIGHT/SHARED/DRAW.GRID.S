@@ -4,8 +4,6 @@
 ; GCELL_WIDTH     =   15
 ; GCELL_HEIGHT    =   11
 
-LEFT_SIDE       =   1
-
 IGRID_YPNTS     =   AGRID_YPNTS
 
 GINDEX          =   $C0
@@ -14,57 +12,40 @@ LEFT_RIGHT      =   $C2
 BLOCK_DATA      =   $C3
 DOT_MASK        =   BLOCK_DATA
 
-; TODO: save these somewhere
-AGRID_HALLS     DS  6                   ; these must be contiguous
-CGRID_HALLS     DS  6                   ;   in this order
-
-; TODO: save these somewhere
-GRID_BITS       DS  10
-
-GRID_HALLS      DS  6                   ; TODO: consider ZPAGE for this
-
-A_TABLES
+A_DRAW_TABLES
 A_VLINE_Y1      DB  83,72-1
 A_VLINE_Y2      DB  127+1,83+1
-        do LEFT_SIDE
+        do LEFT_SIDE_GRID
 A_VLINE_XI      DB  1,9
 A_HLINE_X1      DB  3,67,7
 A_HLINE_X2      DB  7,86,67
-A_GBITS_LRC     DB  0,%00010000,%00001111
         else
 A_VLINE_XI      DB  3,11
 A_HLINE_X1      DB  3,82,21
 A_HLINE_X2      DB  22,86,83
-A_GBITS_LRC     DB  %00000001,0,%00011110
         fin
 A_HLINE_Y       DB  127,83
-A_GBITS_OFF     DB  4,3,2,1,0
 
-C_TABLES
+C_DRAW_TABLES
 C_VLINE_Y1      DB  127,171
 C_VLINE_Y2      DB  171+1,183+7
-        do LEFT_SIDE
+        do LEFT_SIDE_GRID
 C_VLINE_XI      DB  9,1
 C_HLINE_X1      DB  67,3,7
 C_HLINE_X2      DB  85,7,67
-C_GBITS_LRC     DB  %00010000,0,%00001111
         else
 C_VLINE_XI      DB  11,3
 C_HLINE_X1      DB  82,3,21
 C_HLINE_X2      DB  86,22,83
-C_GBITS_LRC     DB  0,%00000001,%00011110
         fin
 C_HLINE_Y       DB  127,171
-C_GBITS_OFF     DB  5,6,7,8,9
 
 VLINE_Y1        DS  2
 VLINE_Y2        DS  2
 VLINE_XI        DS  2
 HLINE_X1        DS  3
 HLINE_X2        DS  3
-GBITS_LRC       DS  3
 HLINE_Y         DS  2
-GBITS_OFF       DS  5
 
 ; TODO:
 ;   - with and without grid
@@ -73,39 +54,15 @@ GBITS_OFF       DS  5
 ;   - with and without L/R shift
 
 
-; capture 3 rows of hall block data facing aliens and characters
-;   (XSIDE bits are forced set for later use by LIMIT_HALLS)
-
-CAPTURE_HALLS   JSR GET_NSEW
-                LDX #5
-:1              LDA BLOCK_BUFFER,X
-                ORA #XSIDE_MASK
-                STA AGRID_HALLS,X
-                DEX
-                BPL :1
-
-                JSR MOVE_FORWARD
-                JSR TURN_AROUND
-                JSR GET_NSEW
-                LDX #5
-:2              LDA BLOCK_BUFFER,X
-                ORA #XSIDE_MASK
-                STA CGRID_HALLS,X
-                DEX
-                BPL :2
-                JSR MOVE_FORWARD
-                JMP TURN_AROUND
-
-
 SET_APOINTS     LDY #0
                 DB  $2C                 ; BIT abs
-SET_CPOINTS     LDY #C_TABLES-A_TABLES
+SET_CPOINTS     LDY #C_DRAW_TABLES-A_DRAW_TABLES
                 LDX #0
 :1              LDA A_VLINE_Y1,Y
                 STA VLINE_Y1,X
                 INY
                 INX
-                CPX #C_TABLES-A_TABLES
+                CPX #C_DRAW_TABLES-A_DRAW_TABLES
                 BNE :1
                 RTS
 
@@ -121,115 +78,8 @@ GET_CDATA       LDY #6
                 BNE :1
                 RTS
 
-SET_ADATA       LDY #0
-                DB  $2C                 ; BIT abs
-SET_CDATA       LDY #6
-                LDX #0
-:1              LDA GRID_HALLS,X
-                STA AGRID_HALLS,Y
-                INY
-                INX
-                CPX #6
-                BNE :1
-                RTS
-;
-; mark squares that won't be accessible
-;   by clearing their XSIDE_MASK values
-;
-LIMIT_HALLS     LDX #2
-:1              LDY GRID_HALLS,X
-                TYA
-                AND #SIDE_MASK
-;               CMP #SIDE_OPEN
-                BNE :2
-                TYA
-                AND #XSIDE_MASK!$FF
-                STA GRID_HALLS,X
-
-                TYA
-                AND #XFRONT_MASK
-;               CMP #XFRONT_OPEN
-                BNE :2
-                LDA GRID_HALLS+2,X
-                AND #XSIDE_MASK!$FF
-                STA GRID_HALLS+2,X
-
-:2              INX
-                CPX #4
-                BNE :1
-
-:3              LDA GRID_HALLS-2,X
-                AND #FRONT_MASK
-;               CMP #FRONT_OPEN
-                BNE :4
-
-                LDY GRID_HALLS,X
-                TYA
-                AND #SIDE_MASK
-;               CMP #SIDE_OPEN
-                BNE :4
-                TYA
-                AND #XSIDE_MASK!$FF
-                STA GRID_HALLS,X
-
-:4              INX
-                CPX #6
-                BNE :3
-                RTS
-;
-; hide walls that are behind other contiguous walls
-;
-HIDE_WALLS      LDX #0
-:1              LDY GRID_HALLS,X
-                TYA
-                AND #SIDE_MASK          ; if SIDE is set
-;               CMP #SIDE_OPEN
-                BEQ :2
-                LDA GRID_HALLS+2,X
-                AND #SIDE_MASK          ; and next.SIDE is set
-;               CMP #SIDE_OPEN
-                BEQ :2
-                TYA
-                AND #XFRONT_MASK!$FF    ;   then clear XFRONT
-                STA GRID_HALLS,X
-:2              INX
-                CPX #4
-                BNE :1
-
-:3              LDY GRID_HALLS-2,X      ; top row only
-                TYA
-                AND #FRONT_MASK             ; if prev.FRONT is set
-;               CMP #FRONT_OPEN
-                BEQ :4
-                TYA
-                AND #SIDE_MASK+XFRONT_MASK  ;   and prev.SIDE or prev.XFRONT are set
-                BEQ :4
-                LDA GRID_HALLS,X
-                AND #SIDE_MASK!$FF          ;   then clear SIDE
-                STA GRID_HALLS,X
-:4              INX
-                CPX #6
-                BNE :3
-                RTS
-
-
-BUILD_GRID      JSR CAPTURE_HALLS
-
+DRAW_GRID2      ENT
                 JSR GET_ADATA
-                JSR SET_APOINTS
-                JSR LIMIT_HALLS
-                JSR HIDE_WALLS
-                JSR BUILD_GRIDBITS
-                JSR SET_ADATA
-
-                JSR GET_CDATA
-                JSR SET_CPOINTS
-                JSR LIMIT_HALLS
-                JSR HIDE_WALLS
-                JSR BUILD_GRIDBITS
-                JMP SET_CDATA
-
-DRAW_GRID2      JSR GET_ADATA
                 JSR SET_APOINTS
                 LDX #0
                 LDY #4
@@ -250,47 +100,6 @@ DRAW_GRID2      JSR GET_ADATA
                 JSR NEXT_CHAR
                 BCC :1
                 RTS
-
-
-BUILD_GRIDBITS  LDY #0
-:1              STY GINDEX
-                LDX HALL_OFFS,Y
-                LDY #$00
-
-                LDA GRID_HALLS+0,X
-                AND #XSIDE_MASK
-;               CMP #XSIDE_OPEN
-                BEQ :2
-                TYA
-                ORA GBITS_LRC+0
-                TAY
-
-:2              LDA GRID_HALLS+1,X
-                AND #XSIDE_MASK
-;               CMP #XSIDE_OPEN
-                BEQ :3
-                TYA
-                ORA GBITS_LRC+1
-                TAY
-:3
-                LDA GRID_HALLS-2,X
-                AND #FRONT_MASK
-;               CMP #FRONT_OPEN
-                BEQ :5
-                TYA
-                ORA GBITS_LRC+2
-                TAY
-
-:5              TYA
-                LDY GINDEX
-                LDX GBITS_OFF,Y
-                STA GRID_BITS,X
-                INY
-                CPY #5
-                BNE :1
-                RTS
-
-HALL_OFFS       DB  2,2,2,2,4           ; both
 
 
 DRAW_WALLS      JSR SET_GREEN

@@ -413,15 +413,20 @@ CHAR_DIGITS_R   STA BYTE_COUNT
                 LDA #TextSpace
 CHAR_DIG_CMN    STA :MOD1+1
                 STX :MOD2+1
+                TYA
+                CLC
+                ADC BYTE_COUNT
+                TAY
                 LDX BYTE_COUNT
-:1              LDA (CHARDL),Y
+:1              DEY
+                LDA (CHARDL),Y
                 PHA
-                INY
                 DEX
                 BNE :1
 :MOD1           LDY #$FF
 :MOD2           LDX #$FF
-                BPL DIGITS_CMN          ; always
+                JSR DIGITS_CMN          ; must JSR, not JMP
+                RTS
 ;
 ; On entry:
 ;   A: byte (not digit) count

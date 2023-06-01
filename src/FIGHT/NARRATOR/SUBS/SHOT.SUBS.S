@@ -37,7 +37,6 @@ EOR_SUB         LDA LOBYTES,X
                 ADC #$0E
                 STA DESTINL
                 LDA HIBYTES,X
-                ORA PAGE
                 STA SCREENH
                 ADC #0
                 STA DESTINH
@@ -54,7 +53,6 @@ EOR_SHOT        LDX #$47
                 STA SCREENL
                 STA DESTINL
                 LDA HIBYTES,X
-                ORA #$20
                 STA SCREENH
                 EOR #$60
                 STA DESTINH
@@ -71,20 +69,21 @@ EOR_SHOT        LDX #$47
 :3              INX
                 CPX #$B8
                 BCC :1
-CLEAN_FRONT     LDA $3FB4
-                ORA #$22
-                STA $3FB4
-                LDX #10
-:LOOP1          LDA $3FA9,X
-                ORA #$55                ; violet
-                STA $3FA9,X
-                DEX
-                BEQ :EXIT
-                LDA $3FA9,X
-                ORA #$2A                ; green
-                STA $3FA9,X
-                DEX
-                BNE :LOOP1          ;Always
+CLEAN_FRONT
+;                 LDA $3FB4
+;                 ORA #$22
+;                 STA $3FB4
+;                 LDX #10
+; :LOOP1          LDA $3FA9,X
+;                 ORA #$55                ; violet
+;                 STA $3FA9,X
+;                 DEX
+;                 BEQ :EXIT
+;                 LDA $3FA9,X
+;                 ORA #$2A                ; green
+;                 STA $3FA9,X
+;                 DEX
+;                 BNE :LOOP1          ;Always
 :EXIT           RTS
 
 
@@ -301,15 +300,16 @@ DD4             LDA #$FF            ;Modified
                 STA HLINE_MOD+1
                 LDA #$00            ;Disable collision detection
                 STA COLFLG
+        fin
 
                 JSR EOR_SHOTGRID    ;Remove shot containment box
-                LDA #$20
-                STA PAGE
+                JSR SET_PAGE1
                 JMP EOR_SHOT
 
 MC_FLAG         DB  0
 
 
+        do 0
 *----------------------------------------------------
 * On Entry:
 *    YCRD: Y position in screen coordinates

@@ -24,9 +24,8 @@ NARR_ROBOTRES
                 LDY #15             ;S>15 Is.Not.Received.By.Anyone
 :2              JMP SENTENCE_PRET
 
-RR_HITS         JSR FIND_MONS
-                STA MONS_NUMBER
-                JSR POINTTO
+RR_HITS         JSR FIND_MONSTER
+                BCC :0                  ; should never happen
                 LDX #0
                 LDY #16             ;S>16 Reaches.The.Monsname
                 JSR SENTENCE_RET
@@ -38,7 +37,7 @@ RR_HITS         JSR FIND_MONS
 *^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 * "AND IS OBEYED."
 *^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-                RTS
+:0              RTS
 
 *^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 * "BUT IS IGNORED."

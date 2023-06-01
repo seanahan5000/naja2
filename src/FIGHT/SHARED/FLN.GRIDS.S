@@ -8,7 +8,8 @@
 *   POINTL,H: Address of grid to manipulate
 *-------------------------------------------
 
-FILL_GRID		STA	TEMP+1
+FILL_GRID		ENT
+				STA	TEMP+1
 				STY	TEMP
 				PHA
 				TXA
@@ -47,7 +48,8 @@ FILL_GRID		STA	TEMP+1
 *     Carry set: Selected area has occupant
 *-----------------------------------------------------
 
-CHECK_GRID		STA	TEMP+1
+CHECK_GRID		ENT
+				STA	TEMP+1
 				LDA	YCOUNT
 				PHA
 				TXA

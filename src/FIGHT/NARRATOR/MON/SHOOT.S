@@ -94,6 +94,7 @@ MSHOT_RICOCHT   LDY #10             ;S>10 That.Ricochets.Off.The.Wall
 *         | FLIES PAST   |
 *         | BUZZES PAST  |
 *^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+;*** TODO: fix "MISSES PAST EVERYBODY" ***
 MSHOT_MISSES    LDA SQUARE_HIT
                 BNE MSHOT_BLOCKED
                 LDY #xBut
@@ -111,11 +112,10 @@ MSHOT_MISSES    LDA SQUARE_HIT
 *^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 MSHOT_BLOCKED   LDA BLOCKED
                 BEQ MSHOT_HITS
-                LDA MONS_NUMBER
+                LDA MONSTER_INDEX
                 PHA
-                JSR FIND_MONS
-                STA MONS_NUMBER
-                JSR POINTTO
+                JSR FIND_MONSTER
+                BCC :0                  ; should never happen
                 JSR GET_MDAM_TOTL
                 LDY #9              ;S>9 But.Its.Blocked.And.Hits.The.RET
                 JSR SENTENCE_PRET   ;    MonsName.For.9999.RET.Damage
@@ -132,9 +132,8 @@ MSHOT_BLOCKED   LDA BLOCKED
                 TAX
                 PLA
                 STA ATOTAL1,X
-                PLA
-                STA MONS_NUMBER
-                JSR POINTTO
+:0              PLA
+                JSR SET_MONSTER
                 JMP MSHOT_DONE
 
 MSHOT_HITS      JSR FIND_CHAR
@@ -199,7 +198,7 @@ MSHOT_DONE      JSR DELAYER
 *-------------------------------
 
 MSHOOT_GRID     JSR DRAW_SHOOTBOX
-                LDA MONS_NUMBER
+                LDA MONSTER_INDEX
                 PHA
                 LDA #0
                 STA COUNT
@@ -207,9 +206,7 @@ MSHOOT_GRID     JSR DRAW_SHOOTBOX
                 LDA PECKS,X
                 BMI :2
                 BEQ :3
-                AND #%00111111
-                STA MONS_NUMBER
-                JSR POINTTO
+                JSR SET_MONSTER
                 LDY #monSTATUS
                 LDA (MONS_PTR),Y
                 CMP #dead
@@ -221,8 +218,7 @@ MSHOOT_GRID     JSR DRAW_SHOOTBOX
 :2              INC COUNT
                 BNE :1              ;Always
 :3              PLA                 ;Set pointers back to
-                STA MONS_NUMBER     ;  current monster
-                JSR POINTTO
+                JSR SET_MONSTER     ;  current monster
 
                 JSR FIRST_CHAR
 :4              LDY #status

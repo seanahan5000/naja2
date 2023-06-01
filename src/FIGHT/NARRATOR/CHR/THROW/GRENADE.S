@@ -38,7 +38,7 @@ GRENADE         ASL
                 DEC TLINE
                 JSR DO_EXPLOSION
                 JSR CLEAR_TEXT
-                JSR FIND_MONS
+                JSR FIND_MONSTER
                 BCS GREN_HIT
 
 *^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -53,10 +53,8 @@ NO_GREN_HIT     LDX #22
 
 *-------------------------------
 
-GREN_HIT        STA MONS_NUMBER
-                JSR POINTTO
+GREN_HIT
 *** Check for PUDDLE CREATURES here
-
                 LDY #monPHSHIELD
                 LDA (MONS_PTR),Y
                 LDX ENERGY_L

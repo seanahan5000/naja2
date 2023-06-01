@@ -14,9 +14,7 @@ CREATE_MGRID    LDX #24
                 LDA PECKS,X
                 BEQ :4
                 BMI :3
-                AND #$3F
-                STA MONS_NUMBER
-                JSR POINTTO
+                JSR SET_MONSTER
 **** CHECK FOR SPECIAL THINGS LIKE BEING INVISIBLE, ETC.
                 LDY #monSTATUS
                 LDA (MONS_PTR),Y
@@ -48,13 +46,13 @@ CREATE_MGRID    LDX #24
 MONS_FROMGRID   LDX #24
 :1              LDA AUX_MGRID,X
                 AND #%10111111
-                CMP MONS_NUMBER
+                CMP MONSTER_INDEX
                 BNE :2
                 LDA #$FF
                 STA AUX_MGRID,X
                 LDA MASTER_MGRID,X
                 AND #%10111111
-                CMP MONS_NUMBER
+                CMP MONSTER_INDEX
                 BNE :2
                 LDA #$FF
                 STA MASTER_MGRID,X
@@ -75,7 +73,7 @@ MONS_TOGRID     JSR PRE_FILLCHK2
 :1              LDA MASTER_MGRID,X
                 TAY
                 AND #%10111111
-                CMP MONS_NUMBER
+                CMP MONSTER_INDEX
                 BNE :2
                 TYA
                 STA AUX_MGRID,X
@@ -101,7 +99,7 @@ PRE_FC          STX POINTL
                 LDY TVIEW_HEIGHT
                 STY YCOUNT
                 JSR MON_INDEXER
-                LDA MONS_NUMBER
+                LDA MONSTER_INDEX
                 RTS
 
 
@@ -109,94 +107,94 @@ PRE_FC          STX POINTL
 *
 *===============================
 
-UPDATE_MNAMES   LDA #4
-                STA YCOUNT
+; UPDATE_MNAMES   LDA #4
+;                 STA YCOUNT
 
-:LOOP1          LDA YCOUNT
-                ASL
-                ASL
-                ADC YCOUNT          ;Carry assumed clear
-                STA :MOD1+1
-                ADC #4              ;Carry assumed clear
-                STA XCOUNT
+; :LOOP1          LDA YCOUNT
+;                 ASL
+;                 ASL
+;                 ADC YCOUNT          ;Carry assumed clear
+;                 STA :MOD1+1
+;                 ADC #4              ;Carry assumed clear
+;                 STA XCOUNT
 
-                LDA #%11111111      ;empty
-                STA MNAME_TYPE
+;                 LDA #%11111111      ;empty
+;                 STA MNAME_TYPE
 
-:LOOP2          LDX XCOUNT
-                LDA MASTER_MGRID,X
-                BMI :SKIPC
-                ASL
-                BPL :SKIPC
-                LSR
-                AND #%00111111
-                JSR POINTTO
-                LDY #monTOPVIEW
-                LDA (MONS_PTR),Y
-                BPL :SKIPB
+; :LOOP2          LDX XCOUNT
+;                 LDA MASTER_MGRID,X
+;                 BMI :SKIPC
+;                 ASL
+;                 BPL :SKIPC
+;                 LSR
+;                 AND #%00111111
+;                 JSR POINTTO
+;                 LDY #monTOPVIEW
+;                 LDA (MONS_PTR),Y
+;                 BPL :SKIPB
 
-                LDY #monNUMBER
-                LDA (MONS_PTR),Y
-                AND #%00011111
-                STA MNAME_TYPE
-                BPL :SKIPC          ;Always
+;                 LDY #monNUMBER
+;                 LDA (MONS_PTR),Y
+;                 AND #%00011111
+;                 STA MNAME_TYPE
+;                 BPL :SKIPC          ;Always
 
-:SKIPB          LDA MNAME_TYPE      ;Check if higher priority
-                AND #%11100000      ;   name already picked
-                BEQ :SKIPC
-                LDY #monNUMBER
-                LDA (MONS_PTR),Y
-                TAY
-                LDA ALTYPE1,Y
-                AND #%11000000
-                STA MNAME_TYPE
+; :SKIPB          LDA MNAME_TYPE      ;Check if higher priority
+;                 AND #%11100000      ;   name already picked
+;                 BEQ :SKIPC
+;                 LDY #monNUMBER
+;                 LDA (MONS_PTR),Y
+;                 TAY
+;                 LDA ALTYPE1,Y
+;                 AND #%11000000
+;                 STA MNAME_TYPE
 
-:SKIPC          LDA XCOUNT
-                DEC XCOUNT
-:MOD1           CMP #$FF            ;Modified
-                BNE :LOOP2
+; :SKIPC          LDA XCOUNT
+;                 DEC XCOUNT
+; :MOD1           CMP #$FF            ;Modified
+;                 BNE :LOOP2
 
-                LDY YCOUNT
-                LDX AGRID_YPNTS,Y
-                INX
-                STX YPNT
-                LDA MNAME_TABLE,Y
-                CMP MNAME_TYPE
-                BEQ :SKIPD
-                JSR PRINT_MNAME
-                LDY YCOUNT
-                LDA MNAME_TYPE
-                STA MNAME_TABLE,Y
-                JSR PRINT_MNAME
-:SKIPD          DEC YCOUNT
-                BPL :LOOP1
-                LDA MONS_NUMBER     ;Restore monster pointers
-                JMP POINTTO
+;                 LDY YCOUNT
+;                 LDX AGRID_YPNTS,Y
+;                 INX
+;                 STX YPNT
+;                 LDA MNAME_TABLE,Y
+;                 CMP MNAME_TYPE
+;                 BEQ :SKIPD
+;                 JSR PRINT_MNAME
+;                 LDY YCOUNT
+;                 LDA MNAME_TYPE
+;                 STA MNAME_TABLE,Y
+;                 JSR PRINT_MNAME
+; :SKIPD          DEC YCOUNT
+;                 BPL :LOOP1
+;                 LDA MONS_NUMBER     ;Restore monster pointers
+;                 JMP POINTTO
 
 *-------------------------------
 
-PRINT_MNAME     TAY
-                AND #%00100000
-                BNE :EXIT
-                JSR CLEAR_TEXT
-                TYA
-                AND #%11100000
-                BEQ :SKIPA
-                TYA
-                JSR MNAME_UNIDENT
-                JMP :SKIPB
+; PRINT_MNAME     TAY
+;                 AND #%00100000
+;                 BNE :EXIT
+;                 JSR CLEAR_TEXT
+;                 TYA
+;                 AND #%11100000
+;                 BEQ :SKIPA
+;                 TYA
+;                 JSR MNAME_UNIDENT
+;                 JMP :SKIPB
 
-:SKIPA          TYA
-                AND #%00011111
-                JSR POINTALN
-                LDX #0
-                JSR MNAME_IDENTIF
-:SKIPB          LDX #$66
-                LDY YPNT
-                JSR DRAW_TEXTBUF_XY
-:EXIT           RTS
+; :SKIPA          TYA
+;                 AND #%00011111
+;                 JSR POINTALN
+;                 LDX #0
+;                 JSR MNAME_IDENTIF
+; :SKIPB          LDX #$66
+;                 LDY YPNT
+;                 JSR DRAW_TEXTBUF_XY
+; :EXIT           RTS
 
-MNAME_TYPE      DB  0
+; MNAME_TYPE      DB  0
 
 
 *===============================

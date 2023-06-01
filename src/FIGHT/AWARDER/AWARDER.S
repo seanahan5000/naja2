@@ -14,6 +14,10 @@
 *
 *-------------------------------------------------
 
+; TODO: put in common file
+CONTROL_MODULE  =   $7800
+SET_CONTROL     =   $7801
+
 AWARDER         JSR DRAW_PICT
                 PictSetPage2
                 PictClearPage
@@ -51,7 +55,27 @@ AWARDER         JSR DRAW_PICT
                 STA FINDGRP_ALIEN
             fin
 
+                ; must finish before fight shared overwritten
                 JSR TOTALS_OUT
+
+                LDA #IS_SPINNING+KEEP_SPINNING
+                JSR SET_NEXT_ON_OFF
+                LDA #fileFightHalls
+                LDY #$60
+                JSR LOAD_FILE
+
+                LDX SHELL
+                LDA :FILES-1,X
+                PHA
+                LDA :SIDES-1,X
+                JSR SET_DISK_SIDE
+                LDA #IS_SPINNING+STOP_SPINNING
+                JSR SET_NEXT_ON_OFF
+                PLA
+                LDY #>CONTROL_MODULE
+                JSR LOAD_FILE
+                JSR SET_CONTROL
+
                 BIT GROUP_STATUS
                 BMI :3
                 JSR RESET_CHRLIST       ; find a good android
@@ -110,6 +134,18 @@ AWARDER         JSR DRAW_PICT
 
                 JSR SPACE_AND_CLEAR
                 JMP ALL_DONE
+
+:SIDES          DB  side_T1
+                DB  side_T1
+                DB  side_T2
+                DB  side_T2
+                DB  side_T2
+
+:FILES          DB  fileControl17
+                DB  fileControl15
+                DB  fileControl13
+                DB  fileControl11
+                DB  fileControl9
 
 HAVE_ROOM       JSR DRAW_PICT
                 PictTextAt 166;138;(NEW_EQUIPMENT:)
@@ -275,12 +311,11 @@ ALL_DONE        LDA #0
                 PictClearPage
 ;                 LDA DIRHOLD
 ;                 STA DIRECTN
-;                 JSR GETNSEW
+                PictCall GET_NSEW
                 PictCall DRAW_HALL
                 PictShowPage
                 PictEnd
-                SEC
-                RTS
+                JMP HALL_KEYS
 
 ; SEND_TO_CAMP    JSR MOVETO1
 ;                 STA PRIMARY

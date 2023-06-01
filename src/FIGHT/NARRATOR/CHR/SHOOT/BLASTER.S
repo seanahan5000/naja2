@@ -116,9 +116,8 @@ SOMEONE_HIT     BIT BLOCKED
 *
 * "HITS THE <monster>"
 *^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-NO_BLOCKS       JSR FIND_MONS
-                STA MONS_NUMBER
-                JSR POINTTO
+NO_BLOCKS       JSR FIND_MONSTER
+                BCC :0                  ; should never happen
                 JSR GET_MDAM_TOTL
                 LDX #0
                 LDY #31             ;S>31 Hits.The.<MonsName>
@@ -137,6 +136,7 @@ NO_BLOCKS       JSR FIND_MONS
                 LDY #30             ;S>30 But.RET
                 JMP SENTENCE_PRET   ;     It.Is.So.Weak.That.It.Causes.RET
                                     ;     No.Damage
+:0              RTS
 
 *^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 * If CAUSING DAMAGE then

@@ -42,7 +42,7 @@ OPEN_FRONTS     JSR MONS_OPENROWS
 RUN_RESOLVER    JSR MRUN_DECIDER
                 JSR EOR_GRID_DOTS
                 JSR COPY_GRID
-                JSR ERASE_MNAMES
+                ; JSR ERASE_MNAMES
 
                 LDX MOFFSET         ;Calc MONS_GAP and MSRC_BOT
                 JSR TIMES_11
@@ -88,9 +88,8 @@ DO_MONODDS      LDA #0
                 PHA
                 PHA
                 STA COUNT
-                STA POINTER
-:1              JSR POINTTO
-                LDY #monSTATUS
+                JSR FIRST_MONSTER
+:1              LDY #monSTATUS
                 LDA (MONS_PTR),Y
                 BEQ :2
                 CMP #dead
@@ -114,10 +113,8 @@ DO_MONODDS      LDA #0
                 ADC #1
                 STA COUNT
                 CLD
-:4              INC POINTER
-                LDA POINTER
-                CMP MONS_TOTAL
-                BNE :1
+:4              JSR NEXT_MONSTER
+                BCC :1
                 PLA
                 STA TEMP+1
                 PLA
@@ -417,10 +414,8 @@ RUN_CONCLUDE
                 CPX GRPNUMB
                 BNE :5
 
-                LDA #0              ;Update monster Y-coordinates
-                STA COUNTER
-:6              JSR POINTTO
-                LDY #monSTATUS
+                JSR FIRST_MONSTER   ;Update monster Y-coordinates
+:6              LDY #monSTATUS
                 LDA (MONS_PTR),Y
                 CMP #dead
                 BEQ :7
@@ -435,10 +430,8 @@ RUN_CONCLUDE
                 SEC
                 SBC MOFFSET
                 STA (MONS_PTR),Y
-:7              INC COUNTER
-                LDA COUNTER
-                CMP MONS_TOTAL
-                BNE :6
+:7              JSR NEXT_MONSTER
+                BCC :6
 
                 JSR CREATE_CGRID    ;Create new character
                 JSR CREATE_MGRID    ;  and monster grids
@@ -687,25 +680,25 @@ COPY_GRID       LDX #71
 
 ; TODO: no longer valid with new grid
 
-ERASE_MNAMES    LDA MONS_ADVFLAG
-                ORA MOFFSET
-                BEQ :2
-                LDY #0
-                STY YCOUNT
-:1              LDX AGRID_YPNTS,Y
-                INX
-                STX YPNT
-                LDA MNAME_TABLE,Y
-                PHA
-                LDA #$FF
-                STA MNAME_TABLE,Y
-                PLA
-                JSR PRINT_MNAME
-                INC YCOUNT
-                LDY YCOUNT
-                CPY #5
-                BNE :1
-:2              RTS
+; ERASE_MNAMES    LDA MONS_ADVFLAG
+;                 ORA MOFFSET
+;                 BEQ :2
+;                 LDY #0
+;                 STY YCOUNT
+; :1              LDX AGRID_YPNTS,Y
+;                 INX
+;                 STX YPNT
+;                 LDA MNAME_TABLE,Y
+;                 PHA
+;                 LDA #$FF
+;                 STA MNAME_TABLE,Y
+;                 PLA
+;                 JSR PRINT_MNAME
+;                 INC YCOUNT
+;                 LDY YCOUNT
+;                 CPY #5
+;                 BNE :1
+; :2              RTS
 
 
 *-------------------------------
@@ -773,10 +766,10 @@ STABLE          DB  %00001000
 
 *-------------------------------
 
-OPEN_TEXT       PLOTAT  99;143;(THERE_IS_SPACE_IN_THE_FRONT)
-                PLOTAT  99;152;(ROW_TO_BE_OCCUPIED._WILL_THE)
-                PLOTAT  99;161;(GROUP_A>DVANCE_OR)
-                PLOTAT  135;170;(R>ETREAT?_)+
+; OPEN_TEXT       PLOTAT  99;143;(THERE_IS_SPACE_IN_THE_FRONT)
+;                 PLOTAT  99;152;(ROW_TO_BE_OCCUPIED._WILL_THE)
+;                 PLOTAT  99;161;(GROUP_A>DVANCE_OR)
+;                 PLOTAT  135;170;(R>ETREAT?_)+
 
 * <CHARNAME>_GIVES_THE_RETREAT
 * SIGNAL.
@@ -826,9 +819,7 @@ MRUN_DECIDER
                 LDA PECKS,X
                 BEQ :7
                 BMI :1
-                AND #%00111111
-                STA MONS_NUMBER
-                JSR POINTTO
+                JSR SET_MONSTER
 *     - If monster is dead then (1)
                 LDY #monSTATUS
                 LDA (MONS_PTR),Y

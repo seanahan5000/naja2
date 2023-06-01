@@ -75,16 +75,30 @@ FIND_CHAR       LDA SQUARE_HIT
 *             A: Monster number if one there
 *--------------------------------------------
 
-FIND_MONS       LDA SQUARE_HIT
+; FIND_MONS       LDA SQUARE_HIT
+;                 JSR MON_INDEXER
+;                 LDA MASTER_MGRID,Y
+;                 CMP #$FF
+;                 CLC
+;                 BEQ :EXIT
+;                 AND #%00111111          ; TODO: should this be %00011111?
+;                 SEC
+; :EXIT           RTS
+
+;
+; On exit:
+;     Carry set: Monster in that square, SET_MONSTER called
+;   Carry clear: Monster NOT in that square
+;
+FIND_MONSTER    LDA SQUARE_HIT
                 JSR MON_INDEXER
                 LDA MASTER_MGRID,Y
                 CMP #$FF
                 CLC
-                BEQ :EXIT
-                AND #%00111111
+                BEQ :1
+                JSR SET_MONSTER
                 SEC
-:EXIT           RTS
-
+:1              RTS
 
 *-------------------------------
 *

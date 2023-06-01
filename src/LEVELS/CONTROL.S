@@ -23,7 +23,7 @@ SET_CONTROL     LDX #<FILE_HOOK
 
                 LDX #<FILE_TABLE
                 LDY #>FILE_TABLE
-                JSR SET_FILE_TABLE
+            JSR SET_FILE_TABLE
 
                 LDX #<DISPATCH
                 LDY #>DISPATCH

@@ -342,9 +342,7 @@ PATH_OF_SWING   LDX SWING_TYPE
                 BNE :LOOP1
                 CLC
                 RTS
-:SKIPD          AND #%00111111
-                STA MONS_NUMBER
-                JSR POINTTO
+:SKIPD          JSR SET_MONSTER
                 SEC
                 RTS
 

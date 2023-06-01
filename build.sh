@@ -37,10 +37,11 @@ $ASM ALIENS ASM.DATA    -lst $OBJ/ALIEN.DATA.LST        || ERR=1
 $ASM ALIENS ALIEN.DESC.12                               || ERR=1
 $ASM ALIENS ALIEN.DESC.345                              || ERR=1
 
-$ASM FIGHT  ASM.FIGHT   -lst $OBJ/FIGHT.LST             || ERR=1
-
+$ASM FIGHT/SHARED   ASM.SHARED   -lst $OBJ/SHARED.LST  -ent $SRC/FIGHT/SHARED/EXT.S || ERR=1
+$ASM FIGHT/LOADER   ASM.LOADER   -lst $OBJ/LOADER.LST   || ERR=1
 $ASM FIGHT/COMMAND  ASM.COMMAND  -lst $OBJ/COMMAND.LST  || ERR=1
 $ASM FIGHT/NARRATOR ASM.NARRATOR -lst $OBJ/NARRATOR.LST || ERR=1
+$ASM FIGHT  ASM.FIGHT   -lst $OBJ/FIGHT.LST             || ERR=1
 
 $ASM LEVELS INIT        -lst $OBJ/INIT.LST              || ERR=1
 $ASM LEVELS ASM.17      -lst $OBJ/CONTROL17.LST         || ERR=1
@@ -64,9 +65,11 @@ fi
 
 A2NIB_T1="a2nib -disk $DSK/naja1.nib"
 A2NIB_T2="a2nib -disk $DSK/naja2.nib"
+A2NIB_T3="a2nib -disk $DSK/naja3.nib"
 
 $A2NIB_T1 -create -volume 1
 $A2NIB_T2 -create -volume 2
+$A2NIB_T3 -create -volume 3
 
 # shell 17,15
 $A2NIB_T1 $OBJ/ALIEN.PICS.12   -t 00 -s 00   # A900
@@ -91,8 +94,7 @@ $A2NIB_T2 $OBJ/ELEVATOR        -t 15 -s 08   #  8 sectors
 # shell 17,15
 $A2NIB_T1 $OBJ/CONTROL17       -t 10 -s 00   # 16 sectors (trim)
 $A2NIB_T1 $OBJ/CONTROL15       -t 11 -s 00   # 12 sectors (trim)
-$A2NIB_T1 $OBJ/FIGHT.LOADER    -t 13 -s 00   #  3 sectors
-$A2NIB_T1 $OBJ/FIGHT.COMMAND   -t 19 -s 00   # 48+ sectors
+$A2NIB_T1 $OBJ/FIGHT.LOADER1   -t 13 -s 00   #  5 sectors
 
 # shell 17
 $A2NIB_T1 $OBJ/VIEWPORT        -t 16 -s 00   #  9 sectors
@@ -107,22 +109,21 @@ $A2NIB_T2 $OBJ/CONTROL11       -t 11 -s 00   # 12 sectors (trim)
                                              #  4 sectors
 $A2NIB_T2 $OBJ/CONTROL9        -t 12 -s 00   # 12 sectors (trim)
                                              #  4 sectors
-$A2NIB_T2 $OBJ/FIGHT.LOADER    -t 13 -s 00   #  3 sectors
-$A2NIB_T2 $OBJ/FIGHT.COMMAND   -t 19 -s 00   # 48+ sectors
+$A2NIB_T2 $OBJ/FIGHT.LOADER1   -t 13 -s 00   #  5 sectors
 
 # shell 9
 $A2NIB_T2 $OBJ/KEY.DOOR        -t 16 -s 00   # 13 sectors
                                              #  3 sectors
 
-$A2NIB_T1 $OBJ/REFORMAT        -t 20 -s 00   #  7 sectors
-$A2NIB_T2 $OBJ/REFORMAT        -t 20 -s 00   #  7 sectors
+$A2NIB_T3 $OBJ/FIGHT.LOADER2   -t 0E -s 00   #  3 sectors
+$A2NIB_T3 $OBJ/FIGHT.SHARED    -t 0F -s 00   # 16 sectors
+$A2NIB_T3 $OBJ/FIGHT.COMMAND   -t 10 -s 00   # 48+ sectors
+$A2NIB_T3 $OBJ/FIGHT.NARRATOR  -t 14 -s 00   # 64 sectors
+$A2NIB_T3 $OBJ/HALLS           -t 1C -s 00   # 16 sectors
+$A2NIB_T3 $OBJ/AWARDER         -t 1D -s 00   # 13 sectors
+$A2NIB_T3 $OBJ/DEAD.GROUP      -t 1E -s 00   # 13 sectors
+$A2NIB_T3 $OBJ/REFORMAT        -t 20 -s 00   #  7 sectors
                                              #  9 sectors
-
-$A2NIB_T1 $OBJ/AWARDER         -t 21 -s 00   # 13 sectors
-$A2NIB_T2 $OBJ/AWARDER         -t 21 -s 00   # 13 sectors
-
-$A2NIB_T1 $OBJ/DEAD.GROUP      -t 22 -s 00   # 13 sectors
-$A2NIB_T2 $OBJ/DEAD.GROUP      -t 22 -s 00   # 13 sectors
 
 #---------------------------------------
 # Copy all project files

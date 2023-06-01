@@ -12,21 +12,21 @@ MAKE_ALLMONS    JSR BUILD_GRID
                 BPL :2
 
                 LDX #0
-                STX ALIEN_NUMBER
-                STX MONS_TOTAL
-:LOOP2          JSR PICK_POSITNS
-                LDX ALIEN_NUMBER
+                STX ALIEN_INDEX
+                STX MONSTER_COUNT
+:LOOP2          JSR PICK_POSITIONS
+                LDX ALIEN_INDEX
                 BCC :SKIPA
                 LDA #0
-                STA MONS_NUMBER
+                STA MONSTER_INDEX       ; per-race monster index
 :LOOP3          JSR MAKE_MONSTER
-                INC MONS_NUMBER
-                LDA MONS_NUMBER
-                LDX ALIEN_NUMBER
+                INC MONSTER_INDEX
+                LDA MONSTER_INDEX
+                LDX ALIEN_INDEX
                 CMP HMANY1,X
                 BNE :LOOP3
 :SKIPA          INX
-                STX ALIEN_NUMBER
+                STX ALIEN_INDEX
                 CPX #3
                 BNE :LOOP2
                 RTS
@@ -197,11 +197,11 @@ MAKE_MONSTER
                 LDA (ALIEN_PTR),Y
                 STA NEW_MONSTER+monPHSHIELD
 
-                LDX MONS_NUMBER
+                LDX MONSTER_INDEX       ; per-race monster index
                 LDA POSITION_LIST,X
                 STA NEW_MONSTER+monPOSITION
 
-                LDA ALIEN_NUMBER
+                LDA ALIEN_INDEX
                 STA NEW_MONSTER+monNUMBER
 
                 LDA #healthy
@@ -218,14 +218,14 @@ MAKE_MONSTER
                 STA NEW_MONSTER+monTOPVIEW
                 STA NEW_MONSTER+monFLAGS
 
-                LDA MONS_TOTAL
-                JSR GET_MONSPTR
+                LDA MONSTER_COUNT
+                JSR SET_MONS_PTR
                 LDY #bytespermons-1
 :LOOP3          LDA NEW_MONSTER,Y
-                STA (TEMP),Y
+                STA (MONS_PTR),Y
                 DEY
                 BPL :LOOP3
-                INC MONS_TOTAL
+                INC MONSTER_COUNT
                 RTS
 
 *-------------------------------

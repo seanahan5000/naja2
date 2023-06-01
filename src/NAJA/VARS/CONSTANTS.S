@@ -161,45 +161,9 @@ eq_faulty		=	%00000010
 eq_hands12		=	%00000001
 
 side_MS			=	0
-            do ORIGINAL
 side_T1         =   1
 side_T2         =   2
-side_T3         =   3
-side_T4         =   4
-side_T5         =   5
-            else
-side_XX			=	1
-side_T1			=	2
-side_T2			=	3
-side_F1			=	4
-side_F2			=	5
-            fin
-
-*** File numbers for camp
-; cCtrlCommon		=	0
-; cControl17		=	1				;cControl's must coresp. to shell #'s
-; cControl15		=	2
-; cControl13		=	3
-; cControl11		=	4
-; cControl9		=	5
-; cFindment		=	6
-; cElevator		=	7
-; cRefRegCom		=	8
-; cDiagnose		=	9
-; *c = 10 ;*** UNUSED ***
-; cTunnels		=	11
-; cTraccCampA		=	12
-; cTraccCampB		=	13
-; cCampCommons	=	14
-
-*** File numbers for fighting
-; fLoader1		=	0
-; fLoader2		=	1
-; fCommand		=	2
-; fNarrate		=	3
-; fAwarder		=	4
-; fDeadGroup		=	5
-; fReNarrate		=	6
+side_F1			=	3
 
 *** File numbers for mothership
 mHallsPicts				=	0
@@ -242,7 +206,6 @@ fileAlienData345 =  $22
 
 fileDiagnose    =   $30
 fileAlienId     =   $31
-fileReformat    =   $32
 
 ; NOTE: must be consecutive in this order
 fileControl17   =   $33
@@ -251,13 +214,19 @@ fileControl13   =   $35
 fileControl11   =   $36
 fileControl9    =   $37
 
-fileFightLoader =   $38
-fileFightCommand =  $39
-fileFightAwarder =  $3A
-fileDeadGroup   =   $3B
+fileFightLoader1 =  $38
 
-fileElevator    =   $40
-fileViewport    =   $41
-fileRuuik       =   $42
+fileFightLoader2 =  $40
+fileFightShared =   $41
+fileFightCommand =  $42
+fileFightNarrator = $43
+fileFightHalls  =   $44
+fileFightAwarder =  $45
+fileDeadGroup   =   $46
+fileReformat    =   $47
 
-fileKeyDoor     =   $50
+fileElevator    =   $50
+fileViewport    =   $51
+fileRuuik       =   $52
+
+fileKeyDoor     =   $60

@@ -5,14 +5,14 @@ FIGHT_COMMAND   JSR SET_PAGE1
 
                 ; TODO: different than normal stats box?
                 ; TODO: should loader be doing this?
-                JSR DRAW_PICT
-                PictSetGreen
-                PictRect $01;$00;$115;$44
-                PictMoveTo $01;$0A
-                PictLineTo $115;$0A
-                PictEnd
+                ; JSR DRAW_PICT
+                ; PictSetGreen
+                ; PictRect $01;$01;$115;$44
+                ; PictMoveTo $01;$0B
+                ; PictLineTo $115;$0B
+                ; PictEnd
 
-                LDA MONS_TOTAL
+                LDA MONSTER_COUNT
                 STA ATALLY
 
 ;                 LDA ALIEN1          ;*17
@@ -31,7 +31,7 @@ NOTRAP          BIT UNSTROB
                 LDA SURPRISED_FLAG
                 BNE SURPRISE_DONE
                 BMI :2
-                LDX MONS_TOTAL
+                LDX MONSTER_COUNT
                 DEX
                 BNE :1
                 JSR DRAW_PICT
@@ -138,16 +138,15 @@ HITA            JSR CLEAR_WTIME
                 JSR CLEAR_MARKERS
 SUPOVER         LDA #$00
                 STA PLANNER
-;                 LDA #$62
-;                 PHA
-;                 LDA #$FF
-;                 PHA
-;                 LDX #fReNarrate
-;                 LDA ROUND
-;                 BNE :1
-;                 LDX #fNarrate
-; :1              JMP SLOAD_FILE
-                RTS
+
+                ; TODO: load less on later rounds
+                LDA #$5F
+                PHA
+                LDA #$FF
+                PHA
+                LDA #fileFightNarrator
+                LDY #$60
+                JMP LOAD_FILE
 
 ; put time notch in lower right corner box
 TIME_NOTCH_IN   JSR DRAW_PICT

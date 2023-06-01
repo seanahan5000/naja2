@@ -23,9 +23,7 @@ CHR_IDENTIFY    JSR FIND_SCANNER
 :SKIPA          CLC
                 LDA MASTER_MGRID,Y
                 BMI SCAN_AREA       ;Empty square
-                AND #%00111111
-                STA MONS_NUMBER
-                JSR POINTTO
+                JSR SET_MONSTER
                 LDY #monTOPVIEW
                 LDA (MONS_PTR),Y
                 BMI :EXIT           ;Already identified
@@ -125,9 +123,7 @@ PRE_IDENTIFY    JSR RESET_CHLIST    ;Done at start of each round
                 ASL
                 BPL :SKIPA
                 LSR
-                AND #%00111111
-                STA MONS_NUMBER
-                JSR POINTTO
+                JSR SET_MONSTER
                 JSR ID_ODDS
                 STY deIDODDS        ;&&&
                 CPY #$90

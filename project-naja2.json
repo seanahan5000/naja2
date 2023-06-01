@@ -10,7 +10,10 @@
     { "fileName": "CONTROL11.LST", "bins": [{ "fileName": "CONTROL11", "loadAt": "0x7800", "enabled": false }]},
     { "fileName": "CONTROL9.LST",  "bins": [{ "fileName": "CONTROL9",  "loadAt": "0x7800", "enabled": false }]},
     { "fileName": "FIGHT.LST" },
+    { "fileName": "SHARED.LST" },
+    { "fileName": "LOADER.LST" },
     { "fileName": "COMMAND.LST" },
+    { "fileName": "NARRATOR.LST" },
     { "fileName": "CAMP.LST", "bins": [
       { "fileName": "CAMP.1A00",    "loadAt": "0x1A00" },
       { "fileName": "CAMP.D000.M1", "loadAt": "0xD000", "bank": 1 },
@@ -27,6 +30,7 @@
   ],
   "images": [
     { "fileName": "naja1.nib", "drive": 1, "enabled": true },
-    { "fileName": "naja2.nib", "drive": 2, "enabled": true }
+    { "fileName": "naja2.nib", "drive": 2, "enabled": false },
+    { "fileName": "naja3.nib", "drive": 2, "enabled": true }
   ]
 }

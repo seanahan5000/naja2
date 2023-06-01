@@ -43,9 +43,8 @@ JAM_SOMEONE     BIT BLOCKED
                 LDA CHAR_NUMBER
                 JMP SET_CHAR
 
-NO_BLOCKJAM     JSR FIND_MONS
-                STA MONS_NUMBER
-                JSR POINTTO
+NO_BLOCKJAM     JSR FIND_MONSTER
+                BCC :0                  ; should never happen
                 CLC
                 JSR GET_INTENSITY
                 LDA #confused
@@ -55,7 +54,7 @@ NO_BLOCKJAM     JSR FIND_MONS
 *^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 * "INTO THE <monsname>."
 *^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-                RTS
+:0              RTS
 
 *^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 * "INTO THE <monsname> BUT"

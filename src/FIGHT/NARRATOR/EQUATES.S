@@ -17,8 +17,8 @@ lastTextCol     =   29
 ; COUNTER         =   $01
 
 *** Short term variables
-WIDTH           =   ZBLOCK_28+0     ;Topviews
-HEIGHT          =   ZBLOCK_28+1     ;Topviews
+WIDTH           =   ZBLOCK_A+0     ;Topviews
+HEIGHT          =   ZBLOCK_A+1     ;Topviews
 *
 *
 *
@@ -27,8 +27,8 @@ HEIGHT          =   ZBLOCK_28+1     ;Topviews
 *
 
 *** Narrator term varibles
-POINTER         =   ZBLOCK_30+0
-THROUGH         =   ZBLOCK_30+1
+POINTER         =   ZBLOCK_B+0
+THROUGH         =   ZBLOCK_B+1
 *
 *
 *
@@ -36,20 +36,20 @@ THROUGH         =   ZBLOCK_30+1
 *
 *
 
-ENTYPE          =   $38             ;ONLY IN ENERGY??
+ENTYPE          =   ZBLOCK_C+0          ;ONLY IN ENERGY??
 *
-COMPNTR         =   $3A
+COMPNTR         =   ZBLOCK_C+2
 *
 *
 *
 *
 *
 
-TOTAL_DAMAGEH   =   ZBLOCK_80+0
-TOTAL_DAMAGEL   =   ZBLOCK_80+1
-EL_DAMAGEH      =   ZBLOCK_80+2
-EL_DAMAGEL      =   ZBLOCK_80+3
-PH_DAMAGEH      =   ZBLOCK_80+4
-PH_DAMAGEL      =   ZBLOCK_80+5
-ENERGY_H        =   ZBLOCK_80+6
-ENERGY_L        =   ZBLOCK_80+7
+TOTAL_DAMAGEH   =   ZBLOCK_F+0
+TOTAL_DAMAGEL   =   ZBLOCK_F+1
+EL_DAMAGEH      =   ZBLOCK_F+2
+EL_DAMAGEL      =   ZBLOCK_F+3
+PH_DAMAGEH      =   ZBLOCK_F+4
+PH_DAMAGEL      =   ZBLOCK_F+5
+ENERGY_H        =   ZBLOCK_F+6
+ENERGY_L        =   ZBLOCK_F+7

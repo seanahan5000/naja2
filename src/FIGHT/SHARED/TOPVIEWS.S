@@ -47,7 +47,7 @@ DRAW_GRID
                 RTS
 
 ; FROM11                           ; legacy name
-CPOS_TO_XY
+CPOS_TO_XY      ENT
                 LDY #position
                 LDA (CHARDL),Y
 ;
@@ -59,7 +59,8 @@ CPOS_TO_XY
 ;   Y: grid Y position 0 to 4
 ;
 ; FROM11B                          ; legacy name
-POS_TO_XY       STA :MOD+1
+POS_TO_XY       ENT
+                STA :MOD+1
                 LSR
                 LSR
                 LSR
@@ -79,25 +80,30 @@ POS_TO_XY       STA :MOD+1
 ; On exit:
 ;   Y: grid index 0 to 24
 ;
-MONPOS_TO_I25   SEC
+MONPOS_TO_I25   ENT
+                SEC
                 SBC #$05
-POS_TO_I25      JSR POS_TO_XY
+POS_TO_I25      ENT
+                JSR POS_TO_XY
                 TXA
                 CLC
                 ADC MUL5,Y
                 TAY
                 RTS
 
-MUL5            DB  0,5,10,15,20
+MUL5            ENT
+                DB  0,5,10,15,20
                 DB  25,30,35,40,45
 
-DIV5            DB  0,0,0,0,0
+DIV5            ENT
+                DB  0,0,0,0,0
                 DB  1,1,1,1,1
                 DB  2,2,2,2,2
                 DB  3,3,3,3,3
                 DB  4,4,4,4,4
 
-MOD5            DB  0,1,2,3,4
+MOD5            ENT
+                DB  0,1,2,3,4
                 DB  0,1,2,3,4
                 DB  0,1,2,3,4
                 DB  0,1,2,3,4
@@ -107,7 +113,8 @@ MOD5            DB  0,1,2,3,4
 ;   X: grid X position
 ;   Y: character grid Y position
 ;
-CGRID_MOVETO    LDA GRID_XPNTS,X
+CGRID_MOVETO    ENT
+                LDA GRID_XPNTS,X
                 TAX
                 LDA CGRID_YPNTS,Y
                 TAY
@@ -116,7 +123,7 @@ CGRID_MOVETO    LDA GRID_XPNTS,X
 DRAW_CHAR_TOPVIEW
                 JSR CPOS_TO_XY
                 JSR CGRID_MOVETO
-DRAW_PROF_TOPVIEW
+DRAW_PROF_TOPVIEW ENT
                 LDY #profrace
                 LDA (CHARDL),Y
                 LSR
@@ -137,10 +144,13 @@ DRAW_PROF_TOPVIEW
 
                 ; pixel positions in top view grid
 
-GRID_XPNTS      DB  8, 23, 38, 53, 68
+GRID_XPNTS      ENT
+                DB  8, 23, 38, 53, 68
 
-AGRID_YPNTS     DB  73,84,95,106,117
-CGRID_YPNTS     DB  128,139,150,161,172
+AGRID_YPNTS     ENT
+                DB  73,84,95,106,117
+CGRID_YPNTS     ENT
+                DB  128,139,150,161,172
                 DB  183
 
                 ; byte offsets into TCHARS data
@@ -217,7 +227,7 @@ DRAW_GRID_CURSOR
 ;   X: grid 25 x position
 ;   Y: grid 25 y position
 ;
-DRAW_GRID_CURSOR_XY
+DRAW_GRID_CURSOR_XY ENT
                 LDA CGRID_YPNTS,Y
                 TAY
                 LDA GRID_XPNTS,X

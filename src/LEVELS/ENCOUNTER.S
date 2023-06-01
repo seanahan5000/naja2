@@ -33,12 +33,12 @@ TRY_DIRECTION   JSR GET_NSEW
 ;               CMP #FRONT_OPEN
                 RTS
 
-; TODO: move this or use symbol directly
-FIGHT_LOADER    =   $8400
+;*** TODO: move this or use symbol directly
+FIGHT_LOADER1   =   $8800
 
 LOAD_FIGHT      LDA #NOT_SPINNING+KEEP_SPINNING
                 JSR SET_NEXT_ON_OFF
-                LDA #fileFightLoader
-                LDY #>FIGHT_LOADER
+                LDA #fileFightLoader1
+                LDY #>FIGHT_LOADER1
                 JSR LOAD_FILE
-                JMP FIGHT_LOADER
+                JMP FIGHT_LOADER1

@@ -190,7 +190,7 @@ ENSQUARE_LOOP   LDA ENHIT,Y
                 BEQ :SKIPD          ;Next square
                 LDA MASTER_MGRID,Y
                 AND #%00111111
-                STA MONS_NUMBER
+                STA MONSTER_INDEX       ; #$3F is empty
 
                 LDY SCOUNTR
                 TYA
@@ -203,7 +203,7 @@ ENSQUARE_LOOP   LDA ENHIT,Y
                 BEQ :SKIPB
                 LDA MASTER_MGRID,Y
                 AND #%00111111
-                CMP MONS_NUMBER
+                CMP MONSTER_INDEX
                 BNE :SKIPB
 :SKIPA          INC MCOUNTR
                 LDA #0
@@ -217,10 +217,10 @@ ENSQUARE_LOOP   LDA ENHIT,Y
                 STA SCOUNTR
 
                 JSR CLEAR_TEXT
-                LDA MONS_NUMBER
+                LDA MONSTER_INDEX
                 CMP #$3F
                 BEQ :SKIPD
-                JSR POINTTO
+                JSR SET_MONSTER
                 JSR ENAPART
 
 :SKIPD          JSR INCSUB          ;Next square

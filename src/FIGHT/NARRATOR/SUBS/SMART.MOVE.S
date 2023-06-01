@@ -123,7 +123,7 @@ SCAN_LINE       LDA #0
 :1              LDA AUX_MGRID,Y
                 BMI :2
                 AND #%10111111
-                CMP MONS_NUMBER
+                CMP MONSTER_INDEX
                 BNE :3
 :2              LDA OPENMASK        ;Set bits of squares that
                 ORA HIT_MASKS,X     ;  are NOT occupied by other

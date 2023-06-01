@@ -25,6 +25,8 @@
                 PUT I.TRANSFER
                 PUT I.REGENERATE    ; must be in same bank as I.TRANSFER
 
+                PUT /LEVELS/FILES3
+
 GET_KEY_STRING  ENT
                 TAX
                 JSR BANK_1
@@ -95,10 +97,11 @@ BANK_2          LDA $C083
 
                 ORG $A000
 REFORMAT_FILE   DB  fileReformat
-                PUT C.REFORMAT
-                PUT TOPVIEWS
-                DS  \,$EE
-                ERR $A700-*
+REFORMAT        ;*** TEMP
+;                 PUT C.REFORMAT
+;                 PUT /FIGHT/SHARED/TOPVIEWS
+;                 DS  \,$EE
+;                 ERR $A700-*
                 SAV REFORMAT
 
                 ORG $A000
