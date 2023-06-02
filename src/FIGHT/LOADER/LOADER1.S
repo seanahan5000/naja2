@@ -20,10 +20,10 @@ SPECIAL_LOAD    STX OPTIONS1        ;Calling routine must clear
                 LDA SEED1
                 STA SAVE_SEED+1
 
-                LDA #$33                ;***
-                STA SEED0
-                LDA #$64
-                STA SEED1               ;***
+                ; LDA #$33                ;***
+                ; STA SEED0
+                ; LDA #$64
+                ; STA SEED1               ;***
 
                 ; TODO: make sure hall range is set appropriately
                 JSR CAPTURE_HALLS

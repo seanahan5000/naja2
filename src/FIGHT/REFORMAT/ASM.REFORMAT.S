@@ -17,11 +17,8 @@
                 PUT /FIGHT/FIGHT.CONSTS
                 PUT /FIGHT/FIGHT.ZPAGE
 
-                PUT SHARED/EXT
-
-                PUT AWARDER/ASM.AWARDER
-
                 ORG $A000
-DEAD_GROUP_FILE DB  $00                 ; no real file number
-                PUT DEAD/DEAD.GROUP
-                SAV DEAD.GROUP
+REFORMAT_FILE   DB  fileReformat
+                PUT C.REFORMAT
+                PUT /FIGHT/SHARED/TOPVIEWS
+                SAV REFORMAT

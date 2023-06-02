@@ -25,6 +25,15 @@
                 PUT I.TRANSFER
                 PUT I.REGENERATE    ; must be in same bank as I.TRANSFER
 
+
+DISK_SIDES      ENT
+                DB  side_MS
+                DB  side_T1             ; 17
+                DB  side_T1             ; 15
+                DB  side_T2             ; 13
+                DB  side_T2             ; 11
+                DB  side_T2             ;  9
+
                 PUT /LEVELS/FILES3
 
 GET_KEY_STRING  ENT
@@ -94,15 +103,6 @@ BANK_2          LDA $C083
                 DS  \,$EE
                 ERR $1E00-*
                 SAV CAMP.1A00
-
-                ORG $A000
-REFORMAT_FILE   DB  fileReformat
-REFORMAT        ;*** TEMP
-;                 PUT C.REFORMAT
-;                 PUT /FIGHT/SHARED/TOPVIEWS
-;                 DS  \,$EE
-;                 ERR $A700-*
-                SAV REFORMAT
 
                 ORG $A000
 DIAGNOSE_FILE   DB  fileDiagnose

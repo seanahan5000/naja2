@@ -12,10 +12,6 @@ FILE_TABLE      DB  fileAlienPics12,  $00,$00,$B0
                 DB  fileControl13,    $10,$00,$10   ; (disk side 2)
 
                 DB  fileFightLoader1, $13,$00,$05
-
-                ; TODO: move to FILES3?
-                DB  fileReformat,     $20,$00,$07   ; (disk side 3)
-
                 DB  fileDiagnose,     $14,$00,$0E
                 DB  fileAlienId,      $15,$00,$06
                 DB  fileElevator,     $15,$08,$08
@@ -23,3 +19,5 @@ FILE_TABLE      DB  fileAlienPics12,  $00,$00,$B0
                 ; shell 17
                 DB  fileViewport,     $16,$00,$09
                 DB  fileRuuik,        $17,$00,$0D
+
+                DB  fileReformat,     $20,$00,$07   ; (disk side 3)

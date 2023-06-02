@@ -15,24 +15,11 @@
 FILE_HOOK       ENT
                 BCS MESS_CMN
 
-:ASK_FOR_SIDE
-;             do ORIGINAL
-;                 LDX SIDE_LETTERS+0
-;                 TAY
-;                 BEQ :SKIPA
-;                 LDX SIDE_LETTERS+1
-; :SKIPA          STX MESSAGES+12
-;                 STY MESSAGES+13
-;             else
-                LSR
-                TAX
-                LDA SIDE_LETTERS,X
+:ASK_FOR_SIDE   TAX
+                LDA SIDE_LETTERS+0,X
                 STA MESSAGES+12
-                LDX #1
-                BCC :SKIPA
-                INX
-:SKIPA          STX MESSAGES+13
-;             fin
+                LDA SIDE_LETTERS+4,X
+                STA MESSAGES+13
                 CLC
 
 MESS_CMN        PHP
@@ -174,7 +161,8 @@ COPY_MESSAGE    LDX #181
                 BNE :6
                 RTS
 
-SIDE_LETTERS    USR (MTF)-
+SIDE_LETTERS    USR (MTTF)-
+                USR (S123)-
 
 MESSAGES        USR (INSERT_SIDE_XX_)
                 USR (WRITE_PROTECTED)

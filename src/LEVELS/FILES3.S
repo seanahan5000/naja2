@@ -15,6 +15,6 @@ FILE_TABLE_3    ENT
                 DB  fileFightShared,  $0F,$00,$10
                 DB  fileFightCommand, $10,$00,$30
                 DB  fileFightNarrator,$14,$00,$40
-                DB  fileFightHalls,   $1C,$00,$10
+                DB  fileFightHalls,   $1B,$00,$15
                 DB  fileFightAwarder, $1D,$00,$10
                 DB  fileDeadGroup,    $1E,$00,$0D

@@ -41,6 +41,7 @@ $ASM FIGHT/SHARED   ASM.SHARED   -lst $OBJ/SHARED.LST  -ent $SRC/FIGHT/SHARED/EX
 $ASM FIGHT/LOADER   ASM.LOADER   -lst $OBJ/LOADER.LST   || ERR=1
 $ASM FIGHT/COMMAND  ASM.COMMAND  -lst $OBJ/COMMAND.LST  || ERR=1
 $ASM FIGHT/NARRATOR ASM.NARRATOR -lst $OBJ/NARRATOR.LST || ERR=1
+$ASM FIGHT/REFORMAT ASM.REFORMAT -lst $OBJ/REFORMAT.LST || ERR=1
 $ASM FIGHT  ASM.FIGHT   -lst $OBJ/FIGHT.LST             || ERR=1
 
 $ASM LEVELS INIT        -lst $OBJ/INIT.LST              || ERR=1
@@ -119,7 +120,7 @@ $A2NIB_T3 $OBJ/FIGHT.LOADER2   -t 0E -s 00   #  3 sectors
 $A2NIB_T3 $OBJ/FIGHT.SHARED    -t 0F -s 00   # 16 sectors
 $A2NIB_T3 $OBJ/FIGHT.COMMAND   -t 10 -s 00   # 48+ sectors
 $A2NIB_T3 $OBJ/FIGHT.NARRATOR  -t 14 -s 00   # 64 sectors
-$A2NIB_T3 $OBJ/HALLS           -t 1C -s 00   # 16 sectors
+$A2NIB_T3 $OBJ/HALLS           -t 1B -s 00   # 16 sectors
 $A2NIB_T3 $OBJ/AWARDER         -t 1D -s 00   # 13 sectors
 $A2NIB_T3 $OBJ/DEAD.GROUP      -t 1E -s 00   # 13 sectors
 $A2NIB_T3 $OBJ/REFORMAT        -t 20 -s 00   #  7 sectors

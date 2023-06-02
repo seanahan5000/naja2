@@ -250,13 +250,14 @@ FORCE_DEAD      LDA #$00
                 STA GRPNUMB
             fin
 
-ALL_DEAD        LDA #$9F
-                PHA
-                LDA #$FF
-                PHA
-                LDA #fileDeadGroup
-                LDY #$A0
-                JMP LOAD_FILE
+; TODO: move these
+DEAD_FILE       =   $A000
+DEAD_GROUP      =   $A001
+
+ALL_DEAD        LDA #fileDeadGroup
+                LDY #>DEAD_FILE
+                JSR LOAD_FILE
+                JMP DEAD_GROUP
 
 *-------------------------------
 

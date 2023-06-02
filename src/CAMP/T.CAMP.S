@@ -434,12 +434,25 @@ YPOINTS			ENT
 
 *-------------------------------
 
-TO_REFORMAT		LDA #fileReformat
-                CMP REFORMAT_FILE
+; TODO: move this to a common header file
+REFORMAT_FILE   =   $A000
+REFORMAT        =   $A001
+
+TO_REFORMAT		LDX #fileReformat
+                CPX REFORMAT_FILE
                 BEQ :1
+                LDA #side_F1
+                JSR SET_DISK_SIDE
+                TXA
                 LDY #>REFORMAT_FILE
                 JSR LOAD_FILE
-:1				JMP REFORMAT
+                LDX SHELL
+                LDA DISK_SIDES,X
+                JSR SET_DISK_SIDE
+:1				JSR REFORMAT
+                JMP RECAMP
+
+*-------------------------------
 
 TO_ALIENS       LDA #fileAlienId
                 CMP ALIEN_ID_FILE

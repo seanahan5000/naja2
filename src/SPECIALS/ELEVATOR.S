@@ -214,19 +214,13 @@ COPY_CROSS      LDA #<CROSS_BEGIN
                 RTS
 
 LOAD_SHELL      LDX DEST_SHELL
-                LDA :DISK_SIDES-1,X
+                LDA DISK_SIDES,X
                 JSR SET_DISK_SIDE
                 TXA
                 CLC
                 ADC #fileControl17-1
                 LDY #>CONTROL_FILE
                 JMP LOAD_FILE
-
-:DISK_SIDES     DB  side_T1             ; 17
-                DB  side_T1             ; 15
-                DB  side_T2             ; 13
-                DB  side_T2             ; 11
-                DB  side_T2             ;  9
 
 ;---------------------------------------
 ; scroll screen down (up elevator)

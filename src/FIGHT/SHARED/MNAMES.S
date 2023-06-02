@@ -2,6 +2,8 @@
 ; This contains code for drawing and updating the monster name box.
 ; Used for both for initial loader drawing as well as narration updates.
 
+; TODO: consider adding "(#)" count when multiple aliens in same row
+
 ; MNAME_TABLE format
 ;   IANM.MMMM
 ;    I: identified
@@ -110,6 +112,7 @@ DRAW_MNAME      TYA
                 PLA
                 BPL :3
 
+; TODO: reuse/share this code
                 LDX #0
                 LDY #aName
 :1              LDA (ALIEN_PTR),Y       ; TODO: ACLASS_PTR

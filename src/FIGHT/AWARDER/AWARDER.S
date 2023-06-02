@@ -65,9 +65,9 @@ AWARDER         JSR DRAW_PICT
                 JSR LOAD_FILE
 
                 LDX SHELL
-                LDA :FILES-1,X
+                LDA :FILES,X
                 PHA
-                LDA :SIDES-1,X
+                LDA DISK_SIDES,X
                 JSR SET_DISK_SIDE
                 LDA #IS_SPINNING+STOP_SPINNING
                 JSR SET_NEXT_ON_OFF
@@ -135,13 +135,8 @@ AWARDER         JSR DRAW_PICT
                 JSR SPACE_AND_CLEAR
                 JMP ALL_DONE
 
-:SIDES          DB  side_T1
-                DB  side_T1
-                DB  side_T2
-                DB  side_T2
-                DB  side_T2
-
-:FILES          DB  fileControl17
+:FILES          DB  0
+                DB  fileControl17
                 DB  fileControl15
                 DB  fileControl13
                 DB  fileControl11

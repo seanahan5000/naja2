@@ -9,6 +9,8 @@
 
                 PUT /NDOS/EXT
 
+                PUT /CAMP/EXT
+
 CONTROL_MODULE  =   $7800
 SET_CONTROL     =   $7801
 
@@ -41,7 +43,7 @@ CONTROL_BOOT    JSR INIT_RANDOM
                 SBC #fileControl17-1
                 TAX
                 STX SHELL
-                LDA :DISK_SIDES-1,X
+                LDA DISK_SIDES,X
                 JSR SET_DISK_SIDE
 
                 LDA #0                  ; clear expedition totals
@@ -69,9 +71,3 @@ CONTROL_BOOT    JSR INIT_RANDOM
                 JSR GET_NSEW
                 JSR DRAW_HALL
                 JMP HALL_KEYS
-
-:DISK_SIDES     DB  side_T1             ; 17
-                DB  side_T1             ; 15
-                DB  side_T2             ; 13
-                DB  side_T2             ; 11
-                DB  side_T2             ;  9

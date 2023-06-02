@@ -108,7 +108,7 @@ KEYHIT_A		BIT	UNSTROB
 				BCS FRONT_EMPTY
 				JSR	ARROW
 				JSR	GRID_CURSOR_A
-				JMP	RECAMP
+				RTS						; return to camp
 
 FRONT_EMPTY		JSR	DRAW_PICT
 				PictClear 15;161;38;185
@@ -582,3 +582,50 @@ DRAW_SEL_DEST	JSR DRAW_PICT
 				PictTextAt 160;170;(C>ANCEL)
 				PictEnd
 				RTS
+
+; TODO: phase this out
+DRAW_GRID       JSR DRAW_PICT
+                PictSetGreen
+                PictRect $07;$47;$55;$B7
+                PictMoveTo $07;$7F
+                PictLineTo $55;$7F
+;                 PictSetTextHeight 11
+;                 PictTextAt $00;$4B;(J\nI\nH\nG\nF\nE\nD\nC\nB\nA)
+;                 PictSetTextHeight $00
+;                 PictTextAt $0E;$B9;(1)
+;                 PictTextAt $1D;$B9;(2)
+;                 PictTextAt $2C;$B9;(3)
+;                 PictTextAt $3B;$B9;(4)
+;                 PictTextAt $4A;$B9;(5)
+                PictEnd
+
+                ; draw grid dots (no HPLOT anymore)
+                ; hard-wired to current fight/reformat screen position
+
+                LDX #$53
+:1              LDA LOBYTES,X
+                STA SCREENL
+                LDA HIBYTES,X
+                STA SCREENH
+                LDY #$03
+                LDA #$08
+:2              STA (SCREENL),Y
+                ASL
+                INY
+                INY
+                CPY #$0B
+                BNE :2
+:3              TXA
+                CLC
+                ADC #$0B
+                TAX
+                CPX #$7F
+                BEQ :3
+                CPX #$B6
+                BNE :1
+
+                JSR FIRST_CHAR
+:4              JSR DRAW_CHAR_TOPVIEW
+                JSR NEXT_CHAR
+                BCC :4
+                RTS

@@ -94,7 +94,6 @@ MSHOT_RICOCHT   LDY #10             ;S>10 That.Ricochets.Off.The.Wall
 *         | FLIES PAST   |
 *         | BUZZES PAST  |
 *^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-;*** TODO: fix "MISSES PAST EVERYBODY" ***
 MSHOT_MISSES    LDA SQUARE_HIT
                 BNE MSHOT_BLOCKED
                 LDY #xBut
