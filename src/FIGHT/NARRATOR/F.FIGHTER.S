@@ -234,7 +234,6 @@ POST_MCOMMAND   LDY #monCMDCOUNT
                 INY                 ;#monCRNTCMD+1
                 RTS
 
-
 *-------------------------------
 *
 *-------------------------------
@@ -285,17 +284,13 @@ MOVE_FBLR       STA TEMP
 *-------------------------------
 
 POST_MOVE       PHA
-                JSR PRE_FILLCHK1
-                ORA #%01000000
-                LDX #%10111111
-                JSR FILL_GRID
+                JSR SET_AGRID_AUX
                 JSR TLWCALC
                 LDX #cmdMOVE
                 JSR POST_MCOMMAND
                 PLA
                 STA (MONS_PTR),Y
                 RTS
-
 
 *-------------------------------
 *
@@ -314,7 +309,7 @@ BACKWARD        PHA                 ;See if moving backwards is possible
                 PHA
                 CLC
                 ADC #$01
-                JSR TRY_IT
+                JSR CHECK_AGRID_AUX
                 BCS :2
 :1              LDA DIRCTN_BYTE     ;Set #dBackward bit if possible
                 ORA #dBackward
@@ -329,7 +324,7 @@ FORWARD         PHA                 ;See if moving forwards is possible
                 PHA
                 SEC
                 SBC #$01
-                JSR TRY_IT
+                JSR CHECK_AGRID_AUX
                 BCS :1
                 LDA DIRCTN_BYTE     ;Set #dForward bit if possible
                 ORA #dForward
@@ -360,7 +355,7 @@ TRY_LR          STX :MOD1+1
                 STY :MOD2+1
                 LDY #monPOSITION
                 STA (MONS_PTR),Y
-                JSR TRY_IT
+                JSR CHECK_AGRID_AUX
                 BCS :1
                 LDA DIRCTN_BYTE
 :MOD1           ORA #$00            ;Modified
@@ -371,10 +366,6 @@ TRY_LR          STX :MOD1+1
 :MOD2           ORA #$00            ;Modified
                 STA DIRCTN_BYTE
 :1              RTS
-
-TRY_IT          JSR PRE_FILLCHK1
-                JMP CHECK_GRID
-
 
 *-------------------------------
 *
@@ -452,7 +443,6 @@ GET_HITABLES    JSR IMAGE_FOOLED
                 AND #%01111100
                 STA HITABLES
                 RTS
-
 
 *------------------------------------------
 * Pick a square to aim at

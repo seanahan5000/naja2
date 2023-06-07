@@ -9,6 +9,17 @@
 *-------------------------------------
 MASTER_CGRID    DS  25
 
+*-------------------------------------
+; MAIN_CGRID: main character grid
+;
+;   %00000000 = empty square
+;   %00100000 = inaccessible square
+;   %110..nnn = character (n = 0 to 5)
+;   %100..nnn = images of character
+;
+*-------------------------------------
+; MAIN_CGRID      DS  25
+
 AGDEAD          DS  1
                 DS  1
 XPLUS4          DS  1
@@ -20,14 +31,15 @@ YMINUS4         DS  1
                 DUMMY   $4400
 
 *------------------------------------------------------
-* MASTER_MGRID
-*          $FF = empty square
-*   $40 to $58 = Actual monster positions
-*   $00 to $18 = Additional space taken up by monsters
+; AGRID_MAIN: main alien grid
+;
+;   %00000000 = empty square
+;   %00100000 = inaccessible square
+;   %110nnnnn = actual alien position (monster index n = 0 to 24)
+;   %100nnnnn = additional space taken up by alien
+;
 *------------------------------------------------------
-; TODO: rework MASTER_MGRID so $00 is empty
-MASTER_MGRID    DS  25
-
+AGRID_MAIN      DS  25
                 DEND
 *************
                 DUMMY   $4800
@@ -50,7 +62,7 @@ FBYTE2          DS  1
 FBYTE3          DS  1
 FBYTE4          DS  1
 FBYTE5          DS  1
-AUX_MGRID       DS  25
+AGRID_AUX       DS  25
                 DEND
 *************
                 DUMMY   $5000

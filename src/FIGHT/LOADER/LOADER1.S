@@ -20,9 +20,9 @@ SPECIAL_LOAD    STX OPTIONS1        ;Calling routine must clear
                 LDA SEED1
                 STA SAVE_SEED+1
 
-                ; LDA #$33                ;***
+                ; LDA #$40                ;***
                 ; STA SEED0
-                ; LDA #$64
+                ; LDA #$19
                 ; STA SEED1               ;***
 
                 ; TODO: make sure hall range is set appropriately
@@ -87,10 +87,6 @@ FORCE_SURPRISE  DS  1
 
 PICK_ALIENS     JSR LOAD_TABLE
 
-                LDX MAP_FACE
-                LDA FACE_MASKS,X
-                STA FMASK
-
                 LDA OPTIONS1
                 AND #Xalien1
                 BEQ FIRST_PICKED
@@ -103,7 +99,8 @@ POSLOOP         LDY COUNT
                 JSR POINTEM
                 LDY #$00
                 LDA (DATPNTL),Y
-                AND FMASK
+                LDX MAP_FACE
+                AND FACE_MASKS,X
                 BEQ NOTPOS
                 LDY POSCNT
                 LDA COUNT

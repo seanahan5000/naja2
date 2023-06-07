@@ -99,8 +99,12 @@ MAKE_CHITGRID   JSR DRAW_SHOOTBOX
                 LDX COMPNTR
                 LDA COMMAND-1,X
                 JSR CHAR_INDEXER
-                LDA MASTER_MGRID,Y
-                AND #%00111111          ; #$3F if empty
+
+                ; LDA MASTER_MGRID,Y
+                ; AND #%00111111          ; #$3F if empty
+                ; STA TARGET
+
+                LDA AGRID_MAIN,Y
                 STA TARGET
 
                 LDA #0
@@ -167,10 +171,18 @@ MON_SHOOTABLE   LDY #monSTATUS
                 STA BASE+3
                 ADC #0
                 STA BASE+0
-                LDA MONSTER_INDEX
-                CMP TARGET
+
+                ; LDA MONSTER_INDEX
+                ; CMP TARGET
+                ; BEQ :SKIPA
+
+                LDA TARGET
+                BPL :1
+                AND #%00011111
+                CMP MONSTER_INDEX
                 BEQ :SKIPA
-                LDX #$75
+
+:1              LDX #$75
                 LDY #$00
                 JSR MULTIPLY_BASE
 :SKIPA          JSR GET_SIZE_2

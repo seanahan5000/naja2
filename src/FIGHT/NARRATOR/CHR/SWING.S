@@ -335,8 +335,8 @@ PATH_OF_SWING   LDX SWING_TYPE
                 ADC :OFFSETS,X
                 STA YCOUNTR
                 TAY
-                LDA MASTER_MGRID,Y
-                BPL :SKIPD
+                LDA AGRID_MAIN,Y
+                BMI :SKIPD              ; any part of alien
                 INX
                 CPX XCOUNTR
                 BNE :LOOP1

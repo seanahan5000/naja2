@@ -19,7 +19,6 @@ F_SHARED_FILE   DB  $00               ; no real file number
 
                 PUT FLN.POINTERS
                 PUT FLN.TOPVIEWS
-                PUT FLN.GRIDS
                 PUT TOPVIEWS
                 PUT MNAMES
 
@@ -27,7 +26,7 @@ LEFT_SIDE_GRID  =   1
 
 GRID_HALLS      DS  6                   ; TODO: consider ZPAGE for this
 
-                PUT BUILD.GRID
+                PUT BUILD.GRID          ; TODO: move to loader?
                 PUT DRAW.GRID
 
                 SAV FIGHT.SHARED

@@ -77,10 +77,9 @@ FIND_CHAR       LDA SQUARE_HIT
 
 FIND_MONSTER    LDA SQUARE_HIT
                 JSR MON_INDEXER
-                LDA MASTER_MGRID,Y
-                CMP #$FF
                 CLC
-                BEQ :1
+                LDA AGRID_MAIN,Y
+                BPL :1                  ; empty or inaccessible
                 JSR SET_MONSTER
                 SEC
 :1              RTS

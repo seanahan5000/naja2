@@ -120,11 +120,20 @@ WDTHMASK        =   TEMP+1
 SCAN_LINE       LDA #0
                 STA OPENMASK
                 TAX
-:1              LDA AUX_MGRID,Y
-                BMI :2
-                AND #%10111111
+
+; :1              LDA AUX_MGRID,Y
+;                 BMI :2
+;                 AND #%10111111
+;                 CMP MONSTER_INDEX
+;                 BNE :3
+
+:1              LDA AGRID_AUX,Y
+                BEQ :2
+                BPL :3
+                AND #%00011111
                 CMP MONSTER_INDEX
                 BNE :3
+
 :2              LDA OPENMASK        ;Set bits of squares that
                 ORA HIT_MASKS,X     ;  are NOT occupied by other
                 STA OPENMASK        ;  monsters

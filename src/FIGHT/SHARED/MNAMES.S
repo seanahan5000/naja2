@@ -3,6 +3,7 @@
 ; Used for both for initial loader drawing as well as narration updates.
 
 ; TODO: consider adding "(#)" count when multiple aliens in same row
+; TODO: limit number of aliens to 16 so only 4 bits are needed here and elsewhere
 
 ; MNAME_TABLE format
 ;   IANM.MMMM
@@ -13,13 +14,16 @@
 
 INDEX           =   YCOUNT              ;***
 
-UPDATE_MNAMES   ENT
+DRAW_MNAMES     ENT
                 LDX #4
                 LDA #0
-:1              STA NEXT_MNAMES,X
-                STA LEFT_MNAMES,X
+:1              STA MNAME_TABLE,X
                 DEX
                 BPL :1
+                ; fall through
+
+UPDATE_MNAMES   ENT
+                JSR CLEAR_NEXT
 
                 JSR FIRST_MONSTER
 :2              LDY #monNUMBER
@@ -72,8 +76,13 @@ UPDATE_MNAMES   ENT
 
 :NO_SET         JSR NEXT_MONSTER
                 BCC :2
+                BCS MNAME_REDRAW        ; always
 
-UMN_REDRAW      LDX #0
+ERASE_MNAMES    ENT
+                JSR CLEAR_NEXT
+                ; fall through
+
+MNAME_REDRAW    LDX #0
 :1              STX INDEX
                 LDY AGRID_YPNTS,X
                 JSR VMOVE_TO
@@ -101,6 +110,14 @@ UMN_REDRAW      LDX #0
 :4              INX
                 CPX #5
                 BNE :1
+                RTS
+
+CLEAR_NEXT      LDX #4
+                LDA #0
+:1              STA NEXT_MNAMES,X
+                STA LEFT_MNAMES,X
+                DEX
+                BPL :1
                 RTS
 
 DRAW_MNAME      TYA

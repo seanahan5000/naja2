@@ -31,11 +31,17 @@ TILE_COUNT      =   $C7
 RAREPNT         =   $C8
 RARECNT         =   $C9
 POSCNT          =   $CA
-FMASK           =   $CB
 
-FIRST_ONE       =   $CC
-LAST_ONE        =   $CD
-RND_HOLD        =   $CE
+FIRST_ONE       =   $CB
+LAST_ONE        =   $CC
+RND_HOLD        =   $CD
+
+START_INDEX     =   $CE
+VALID_COUNT     =   $CF
+SAVE_INDEX      =   TILE_COUNT
+
+MASK_BITS       =   TEMP                ;***
+
 
 alienClassSize  =   bytesperalien
 animated        =   $E0             ;Also in /ALIENS/EQUATES/ALIEN.EQ
@@ -51,16 +57,15 @@ POSSIBLE        DS  18
 
                 ORG $6000
                 PUT LOADER2
-                PUT B.MAKE.MONS
-                PUT B.PICK.POSITN
+                PUT MAKE.ALIENS
+                PUT PICK.POSITIONS
                 ; PUT B.SUPRISE.SUB
                 SAV FIGHT.LOADER2
 
                 DUMMY $9800             ;***
 GRID            DS  25
+VALID_LIST      DS  25
 POSITION_LIST   DS  25
-FILLED_GRID     DS  25
-GROUP_BUFF      DS  bytespergroup
 GROUP_BUFF1     DS  bytespergroup
 GROUP_BUFF2     DS  bytespergroup
 GROUP_BUFF3     DS  bytespergroup

@@ -40,15 +40,25 @@ CHR_ENERGY
                 BNE :LOOP2          ;Calculate number of
                 STA SQUARE_COUNT    ;   squares in hit zone
 
-                LDA #<ENHIT
-                STA POINTL
-                LDA #>ENHIT
-                STA POINTH
                 LDA COMMAND-1,Y
                 JSR MON_INDEXER
-                LDA #$FF            ;Set squares in hit zone
-                TAX                 ;   to #$FF
-                JSR FILL_GRID
+                ;
+                ; set squares in hit zone to #$FF
+                ;
+:1              TYA
+                PHA
+                LDX XCOUNT
+                LDA #$FF
+:2              STA ENHIT,Y
+                INY
+                DEX
+                BNE :2
+                PLA
+                CLC
+                ADC #5
+                TAY
+                DEC YCOUNT
+                BNE :1
 
 *------------------------------*
 *   Begin attack description   *
@@ -179,57 +189,63 @@ CHR_ENERGY
 *   Check individual squares   *
 *------------------------------*
 
-                LDA #$10
-                STA XCOUNTR
-                LDA #$06
-                STA YCOUNTR
+EN_EMPTIES
                 LDY #0
                 STY ANY_HIT_FLAG
-                STY SCOUNTR
-ENSQUARE_LOOP   LDA ENHIT,Y
-                BEQ :SKIPD          ;Next square
-                LDA MASTER_MGRID,Y
-                AND #%00111111
-                STA MONSTER_INDEX       ; #$3F is empty
-
-                LDY SCOUNTR
-                TYA
-                PHA
-                LDA #0
-                STA MCOUNTR
-                BEQ :SKIPA          ;Always
-
-:LOOP2          LDA ENHIT,Y
-                BEQ :SKIPB
-                LDA MASTER_MGRID,Y
-                AND #%00111111
-                CMP MONSTER_INDEX
-                BNE :SKIPB
-:SKIPA          INC MCOUNTR
+:1              STY AINDEX
+                LDA ENHIT,Y
+                BEQ :2
+                LDA AGRID_MAIN,Y
+                BMI :2
                 LDA #0
                 STA ENHIT,Y
                 JSR TAKE_ENERGY
-:SKIPB          INC SCOUNTR
-                LDY SCOUNTR
+                LDY AINDEX
+:2              INY
                 CPY #25
-                BNE :LOOP2
-                PLA
-                STA SCOUNTR
+                BNE :1
 
-                JSR CLEAR_TEXT
-                LDA MONSTER_INDEX
-                CMP #$3F
-                BEQ :SKIPD
+EN_ALIENS       LDY #0
+:1              STY AINDEX
+                LDA ENHIT,Y
+                BEQ :4
+                LDA AGRID_MAIN,Y
+                BPL :4
+
                 JSR SET_MONSTER
+                LDA #0
+                STA MCOUNTR
+                LDA AINDEX
+                PHA
+                TAY
+:2              STY BINDEX
+                LDA ENHIT,Y
+                BEQ :3
+                LDA AGRID_MAIN,Y
+                BPL :3
+                AND #%00011111
+                CMP MONSTER_INDEX
+                BNE :3
+                LDA #0
+                STA ENHIT,Y
+                INC MCOUNTR
+                JSR TAKE_ENERGY
+                LDY BINDEX
+:3              INY
+                CPY #25
+                BNE :2
+                JSR CLEAR_TEXT
                 JSR ENAPART
 
-:SKIPD          JSR INCSUB          ;Next square
-                LDY SCOUNTR
+                PLA
+                TAY
+:4              INY
                 CPY #25
-                BNE ENSQUARE_LOOP
+                BNE :1
 
                 BIT ANY_HIT_FLAG    ;Last square
                 BMI EEXIT2
+                JSR CLEAR_TEXT
                 LDX #0
                 LDY #xEnergy
                 JSR WORD1_INC
@@ -240,19 +256,9 @@ EEXIT2          JSR CLRBOX
                 JSR ZONE
                 JMP CCOM
 
-*-------------------------------
-
-INCSUB          INC SCOUNTR
-                LDA XCOUNTR
-                CLC
-                ADC #$10
-                STA XCOUNTR
-                CMP #$60
-                BNE INCOUT
-                LDA #$10
-                STA XCOUNTR
-                INC YCOUNTR
-INCOUT          RTS
+;*** TODO: change to command-specific zpage
+AINDEX          DS  1
+BINDEX          DS  1
 
 *-------------------------------
 
@@ -445,11 +451,9 @@ PER_TABLE       HEX 0360            ;36/10?
 *
 *-------------------------------
 
-; TODO: share with /FIGHT/COMMAND/CURSORS.S
-
 ZONE            LDX COMPNTR
                 LDA COMMAND-1,X
-                CLC
+                LDX #$00
                 JSR CURZONE
 
                 LDX COMPNTR
@@ -467,78 +471,70 @@ ZONE            LDX COMPNTR
                 TYA
                 SEC
                 SBC CURSOR
-                SEC
+                LDX #$FF
 
-CURZONE         PHP
+CURZONE         STX EZONE_FLAG
                 STA CURSOR
-
-; EZONE_CURSOR
-;                 SEC
-;                 SBC #$05
-;                 JSR POS_TO_XY
-
-;                 LDA GRID_XPNTS,X
-;                 STA XPNT
-;                 LDA AGRID_YPNTS,Y
-;                 STA YPNT
-;                 PLP
-;                 PHP
-;                 LDA XPNT
-;                 PHA
-;                 DEC XPNT
-;                 BCC :SKIPA
-;                 CLC
-;                 ADC #$0E
-;                 STA XPNT
-; :SKIPA          LDA #0
-;                 LDX #<BOUNDS_SHAPES
-;                 LDY #>BOUNDS_SHAPES
-;                 JSR DRAW_SHAPES
-;                 LDA YPNT
-;                 PHA
-;                 CLC
-;                 ADC #$05
-;                 STA YPNT
-;                 LDA #0
-;                 JSR REDRAW_SHAPES
-;                 PLA
-;                 STA YPNT
-;                 DEC YPNT
-;                 PLA
-;                 STA XPNT
-;                 PLP
-;                 BCC :SKIPB
-;                 LDA YPNT
-;                 CLC
-;                 ADC #GCELL_HEIGHT
-;                 STA YPNT
-;                 ; CMP #$7F
-;                 ; BNE :SKIPB
-; :SKIPB          LDA #1
-;                 JSR REDRAW_SHAPES
-;                 LDA XPNT
-;                 CLC
-;                 ADC #$07
-;                 STA XPNT
-;                 LDA #1
-;                 JSR REDRAW_SHAPES
+                JSR EZONE_CURSOR
                 JMP CLEAN_FRONT
 
-; BOUNDS_SHAPES   DB  %00000001
-;                 DB  %00000001
-;                 DB  %00000001
-;                 DB  %00000001
-;                 DB  %00000001
-;                 DB  %00000000
-;                 DB  %00000000
+*-------------------------------
 
-;                 DB  %01111111
-;                 DB  %00000000
-;                 DB  %00000000
-;                 DB  %00000000
-;                 DB  %00000000
-;                 DB  %00000000
-;                 DB  %00000000
+; TODO: share with /FIGHT/NARRATOR/ENERGY.S
+
+EZONE_CURSOR    LDA CURSOR
+                SEC
+                SBC #$05
+                JSR POS_TO_XY
+
+                LDA GRID_XPNTS,X
+                PHA
+                TAX
+                LDA AGRID_YPNTS,Y
+                PHA
+                TAY
+                DEX
+                BIT EZONE_FLAG
+                BPL :1
+                TXA
+                CLC
+                ADC #15                 ; GCELL_WIDTH
+                TAX
+:1              JSR MOVE_TO
+                LDX #<EZONE_VERT
+                LDY #>EZONE_VERT
+                JSR NEW_DRAW_SHAPE
+
+                PLA
+                TAY
+                PLA
+                TAX
+                DEY
+                BIT EZONE_FLAG
+                BPL :2
+                TYA
+                CLC
+                ADC #11                 ; GCELL_HEIGHT
+                TAY
+:2              JSR MOVE_TO
+                LDX #<EZONE_HORZ
+                LDY #>EZONE_HORZ
+                JMP NEW_DRAW_SHAPE
+
+EZONE_FLAG      DB  0
+
+EZONE_VERT      DB  $12,$00
+                DB  %10000001
+                DB  %00000001
+                DB  %00000001
+                DB  %00000001
+                DB  %10000000
+
+EZONE_HORZ      DB  $21,$00
+                DB  %01111111
+                DB  %10000000
+                DB  %01111111
+                DB  %10000000
 
 *-------------------------------
 

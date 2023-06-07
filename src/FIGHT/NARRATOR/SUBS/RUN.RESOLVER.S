@@ -42,7 +42,7 @@ OPEN_FRONTS     JSR MONS_OPENROWS
 RUN_RESOLVER    JSR MRUN_DECIDER
                 JSR EOR_GRID_DOTS
                 JSR COPY_GRID
-                ; JSR ERASE_MNAMES
+                JSR ERASE_MNAMES
 
                 LDX MOFFSET         ;Calc MONS_GAP and MSRC_BOT
                 JSR TIMES_11
@@ -327,9 +327,14 @@ MONS_OPENROWS   LDA #0
                 STA MOFFSET
                 LDX #24
 :1              LDY #4
-:2              LDA MASTER_MGRID,X
-                CMP #$FF
-                BNE :3
+:2
+                ; LDA MASTER_MGRID,X
+                ; CMP #$FF
+                ; BNE :3
+
+                LDA AGRID_MAIN,X
+                BMI :3
+
                 DEX
                 DEY
                 BPL :2
@@ -438,9 +443,8 @@ RUN_CONCLUDE
                 LDA MONS_ADVFLAG
                 ORA MOFFSET
                 BEQ :8
-                JSR UPDATE_MNAMES
+                JSR DRAW_MNAMES
 :8              JMP EOR_GRID_DOTS
-
 
 *-------------------------------
 *
@@ -581,14 +585,14 @@ MONS_MOVER      LDA MSRC_BOT
                 STA TEMP+1
                 INC TEMP
                 JSR CM_MOVER
-DRAW_DIVIDER    LDY DIVIDER_Y
-                LDA LOBYTES,Y
-                STA DESTINL
-                LDA HIBYTES,Y
-                ORA #$20
-                STA DESTINH
+                ; fall through
+
+DRAW_DIVIDER    LDX DIVIDER_Y
+                JSR SET_DEST_LINE
+                LDX #127
+                JSR SET_SOURCE_OFF
                 LDY #11
-:1              LDA $5FA8,Y         ;line 127
+:1              LDA (SCREENL),Y
                 STA (DESTINL),Y
                 DEY
                 BNE :1
@@ -603,16 +607,13 @@ CHAR_MOVER      INC TEMP
                 LDA CDST_TOP
                 STA TEMP+1
                 JSR DRAW_DIVIDER
-CM_MOVER        LDA LOBYTES,X
-                STA SCREENL
-                LDA HIBYTES,X
-                ORA #$40
-                STA SCREENH
+                ; fall through
+
+CM_MOVER        JSR SET_SOURCE_OFF
                 LDY TEMP+1
                 LDA LOBYTES,Y
                 STA DESTINL
                 LDA HIBYTES,Y
-                ORA #$20
                 STA DESTINH
                 LDY #11
 :1              LDA (SCREENL),Y
@@ -625,17 +626,12 @@ CM_MOVER        LDA LOBYTES,X
                 BNE CM_MOVER
                 RTS
 
-
 *-------------------------------
 *
 *-------------------------------
 
 EMPTY_LINES     STA TEMP
-:1              LDA LOBYTES,X
-                STA SCREENL
-                LDA HIBYTES,X
-                ORA #$20
-                STA SCREENH
+:1              JSR SET_SOURCE_LINE
                 LDY #11
                 LDA #0
 :2              STA (SCREENL),Y
@@ -649,20 +645,13 @@ EMPTY_LINES     STA TEMP
                 BNE :1
                 RTS
 
-
 *-------------------------------
 *
 *-------------------------------
 
 COPY_GRID       LDX #71
-:1              LDA LOBYTES,X
-                STA SCREENL
-                STA DESTINL
-                LDA HIBYTES,X
-                ORA #$20
-                STA SCREENH
-                EOR #$60
-                STA DESTINH
+:1              JSR SET_SOURCE_LINE
+                JSR SET_DEST_OFF
                 LDY #12
 :2              LDA (SCREENL),Y
                 STA (DESTINL),Y
@@ -672,34 +661,6 @@ COPY_GRID       LDX #71
                 CPX #184
                 BNE :1
                 RTS
-
-
-*-------------------------------
-*
-*-------------------------------
-
-; TODO: no longer valid with new grid
-
-; ERASE_MNAMES    LDA MONS_ADVFLAG
-;                 ORA MOFFSET
-;                 BEQ :2
-;                 LDY #0
-;                 STY YCOUNT
-; :1              LDX AGRID_YPNTS,Y
-;                 INX
-;                 STX YPNT
-;                 LDA MNAME_TABLE,Y
-;                 PHA
-;                 LDA #$FF
-;                 STA MNAME_TABLE,Y
-;                 PLA
-;                 JSR PRINT_MNAME
-;                 INC YCOUNT
-;                 LDY YCOUNT
-;                 CPY #5
-;                 BNE :1
-; :2              RTS
-
 
 *-------------------------------
 *
@@ -716,11 +677,13 @@ EOR_GRID_DOTS   LDA #83
                 CLC
                 ADC TEMP+1
                 TAY
-                LDA MASTER_MGRID,Y
-                BMI :3
-                EOR MASTER_MGRID+6,Y
-                AND #%00111111
-                BEQ :4
+
+                ; LDA MASTER_MGRID,Y
+                ; BMI :3
+                ; EOR MASTER_MGRID+6,Y
+                ; AND #%00111111
+                ; BEQ :4
+
 :3              LDY TEMP
                 JSR EOR_DOT
 :4              LDA TEMP
@@ -750,7 +713,6 @@ EOR_GRID_DOTS   LDA #83
 EOR_DOT         LDA LOBYTES,Y
                 STA SCREENL
                 LDA HIBYTES,Y
-                ORA PAGE
                 STA SCREENH
                 LDY XTABLE,X
                 LDA (SCREENL),Y

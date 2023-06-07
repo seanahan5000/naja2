@@ -21,8 +21,8 @@ CHR_IDENTIFY    JSR FIND_SCANNER
                 BMI :SKIPA
                 JSR MON_INDEXER
 :SKIPA          CLC
-                LDA MASTER_MGRID,Y
-                BMI SCAN_AREA       ;Empty square
+                LDA AGRID_MAIN,Y
+                BPL SCAN_AREA           ; empty or inaccessible square
                 JSR SET_MONSTER
                 LDY #monTOPVIEW
                 LDA (MONS_PTR),Y
@@ -79,34 +79,34 @@ SCAN_SQUARE     PHP
                 JSR UPDATE_MNAMES
                 JMP TAKDELCLRCCOM
 
-
-*-------------------------------
-*
-*-------------------------------
+;--------------------------------------------
+; randomly pick a square containing an alien
+;
+; On exit:
+;   Y: 0 to 24
+;--------------------------------------------
 
 PICK_A_SQUARE   LDY #24
-                LDA #$FF
-:LOOP1          AND MASTER_MGRID,Y
+:1              LDA AGRID_MAIN,Y
+                BEQ :2
                 DEY
-                BPL :LOOP1
+                BPL :1
                 INY
-                CMP #$FF
-                BEQ :EXIT
-:LOOP2          JSR RANDOM
+                RTS
+:2              JSR RANDOM
                 AND #%00011111
                 CMP #25
-                BCS :LOOP2
+                BCS :2
                 TAY
-                LDA MASTER_MGRID,Y
-                BMI :LOOP2
-                ASL
-                BPL :LOOP2
-:EXIT           RTS
-
+                LDA AGRID_MAIN,Y
+                BPL :2
+                RTS
 
 *===============================
 *
 *===============================
+
+; TOOD: use previous identification information
 
 PRE_IDENTIFY    JSR RESET_CHLIST    ;Done at start of each round
                 LDX #<CCALL_CANID
@@ -118,10 +118,10 @@ PRE_IDENTIFY    JSR RESET_CHLIST    ;Done at start of each round
                 JSR SET_CHAR
                 LDY #0
                 STY SCOUNTR
-:LOOP1          LDA MASTER_MGRID,Y
-                BMI :SKIPA
-                ASL
+:LOOP1          LDA AGRID_MAIN,Y
                 BPL :SKIPA
+                ASL
+                BPL :SKIPA              ; only check first cell of alien
                 LSR
                 JSR SET_MONSTER
                 JSR ID_ODDS

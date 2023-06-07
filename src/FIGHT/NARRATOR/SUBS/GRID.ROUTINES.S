@@ -2,15 +2,12 @@
 *
 *===============================
 
-CREATE_MGRID    LDX #24
-                LDA #$FF
-:1              STA MASTER_MGRID,X
-                STA AUX_MGRID,X
-                DEX
-                BPL :1
-                LDA #0
-                STA POINTER
-:2              LDX POINTER
+MASK_BITS       =   TEMP+0
+
+CREATE_MGRID    JSR INIT_AGRID
+
+                LDX #0
+:2              STX POINTER
                 LDA PECKS,X
                 BEQ :4
                 BMI :3
@@ -20,8 +17,6 @@ CREATE_MGRID    LDX #24
                 LDA (MONS_PTR),Y
                 CMP #dead
                 BEQ :3
-                LDY #monPOSITION
-                LDA (MONS_PTR),Y
                 JSR MONS_TOGRID
                 LDY #monCRNTCMD
                 LDA (MONS_PTR),Y
@@ -30,75 +25,178 @@ CREATE_MGRID    LDX #24
                 BNE :3
                 INY
                 LDA (MONS_PTR),Y
-                JSR PRE_FILLCHK1
-                ORA #%01000000
-                LDX #%10111111
-                JSR FILL_GRID
-:3              INC POINTER
+                JSR SET_AGRID_AUX
+
+:3              LDX POINTER
+                INX
                 BNE :2              ;Always
 :4              RTS
+
+INIT_AGRID      LDY #0
+                LDX #0
+:1              STX COUNT
+                LDA GRID_BITS+0,X
+                STA MASK_BITS
+                LDX #0
+:2              LSR MASK_BITS
+                ROR
+                ROR
+                ROR
+                AND #%00100000          ; inaccessible cell
+:3              STA AGRID_MAIN,Y
+                STA AGRID_AUX,Y
+                INY
+                INX
+                CPX #5
+                BNE :2
+                LDX COUNT
+                INX
+                CPX #5
+                BNE :1
+                RTS
 
 *===============================
 *
 *===============================
 
 MONS_FROMGRID   LDX #24
-:1              LDA AUX_MGRID,X
-                AND #%10111111
+:1              LDA AGRID_AUX,X
+                BPL :2
+                AND #%00011111
                 CMP MONSTER_INDEX
                 BNE :2
-                LDA #$FF
-                STA AUX_MGRID,X
-                LDA MASTER_MGRID,X
-                AND #%10111111
+                LDA #0
+                STA AGRID_AUX,X
+                LDA AGRID_MAIN,X
+                BPL :2
+                AND #%00011111
                 CMP MONSTER_INDEX
                 BNE :2
-                LDA #$FF
-                STA MASTER_MGRID,X
+                LDA #0
+                STA AGRID_MAIN,X
 :2              DEX
                 BPL :1
                 RTS
 
 *======================================
-* On Entry:
-*   A: XY coordinate to place alien at
+*
 *======================================
 
-MONS_TOGRID     JSR PRE_FILLCHK2
-                ORA #%01000000
-                LDX #%10111111
-                JSR FILL_GRID
+MONS_TOGRID     LDY #monPOSITION
+                LDA (MONS_PTR),Y
+                JSR SET_AGRID_MAIN
+
                 LDX #24
-:1              LDA MASTER_MGRID,X
+:1              LDA AGRID_MAIN,X
+                BPL :2
                 TAY
-                AND #%10111111
+                AND #%00011111
                 CMP MONSTER_INDEX
                 BNE :2
                 TYA
-                STA AUX_MGRID,X
+                STA AGRID_AUX,X
 :2              DEX
                 BPL :1
                 RTS
 
-*-------------------------------
-*
-*-------------------------------
+;----------------------------------
+;
+; On entry:
+;               A: alien position
+;   MONSTER_INDEX: alien to set
+;     TVIEW_WIDTH: alien width
+;    TVIEW_HEIGHT: alien height
+;
+;----------------------------------
 
-PRE_FILLCHK1    LDX #<AUX_MGRID
-                LDY #>AUX_MGRID
-                BNE PRE_FC          ;Always
-PRE_FILLCHK2    LDY #monPOSITION
-                LDA (MONS_PTR),Y
-PRE_FILLCHK3    LDX #<MASTER_MGRID
-                LDY #>MASTER_MGRID
-PRE_FC          STX POINTL
-                STY POINTH
+CHECK_AGRID_AUX LDX #<AGRID_AUX
+                LDY #>AGRID_AUX
+                BNE CHECK_AGRID_CMN     ; always
+
+CHECK_AGRID_MAIN LDX #<AGRID_MAIN
+                LDY #>AGRID_MAIN
+
+CHECK_AGRID_CMN STX :MOD2+1
+                STY :MOD2+2
+                JSR MONPOS_TO_I25
+
+                LDA TVIEW_WIDTH
+                CLC
+                ADC MOD5,Y
+                CMP #6
+                BCS :NOT_OKAY
+
+                LDA TVIEW_HEIGHT
+                STA YCOUNT
+                CLC
+                ADC DIV5,Y
+                CMP #6
+                BCS :NOT_OKAY
+
+:1              LDX TVIEW_WIDTH
+:MOD2           LDA $FFFF,Y
+                BEQ :OKAY
+                BPL :NOT_OKAY
+                AND #%00011111
+                CMP MONSTER_INDEX
+                BNE :NOT_OKAY
+:OKAY           INY
+                DEX
+                BNE :MOD2
+                TYA
+                CLC
+                ADC #5+1                ; grid width
+                SBC TVIEW_WIDTH
+                TAY
+                DEC YCOUNT
+                BNE :1
+                CLC
+                RTS
+:NOT_OKAY       SEC
+                RTS
+
+;----------------------------------
+;
+;               A: alien position
+;   MONSTER_INDEX: alien to set
+;     TVIEW_WIDTH: alien width
+;    TVIEW_HEIGHT: alien height
+;
+;----------------------------------
+
+SET_AGRID_AUX   LDX #<AGRID_AUX
+                LDY #>AGRID_AUX
+                BNE SET_AGRID_CMN       ; always
+
+SET_AGRID_MAIN  LDX #<AGRID_MAIN
+                LDY #>AGRID_MAIN
+
+SET_AGRID_CMN   STX :MOD2+1
+                STY :MOD2+2
+                JSR MONPOS_TO_I25
+
+                LDA TVIEW_HEIGHT
+                STA YCOUNT
                 LDX TVIEW_WIDTH
-                STX XCOUNT
-                LDY TVIEW_HEIGHT
-                STY YCOUNT
-                JSR MON_INDEXER
                 LDA MONSTER_INDEX
+                ORA #%10000000
+                STA :MOD1+1
+                ORA #%01000000
+                BNE :MOD2               ; always
+
+:1              LDX TVIEW_WIDTH
+:MOD1           LDA #$FF
+:MOD2           STA $FFFF,Y
+                INY
+                DEX
+                BNE :MOD1
+                TYA
+                CLC
+                ADC #5+1                ; grid width
+                SBC TVIEW_WIDTH
+                TAY
+                DEC YCOUNT
+                BNE :1
                 RTS
 
 *===============================
