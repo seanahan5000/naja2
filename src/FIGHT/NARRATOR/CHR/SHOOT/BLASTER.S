@@ -95,7 +95,6 @@ SOMEONE_HIT     BIT BLOCKED
                 PHA
                 JSR FIND_CHAR
                 STA CHAR_NUMBER
-                JSR SET_CHAR
                 JSR GET_CDAM_TOTL
                 LDX #0
                 LDY #xIs

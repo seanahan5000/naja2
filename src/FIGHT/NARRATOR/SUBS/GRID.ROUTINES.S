@@ -2,7 +2,7 @@
 *
 *===============================
 
-MASK_BITS       =   TEMP+0
+MASK_BITS       =   TEMP+0              ;***
 
 CREATE_MGRID    JSR INIT_AGRID
 
@@ -42,7 +42,7 @@ INIT_AGRID      LDY #0
                 ROR
                 ROR
                 ROR
-                AND #%00100000          ; inaccessible cell
+                AND #cellBlocked
 :3              STA AGRID_MAIN,Y
                 STA AGRID_AUX,Y
                 INY
@@ -209,43 +209,39 @@ CHANGE_CGRID    JSR CAPTURE_CGRID
 
 *-------------------------------
 
-CREATE_CGRID    LDX #24
-:LOOP1          LDA #$FF
-                STA MASTER_CGRID,X
-                DEX
-                BPL :LOOP1
+CREATE_CGRID    JSR INIT_CGRID
 
                 JSR FIRST_CHAR
-:LOOP2          JSR BAD_STATUS
-                BEQ :SKIPA
+:1              JSR BAD_STATUS
+                BEQ :2
                 LDX CHAR_INDEX
                 LDA TEMPCHAR_XY,X
                 JSR CHAR_INDEXER
                 STX TEMP
-                LDA CHAR_INDEX
-                STA MASTER_CGRID,Y
-                TAX
+                LDX CHAR_INDEX
+                TXA
+                ORA #%10000000
+                STA CGRID_MAIN,Y
                 LDA IMAGENS,X
-                BEQ :SKIPA
+                BEQ :2
                 LDA TEMP
-                CMP #$04
-                BEQ :SKIPA
+                CMP #$04                ; don't draw if in right column
+                BEQ :2
                 INY
-                LDA MASTER_CGRID,Y
-                CMP #$FF
-                BNE :SKIPA
+                LDA CGRID_MAIN,Y
+                BNE :2
                 LDA CHAR_INDEX
-                ORA #$80
-                STA MASTER_CGRID,Y
-:SKIPA          JSR NEXT_CHAR
-                BCC :LOOP2
+                ORA #%01000000
+                STA CGRID_MAIN,Y
+:2              JSR NEXT_CHAR
+                BCC :1
                 LDA CHAR_NUMBER     ;Take note of this
                 JMP SET_CHAR
 
 *-------------------------------
 
 CAPTURE_CGRID   LDX #$18
-:LOOP1          LDA MASTER_CGRID,X
+:LOOP1          LDA CGRID_MAIN,X
                 STA OLD_CGRID,X
                 DEX
                 BPL :LOOP1
@@ -253,48 +249,35 @@ CAPTURE_CGRID   LDX #$18
 
 *-------------------------------
 
-UPDATE_CGRID    LDA #0
-                STA XCOUNT
-                STA YCOUNT
-                STA COUNT
-:LOOP1          LDX COUNT
+UPDATE_CGRID    LDX #0
+:1              STX COUNT
                 LDA OLD_CGRID,X
-                CMP MASTER_CGRID,X
-                BEQ :SKIPA
-                PHA
-                LDX XCOUNT
-                LDY YCOUNT
-                JSR CGRID_MOVETO
-                PLA
-                JSR :SUBA
-                LDX COUNT
-                LDA MASTER_CGRID,X
-                JSR :SUBA
-:SKIPA          INC XCOUNT
-                LDA XCOUNT
-                CMP #5
-                BNE :SKIPB
-                LDA #0
-                STA XCOUNT
-                INC YCOUNT
-:SKIPB          INC COUNT
-                LDA COUNT
-                CMP #25
-                BNE :LOOP1
-                LDA CHAR_NUMBER     ;Take note of this
-                JSR SET_CHAR
-                RTS
-
-:SUBA           TAY
-                CMP #$FF
+                CMP CGRID_MAIN,X
                 BEQ :2
-                TYA
-                AND #$7F
+                JSR :DRAW_SUB
+                LDX COUNT
+                LDA CGRID_MAIN,X
+                JSR :DRAW_SUB
+:2              LDX COUNT
+                INX
+                CPX #25
+                BNE :1
+                LDA CHAR_NUMBER         ; restore current character
+                JMP SET_CHAR
+
+:DRAW_SUB       PHA
+                JSR I25_MOVETO_CGRID
+                PLA
+                BEQ :4                  ; skip empty
+                CMP #cellBlocked
+                BEQ :4                  ; skip cellBlocked
+                TAY
+                AND #%00000111
                 JSR SET_CHAR
                 TYA
-                BMI :1
+                BPL :3
                 JMP DRAW_PROF_TOPVIEW
-:1              JMP DRAW_PROF_IMAGEN
-:2              RTS
+:3              JMP DRAW_PROF_IMAGEN
+:4              RTS
 
 *-------------------------------

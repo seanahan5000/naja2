@@ -55,18 +55,34 @@ BLOCK_CHECK     LDA SWING_TYPE
                 LDA COMMAND,X
                 ASL
                 BMI :SKIPA
+
+                ; TODO: Checking for left or right edge of grid
+                ;   doesn't determine if there's a wall there.
+                ;   Need to look at grid bits instead.
+
+                ; TODO: should a horizontal dagger swing be blocked?
+
+                ; left to right
+                LDA #%00100000
                 DEY
-                SEC
-                BMI :SKIPC          ;Wall in the way
-                BPL :SKIPB          ;Always
-:SKIPA          INY
+                BMI :SKIPC              ; wall in the way
+                BPL :SKIPB              ; always
+
+                ; right to left
+:SKIPA          LDA #%00100000
+                INY
                 CPY #6
-                BCS :SKIPC          ;Wall in the way
-:SKIPB          LDA MASTER_CGRID,Y
-                CMP #$FF
-                BEQ :SKIPD
-                CLC
-:SKIPC          JMP HINDERD_SWING
+                BEQ :SKIPC              ; wall in the way
+
+:SKIPB          LDA CGRID_MAIN,Y
+                BEQ :SKIPD              ; square open
+                BMI :SKIPC              ; character in the way
+                ASL
+                ASL
+                ASL
+                LDA #%00100000          ; wall in the way
+                BCC :SKIPD
+:SKIPC          JMP HINDERED_SWING
 :SKIPD
 
 TARGET_CHECK    JSR PATH_OF_SWING
@@ -195,13 +211,11 @@ NORMAL_SWING    LDY #x9999
                 JSR DAMAGE_MONS
                 JMP TAKDELCLRCCOM
 
-
 *-------------------------------
 *
 *-------------------------------
 
-HINDERD_SWING   PHP
-                STA :MOD1+1
+HINDERED_SWING  PHA
                 JSR CLEAR_TLINE1
 
 *^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -212,9 +226,9 @@ HINDERD_SWING   PHP
 *^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
                 LDY #27             ;S>27 Charname.Starts.To.Swing.But.RET
                 JSR SENTENCE_PRD    ;     Stops.Abruptly
-                PLP
-                BCS :1
-:MOD1           LDA #$FF            ;Modified
+                PLA
+                BPL :1
+                AND #%00000111
                 JSR SET_CHAR
                 LDY #xCharsName
                 LDA #xIs
@@ -227,7 +241,6 @@ HINDERD_SWING   PHP
 :2              LDY #7              ;S>7 In.The.Way
                 JSR SENTENCE_PRET
                 JMP TAKDELCLRCCOM
-
 
 *-------------------------------
 *
@@ -337,6 +350,7 @@ PATH_OF_SWING   LDX SWING_TYPE
                 TAY
                 LDA AGRID_MAIN,Y
                 BMI :SKIPD              ; any part of alien
+                ; TODO: should cellBlocked cells stop swing?
                 INX
                 CPX XCOUNTR
                 BNE :LOOP1

@@ -82,6 +82,7 @@ X Scroll through individuals in camp with <- and -> arrows
     X Point alien name at bottom of tall topviews instead of the top
         * Consider making this controllable from the topview itself
         * (Depends on where the "body" of the alien is)
+    * Animate image generator images instead of just drawing every other line
 * Shorten max alien name length?
     * Adds space in fight screens and alien info
 

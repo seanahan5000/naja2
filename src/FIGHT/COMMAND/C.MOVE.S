@@ -11,7 +11,7 @@ MOVE            JSR UNDERS
                 PictEnd
 
                 LDA #$00
-                STA PASTMOV
+                STA PAST_MOVE
                 STA LETBACK+1
 MOVE2           LDA COMCNT
                 BEQ FAILS2
@@ -36,135 +36,20 @@ FAILS2          LDA LETBACK+1
                 JSR DRAW_PICT
                 PictClear 18;171;34;178
                 PictEnd
-FSKIP2          LDA #$FF            ;Called by USE too
+FSKIP2          LDA #$FF
 PS2             STA LETBACK+1
-                LDA #$00
-                LDX #$03
-CLRLEGS         STA LEGCURS,X
-                DEX
-                BPL CLRLEGS
-                LDY PLANNER
-                LDA XYSPOTS,Y
-                LDX #$FF
-                PHA
-                AND #$F0
-                CMP #$10
-                BNE NOD
-                STX LEGCURS+3
-NOD             CMP #$50
-                BNE NOB
-                STX LEGCURS+1
-NOB             PLA
-                PHA
-                AND #$0F
-                CMP #$01
-                BNE NOC
-                LDY LETCANC+1
-                CPY #"C"
-                BEQ NOC
-                STX LEGCURS+2
-NOC             CMP #$05
-                BNE NOA
-                STX LEGCURS
-NOA             LDX #$03
-                PLA
-CURLP           STA CURCORD,X
-                DEX
-                BPL CURLP
-                INC CURCORD
-                LDA CURCORD+1
+
                 CLC
-                ADC #$10
-                STA CURCORD+1
-                LDA LETCANC+1
-                CMP #"C"
-                BEQ :1
-                DEC CURCORD+2
-:1              LDA CURCORD+3
-                SEC
-                SBC #$10
-                STA CURCORD+3
-                LDY PASTMOV
-PICFRST         LDA LEGCURS,Y
-                BEQ PICKED1
-                INY
-                CPY #$04
-                BNE PICFRST
-                LDY #$00
-                BEQ PICFRST         ;Always
-PICKED1         STY CURSOR
-                JSR GROUP_CURSOR2
-BLINKGB         LDA #$10
-                JSR WAIT
-                LDA #$F0
-                JSR WAIT_KEY
-                BMI GOTKEYX
-                JSR GROUP_CURSOR2
-                LDA #$00
-                JSR WAIT_KEY
-                JSR GROUP_CURSOR2
-MENTKEY         LDA KEYBRD
-                BPL BLINKGB
-GOTKEYX         BIT UNSTROB
-                JSR CHECK_LEFT
-                BEQ CCWISE
-                JSR CHECK_RIGHT
-                BEQ CWISE
-LETBACK         CMP #"B"
-                BEQ GOBACK
-LETCANC         CMP #"L"
-                BEQ GOEND
-                JSR CHECK_ENTER
-                BEQ GOENTER
-                BNE MENTKEY
-CCWISE          JSR GROUP_CURSOR2
-CC1             DEC CURSOR
-                BPL CC2
-                LDA #$03
-                STA CURSOR
-CC2             LDY CURSOR
-                LDA LEGCURS,Y
-                BNE CC1
-                JSR GROUP_CURSOR2
-                JMP MENTKEY
-CWISE           JSR GROUP_CURSOR2
-C1              INC CURSOR
-                LDA CURSOR
-                CMP #$04
-                BCC C2
-                LDA #$00
-                STA CURSOR
-C2              LDY CURSOR
-                LDA LEGCURS,Y
-                BNE C1
-                JSR GROUP_CURSOR2
-                JMP MENTKEY
-GOBACK          JSR GROUP_CURSOR2
-                LDY PLANNER
-                LDA XYSPOTS,Y
-                JSR GROUP_CURSOR1
+                LDX #<FILTER_MOVE
+                LDY #>FILTER_MOVE
+                JSR SELECT_CELL
 
-                ; TODO: do something better than this hack
-                LDA #$60                ; RTS
-                STA NOBAKS
-                JSR BACK1
-                LDA #$20                ; JSR
-                STA NOBAKS
-                JMP MOVE2
-
-GOEND           NOP                     ; modified
-                JSR GROUP_CURSOR2
-GOEND2          JSR UNDERS
-                JSR CLEAR_WTIME
-                JSR OPTIONS
-                JMP GETOP2
-
-GOENTER         NOP                     ; modified
-                LDA CURSOR
-                STA PASTMOV
-                JSR GROUP_CURSOR2
-                LDY CURSOR
-                LDA CURCORD,Y
+GOENTER         LDA CURSOR
+                STA PAST_MOVE
+                JSR DRAW_GROUP_CURSOR2
+                LDX CURSOR
+                LDY LEGAL_CURS,X
+                JSR I25_TO_CPOS
                 LDX PLANNER
                 STA XYSPOTS,X
                 LDY XYSPOTS,X
@@ -185,11 +70,38 @@ GOENTER         NOP                     ; modified
                 BCC GOEND2
                 JMP MOVE2
 
-PASTMOV         DS  1
-LEGCURS         DS  4
-XYSPOTS         DS  7
-CURCORD         DS  4
+FILTER_MOVE
+LETBACK         CMP #"B"
+                BEQ GOBACK
+                CMP #"L"
+                BEQ GOEND
+                RTS
 
+GOBACK          PLA
+                PLA
+                JSR DRAW_GROUP_CURSOR2
+                LDY PLANNER
+                LDA XYSPOTS,Y
+                JSR GROUP_CURSOR1
+
+                ; TODO: do something better than this hack
+                LDA #$60                ; RTS
+                STA NOBAKS
+                JSR BACK1
+                LDA #$20                ; JSR
+                STA NOBAKS
+                JMP MOVE2
+
+GOEND           PLA
+                PLA
+                JSR DRAW_GROUP_CURSOR2
+GOEND2          JSR UNDERS
+                JSR CLEAR_WTIME
+                JSR OPTIONS
+                JMP GETOP2
+
+XYSPOTS         DS  7
+PAST_MOVE       DB  0
 
 ; draw underline cursor for each position in move path
 UNDERS          LDA PLANNER
@@ -214,3 +126,165 @@ DONTDRW         INC COUNTER
                 CMP COMPNTR
                 BNE UND2
 UNDOUT          RTS
+
+;---------------------------------------
+
+; TODO: move this to CURSORS.S?
+
+;
+; On entry:
+;   Carry clear: plus-shaped pattern for MOVE
+;   Carry Set: T-shaped pattern for USE
+;
+SELECT_CELL     PHP
+                STX :FILTER+1
+                STY :FILTER+2
+
+                JSR INIT_CGRID
+
+                LDY PLANNER
+                LDA XYSPOTS,Y
+                JSR POS_TO_I25
+
+                PLP
+                JSR BUILD_LEGAL_CURS
+
+                LDX PAST_MOVE
+                LDY #0
+:1              LDA LEGAL_CURS,X
+                BPL :2
+                INX
+                TXA
+                AND #3
+                TAX
+                INY
+                CPY #4
+                BNE :1
+:2              STX CURSOR
+                JSR DRAW_GROUP_CURSOR2
+
+:BLINK          LDA #$10
+                JSR WAIT
+                LDA #$F0
+                JSR WAIT_KEY
+                BMI :GOT_KEY
+                JSR DRAW_GROUP_CURSOR2
+                LDA #$00
+                JSR WAIT_KEY
+                JSR DRAW_GROUP_CURSOR2
+:KEY_LOOP       LDA KEYBRD
+                BPL :BLINK
+:GOT_KEY        BIT UNSTROB
+
+                JSR CHECK_LEFT
+                BEQ :CCWISE
+                JSR CHECK_RIGHT
+                BEQ :CWISE
+                JSR CHECK_ENTER
+                BEQ :ENTER
+:FILTER         JSR $FFFF
+                BNE :KEY_LOOP
+:ENTER          RTS
+
+:CCWISE         JSR DRAW_GROUP_CURSOR2
+                LDY CURSOR
+:3              DEY
+                TYA
+                AND #3
+                TAY
+                LDX LEGAL_CURS,Y
+                BMI :3
+                STY CURSOR
+                JSR DRAW_GROUP_CURSOR2
+                JMP :KEY_LOOP
+
+:CWISE          JSR DRAW_GROUP_CURSOR2
+                LDY CURSOR
+:4              INY
+                TYA
+                AND #3
+                TAY
+                LDX LEGAL_CURS,Y
+                BMI :4
+                STY CURSOR
+                JSR DRAW_GROUP_CURSOR2
+                JMP :KEY_LOOP
+
+LEGAL_CURS      DS  4                   ; TODO: move to scratch data area
+
+;
+; On entry:
+;   CURSOR: pointing to position
+;
+DRAW_GROUP_CURSOR2
+                LDY CURSOR
+                LDX LEGAL_CURS,Y
+                BMI :1
+                JSR I25_MOVETO_CGRID
+                LDX #<GROUP_SHAPE
+                LDY #>GROUP_SHAPE
+                JMP NEW_DRAW_SHAPE
+:1              RTS
+;
+; On entry:
+;   Y: I25 character position
+;   Carry clear: plus-shaped pattern for MOVE
+;   Carry Set: T-shaped pattern for USE
+;
+; TODO: support diagonals?
+;
+BUILD_LEGAL_CURS
+                PHP
+
+                LDX #3
+                LDA #-1
+:1              STA LEGAL_CURS,X
+                DEX
+                BPL :1
+
+                CPY #5
+                BCC :2
+                TYA
+;               SEC
+                SBC #5
+                TAX
+                LDA CGRID_MAIN,X
+                AND #cellBlocked
+                BNE :2
+                STX LEGAL_CURS+0
+:2
+                TYA
+                PLP
+                BCS :3
+                CPY #20
+                BCS :4
+;               CLC
+                ADC #5
+:3              TAX
+                LDA CGRID_MAIN,X
+                AND #cellBlocked
+                BNE :4
+                STX LEGAL_CURS+2
+:4
+                LDA MOD5,Y
+                BEQ :6
+                DEY
+                LDA CGRID_MAIN,Y
+                AND #cellBlocked
+                BNE :5
+                STY LEGAL_CURS+3
+:5              INY
+                LDA MOD5,Y
+:6
+                CMP #4
+                BEQ :8
+                INY
+                LDA CGRID_MAIN,Y
+                AND #cellBlocked
+                BNE :7
+                STY LEGAL_CURS+1
+:7              DEY
+:8
+                RTS
+
+;---------------------------------------

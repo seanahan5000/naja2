@@ -29,21 +29,11 @@ USE             JSR CLEAR_CANCEL_IN
                 PictTextAt 132;146;(TREATMENT_TOWARDS)
                 PictEnd
                 JSR BOTTOMR
-                LDA #$60                ; RTS
-                STA GOEND
-                STA GOENTER
-                LDA #"C"
-                STA LETCANC+1
-                JSR FSKIP2
-                LDX #$EA                ; NOP
-                STX GOEND
-                STX GOENTER
-                LDX #"L"
-                STX LETCANC+1
-                CMP #"C"
-                BNE NOUCANC
-                JSR GROUP_CURSOR2
-                JMP DID_CANCEL
+
+                SEC
+                LDX #<FILTER_USE
+                LDY #>FILTER_USE
+                JSR SELECT_CELL
 
 NOUCANC         LDA CURSOR
                 ASL
@@ -53,6 +43,7 @@ NOUCANC         LDA CURSOR
                 AND #$30
                 ORA INSTR1
                 STA INSTR1
+
                 JSR DRAW_PICT
                 PictClear 16;137;36;153
                 PictTextAt 120;132;(HEAL_HOW_MUCH_DAMAGE?)
@@ -62,7 +53,7 @@ NOUCANC         LDA CURSOR
                 LDY #>LIMIT_USE
                 JSR GET_MULTIPLE
                 PHP
-                JSR GROUP_CURSOR2
+                JSR DRAW_GROUP_CURSOR2
                 PLP
                 BCS :SKIPA
                 JSR DE_ENERLEV
@@ -76,3 +67,11 @@ NOUCANC         LDA CURSOR
                 STA INSTR2
                 JSR POST_COMMAND
                 JMP DID_CANCEL
+
+FILTER_USE      JSR CHECK_CANCEL
+                BNE :1
+                PLA
+                PLA
+                JSR DRAW_GROUP_CURSOR2
+                JMP DID_CANCEL
+:1              RTS

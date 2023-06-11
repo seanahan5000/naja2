@@ -40,8 +40,6 @@ START_INDEX     =   $CE
 VALID_COUNT     =   $CF
 SAVE_INDEX      =   TILE_COUNT
 
-MASK_BITS       =   TEMP                ;***
-
 
 alienClassSize  =   bytesperalien
 animated        =   $E0             ;Also in /ALIENS/EQUATES/ALIEN.EQ
@@ -63,7 +61,7 @@ POSSIBLE        DS  18
                 SAV FIGHT.LOADER2
 
                 DUMMY $9800             ;***
-GRID            DS  25
+GRID            DS  25                  ;***
 VALID_LIST      DS  25
 POSITION_LIST   DS  25
 GROUP_BUFF1     DS  bytespergroup

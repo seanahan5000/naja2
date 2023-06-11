@@ -83,14 +83,14 @@ OVAL_SHAPES_L   DB  <OVAL_0
                 DB  <OVAL_2
                 DB  <OVAL_3
                 DB  <OVAL_4
-                DB  <OVAL_5
+                DB  <OVAL_4
 
 OVAL_SHAPES_H   DB  >OVAL_0
                 DB  >OVAL_1
                 DB  >OVAL_2
                 DB  >OVAL_3
                 DB  >OVAL_4
-                DB  >OVAL_5
+                DB  >OVAL_4
 
 OVAL_0          DB  $21,$01
 
@@ -155,10 +155,6 @@ OVAL_4          DB  $11,$53
                 DB  %00000110
                 DB  %00001111
                 DB  %00000110
-                DB  %10000000
-
-OVAL_5          DB  $11,$00
-
                 DB  %10000000
 
 DELAYER         LDA DELAY_MODE

@@ -9,8 +9,8 @@
 ***   be determined from info available here.
 
 CHR_MOVE        JSR CCMD_INDEXER
-                LDA MASTER_CGRID,Y
-                BPL :SKIPB
+                LDA CGRID_MAIN,Y
+                BMI :SKIPB
 
                 LDX CHAR_NUMBER     ;If character is presently
                 LDA TEMPCHAR_XY,X   ;   in the front row...
@@ -26,11 +26,17 @@ CHR_MOVE        JSR CCMD_INDEXER
                 LDX #5              ;   make sure someone else
 :LOOP1          DEX                 ;   is in the front row.
                 BMI :SKIPB
-                LDA MASTER_CGRID,X
-                BMI :LOOP1
-                AND #%00111111
+                LDA CGRID_MAIN,X
+                BEQ :LOOP1              ; empty
+                ASL
+                BMI :LOOP1              ; image gen
+                ASL
+                BMI :LOOP1              ; cellBlocked
+                LSR
+                LSR
+                AND #%00000111
                 CMP CHAR_NUMBER
-                BEQ :LOOP1
+                BEQ :LOOP1              ; current character
 
 :SKIPA          ; LDX CHAR_NUMBER     ;Destination is okay
                 ; LDA TEMPCHAR_XY,X   ;   so do the move

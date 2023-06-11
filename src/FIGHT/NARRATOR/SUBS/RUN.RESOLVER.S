@@ -323,18 +323,15 @@ C_BACKWARD      DEC C_HEADSTART
 
 *-------------------------------
 
+; Check open front row for purposes of advance/retreat.
+;   cellBlocked cells are treated as open here.
+
 MONS_OPENROWS   LDA #0
                 STA MOFFSET
                 LDX #24
 :1              LDY #4
-:2
-                ; LDA MASTER_MGRID,X
-                ; CMP #$FF
-                ; BNE :3
-
-                LDA AGRID_MAIN,X
-                BMI :3
-
+:2              LDA AGRID_MAIN,X
+                BMI :3                  ; alien main and extra
                 DEX
                 DEY
                 BPL :2
@@ -345,13 +342,15 @@ MONS_OPENROWS   LDA #0
 
 *-------------------------------
 
+; Check open front row for purposes of advance/retreat.
+;   cellBlocked cells are treated as open here.
+
 CHAR_OPENROWS   LDA #0
                 STA COFFSET
                 LDX #0
 :1              LDY #4
-:2              LDA MASTER_CGRID,X
-                CMP #$FF
-                BNE :3
+:2              LDA CGRID_MAIN,X
+                BMI :3                  ; character
                 INX
                 DEY
                 BPL :2
@@ -393,7 +392,6 @@ CMODDS_SUB      LDX TEMP
                 LSR
                 LSR
 :1              RTS
-
 
 *-------------------------------
 *
@@ -587,7 +585,9 @@ MONS_MOVER      LDA MSRC_BOT
                 JSR CM_MOVER
                 ; fall through
 
-DRAW_DIVIDER    LDX DIVIDER_Y
+DRAW_DIVIDER    TXA
+                PHA
+                LDX DIVIDER_Y
                 JSR SET_DEST_LINE
                 LDX #127
                 JSR SET_SOURCE_OFF
@@ -596,6 +596,8 @@ DRAW_DIVIDER    LDX DIVIDER_Y
                 STA (DESTINL),Y
                 DEY
                 BNE :1
+                PLA
+                TAX
                 RTS
 
 *-------------------------------
@@ -615,10 +617,18 @@ CM_MOVER        JSR SET_SOURCE_OFF
                 STA DESTINL
                 LDA HIBYTES,Y
                 STA DESTINH
-                LDY #11
+
+                LDY #1
+                LDA (SCREENL),Y
+                EOR (DESTINL),Y
+                AND #$FE
+                EOR (DESTINL),Y
+                STA (DESTINL),Y
+                INY
 :1              LDA (SCREENL),Y
                 STA (DESTINL),Y
-                DEY
+                INY
+                CPY #12
                 BNE :1
                 INX
                 INC TEMP+1
@@ -632,14 +642,16 @@ CM_MOVER        JSR SET_SOURCE_OFF
 
 EMPTY_LINES     STA TEMP
 :1              JSR SET_SOURCE_LINE
-                LDY #11
-                LDA #0
-:2              STA (SCREENL),Y
-                DEY
-                CPY #1
-                BNE :2
-                LDA #%00000001
+                LDY #1
+                LDA (SCREENL),Y
+                AND #$01
                 STA (SCREENL),Y
+                INY
+                LDA #$00
+:2              STA (SCREENL),Y
+                INY
+                CPY #12
+                BNE :2
                 INX
                 DEC TEMP
                 BNE :1
@@ -658,7 +670,7 @@ COPY_GRID       LDX #71
                 DEY
                 BPL :2
                 INX
-                CPX #184
+                CPX #190
                 BNE :1
                 RTS
 
@@ -666,24 +678,23 @@ COPY_GRID       LDX #71
 *
 *-------------------------------
 
-; TODO: no longer valid with new grid
-
-EOR_GRID_DOTS   LDA #83
+EOR_GRID_DOTS   LDA #72
                 STA TEMP
                 LDA #0
                 STA TEMP+1
-:1              LDX #3
+:1              LDX #4
 :2              TXA
                 CLC
                 ADC TEMP+1
                 TAY
-
-                ; LDA MASTER_MGRID,Y
-                ; BMI :3
-                ; EOR MASTER_MGRID+6,Y
-                ; AND #%00111111
-                ; BEQ :4
-
+                ;
+                ; skip removing dots in the middle of large topviews
+                ;
+                LDA AGRID_MAIN,Y
+                BPL :3
+                EOR AGRID_MAIN+6,Y
+                AND #%10111111
+                BEQ :4
 :3              LDY TEMP
                 JSR EOR_DOT
 :4              LDA TEMP
@@ -701,12 +712,12 @@ EOR_GRID_DOTS   LDA #83
                 CLC
                 ADC #11
                 STA TEMP
-                CMP #127
+                CMP #138
                 BNE :1
                 RTS
 
 *-------------------------------
-* X = 0 to 3 coordinate
+* X = 0 to 4 coordinate
 * Y = Screen Y coordinate
 *-------------------------------
 
@@ -720,18 +731,14 @@ EOR_DOT         LDA LOBYTES,Y
                 STA (SCREENL),Y
                 RTS
 
-XTABLE          DB  3,5,7,9
-STABLE          DB  %00001000
+XTABLE          DB  3,5,7,9,11
+STABLE          DB  %00000010
+                DB  %00000100
+                DB  %00001000
                 DB  %00010000
                 DB  %00100000
-                DB  %01000000
 
 *-------------------------------
-
-; OPEN_TEXT       PLOTAT  99;143;(THERE_IS_SPACE_IN_THE_FRONT)
-;                 PLOTAT  99;152;(ROW_TO_BE_OCCUPIED._WILL_THE)
-;                 PLOTAT  99;161;(GROUP_A>DVANCE_OR)
-;                 PLOTAT  135;170;(R>ETREAT?_)+
 
 * <CHARNAME>_GIVES_THE_RETREAT
 * SIGNAL.

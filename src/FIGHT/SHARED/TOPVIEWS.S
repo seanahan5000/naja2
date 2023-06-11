@@ -46,7 +46,6 @@ POS_TO_I25      ENT
 
 MUL5            ENT
                 DB  0,5,10,15,20
-                DB  25,30,35,40,45
 
 DIV5            ENT
                 DB  0,0,0,0,0
@@ -54,6 +53,7 @@ DIV5            ENT
                 DB  2,2,2,2,2
                 DB  3,3,3,3,3
                 DB  4,4,4,4,4
+                DB  5
 
 MOD5            ENT
                 DB  0,1,2,3,4
@@ -61,6 +61,7 @@ MOD5            ENT
                 DB  0,1,2,3,4
                 DB  0,1,2,3,4
                 DB  0,1,2,3,4
+                DB  0
 ;
 ; On entry:
 ;   X: grid X position

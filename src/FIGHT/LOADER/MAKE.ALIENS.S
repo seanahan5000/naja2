@@ -1,4 +1,6 @@
 
+MASK_BITS       =   TEMP                ;***
+
 ;---------------------------------------
 
 MAKE_ALIENS     JSR FORCE_BOGUS

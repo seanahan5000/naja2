@@ -22,7 +22,7 @@ CHR_IDENTIFY    JSR FIND_SCANNER
                 JSR MON_INDEXER
 :SKIPA          CLC
                 LDA AGRID_MAIN,Y
-                BPL SCAN_AREA           ; empty or inaccessible square
+                BPL SCAN_AREA           ; empty or cellBlocked square
                 JSR SET_MONSTER
                 LDY #monTOPVIEW
                 LDA (MONS_PTR),Y

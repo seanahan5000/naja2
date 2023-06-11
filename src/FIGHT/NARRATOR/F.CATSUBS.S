@@ -43,28 +43,24 @@ REMAIN          JSR WORD1
 
 
 *-------------------------------
-*
+;
+; On entry:
+;   SQUARE_HIT: character cell hit in 11 coordinates
+;
+; On exit:
+;   A: CHAR_INDEX
 *-------------------------------
 
 FIND_CHAR       LDA SQUARE_HIT
-                AND #$0F
-                STA TEMP
-                LDA #$05
-                SEC
-                SBC TEMP
-                TAY
-                LDA TIMES5,Y
-                STA TEMP
-                LDA SQUARE_HIT
-                LSR
-                LSR
-                LSR
-                LSR
-                CLC
-                ADC TEMP
-                TAY
-                DEY
-                LDA MASTER_CGRID,Y
+                JSR POS_TO_I25
+                LDA CGRID_MAIN,Y
+                ; TODO: confirm that cell contains a character?
+                AND #%00000111
+                PHA
+                JSR SET_CHAR
+                ; NOTE: SET_CHAR does not change CHAR_INDEX
+                PLA
+                STA CHAR_INDEX
                 RTS
 
 ;-------------------------------
@@ -79,7 +75,7 @@ FIND_MONSTER    LDA SQUARE_HIT
                 JSR MON_INDEXER
                 CLC
                 LDA AGRID_MAIN,Y
-                BPL :1                  ; empty or inaccessible
+                BPL :1                  ; empty or cellBlocked
                 JSR SET_MONSTER
                 SEC
 :1              RTS

@@ -14,7 +14,7 @@ FIGHT_LOADER2   LDA #0
                 JSR LOAD_FILE
 
                 JSR BUILD_GRID
-                JSR SAVE_ADJUST_CPOS
+                JSR SAVE_ADJ_CPOS
 
                 JSR MAKE_ALIENS
                 JSR FIGHT_SCREEN
@@ -36,8 +36,7 @@ FIGHT_LOADER2   LDA #0
 ;   move any that are on blocked squares.
 ;-------------------------------------------------
 
-SAVE_ADJUST_CPOS
-                JSR INIT_CGRID
+SAVE_ADJ_CPOS   JSR INIT_CGRID
 ;
 ; save all positions and place unblocked characters
 ;
@@ -46,11 +45,11 @@ SAVE_ADJUST_CPOS
                 LDA (CHARDL),Y
                 STA SAVE_CPOS,X
                 JSR POS_TO_I25
-                LDA GRID,Y
+                LDA CGRID_MAIN,Y
                 BNE :3
                 LDA CHAR_INDEX
-                ORA #$40
-                STA GRID,Y
+                ORA #%10000000
+                STA CGRID_MAIN,Y
 :3              JSR NEXT_CHAR
                 BCC :2
 ;
@@ -60,9 +59,8 @@ SAVE_ADJUST_CPOS
 :4              LDY #position
                 LDA (CHARDL),Y
                 JSR POS_TO_I25
-                LDX GRID,Y
-                INX
-                BNE :NEXT
+                LDX CGRID_MAIN,Y
+                BMI :NEXT
 ;
 ; try to move back row characters up one
 ;
@@ -73,7 +71,7 @@ SAVE_ADJUST_CPOS
                 SEC
                 SBC #5
                 TAY
-                LDA GRID,Y
+                LDA CGRID_MAIN,Y
                 BEQ :8
 ;
 ; try to move side characters inward
@@ -82,14 +80,14 @@ SAVE_ADJUST_CPOS
                 CPX #3
                 BCC :7
 
-:6              LDA GRID,Y
+:6              LDA CGRID_MAIN,Y
                 BEQ :8
                 DEY
                 BPL :6
                 LDY #24
                 BNE :6                 ; always
 
-:7              LDA GRID,Y
+:7              LDA CGRID_MAIN,Y
                 BEQ :8
                 INY
                 CPY #25
@@ -98,8 +96,8 @@ SAVE_ADJUST_CPOS
                 BEQ :7                 ; always
 
 :8              LDA CHAR_INDEX
-                ORA #$40
-                STA GRID,Y
+                ORA #%10000000
+                STA CGRID_MAIN,Y
 
                 JSR I25_TO_CPOS
                 LDY #position
@@ -107,44 +105,6 @@ SAVE_ADJUST_CPOS
 
 :NEXT           JSR NEXT_CHAR
                 BCC :4
-                RTS
-
-; TODO: share these?
-
-INIT_CGRID      LDY #0
-                LDX #0
-:1              STX COUNT
-                LDA GRID_BITS+5,X
-                STA MASK_BITS
-                LDX #0
-:2              LSR MASK_BITS
-                ROR
-                ROR
-                ROR
-                AND #%00100000          ; inaccessible cell
-:3              STA GRID,Y
-                INY
-                INX
-                CPX #5
-                BNE :2
-                LDX COUNT
-                INX
-                CPX #5
-                BNE :1
-                RTS
-
-I25_TO_CPOS     LDA MOD5,Y
-                ASL
-                ASL
-                ASL
-                ASL
-;               CLC
-                ADC #$10
-                STA :MOD+1
-                LDA #$05
-                SEC
-                SBC DIV5,Y
-:MOD            ORA #$FF
                 RTS
 
 ;---------------------------------------

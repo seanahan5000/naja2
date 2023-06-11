@@ -28,10 +28,11 @@ MON_SHOOT       LDA #0              ;Normal blaster
                 SEC
                 SBC #$2D
 
-                ; LDY #0
-                ; JSR HPOSN
-                TAY
-                JSR MOVE_TO
+                ; A: Y coord
+                ; X: X coord low
+                ; Y: X coord high
+                LDY #0
+                JSR HPOSN
 
                 LDY #aBlastDamage
                 LDA (ALIEN_PTR),Y
@@ -137,7 +138,6 @@ MSHOT_BLOCKED   LDA BLOCKED
 
 MSHOT_HITS      JSR FIND_CHAR
                 STA CHAR_NUMBER
-                JSR SET_CHAR
                 JSR GET_CDAM_TOTL
                 LDY #34             ;S>34 And.Hits.CharName
                 JSR SENTENCE_INC

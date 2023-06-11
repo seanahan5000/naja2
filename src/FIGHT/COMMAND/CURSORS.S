@@ -334,18 +334,6 @@ GROUP_CURSOR1   JSR POS_TO_XY
 
 *-------------------------------
 
-GROUP_CURSOR2   LDY CURSOR
-                LDA CURCORD,Y
-                JSR POS_TO_XY
-                LDA GRID_XPNTS,X
-                TAX
-                LDA CGRID_YPNTS,Y
-                TAY
-                JSR MOVE_TO
-                LDX #<GROUP_SHAPE
-                LDY #>GROUP_SHAPE
-                JMP NEW_DRAW_SHAPE
-
 GROUP_SHAPE     DB  $22,$00
 
                 DB  %11111111

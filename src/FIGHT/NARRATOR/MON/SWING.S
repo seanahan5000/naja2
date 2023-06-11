@@ -20,8 +20,10 @@ MON_SWING       JSR VERBS_AT
                 LDA (MONS_PTR),Y
                 AND #%00000111
                 TAY
-                LDA MASTER_CGRID-1,Y
-                BPL FULL_MSWING
+                LDA CGRID_MAIN-1,Y
+                BPL EMPTY_MSWING
+                AND #%00000111
+                BPL FULL_MSWING         ; always
 
 EMPTY_MSWING    JSR RANDOM
                 AND #%00000011

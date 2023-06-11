@@ -21,13 +21,15 @@ HEALING         LDX COMPNTR
                 LDX CHAR_NUMBER
                 ADC TEMPCHAR_XY,X
                 JSR CHAR_INDEXER
-                LDA MASTER_CGRID,Y
-                BPL HAVE_PATIENT
+                LDA CGRID_MAIN,Y
+                BMI HAVE_PATIENT
+
 NO_HEALING      LDA CHAR_NUMBER     ;No patient in destination square
                 JSR SET_CHAR
                 JMP CCOM
 
-HAVE_PATIENT    STA PATIENT
+HAVE_PATIENT    AND #%00000111
+                STA PATIENT
                 JSR SET_CHAR
                 LDY #profrace
                 LDA (CHARDL),Y

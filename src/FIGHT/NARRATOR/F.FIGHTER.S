@@ -430,12 +430,13 @@ GET_HITABLES    JSR IMAGE_FOOLED
 :3
                 LDA #0
                 LDX #4
-:4              LDY MASTER_CGRID,X
-                BPL :5
-                CPY #$FF
-                BEQ :6
-                BIT IMAGE_FLAG
-                BPL :6
+:4              LDY CGRID_MAIN,X
+                BEQ :6                  ; skip empty
+                BMI :5                  ; mark character
+                CPY #%01000000          ; less than image gen, skip blocked
+                BCC :6
+                BIT IMAGE_FLAG          ; is alien fooled by image generator?
+                BPL :6                  ;  no, omit from list
 :5              ORA HIT_MASKS,X
 :6              DEX
                 BPL :4
@@ -456,17 +457,21 @@ GET_HITABLES    JSR IMAGE_FOOLED
 AIM_SUB         JSR IMAGE_FOOLED
                 LDX #0
                 LDY #0
-:1              LDA MASTER_CGRID,X  ;Make list of all squares that
-                BPL :2              ;  contain characters
-                CMP #$FF
-                BEQ :3
-                BIT IMAGE_FLAG      ;Is monster fooled by image generator?
-                BPL :3              ;  no, omit from list
-:2              TXA                 ;  yes, include in list
+                ;
+                ; build a list of all squares containing characters
+                ;
+:1              LDA CGRID_MAIN,X
+                BEQ :3                  ; skip empty
+                BMI :2                  ; mark character
+                CMP #%01000000          ; less than image gen, skip blocked
+                BCC :3
+                BIT IMAGE_FLAG          ; is alien fooled by image generator?
+                BPL :3                  ;  no, omit from list
+:2              TXA
                 STA BUFFER_14,Y
                 INY
-:3              INX                 ;Loop until all aimable rows
-                CPX #25             ;  have been checked
+:3              INX
+                CPX #25
                 BEQ :4
                 CPX #10
                 BCC :1
@@ -475,34 +480,22 @@ AIM_SUB         JSR IMAGE_FOOLED
                 BNE :1
                 _AimAtFront2
                 BEQ :1
-:4              CLC
+:4              CLC                     ; failure
                 TYA
                 BEQ :7
+                ;
+                ; randomly pick a square from newly created list
+                ;
                 STA TEMP
-:5              JSR RANDOM          ;Randomly pick a square from
-                AND #%00001111      ;  the newly created list
+:5              JSR RANDOM
+                AND #%00001111
                 CMP TEMP
                 BCS :5
                 TAX
-                LDA BUFFER_14,X
-                LDY #6
-                SEC
-:6              DEY
-                TAX                 ;Convert 0 to 24 index into
-                SBC #5              ;  square coordinate form
-                BCS :6
-                INX
-                TXA
-                ASL
-                ASL
-                ASL
-                ASL
-                STA TEMP
-                TYA
-                ORA TEMP
-                SEC
+                LDY BUFFER_14,X
+                JSR I25_TO_CPOS
+                SEC                     ; success
 :7              RTS
-
 
 *-------------------------------
 *

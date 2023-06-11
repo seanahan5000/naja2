@@ -82,28 +82,22 @@ VDEAD           DB  $23,$00
 *-------------------------------
 
 DRAW_IMAGENS    LDX #0
-                STX XCOUNT
-                STX YCOUNT
 :1              STX COUNT
-                LDA MASTER_CGRID,X
-                BPL :2
-                AND #$7F
-                CMP #$7F
-                BEQ :2
+                LDA CGRID_MAIN,X
+                BEQ :2                  ; skip empty
+                BMI :2                  ; skip characters
+                ASL
+                BPL :2                  ; skip blocked
+                LSR
+                AND #%00000111
                 JSR SET_CHAR
-                LDX XCOUNT
-                LDY YCOUNT
+                LDY DIV5,X
+                LDA MOD5,X
+                TAX
                 JSR CGRID_MOVETO
                 JSR DRAW_PROF_IMAGEN
-:2              LDX XCOUNT
-                INX
-                CPX #5
-                BNE :3
-                LDX #0
-                INC YCOUNT
-:3              STX XCOUNT
                 LDX COUNT
-                INX
+:2              INX
                 CPX #25
                 BNE :1
                 RTS
@@ -119,13 +113,19 @@ DRAW_PROF_IMAGEN
                 STY BLIT_TILE_MOD+2
                 RTS
 
-BLIT_IMAGEN     LDX #0
-                TXA
-:1              STA TILE_BUFFER+1,X
+BLIT_IMAGEN
+                ; TODO: get rid of this hack to get correct vertical phase
+                LDA YCOUNT
+                AND #1
+                EOR #1
+                TAX
+
+                LDA #0
+:1              STA TILE_BUFFER,X
                 INX
                 INX
-                CPX #8
-                BNE :1
+                CPX #7
+                BCC :1
                 JMP BLIT_TILE
 
 *-------------------------------

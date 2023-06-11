@@ -162,6 +162,20 @@ Xloaddata3      =   %00010000
 
 *-------------------------------
 
+*-------------------------------------
+; CGRID_MAIN: main character grid
+;
+;   %00000000 = empty square
+;   %00100000 = blocked square
+;   %100..nnn = character (n = 0 to 5)
+;   %010..nnn = images of character
+;
+*-------------------------------------
+
+cellBlocked     =   %00100000
+
+*-------------------------------
+
 ; NOTE: this is fight loader-only
                 DUMMY $9800         ;(***Through $A???)
 DATA_BUFR       DS  $300            ;* These must

@@ -44,10 +44,13 @@ CHR_SHOOT       JSR GET_EP_ENUSE    ;Get EL,PH_DAMAGEL,H and ENERGY_L,H
                 CLC
                 ADC XCOORD
                 TAX
-                ; LDY #0
-                ; LDA YCOORD
-                ; JSR HPOSN           ;Set source coordinate
-                JSR MOVE_TO
+
+                ; A: Y coord
+                ; X: X coord low
+                ; Y: X coord high
+                LDY #0
+                LDA YCOORD
+                JSR HPOSN           ;Set source coordinate
 
 * Get destination coordinate for shot, using
 *   +/- AIM * 2 for a randomizing factor

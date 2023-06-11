@@ -1,24 +1,14 @@
 *************
                 DUMMY   $4000
-
 *-------------------------------------
-* MASTER_CGRID
-*          $FF = empty square
-*   $00 to $06 = characters
-*   $80 to $86 = images of characters
-*-------------------------------------
-MASTER_CGRID    DS  25
-
-*-------------------------------------
-; MAIN_CGRID: main character grid
+; CGRID_MAIN: main character grid
 ;
 ;   %00000000 = empty square
-;   %00100000 = inaccessible square
-;   %110..nnn = character (n = 0 to 5)
-;   %100..nnn = images of character
+;   %00100000 = blocked square
+;   %100..nnn = character (n = 0 to 5)
+;   %010..nnn = images of character
 ;
 *-------------------------------------
-; MAIN_CGRID      DS  25
 
 AGDEAD          DS  1
                 DS  1
@@ -29,12 +19,11 @@ YMINUS4         DS  1
                 DEND
 *************
                 DUMMY   $4400
-
 *------------------------------------------------------
 ; AGRID_MAIN: main alien grid
 ;
 ;   %00000000 = empty square
-;   %00100000 = inaccessible square
+;   %00100000 = blocked square
 ;   %110nnnnn = actual alien position (monster index n = 0 to 24)
 ;   %100nnnnn = additional space taken up by alien
 ;

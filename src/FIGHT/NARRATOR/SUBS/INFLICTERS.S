@@ -152,9 +152,9 @@ DEAD_PLACER     LDY CHAR_NUMBER
                 CLC
                 ADC :INDEXS,X
                 TAY
-                LDA MASTER_CGRID,Y
-                CMP #$FF
+                LDA CGRID_MAIN,Y
                 BEQ :SKIPB
+                ; TODO: allow for spaces with image generator?
 :SKIPA          DEX
                 BPL :LOOP1
                 RTS

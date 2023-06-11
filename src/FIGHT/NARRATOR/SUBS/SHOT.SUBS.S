@@ -187,14 +187,13 @@ TRACE_SHOT      LDA #$00
                 ADC #$FF            ;Use passed carry
                 STA RICOCHETS
 
-        do 0
                 LDA #$FF            ;Monster shot
                 CPY YCRD
                 BCS :SKIPA
                 LDA #0              ;Character shot
 :SKIPA          STA MC_FLAG
 
-                LDA #WHITE1
+                LDA #$7F            ;WHITE1
                 STA COLOR
                 LDA #$FF            ;Enable collision detection
                 STA COLFLG
@@ -300,7 +299,6 @@ DD4             LDA #$FF            ;Modified
                 STA HLINE_MOD+1
                 LDA #$00            ;Disable collision detection
                 STA COLFLG
-        fin
 
                 JSR EOR_SHOTGRID    ;Remove shot containment box
                 JSR SET_PAGE1
@@ -308,8 +306,6 @@ DD4             LDA #$FF            ;Modified
 
 MC_FLAG         DB  0
 
-
-        do 0
 *----------------------------------------------------
 * On Entry:
 *    YCRD: Y position in screen coordinates
@@ -330,7 +326,7 @@ GET_SQUARE      LDX #5
 :SKIPA          STX TEMP
 
                 LDY #4
-:LOOP1          CMP YPNTS,Y         ;Look up row based on
+:LOOP1          CMP CGRID_YPNTS,Y   ;Look up row based on
                 BCS :SKIPB          ;   Y coordinate
                 DEY
                 BPL :LOOP1
@@ -363,7 +359,7 @@ GET_SQUARE      LDX #5
                 ADC TEMP
 
                 LDY #4
-:LOOP3          CMP XPNTS,Y         ;Look up column based
+:LOOP3          CMP GRID_XPNTS,Y    ;Look up column based
                 BCS :SKIPD          ;   on X coordinate
                 DEY
                 BPL :LOOP3
@@ -378,6 +374,195 @@ GET_SQUARE      LDX #5
                 RTS
 
 *-------------------------------
-        else
+
+COUNTH          =   $1D
+
+HCOLOR1         =   $50             ;NCOM line plotter
+HMASK           =   $51             ;
+DY              =   $52             ;
+QDRNT           =   $53             ;
+EL              =   $54             ;
+EH              =   $55             ;
+DXL             =   $56             ;
+DXH             =   $57             ;
+HNDX            =   $58             ;
+COLCNT          =   $59             ;
+YO              =   $5A             ;
+XOL             =   $5B             ;
+XOH             =   $5C             ;
+YCRD            =   $5D             ;
+COLFLG          =   $5E             ;NCOM line plotter
+
+HPOSN           STA YCRD            ;YCOORD IN ACC.
+                STA YO
+                STX XOL             ;XCOORDL IN X-INDEX
+                STY XOH             ;XCOORDH IN Y-INDEX
+                TAX
+                LDA LOBYTES,X
+                STA SCREENL
+                LDA HIBYTES,X
+                ; ORA PAGE
+                STA SCREENH
+                LDA XOL
+                SEC
+                CPY #$00
+                BEQ HPOSN2
+                LDY #$23
+                CLC
+                ADC #$04
+                SEC
+HPOSN1          INY
+HPOSN2          SBC #$07
+                BCS HPOSN1          ; TODO: use div/mod 7 table here
+                STY HNDX
+                TAX
+                LDA MSKTBL-249,X
+                STA HMASK
+                TYA
+                LSR
+                LDA COLOR
+                STA HCOLOR1
+                BCC NOGOSHF
+                JMP CSHIFT2
+NOGOSHF         RTS
+
+MSKTBL          DB  $81,$82,$84
+                DB  $88,$90,$A0
+                DB  $C0
+
+HLINA           PHA                 ;COLLISION FLAG SETTINGS
+                LDA #$00            ;  00-IGNORE COLLISIONS
+                STA COLFLG          ;  FF-EXIT ON COLLISIONS
+                PLA
+HLIN            PHA                 ;YCOORD IN Y-INDEX
+                SEC                 ;XCOORDL IN ACC.
+                SBC XOL             ;XCOORDH IN X-INDEX
+                PHA
+FREE1           LDA #$01
+                STA COLCNT
+                TXA
+                SBC XOH
+                STA QDRNT
+                BCS HLIN2
+                PLA
+                EOR #$FF
+                ADC #$01
+                PHA
+                LDA #$00
+                SBC QDRNT
+HLIN2           STA DXH
+                STA EH
+                PLA
+                STA DXL
+                STA EL
+                PLA
+                STA XOL
+                STX XOH
+                TYA
+                CLC
+                SBC YO
+                BCC HLIN3
+                EOR #$FF
+                ADC #$FE
+HLIN3           STA DY
+                STY YO
+                ROR QDRNT
+                SEC
+                SBC DXL
+                TAX
+                LDA #$FF
+                SBC DXH
+                STA COUNTH
+                LDY HNDX
+                BCS MOVEX2
+MOVEX           ASL
+                JSR LFTRT
+                SEC
+MOVEX2          LDA EL
+                ADC DY
+                STA EL
+                LDA EH
+                SBC #$00
+HCOUNT          STA EH
+                LDA (SCREENL),Y
+                EOR HCOLOR1
+                AND HMASK
+                BNE NOCOL
+                BIT COLFLG
+                BPL DONT
+                LDA COLCNT
+                BEQ HITEND
+                DEC COLCNT
+                JMP DONT
+HITEND          LDA #$01            ;COLLISION OCCURED
                 RTS
-        fin
+NOCOL           EOR (SCREENL),Y
+                STA (SCREENL),Y
+                LDA #$00
+                STA COLCNT
+DONT            INX
+                BNE HLIN4
+                INC COUNTH
+HLINE_MOD       BEQ LINEND          ;Modified
+HLIN4           LDA QDRNT
+                BCS MOVEX
+                JSR HLINE_UPDOWN
+                CLC
+                LDA EL
+                ADC DXL
+                STA EL
+                LDA EH
+                ADC DXH
+                JMP HCOUNT
+LINEND          LDA #$00            ;COMPLETE LINE DRAWN
+                RTS
+
+LFTRT           BPL RIGHT1
+                LDA HMASK
+                LSR
+                BCS LEFT1
+                EOR #$C0
+LR1             STA HMASK
+                RTS
+LEFT1           DEY
+                BPL LEFT2
+                LDY #$27            ; wrap to byte column #0 to #39
+LEFT2           LDA #$C0
+NEWNDX          STA HMASK
+                STY HNDX
+                LDA HCOLOR1
+CSHIFT2         ASL
+                CMP #$C0
+                BPL RTS1
+                LDA HCOLOR1
+                EOR #$7F
+                STA HCOLOR1
+RTS1            RTS
+RIGHT1          LDA HMASK
+                ASL
+                EOR #$80
+                BMI LR1
+                LDA #$81
+                INY
+                CPY #$28            ; wrap from byte column #40 to #0
+                BCC NEWNDX
+                LDY #$00
+                BCS NEWNDX          ; always
+
+HLINE_UPDOWN    BPL UP4             ;called from fight shot sub
+                INC YCRD
+                BNE UPDWN4          ; always
+UP4             DEC YCRD
+UPDWN4          TYA
+                PHA
+                LDY YCRD
+                LDA LOBYTES,Y
+                STA SCREENL
+                LDA HIBYTES,Y
+                ; ORA PAGE
+                STA SCREENH
+                PLA
+                TAY
+                RTS
+
+*-------------------------------

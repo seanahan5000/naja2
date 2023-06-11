@@ -17,6 +17,7 @@
                 ORG $A000
 F_SHARED_FILE   DB  $00               ; no real file number
 
+                PUT SHARED
                 PUT FLN.POINTERS
                 PUT FLN.TOPVIEWS
                 PUT TOPVIEWS
