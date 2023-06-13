@@ -9,15 +9,17 @@ SHOOT           JSR CLEAR_CANCEL_IN
                 PictTextAt 123;142;(AIM_AT_WHICH_SQUARE?)
                 PictEnd
                 JSR BOTTOMR
-                JSR GET_AIM
+                JSR GRID_AIM
                 BCS :SKIPA
-                JSR DRAW_GRIDCURS
+                JSR DRAW_GCURSOR
                 JMP DID_CANCEL
 
 :SKIPA          JSR DRAW_PICT
                 PictClear 17;142;35;149
                 PictEnd
                 LDY CURSOR
+                JSR I25_TO_APOS
+                TAY
                 LDX #cmdAIM
                 LDA TIMES+timeAIM
                 JSR GENERAL_POST
@@ -36,7 +38,7 @@ SHOOT           JSR CLEAR_CANCEL_IN
                 LDY #>LIMIT_SWNSHT
                 JSR GET_MULTIPLE
                 BCS :SKIPB
-                JSR DRAW_GRIDCURS
+                JSR DRAW_GCURSOR
                 JSR CANCEL_OUT
                 JSR DOTIME
                 JSR SWNSHT_UNDO
@@ -64,5 +66,5 @@ SHOOT           JSR CLEAR_CANCEL_IN
                 LDA #0
                 STA TIMTAKE
                 JSR POST_COMMAND
-                JSR DRAW_GRIDCURS
+                JSR DRAW_GCURSOR
                 JMP DID_CANCEL

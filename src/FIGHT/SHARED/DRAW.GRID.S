@@ -1,8 +1,6 @@
 
 ; GRID_HEIGHT     =   10
 ; GRID_WIDTH      =   5
-; GCELL_WIDTH     =   15
-; GCELL_HEIGHT    =   11
 
 IGRID_YPNTS     =   AGRID_YPNTS
 

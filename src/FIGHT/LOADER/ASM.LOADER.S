@@ -55,13 +55,11 @@ POSSIBLE        DS  18
 
                 ORG $6000
                 PUT LOADER2
-                PUT MAKE.ALIENS
                 PUT PICK.POSITIONS
                 ; PUT B.SUPRISE.SUB
                 SAV FIGHT.LOADER2
 
                 DUMMY $9800             ;***
-GRID            DS  25                  ;***
 VALID_LIST      DS  25
 POSITION_LIST   DS  25
 GROUP_BUFF1     DS  bytespergroup

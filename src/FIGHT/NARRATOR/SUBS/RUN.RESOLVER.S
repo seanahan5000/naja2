@@ -45,7 +45,7 @@ RUN_RESOLVER    JSR MRUN_DECIDER
                 JSR ERASE_MNAMES
 
                 LDX MOFFSET         ;Calc MONS_GAP and MSRC_BOT
-                JSR TIMES_11
+                JSR TIMES_CELL_HEIGHT
                 STA MONS_GAP
                 LDA #127
                 STA DIVIDER_Y       ;Init DIVIDER_Y
@@ -55,7 +55,7 @@ RUN_RESOLVER    JSR MRUN_DECIDER
                 STA MDST_BOT
 
                 LDX COFFSET         ;Calc CHAR_GAP and CSRC_TOP
-                JSR TIMES_11
+                JSR TIMES_CELL_HEIGHT
                 STA CHAR_GAP
                 SEC
                 ADC DIVIDER_Y
@@ -361,11 +361,12 @@ CHAR_OPENROWS   LDA #0
 
 *-------------------------------
 
-TIMES_11        LDA #0
+TIMES_CELL_HEIGHT
+                LDA #0
                 CLC
 :1              DEX
                 BMI :2
-                ADC #11
+                ADC #cellHeight
                 BCC :1              ;Always
 :2              RTS
 

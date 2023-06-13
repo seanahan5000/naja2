@@ -79,6 +79,8 @@ LETBACK         CMP #"B"
 
 GOBACK          PLA
                 PLA
+                PLA
+                PLA
                 JSR DRAW_GROUP_CURSOR2
                 LDY PLANNER
                 LDA XYSPOTS,Y
@@ -93,6 +95,8 @@ GOBACK          PLA
                 JMP MOVE2
 
 GOEND           PLA
+                PLA
+                PLA
                 PLA
                 JSR DRAW_GROUP_CURSOR2
 GOEND2          JSR UNDERS

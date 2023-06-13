@@ -1,10 +1,23 @@
+
+SWING_X         DB  0                   ; TODO: move to per-command ZPAGE
+
 SWING           JSR CLEAR_CANCEL_IN
                 JSR DRAW_PICT
                 PictTextAt 111;133;(SWING_WITH_WHICH_HAND/S?)
                 PictEnd
 
-                LDY #$03
-                JSR BOXSUB
+                LDX PLANNER
+                LDA XYSPOTS,X
+                LSR
+                LSR
+                LSR
+                LSR
+                TAX
+                DEX
+                DEX                     ; character X - 1
+                STX SWING_X
+
+                JSR SWING_BOX_3
 
                 LDA #$00
                 JSR SELECT_HAND
@@ -32,8 +45,7 @@ SWING           JSR CLEAR_CANCEL_IN
 WHIP_SWING      LDA #$FF
                 STA LEGALS+2
                 JSR PICK_SWING
-                LDY #3
-                JSR BOXSUB
+                JSR SWING_BOX_3
                 JSR SBOTTOMR
                 LDY #7
                 LDA #1
@@ -43,8 +55,7 @@ WHIP_SWING      LDA #$FF
                 LDA #3
                 BNE SWING_COMMON    ;Always
 
-HAND_SWING      LDY #3              ;Hand ignores SWTYPE value
-                JSR BOXSUB
+HAND_SWING      JSR SWING_BOX_3       ;Hand ignores SWTYPE value
                 JSR SBOTTOMR
                 LDY #1
                 TYA
@@ -56,8 +67,7 @@ NONWHIP_SWING   JSR PICK_SWING
                 TYA
                 LDX SWTYPE
                 BEQ SWING_COMMON
-                LDY #3
-                JSR BOXSUB
+                JSR SWING_BOX_3
 
                 LDX SWTYPE
                 DEX
@@ -82,7 +92,7 @@ SWING_COMMON    STY DEBOXMOD+1
                 STA INSTR2
                 CPY #3
                 BEQ :SKIPA
-                JSR BOXSUB
+                JSR SWING_BOX_Y
 :SKIPA          JSR DRAW_PICT
                 PictTextAt 120;132;(SWING_HOW_MANY_TIMES?)
                 PictTextAt 125;143;(=)
@@ -96,7 +106,7 @@ SWING_COMMON    STY DEBOXMOD+1
                 JSR GET_MULTIPLE
                 PHP
 DEBOXMOD        LDY #$FF            ;Modified
-                JSR BOXSUB
+                JSR SWING_BOX_Y
                 JSR SWNSHT_UNDO
                 PLP
                 BCS :SKIPA
@@ -153,74 +163,73 @@ DEBOXMOD        LDY #$FF            ;Modified
 
 *-------------------------------
 
-PICK_OF_3       LDA CURSOR
-                PHA
+PICK_OF_3       JSR INIT_AGRID_LEGAL
+                ;
+                ; block top 4 rows
+                ;
+                LDX #0
+                LDA #cellBlocked
+:1              STA AGRID_LEGAL,X
+                INX
+                CPX #20
+                BNE :1
+                ;
+                ; mark bottom row cells that aren't already blocked
+                ;
+:2              LDA AGRID_LEGAL,X
+                CMP #cellBlocked
+                BEQ :3
+                LDA #$80
+                STA AGRID_LEGAL,X
+:3              INX
+                CPX #25
+                BNE :2
+                ;
+                ; unmark 3 bottom row swing cells, except if cellBlocked
+                ;
+                LDY #3
+                LDX SWING_X
+:4              TXA
+                BMI :5
+                CPX #5
+                BEQ :6
+                LDA AGRID_LEGAL+20,X
+                CMP #cellBlocked
+                BEQ :5
+                LDA #0
+                STA AGRID_LEGAL+20,X
+:5              INX
+                DEY
+                BNE :4
+:6
+                LDA SWING_X
+                CLC
+                ADC #21
+                STA CURSOR
+
                 LDX #<BOX_CURSOR
                 LDY #>BOX_CURSOR
                 JSR SET_GCURSOR
-                LDX PLANNER
-                LDA XYSPOTS,X
-                AND #$F0
-                ORA #$06
-                STA CURSOR
-                AND #$F0
-                SEC
-                SBC #$10
-                STA TEMP
-                STA LEFTMOST+1
-                CLC
-                ADC #$20
-                STA TEMP+1
 
-                LDA SWTYPE
-                CMP #$01
-                BNE :SKIPB
-                LDA CURHOLD
-                CMP #$04
-                BCS :SKIPB
-
-                LSR
-                BCC :SKIPA
-                LDA TEMP
-                CLC
-                ADC #$10
-                STA TEMP
-                BNE :SKIPB          ;Always
-:SKIPA          LDA TEMP+1
-                SEC
-                SBC #$10
-                STA TEMP+1
-:SKIPB          LDA TEMP
-                BNE :SKIPC
-                LDA #$10
-:SKIPC          ORA #$06
-                TAX
-                LDA TEMP+1
-                CMP #$60
-                BCC :SKIPD
-                LDA #$50
-:SKIPD          ORA #$06
-                TAY
-                LDA #$00            ;No wrap-around
-                JSR GET_GRIDCURS
+                LDA #$00                ; no wrap-around
+                JSR GRID_SELECT
                 PHP
-                LDA CURSOR
-                SEC
-LEFTMOST        SBC #$FF            ;Modified
-                LSR
-                LSR
-                LSR
-                LSR
-                STA TCURSOR
-                JSR DRAW_GRIDCURS
+                JSR DRAW_GCURSOR
                 PLP
-                PLA
-                STA CURSOR
-                BCS :EXIT
-                PLA
+                BCC :CANCEL
+                ;
+                ; turn cursor X into relative left, center, right
+                ;
+                LDX CURSOR
+                LDA MOD5,X
+                SEC
+                SBC SWING_X
+                STA TCURSOR
+                RTS
+
+:CANCEL         PLA
                 PLA
                 JMP DID_CANCEL
-:EXIT           RTS
 
 *-------------------------------
 
@@ -236,8 +245,7 @@ PICK_SWING      JSR DRAW_PICT
                 LDA CURSOR
                 STA SWTYPE
                 BCS :EXIT
-                LDY #$03
-                JSR BOXSUB
+                JSR SWING_BOX_3
                 PLA
                 PLA
                 JMP DID_CANCEL
@@ -299,74 +307,63 @@ TWOSKIP         LDA CURHOLD
                 BNE LAZY
 ULSKIP          RTS
 
-*------------------------------------------------------
-*
-* On Entry:
-*   Y -> Box pattern number
-*
-*     +---+---+---+   +---+---+---+   +   +---+---+
-*     | 0 | 1 | 2 |   |     3     |       |   4   |
-*     +---+---+---+   +---+---+---+   +   +---+---+
-*          <C>             <C>             <C>
-*
-*     +---+---+   +   +---+---+---+   +   +---+   +
-*     |   5   |       |           |       |   |
-*     +---+---+   +   +   +---+   +   +   + 7 +   +
-*          <C>        |   | 6 |   |       |   |
-*                     +---+---+---+   +   +---+   +
-*                          <C>             <C>
-*
+;------------------------------------------------------
+;
+; On Entry:
+;   Y -> Box pattern number
+;
+;     +---+---+---+   +---+---+---+   +   +---+---+
+;     | 0 | 1 | 2 |   |     3     |       |   4   |
+;     +---+---+---+   +---+---+---+   +   +---+---+
+;          <C>             <C>             <C>
+;
+;     +---+---+   +   @---+---+---+   +   +---+   +
+;     |   5   |       |           |       |   |
+;     +---+---+   +   +   +---+   +   +   + 7 +   +
+;          <C>        |   | 6 |   |       |   |
+;                     +---+---+---+   +   +---+   +
+;                          <C>             <C>
+;
+; NOTE: reference point for all patterns relative to <C>
+;   is marked with @ above
+;
+SWING_BOX_3     LDY #3
+SWING_BOX_Y     LDX BOX_OFFSETS,Y
+:1              STX COUNTER
+                LDA BOX_DATA,X
+                BMI :2
+                JSR :DRAW_BOX
+                LDX COUNTER
+                INX
+                BNE :1                  ; always
+:2              AND #$7F
+                ; fall through
 
-BOXSUB          LDA BOFFSET,Y
-                STA COUNTER
-:LOOP1          LDY COUNTER
-                LDA BDATA,Y
-                BMI :SKIPA
-                JSR BOXCALC
-                INC COUNTER
-                BNE :LOOP1          ;Always
-:SKIPA          AND #$7F
-
-BOXCALC         PHA
-                AND #$0F
-                STA SCRATCH
-                LDX PLANNER
-                LDA XYSPOTS,X
-                AND #$F0
-                TAX
-                PLA
-                AND #$F0
-                BEQ SUB1
-                CMP #$20
-                BEQ ADD1
-                TXA
-                BNE COMN3
-ADD1            TXA
+:DRAW_BOX       TAY
+                LDA SWING_X
                 CLC
-                ADC #$10
-                CMP #$60
-                BCS BRET
-                BCC COMN3
-SUB1            TXA
-                SEC
-                SBC #$10
+                ADC MOD5,Y
+                BMI :3
+                CMP #5
+                BCS :3
+                LDX DIV5,Y
+                CLC
+                ADC MUL5,X
                 TAX
-                AND #$F0
-                BEQ BRET
-                TXA
-COMN3           ORA SCRATCH
-                STA CURSOR
+                LDA AGRID_LEGAL,X
+                BNE :3
+                STX CURSOR
                 JMP BOX_CURSOR
-BRET            RTS
+:3              RTS
 
-BOFFSET         DB  0,1,2,3
+BOX_OFFSETS     DB  0,1,2,3
                 DB  6,8,10,15
 
-BDATA           DB  $86
-                DB  $96
-                DB  $A6
-                DB  $06,$16,$A6
-                DB  $16,$A6
-                DB  $06,$96
-                DB  $06,$07,$17,$27,$A6
-                DB  $16,$97
+BOX_DATA        DB  20+$80
+                DB  21+$80
+                DB  22+$80
+                DB  20,21,22+$80
+                DB  21,22+$80
+                DB  20,21+80
+                DB  15,16,17,20,22+$80
+                DB  16,21+$80

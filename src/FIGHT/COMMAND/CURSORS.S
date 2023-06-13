@@ -26,16 +26,15 @@ SET_INTERCEPT   LDX #<:LOOK_FOR_C
 *   left of energy strike zone.
 *-------------------------------
 
-GET_UL_EZONE    LDA #$29
+GET_UL_EZONE    JSR INIT_AGRID_LEGAL
+                LDA #6              ; 1,1
                 STA CURSOR
                 LDX #<EZONE_CURSOR
                 LDY #>EZONE_CURSOR
                 JSR SET_GCURSOR
-                LDA #$00            ;Don't allow wrap-around
+                LDA #$00                ; no wrap-around
                 STA EZONE_FLAG
-                LDX #$1A
-                LDY #$56
-                BNE GET_GRIDCURS    ;Always
+                BEQ GRID_SELECT         ; always
 
 *-------------------------------
 * Used by ENERGY to select lower
@@ -44,38 +43,71 @@ GET_UL_EZONE    LDA #$29
 *   called first.)
 *-------------------------------
 
-GET_LR_EZONE    LDA #$FF
+GET_LR_EZONE    LDX #0
+                LDA #cellBlocked
+:1              CPX CURSOR
+                BEQ :2
+                STA AGRID_LEGAL,X
+                INX
+                BNE :1                  ; always
+:2              LDY MOD5,X
+                BEQ :5
+:3              DEY
+                STY TEMP
+:4              LDA #cellBlocked
+                STA AGRID_LEGAL,Y
+                TYA
+                CLC
+                ADC #5
+                TAY
+                CPY #25
+                BCC :4
+                LDY TEMP
+                BNE :3
+:5
+                LDA #$FF
                 STA EZONE_FLAG
-                LDA #$00
-                LDX CURSOR
-                STX MARGIN
-                LDY #$56
-                BNE GET_GRIDCURS    ;Always
+                LDA #$00                ; no wrap-around
+                BEQ GRID_SELECT         ; always
 
-*-------------------------------
-* Used by AIM, THROW and IDENTIFY
-*   to select destination square
-*   for those commands.
-*-------------------------------
+;---------------------------------------
+; Used by AIM, THROW and IDENTIFY
+;   to select destination square
+;   for those commands.
+;
+; On Exit:
+;   Carry clear: selection cancelled
+;   Carry set: grid cell was selected
+;   CURSOR: grid cell selected (0 to 24)
+;---------------------------------------
 
-GET_AIM         LDA #$38
+GRID_AIM        JSR INIT_AGRID_LEGAL
+                LDA #12                 ; (3, 8)
                 STA CURSOR
                 LDX #<BOX_CURSOR
                 LDY #>BOX_CURSOR
                 JSR SET_GCURSOR
-                LDA #$FF            ;Allow wrap-around
-                LDX #$1A
-                LDY #$56
+                LDA #$FF                ; allow wrap-around
+                ; fall through
 
-*-------------------------------
-* Common entry point for all grid
-*   cursor routines.
-*-------------------------------
+;---------------------------------------
+; Common entry point for all grid
+;   cursor routines.
+;
+; On entry:
+;   A: wrap-around flag
+;       $00: no wrap-around
+;       $FF: allow wrap-around
+;   CURSOR: starting cell position (0 to 24)
+;
+; On Exit:
+;   Carry clear: selection cancelled
+;   Carry set: grid cell was selected
+;   CURSOR: grid cell selected (0 to 24)
+;---------------------------------------
 
-GET_GRIDCURS    STA WRAP_FLAG
-                STX LIMIT_UL
-                STY LIMIT_LR
-                JSR DRAW_GRIDCURS
+GRID_SELECT     STA WRAP_FLAG
+                JSR DRAW_GCURSOR
                 BIT UNSTROB
                 JMP GRID_LOOP
 
@@ -91,10 +123,10 @@ GRID_BLINK      LDA #$10
                 LDA #$F0
                 JSR WAIT_KEY
                 BMI GRID_KEY
-                JSR DRAW_GRIDCURS
+                JSR DRAW_GCURSOR
                 LDA #$00
                 JSR WAIT_KEY
-                JSR DRAW_GRIDCURS
+                JSR DRAW_GCURSOR
 GRID_LOOP       LDA KEYBRD
                 BPL GRID_BLINK
 GRID_KEY        BIT UNSTROB
@@ -113,158 +145,129 @@ GRID_KEY        BIT UNSTROB
                 CLC
 :EXIT           RTS
 
-GRID_LEFT       LDX #$F0
-                LDA CURSOR
-                EOR LIMIT_UL
-                AND #%11110000
-                BNE GRID_COMMON1
+GRID_LEFT       LDX CURSOR
+:1              LDA MOD5,X
+                BNE :2
                 BIT WRAP_FLAG
                 BPL GRID_LOOP
-                LDA CURSOR
-                EOR LIMIT_LR
-                AND #%00001111
-                EOR LIMIT_LR
-                BNE GRID_COMMON2    ;Always
-
-GRID_RIGHT      LDX #$10
-                LDA CURSOR
-                EOR LIMIT_LR
-                AND #%11110000
-                BNE GRID_COMMON1
-                BIT WRAP_FLAG
-                BPL GRID_LOOP
-                LDA CURSOR
-                EOR LIMIT_UL
-                AND #%00001111
-                EOR LIMIT_UL
-                BNE GRID_COMMON2    ;Always
-
-GRID_UP         LDX #$01
-                LDA CURSOR
-                EOR LIMIT_UL
-                AND #%00001111
-                BNE GRID_COMMON1
-                BIT WRAP_FLAG
-                BPL GRID_LOOP
-                LDA CURSOR
-                EOR LIMIT_LR
-                AND #%11110000
-                EOR LIMIT_LR
-                BNE GRID_COMMON2    ;Always
-
-GRID_DOWN       LDX #$FF
-                LDA CURSOR
-                EOR LIMIT_LR
-                AND #%00001111
-                BNE GRID_COMMON1
-                BIT WRAP_FLAG
-                BPL GRID_COMMON3
-                LDA CURSOR
-                EOR LIMIT_UL
-                AND #%11110000
-                EOR LIMIT_UL
-                BNE GRID_COMMON2    ;Always
-GRID_COMMON1    TXA
-                CLC
-                ADC CURSOR
-GRID_COMMON2    PHA
-                JSR DRAW_GRIDCURS
-                PLA
-                STA CURSOR
-                JSR DRAW_GRIDCURS
-GRID_COMMON3    JMP GRID_LOOP
-
-*-------------------------------
-
-SET_GCURSOR     STX DRAW_GRIDCURS+1
-                STY DRAW_GRIDCURS+2
-                RTS
-
-DRAW_GRIDCURS   JMP $FFFF
-
-WRAP_FLAG       DB  0
-LIMIT_UL        DB  0
-LIMIT_LR        DB  0
-
-*-------------------------------
-
-; TODO: share with /FIGHT/NARRATOR/ENERGY.S
-
-EZONE_CURSOR    LDA CURSOR
-                SEC
-                SBC #$05
-                JSR POS_TO_XY
-
-                LDA GRID_XPNTS,X
-                PHA
-                TAX
-                LDA AGRID_YPNTS,Y
-                PHA
-                TAY
-                DEX
-                BIT EZONE_FLAG
-                BPL :1
                 TXA
                 CLC
-                ADC #15                 ; GCELL_WIDTH
+                ADC #5
                 TAX
-:1              JSR MOVE_TO
-                LDX #<EZONE_VERT
-                LDY #>EZONE_VERT
-                JSR NEW_DRAW_SHAPE
+:2              DEX
+                LDA AGRID_LEGAL,X
+                BEQ :3
+                BIT WRAP_FLAG
+                BMI :1
+                BPL GRID_LOOP           ; always
+:3              JMP UPDATE_GCURSOR
 
-                PLA
-                TAY
-                PLA
+GRID_RIGHT      LDX CURSOR
+:1              LDA MOD5,X
+                CMP #4
+                BNE :2
+                BIT WRAP_FLAG
+                BPL GRID_LOOP
+                TXA
+                SEC
+                SBC #5
                 TAX
-                DEY
-                BIT EZONE_FLAG
-                BPL :2
-                TYA
+:2              INX
+                LDA AGRID_LEGAL,X
+                BEQ :3
+                BIT WRAP_FLAG
+                BMI :1
+                BPL GRID_LOOP           ; always
+:3              JMP UPDATE_GCURSOR
+
+GRID_UP         LDX CURSOR
+:1              TXA
+                SEC
+                SBC #5
+                BCS :2
+;               CLC
+                ADC #25
+                BIT WRAP_FLAG
+                BPL :3
+:2              TAX
+                LDA AGRID_LEGAL,X
+                BEQ :4
+                BIT WRAP_FLAG
+                BMI :1
+:3              JMP GRID_LOOP
+:4              JMP UPDATE_GCURSOR
+
+GRID_DOWN       LDX CURSOR
+:1              TXA
                 CLC
-                ADC #11                 ; GCELL_HEIGHT
-                TAY
-:2              JSR MOVE_TO
-                LDX #<EZONE_HORZ
-                LDY #>EZONE_HORZ
-                JMP NEW_DRAW_SHAPE
+                ADC #5
+                CMP #25
+                BCC :2
+;               SEC
+                SBC #25
+                BIT WRAP_FLAG
+                BPL :3
+:2              TAX
+                LDA AGRID_LEGAL,X
+                BEQ :4
+                BIT WRAP_FLAG
+                BMI :1
+:3              JMP GRID_LOOP
+:4              ;JMP UPDATE_GCURSOR
 
-EZONE_FLAG      DB  0
+UPDATE_GCURSOR  CPX CURSOR
+                BEQ :1
+                TXA
+                PHA
+                JSR DRAW_GCURSOR
+                PLA
+                STA CURSOR
+                JSR DRAW_GCURSOR
+:1              JMP GRID_LOOP
 
-EZONE_VERT      DB  $12,$00
-                DB  %10000001
-                DB  %00000001
-                DB  %00000001
-                DB  %00000001
-                DB  %10000000
+INIT_AGRID_LEGAL
+                JSR INIT_AGRID
+                LDX #24
+:1              LDA AGRID_MAIN,X
+                AND #cellBlocked
+                STA AGRID_LEGAL,X
+                DEX
+                BPL :1
+                RTS
 
-EZONE_HORZ      DB  $21,$00
-                DB  %01111111
-                DB  %10000000
-                DB  %01111111
-                DB  %10000000
+AGRID_LEGAL     DS  25                  ; TODO: move to data storage
+
+*-------------------------------
+
+SET_GCURSOR     STX DRAW_GCURSOR+1
+                STY DRAW_GCURSOR+2
+                RTS
+
+DRAW_GCURSOR    JMP $FFFF
+
+WRAP_FLAG       DB  0
 
 *-------------------------------
 
 BOX_CURSOR      LDY #%01111110
-                LDA CURSOR
-                SEC
-                SBC #$05
-                TAX
-                AND #$0F
-                CMP #$01
+                LDX CURSOR
+                LDA MOD5,X
                 BNE :1
                 INY                     ; #%01111111
 :1              STY BOX_MOD
-                TXA
-                JSR POS_TO_XY
-                LDA GRID_XPNTS,X
-                TAX
-                DEX
+
+                LDY MOD5,X
+                LDA GRID_XPNTS,Y
+                PHA
+                LDY DIV5,X
                 LDA AGRID_YPNTS,Y
                 TAY
-                DEY
+                DEY                     ; adjust down 1
+                PLA
+                TAX
+                DEX                     ; adjust right 1
                 JSR MOVE_TO
+
                 LDX #<BOX_SHAPE
                 LDY #>BOX_SHAPE
                 JMP NEW_DRAW_SHAPE

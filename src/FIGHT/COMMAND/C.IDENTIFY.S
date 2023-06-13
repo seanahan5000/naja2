@@ -18,12 +18,13 @@ IDENTIFY        JSR CLEAR_CANCEL_IN
                 JSR DRAW_PICT
                 PictTextAt 115;152;(I.D._SCAN_WHICH_SQUARE?)
                 PictEnd
-                JSR GET_AIM
+                JSR GRID_AIM
                 PHP
-                JSR DRAW_GRIDCURS
+                JSR DRAW_GCURSOR
                 PLP
                 BCC :SKIPB
-                LDA CURSOR
+                LDY CURSOR
+                JSR I25_TO_APOS
                 STA INSTR2
 :SKIPA          LDA TIMES+timeIDENTIFY
                 STA TIMTAKE

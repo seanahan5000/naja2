@@ -72,7 +72,7 @@ FIND_CHAR       LDA SQUARE_HIT
 ;-------------------------------
 
 FIND_MONSTER    LDA SQUARE_HIT
-                JSR MON_INDEXER
+                JSR APOS_TO_I25
                 CLC
                 LDA AGRID_MAIN,Y
                 BPL :1                  ; empty or cellBlocked

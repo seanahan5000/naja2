@@ -174,6 +174,9 @@ Xloaddata3      =   %00010000
 
 cellBlocked     =   %00100000
 
+cellWidth       =   15
+cellHeight      =   11
+
 *-------------------------------
 
 ; NOTE: this is fight loader-only

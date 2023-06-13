@@ -6,7 +6,7 @@ ENERGY          JSR PICKECT
                 PictEnd
                 JSR GET_UL_EZONE
                 BCS :SKIPA
-                JSR DRAW_GRIDCURS
+                JSR DRAW_GCURSOR
                 JMP DID_CANCEL
 
 :SKIPA          JSR DRAW_PICT
@@ -14,13 +14,17 @@ ENERGY          JSR PICKECT
                 PictTextAt 108;146;(SELECT_LOWER-RIGHT_CORNER)
                 PictEnd
                 LDA CURSOR
-                STA MARGIN
+                STA CURSOR_UL
                 JSR GET_LR_EZONE
                 BCS :SKIPB
                 JMP ENERGY_EXIT
 
 :SKIPB          JSR CLEAR_WCANCEL
-                LDY MARGIN
+                LDA CURSOR
+                STA CURSOR_LR
+                LDY CURSOR_UL
+                JSR I25_TO_APOS
+                TAY
                 LDA ENERGY_INDEX
                 ASL
                 ASL
@@ -30,8 +34,6 @@ ENERGY          JSR PICKECT
                 TAX
                 LDA TIMES+timeAIM
                 JSR GENERAL_POST
-                LDA CURSOR
-                PHA
                 JSR DRAW_PICT
                 PictTextAt 105;134;(EMIT_WHICH_TYPE_OF_ENERGY?)
                 PictTextAt 150;147;(ELECTRICAL)
@@ -43,9 +45,6 @@ ENERGY          JSR PICKECT
                 JSR FULL_GETKEY
                 LDA CURSOR
                 STA ENTYPE
-                PLA
-                STA CURSOR
-                STA MARGIN2
                 BCS EPICKED
                 JMP ENERGY_EXIT
 
@@ -70,41 +69,27 @@ EPICKED         JSR CLEAR_WCANCEL
                 PictTextAt 129;153;(PER_SQUARE:)
                 PictTextAt 159;163;(TOTAL:)
                 PictEnd
-                LDA MARGIN
-                AND #$F0
-                STA SCRATCH
-                LDA CURSOR
-                AND #$F0
+
+                LDX CURSOR_UL
+                LDY CURSOR_LR
+                LDA MOD5,Y
                 SEC
-                SBC SCRATCH
+                SBC MOD5,X
                 STA DIMX
-                LSR
-                LSR
-                LSR
-                LSR
-                TAX
-                LDA CURSOR
-                AND #$0F
-                STA SCRATCH
-                LDA MARGIN
-                AND #$0F
+                LDA DIV5,Y
                 SEC
-                SBC SCRATCH
-                STA SCRATCH
-                INC SCRATCH
+                SBC DIV5,X
                 STA DIMY
-                LDA #$00
-                PHA
-ADLOOP          PLA
-                CLC
+                TAY
+                LDA #0
                 SED
-                ADC SCRATCH
+:1              SEC                     ; +1
+                ADC DIMX
+                DEY
+                BPL :1
                 CLD
-                PHA
-                DEX
-                BPL ADLOOP
-                PLA
                 STA AREA
+
                 LDA #$05
                 STA CURSOR
                 JSR AMOUNTS
@@ -178,6 +163,9 @@ HRIGHT          LDA CURSOR
                 JSR AMOUNTS
                 JMP HMOVKEY1
 
+; TODO: move to per-command ZPAGE
+CURSOR_UL       DB  0
+CURSOR_LR       DB  0
 DIMX            DB  0
 DIMY            DB  0
 AREA            DB  0
@@ -185,8 +173,10 @@ ENTYPE          DB  0
 ENCONV          DB  cmdENERGY+$40,cmdENERGY,cmdENERGY+$80
 
 HENTER          LDA DIMX
-                CLC
-                ADC #$10
+                ASL
+                ASL
+                ASL
+                ASL
                 ORA DIMY
                 STA INSTR2
                 LDY ENTYPE
@@ -219,14 +209,14 @@ HCANCEL         LDA #$60                ; RTS
                 LDA #$20                ; JSR
                 STA NOBAKS
                 JSR DE_ENERLEV
-HCANC2          LDA MARGIN2
+HCANC2          LDA CURSOR_LR
                 STA CURSOR
-ENERGY_EXIT     JSR DRAW_GRIDCURS
+ENERGY_EXIT     JSR DRAW_GCURSOR
                 LDA #$00
                 STA EZONE_FLAG
-                LDA MARGIN
+                LDA CURSOR_UL
                 STA CURSOR
-                JSR DRAW_GRIDCURS
+                JSR DRAW_GCURSOR
                 JMP DID_CANCEL
 
 HUP             LDX #$02

@@ -28,7 +28,6 @@ YMINUS4         DS  1
 ;   %100nnnnn = additional space taken up by alien
 ;
 *------------------------------------------------------
-AGRID_MAIN      DS  25
                 DEND
 *************
                 DUMMY   $4800
@@ -111,6 +110,7 @@ TIMES           DS  6
                 DEND
 *************
                 DUMMY   $5C80
+; TODO: rework zpage layout so these can be moved there
 *----------------------------------
 * $00 = Don't move (n/a for chars)
 * $7F = Retreat

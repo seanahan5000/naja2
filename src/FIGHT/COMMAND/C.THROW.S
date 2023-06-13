@@ -23,9 +23,11 @@ THROW           JSR CLEAR_CANCEL_IN
                 LDA #$FF
                 STA HANDTAB,X
                 JSR BOTTOMR
-                JSR GET_AIM
+                JSR GRID_AIM
                 BCC :EXIT
                 LDY CURSOR
+                JSR I25_TO_APOS
+                TAY
                 LDA CURHOLD
                 CLC
                 ROR
@@ -36,5 +38,5 @@ THROW           JSR CLEAR_CANCEL_IN
                 LDA TIMES+timeTHROW
                 JSR GENERAL_POST
                 JSR TAKE_ENERUSE
-:EXIT           JSR DRAW_GRIDCURS
+:EXIT           JSR DRAW_GCURSOR
                 JMP DID_CANCEL

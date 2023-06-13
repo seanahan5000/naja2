@@ -6,59 +6,81 @@ CHR_ENERGY
 
                 LDA #0
                 LDX #24
-:LOOP1          STA ENHIT,X         ;Clear hit zone buffer
+:1              STA ENHIT,X         ;Clear hit zone buffer
                 DEX
-                BPL :LOOP1
+                BPL :1
 
-                JSR ZONE            ;Draw boundaries
-                LDY COMPNTR
-                LDA COMMAND,Y
-                ROL
-                ROL
-                ROL
-                AND #$03            ;Get type of energy thrown
-                STA ENTYPE          ;   from command
+                ; TODO: eventually center area on aim position
 
-                LDA COMMAND+1,Y
+                LDX COMPNTR
+                LDA COMMAND-1,X         ; upper-left from AIM
+                JSR APOS_TO_I25
+                STY CURSOR_UL
+                ;
+                ; get type of energy thrown
+                ;
+                LDX COMPNTR
+                LDA COMMAND+0,X
+                ROL
+                ROL
+                ROL
+                AND #$03
+                STA ENTYPE
+                ;
+                ; extract dimensions of area covered
+                ;
+                LDA COMMAND+1,X         ; width-1/height-1 from ENERGY
+                TAY
+                LSR
+                LSR
+                LSR
+                LSR
                 TAX
-                LSR
-                LSR
-                LSR
-                LSR
-                STA XCOUNT
+                STX XCOUNT
+                TYA
+                AND #$0F
+                TAY
+                STY YCOUNT
+                ;
+                ; compute lower-right cursor
+                ;
                 TXA
-                AND #%00001111
-                TAX
-                INX
-                STX YCOUNT
+                CLC
+                ADC CURSOR_UL
+                ADC MUL5,Y
+                STA CURSOR_LR
+                ;
+                ; compute BCD count of squares covered
+                ;
                 LDA #0
-:LOOP2          CLC
                 SED
+:2              SEC                     ; +1
                 ADC XCOUNT
+                DEY
+                BPL :2
                 CLD
-                DEX
-                BNE :LOOP2          ;Calculate number of
-                STA SQUARE_COUNT    ;   squares in hit zone
-
-                LDA COMMAND-1,Y
-                JSR MON_INDEXER
+                STA SQUARE_COUNT
                 ;
                 ; set squares in hit zone to #$FF
                 ;
-:1              TYA
-                PHA
+                LDA CURSOR_UL
+:3              PHA
+                TAY
                 LDX XCOUNT
                 LDA #$FF
-:2              STA ENHIT,Y
+:4              STA ENHIT,Y
                 INY
                 DEX
-                BNE :2
+                BPL :4
                 PLA
                 CLC
                 ADC #5
-                TAY
                 DEC YCOUNT
-                BNE :1
+                BPL :3
+                ;
+                ; draw boundaries
+                ;
+                JSR ZONE
 
 *------------------------------*
 *   Begin attack description   *
@@ -451,93 +473,21 @@ PER_TABLE       HEX 0360            ;36/10?
 *
 *-------------------------------
 
-ZONE            LDX COMPNTR
-                LDA COMMAND-1,X
-                LDX #$00
-                JSR CURZONE
-
-                LDX COMPNTR
-                LDA COMMAND+1,X
-                TAX
-                AND #$F0
-                CLC
-                ADC CURSOR
-                SEC
-                SBC #$10
-                TAY
-                TXA
-                AND #$0F
-                STA CURSOR
-                TYA
-                SEC
-                SBC CURSOR
-                LDX #$FF
-
-CURZONE         STX EZONE_FLAG
-                STA CURSOR
+ZONE            LDA CURSOR_UL
+                LDX #$00                ; upper-left
+                JSR :ZONE_SUB
+                LDA CURSOR_LR
+                LDX #$FF                ; lower-right
+:ZONE_SUB       STA CURSOR
+                STX EZONE_FLAG
                 JSR EZONE_CURSOR
                 JMP CLEAN_FRONT
 
 *-------------------------------
 
-; TODO: share with /FIGHT/NARRATOR/ENERGY.S
-
-EZONE_CURSOR    LDA CURSOR
-                SEC
-                SBC #$05
-                JSR POS_TO_XY
-
-                LDA GRID_XPNTS,X
-                PHA
-                TAX
-                LDA AGRID_YPNTS,Y
-                PHA
-                TAY
-                DEX
-                BIT EZONE_FLAG
-                BPL :1
-                TXA
-                CLC
-                ADC #15                 ; GCELL_WIDTH
-                TAX
-:1              JSR MOVE_TO
-                LDX #<EZONE_VERT
-                LDY #>EZONE_VERT
-                JSR NEW_DRAW_SHAPE
-
-                PLA
-                TAY
-                PLA
-                TAX
-                DEY
-                BIT EZONE_FLAG
-                BPL :2
-                TYA
-                CLC
-                ADC #11                 ; GCELL_HEIGHT
-                TAY
-:2              JSR MOVE_TO
-                LDX #<EZONE_HORZ
-                LDY #>EZONE_HORZ
-                JMP NEW_DRAW_SHAPE
-
-EZONE_FLAG      DB  0
-
-EZONE_VERT      DB  $12,$00
-                DB  %10000001
-                DB  %00000001
-                DB  %00000001
-                DB  %00000001
-                DB  %10000000
-
-EZONE_HORZ      DB  $21,$00
-                DB  %01111111
-                DB  %10000000
-                DB  %01111111
-                DB  %10000000
-
-*-------------------------------
-
+; TODO: move to per-command ZPAGE
+CURSOR_UL       DB  0
+CURSOR_LR       DB  0
 SQUARE_COUNT    DB  0
 ANY_HIT_FLAG    DB  0
 

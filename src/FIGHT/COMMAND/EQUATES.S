@@ -26,8 +26,8 @@ TIMLEFT         =   ZBLOCK_A+7
 
 MAXCURS         =   ZBLOCK_B+0
 CFLAG           =   ZBLOCK_B+1
-MARGIN          =   ZBLOCK_B+2
-MARGIN2         =   ZBLOCK_B+3
+; MARGIN          =   ZBLOCK_B+2
+; MARGIN2         =   ZBLOCK_B+3
 COMPNTR         =   ZBLOCK_B+4
 COMCNT          =   ZBLOCK_B+5
 USEDLOC         =   ZBLOCK_B+6

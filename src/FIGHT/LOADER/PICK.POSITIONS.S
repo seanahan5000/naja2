@@ -206,7 +206,7 @@ ALL_VALID       LDX #0
                 BEQ :Y_WILD
 
 :SINGLE         TXA
-                JSR MONPOS_TO_I25
+                JSR APOS_TO_I25
                 STY START_INDEX
                 JMP CHECK_VALID
 
@@ -222,7 +222,7 @@ ALL_VALID       LDX #0
 :X_WILD         TXA
                 AND #$0F
                 ORA #$10
-                JSR MONPOS_TO_I25
+                JSR APOS_TO_I25
 :3              STY START_INDEX
                 JSR CHECK_VALID
                 LDY START_INDEX
@@ -236,7 +236,7 @@ ALL_VALID       LDX #0
 :Y_WILD         TXA
                 AND #$F0
                 ORA #$0A
-                JSR MONPOS_TO_I25
+                JSR APOS_TO_I25
 :5              STY START_INDEX
                 JSR CHECK_VALID
                 LDA START_INDEX
@@ -262,7 +262,7 @@ CHECK_VALID     LDA TVIEW_WIDTH
 
 :1              STY SAVE_INDEX
                 LDX TVIEW_WIDTH
-:2              LDA GRID,Y
+:2              LDA AGRID_MAIN,Y
                 BNE :NOT_OKAY
                 INY
                 DEX
@@ -290,7 +290,7 @@ SET_VALID       LDA TVIEW_HEIGHT
                 PHA
                 LDX TVIEW_WIDTH
                 LDA #$80
-:2              STA GRID,Y
+:2              STA AGRID_MAIN,Y
                 INY
                 DEX
                 BNE :2

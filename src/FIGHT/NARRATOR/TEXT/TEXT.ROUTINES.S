@@ -380,7 +380,7 @@ SENT_LIST2
                 DB  xHits,xThe,xMonsName,xFor,xRETURN
                 DB  x9999,xDamage
 :48             DB  5,xBut,xThe,xRETURN,xMonsName,xIs
-:49             DB  4,xNo,xOne,xIs,xAffected
+:49             DB  6,xBut,xRETURN,xNo,xOne,xIs,xAffected
 *>>>> (boomerang)
 :50             DB  10,xCharsName,xThrows,xA,xGyro,xRETURN
                 DB  xBoomerang,xThat,xArcs,xToward,xThe

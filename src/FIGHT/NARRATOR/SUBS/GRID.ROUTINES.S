@@ -2,9 +2,13 @@
 *
 *===============================
 
-MASK_BITS       =   TEMP+0              ;***
-
 CREATE_MGRID    JSR INIT_AGRID
+
+                LDX #24
+:0              LDA AGRID_MAIN,X
+                STA AGRID_AUX,X
+                DEX
+                BPL :0
 
                 LDX #0
 :2              STX POINTER
@@ -31,29 +35,6 @@ CREATE_MGRID    JSR INIT_AGRID
                 INX
                 BNE :2              ;Always
 :4              RTS
-
-INIT_AGRID      LDY #0
-                LDX #0
-:1              STX COUNT
-                LDA GRID_BITS+0,X
-                STA MASK_BITS
-                LDX #0
-:2              LSR MASK_BITS
-                ROR
-                ROR
-                ROR
-                AND #cellBlocked
-:3              STA AGRID_MAIN,Y
-                STA AGRID_AUX,Y
-                INY
-                INX
-                CPX #5
-                BNE :2
-                LDX COUNT
-                INX
-                CPX #5
-                BNE :1
-                RTS
 
 *===============================
 *
@@ -118,7 +99,7 @@ CHECK_AGRID_MAIN LDX #<AGRID_MAIN
 
 CHECK_AGRID_CMN STX :MOD2+1
                 STY :MOD2+2
-                JSR MONPOS_TO_I25
+                JSR APOS_TO_I25
 
                 LDA TVIEW_WIDTH
                 CLC
@@ -173,7 +154,7 @@ SET_AGRID_MAIN  LDX #<AGRID_MAIN
 
 SET_AGRID_CMN   STX :MOD2+1
                 STY :MOD2+2
-                JSR MONPOS_TO_I25
+                JSR APOS_TO_I25
 
                 LDA TVIEW_HEIGHT
                 STA YCOUNT

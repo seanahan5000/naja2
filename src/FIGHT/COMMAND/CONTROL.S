@@ -280,6 +280,8 @@ CHTOFF          STA CHENTAB,X
                 DEX
                 BPL CHTOFF
                 JSR GETOPTS
+                ; TODO: skip this update if energy level won't change
+                ;   (avoid unnecessary flicker)
                 JSR ENUDATE
                 LDY #$26
                 LDX #$02

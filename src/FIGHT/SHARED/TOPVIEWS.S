@@ -33,7 +33,7 @@ POS_TO_XY       ENT
 ; On exit:
 ;   Y: grid index 0 to 24
 ;
-MONPOS_TO_I25   ENT
+APOS_TO_I25     ENT
                 SEC
                 SBC #$05
 POS_TO_I25      ENT
@@ -99,13 +99,26 @@ DRAW_PROF_TOPVIEW ENT
                 ; pixel positions in top view grid
 
 GRID_XPNTS      ENT
-                DB  8, 23, 38, 53, 68
+                DB  cellWidth*0+8
+                DB  cellWidth*1+8
+                DB  cellWidth*2+8
+                DB  cellWidth*3+8
+                DB  cellWidth*4+8
 
 AGRID_YPNTS     ENT
-                DB  73,84,95,106,117
+                DB  cellHeight*0+73
+                DB  cellHeight*1+73
+                DB  cellHeight*2+73
+                DB  cellHeight*3+73
+                DB  cellHeight*4+73
+
 CGRID_YPNTS     ENT
-                DB  128,139,150,161,172
-                DB  183
+                DB  cellHeight*0+128
+                DB  cellHeight*1+128
+                DB  cellHeight*2+128
+                DB  cellHeight*3+128
+                DB  cellHeight*4+128
+                DB  cellHeight*5+128
 
                 ; byte offsets into TCHARS data
 
