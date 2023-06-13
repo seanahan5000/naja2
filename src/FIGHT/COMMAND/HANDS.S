@@ -60,8 +60,7 @@ SELECT_HAND     STA ATTACK_TYPE
                 BCS NOTCANC
                 LDA ATTACK_TYPE
                 BNE :2
-                LDY #$03
-                JSR BOXSUB
+                JSR SWING_BOX_3
 :2              PLA
                 PLA
                 JMP DID_CANCEL
