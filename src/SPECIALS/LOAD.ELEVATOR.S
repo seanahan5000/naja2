@@ -27,6 +27,7 @@ ELEVATOR_123    LDA #0
                 BEQ ELEVATOR_ALL        ; always
 ELEVATOR_345    LDA #1
 ELEVATOR_ALL    PHA
+                JSR SAVE_MAPPED
                 JSR ELEVATOR_STEP
                 JSR DRAW_PICT
                 PictSetBlack1

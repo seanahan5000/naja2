@@ -24,9 +24,6 @@ MAP_ROW         =   $13
 FILTER_FACE     =   $14
 NEW_FACE        =   $15
 
-MAPPED_INDEX    =   $16
-MAPPED_BITS     =   $17
-
 FILL0_BITS      =   $18
 FILL1_BITS      =   $19
 
@@ -740,114 +737,6 @@ FIRST_ROW       LDA #0
                 CPX #MAP_WIDTH_CELLS-1
                 BNE :1
                 JMP NEXT_ROW
-;
-; Extract all mapped bits from map data into a
-;   contiguous buffer of just those bits.
-;
-SAVE_MAPPED     ENT
-                JSR PUSH_MAP_STATE
-                LDA #0
-                STA MAPPED_INDEX
-                STA MAP_FACE
-                STA MAP_X
-                STA MAP_Y
-                JSR COMPUTE_MAP_PTR
-                LDX #8
-                LDA #0
-                STA MAPPED_BITS
-:NEXT_ROW       LDY #0
-:NEXT_COLUMN    LDA (MAP_PTR),Y
-                LSR
-                ROL MAPPED_BITS
-                DEX
-                BNE :SAME_BYTE
-                LDX MAPPED_INDEX
-                STA MAP_VISITED,X
-                INX
-                STX MAPPED_INDEX
-                LDX #8
-                LDA #0
-                STA MAPPED_BITS
-:SAME_BYTE      INY
-                CPY MAP_SIZE
-                BNE :NEXT_COLUMN
-                JSR ADVANCE_ROW
-                BCC :NEXT_ROW
-:MAP_DONE       TXA
-                BEQ :EXIT
-:FLUSH          ASL MAPPED_BITS
-                DEX
-                BNE :FLUSH
-                LDX MAPPED_INDEX
-                LDA MAPPED_BITS
-                STA MAP_VISITED,X
-                INX
-                STX MAPPED_INDEX
-:EXIT           JMP PULL_MAP_STATE
-;
-; Insert saved mapped bits from contiguous buffer into map data.
-;
-RESTORE_MAPPED  ENT
-                JSR PUSH_MAP_STATE
-                LDA #0
-                STA MAPPED_INDEX
-                STA MAP_FACE
-                STA MAP_X
-                STA MAP_Y
-                JSR COMPUTE_MAP_PTR
-                LDX #8
-                LDA MAP_VISITED
-                STA MAPPED_BITS
-:NEXT_ROW       LDY #0
-:NEXT_COLUMN    LDA (MAP_PTR),Y
-                LSR
-                ROL MAPPED_BITS
-                ROL
-                STA (MAP_PTR),Y
-                DEX
-                BNE :SAME_BYTE
-                INC MAPPED_INDEX
-                LDX MAPPED_INDEX
-                LDA MAP_VISITED,X
-                STA MAPPED_BITS
-                LDX #8
-:SAME_BYTE      INY
-                CPY MAP_SIZE
-                BNE :NEXT_COLUMN
-                JSR ADVANCE_ROW
-                BCC :NEXT_ROW
-                JMP PULL_MAP_STATE
-;
-; Advance MAP_PTR to next row or start of next face.
-;
-ADVANCE_ROW     INC MAP_Y
-                LDA MAP_Y
-                CMP MAP_SIZE
-                BEQ :NEXT_FACE
-                LDA MAP_PTR
-                SEC                     ; MAP_SIZE + 1
-                ADC MAP_SIZE
-                STA MAP_PTR
-                BCS :1
-                RTS
-:1              INC MAP_PTR_H
-                CLC
-                RTS
-:NEXT_FACE      INC MAP_FACE
-                LDA MAP_FACE
-                CMP #6                  ;*** should use map data count instead
-                BEQ :MAP_DONE
-                LDA #0
-                STA MAP_Y
-                TXA
-                PHA
-                JSR COMPUTE_MAP_PTR
-                PLA
-                TAX
-                CLC
-                RTS
-:MAP_DONE       SEC
-                RTS
 
 MAP_MOVE_LEFT   LDA MAP_SIZE
                 ASL

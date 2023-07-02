@@ -11,12 +11,10 @@
 ; Does not set CHAR_INDEX for compatibility
 ;
 SET_CHAR        ENT
-                CLC
-                ADC #1
                 LSR
                 PHP
                 CLC
-                ADC #$BC
+                ADC #>CHAR_0
                 STA CHARDH
                 LDA #$00
                 PLP
@@ -31,11 +29,10 @@ SET_CHAR        ENT
 ;   Other ZPAGE unchanged
 ;
 FIRST_CHAR      ENT
-                LDA #$80
-                STA CHARDL
-                LDA #$BC
+                LDA #>CHAR_0
                 STA CHARDH
                 LDX #0
+                STX CHARDL
                 STX CHAR_INDEX
                 RTS
 ;

@@ -43,8 +43,6 @@ SPECIAL_LOAD    STX OPTIONS1        ;Calling routine must clear
                 JSR DRAW_PICTURE
 :3              JSR SHOW_PAGE2
 
-                ; TODO: need to capture halls
-
                 JSR SET_DATA_FILE
                 JSR LOAD_ALIEN_DATA
 

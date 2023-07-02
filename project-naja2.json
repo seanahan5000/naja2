@@ -27,7 +27,7 @@
     { "fileName": "COMMAND.LST" },
     { "fileName": "NARRATOR.LST" },
     { "fileName": "REFORMAT.LST" },
-    { "bins": [{ "fileName": "GAME.STATE", "loadAt": "0xBB00" }]}
+    { "bins": [{ "fileName": "GAME.STATE", "loadAt": "0xBA00" }]}
   ],
   "images": [
     { "fileName": "naja1.nib", "drive": 1, "enabled": true },

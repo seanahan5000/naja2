@@ -66,7 +66,6 @@ CONTROL_BOOT    JSR INIT_RANDOM
 
                 JSR SET_CONTROL
                 JSR COMPUTE_MAP_PTR
-                JSR RESTORE_MAPPED
 
                 JSR GET_NSEW
                 JSR DRAW_HALL

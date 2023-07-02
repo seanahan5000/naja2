@@ -4,19 +4,14 @@
 
 ; uninitialized buffer space before game state?
 
-                ORG $BB00
+                ORG $BA00
 
-; TODO: map visited bits
-; 17: 217 bytes
-; 15: 169 bytes
-; 13: 127 bytes
-; 11:  91 bytes
-;  9:  61 bytes
-;   = 665 bytes
-; TODO: make this handle more than just shell 17
-MAP_VISITED     DS  217,$FF     ; cleared by default
-
-                DS 39
+MAP_VISITED_17  DS  217;,$FF     ;*** ; cleared by default
+                DS  39
+MAP_VISITED_15  DS  169
+MAP_VISITED_13  DS  127
+MAP_VISITED_11  DS  91
+MAP_VISITED_9   DS  61
 
 KNOWN_ALIENS_12 HEX FFFFFF      ; 72 bits
                 HEX FFFFFF
@@ -38,17 +33,17 @@ ORBS_FOUND                      ; TODO: get rid of this
 KEYS_FOUND      DB  0
 KEY_DOOR_BITS   DB  0
 
-                DS  73
+                DS  9
 
 KILLS           DS  4
 CREDITS         DS  4
 EXPERIENCE      DS  4
 
-LOST_CHARS      DB  0           ; $BC7D
-GRPCONT         DB  6           ; $BC7E ; number of characters, including dead/compressed?
-GRPNUMB         DB  6           ; $BC7F ; number of living characters in group
+LOST_CHARS      DB  0           ; $BCFD
+GRPCONT         DB  6           ; $BCFE ; number of characters, including dead/compressed?
+GRPNUMB         DB  6           ; $BCFF ; number of living characters in group
 
-                ERR $BC80-*
+                ERR $BD00-*
 
 CHAR_0          USR (BLASTER___)-
                 DFB healthy         ;healthy
@@ -421,5 +416,3 @@ CHAR_5          USR (BLADE_____)-
                 HEX EE
                 HEX EE
                 HEX 00              ;Misc
-
-CHAR_6          DS  $80,0

@@ -247,10 +247,11 @@ GRID_BITS       DS  10
 
                 DS  \
 
-heaplength      =   6               ;pages
+                ERR $B500-*
+heaplength      =   5                   ; in pages (was 6)
 ALIEN_HEAP      DS  heaplength*$100
 ALIEN_HEAP_END
-
+                ERR $BA00-*
                 DEND
 
 

@@ -72,8 +72,8 @@ SCRATCH         =   $77
 SELECT          =   $90         ; only used in STATS.S -- get rid of
 CHARDL          =   $91
 CHARDH          =   $92
-XPNT            =   $93
-YPNT            =   $94
+XPNT            =   $93         ; TODO: phase out
+YPNT            =   $94         ; TODO: phase out
 CURSOR          =   $95
 COUNT           =   $96
 SELECT_FLIP     =   $96         ; only used in T.CAMP.S when flipping stats
@@ -91,13 +91,16 @@ PAGE            =   $E6
 ; HALLS use $F0-$F8
 ; TODO: move contents of HALLS/VARS.S here
 
-SCRATCH_PAGE    =   $BA00       ; TODO: place somewhere else
+SCRATCH_PAGE    =   $B900       ; TODO: place somewhere else
 
-                DUMMY $BB00
+                DUMMY $BA00
 
-MAP_VISITED     DS  217
-
-                DS 39
+MAP_VISITED_17  DS  217
+                DS  39
+MAP_VISITED_15  DS  169
+MAP_VISITED_13  DS  127
+MAP_VISITED_11  DS  91
+MAP_VISITED_9   DS  61
 
 KNOWN_ALIENS_12  DS 9           ; 72 bits
 KNOWN_ALIENS_345 DS 9           ; 65 of 72 bits
@@ -109,25 +112,23 @@ ORBS_FOUND                      ; TODO: get rid of this
 KEYS_FOUND      DS  1
 KEY_DOOR_BITS   DS  1           ; a000bbbb - a open status, b order bits
 
-                DS  73
+                DS  9
 
 KILLS           DS  4           ; expedition totals (assumed sequential)
 CREDITS         DS  4
 EXPERIENCE      DS  4
 
-LOST_CHARS      DS  1           ; $BC7D
-GRPCONT         DS  1           ; $BC7E ; number of characters, including dead/compressed?
-GRPNUMB         DS  1           ; $BC7F ; number of living characters in group
+LOST_CHARS      DS  1           ; $BCFD
+GRPCONT         DS  1           ; $BCFE ; number of characters, including dead/compressed?
+GRPNUMB         DS  1           ; $BCFF ; number of living characters in group
 
-                ERR $BC80-*
-
+                ERR $BD00-*
 CHAR_0          DS  $80
 CHAR_1          DS  $80
 CHAR_2          DS  $80
 CHAR_3          DS  $80
 CHAR_4          DS  $80
 CHAR_5          DS  $80
-CHAR_6          DS  $80
                 DEND
 
 GROUP_SIZE      =   GRPNUMB

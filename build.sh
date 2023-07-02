@@ -51,7 +51,7 @@ $ASM LEVELS ASM.13      -lst $OBJ/CONTROL13.LST         || ERR=1
 $ASM LEVELS ASM.11      -lst $OBJ/CONTROL11.LST         || ERR=1
 $ASM LEVELS ASM.9       -lst $OBJ/CONTROL9.LST          || ERR=1
 
-$ASM TEST   GAME.STATE                                  || ERR=1
+$ASM TEST   GAME.STATE  -lst $OBJ/GAME.STATE.LST        || ERR=1
 
 if [ "$ERR" == "1" ]; then
   echo

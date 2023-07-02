@@ -13,6 +13,10 @@
 
                 PUT /NAJA/VARS/CONSTANTS
 
+; TODO: assign these to temps
+MAPPED_INDEX    =   $16
+MAPPED_BITS     =   $17
+
                 ORG $7800
 
 CONTROL_FILE    DB  fileControl17+SHELLNUM-1
@@ -23,7 +27,7 @@ SET_CONTROL     LDX #<FILE_HOOK
 
                 LDX #<FILE_TABLE
                 LDY #>FILE_TABLE
-            JSR SET_FILE_TABLE
+                JSR SET_FILE_TABLE
 
                 LDX #<DISPATCH
                 LDY #>DISPATCH
@@ -35,7 +39,9 @@ SET_CONTROL     LDX #<FILE_HOOK
 
                 LDX #<MAP_DATA
                 LDY #>MAP_DATA
-                JMP SET_MAP_DATA
+                JSR SET_MAP_DATA
+
+                JMP RESTORE_MAPPED
 
 :KEY_FILTER     CMP #"S"
                 BEQ :GO_CAMP
@@ -48,6 +54,7 @@ SET_CONTROL     LDX #<FILE_HOOK
 
 :GO_FIGHT       JSR CAN_ENCOUNTER
                 BCC :1
+                JSR SAVE_MAPPED
                 JMP LOAD_FIGHT
 :1              CLC
                 RTS
@@ -61,6 +68,108 @@ SET_CONTROL     LDX #<FILE_HOOK
 :GO_CAMP        JSR ENTER_CAMP
                 SEC
                 RTS
+;
+; Extract all mapped bits from map data into a
+;   contiguous buffer of just those bits.
+;
+SAVE_MAPPED     JSR PICK_VISITED
+                STX :VISITED_MOD1+1
+                STY :VISITED_MOD1+2
+                STX :VISITED_MOD2+1
+                STY :VISITED_MOD2+2
+                JSR PUSH_MAP_STATE
+                LDA #0
+                STA MAPPED_INDEX
+                STA MAP_FACE
+                STA MAP_X
+                STA MAP_Y
+                JSR COMPUTE_MAP_PTR
+                LDX #8
+                LDA #0
+                STA MAPPED_BITS
+:NEXT_ROW       LDY #0
+:NEXT_COLUMN    LDA (MAP_PTR),Y
+                LSR
+                ROL MAPPED_BITS
+                DEX
+                BNE :SAME_BYTE
+                LDX MAPPED_INDEX
+                LDA MAPPED_BITS
+:VISITED_MOD1   STA $FFFF,X
+                INX
+                STX MAPPED_INDEX
+                LDX #8
+                LDA #0
+                STA MAPPED_BITS
+:SAME_BYTE      INY
+                CPY MAP_SIZE
+                BNE :NEXT_COLUMN
+                JSR ADVANCE_ROW
+                BCC :NEXT_ROW
+:MAP_DONE       TXA
+                BEQ :EXIT
+:FLUSH          ASL MAPPED_BITS
+                DEX
+                BNE :FLUSH
+                LDX MAPPED_INDEX
+                LDA MAPPED_BITS
+:VISITED_MOD2   STA $FFFF,X
+                INX
+                STX MAPPED_INDEX
+:EXIT           JMP PULL_MAP_STATE
+;
+; Insert saved mapped bits from contiguous buffer into map data.
+;
+RESTORE_MAPPED  JSR PICK_VISITED
+                STX :VISITED_MOD+1
+                STY :VISITED_MOD+2
+                JSR PUSH_MAP_STATE
+                LDA #0
+                STA MAPPED_INDEX
+                STA MAP_FACE
+                STA MAP_X
+                STA MAP_Y
+                JSR COMPUTE_MAP_PTR
+                LDX #1
+:NEXT_ROW       LDY #0
+:NEXT_COLUMN    DEX
+                BNE :SAME_BYTE
+                LDX MAPPED_INDEX
+:VISITED_MOD    LDA $FFFF,X
+                STA MAPPED_BITS
+                INX
+                STX MAPPED_INDEX
+                LDX #8
+:SAME_BYTE      LDA (MAP_PTR),Y
+                LSR
+                ROL MAPPED_BITS
+                ROL
+                STA (MAP_PTR),Y
+                INY
+                CPY MAP_SIZE
+                BNE :NEXT_COLUMN
+                JSR ADVANCE_ROW
+                BCC :NEXT_ROW
+                JMP PULL_MAP_STATE
+
+PICK_VISITED    LDX SHELL
+                LDY :VISITED_H-1,X
+                LDA :VISITED_L-1,X
+                TAX
+                RTS
+
+:VISITED_L      DB <MAP_VISITED_17
+                DB <MAP_VISITED_15
+                DB <MAP_VISITED_13
+                DB <MAP_VISITED_11
+                DB <MAP_VISITED_9
+
+:VISITED_H      DB >MAP_VISITED_17
+                DB >MAP_VISITED_15
+                DB >MAP_VISITED_13
+                DB >MAP_VISITED_11
+                DB >MAP_VISITED_9
+
 
                 PUT DISPATCH
                 PUT ENCOUNTER

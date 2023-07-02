@@ -368,6 +368,39 @@ LOAD_MAP_DATA   LDY MAP_X
                 DEX
                 BNE :1
 :2              RTS
+;
+; Advance MAP_PTR to next row or start of next face.
+;   (Used by MAP.S and CONTROL.S)
+;
+ADVANCE_ROW     ENT
+                INC MAP_Y
+                LDA MAP_Y
+                CMP MAP_SIZE
+                BEQ :NEXT_FACE
+                LDA MAP_PTR
+                SEC                     ; MAP_SIZE + 1
+                ADC MAP_SIZE
+                STA MAP_PTR
+                BCS :1
+                RTS
+:1              INC MAP_PTR_H
+                CLC
+                RTS
+:NEXT_FACE      INC MAP_FACE
+                LDA MAP_FACE
+                CMP #6                  ;*** should use map data count instead
+                BEQ :MAP_DONE
+                LDA #0
+                STA MAP_Y
+                TXA
+                PHA
+                JSR COMPUTE_MAP_PTR
+                PLA
+                TAX
+                CLC
+                RTS
+:MAP_DONE       SEC
+                RTS
 
 MOVE_LEFT       JSR TURN_LEFT
                 JSR MOVE_FORWARD
