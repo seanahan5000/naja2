@@ -174,7 +174,9 @@ Xloaddata3      =   %00010000
 
 cellBlocked     =   %00100000
 
-cellWidth       =   15
+LeftSideGrid    =   1
+
+cellWidth       =   16
 cellHeight      =   11
 
 *-------------------------------
@@ -241,7 +243,7 @@ ALIEN_PTRS_H    DS  3
 TV_PTRS_L       DS  3
 TV_PTRS_H       DS  3
 
-AGRID_HALLS     DS  6                   ;|
+AGRID_HALLS     DS  6                   ;| 3 rows of hall left/right pairs
 CGRID_HALLS     DS  6                   ;|
 GRID_BITS       DS  10
 

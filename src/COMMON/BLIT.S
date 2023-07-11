@@ -9,7 +9,13 @@ SET_LINE_BOUNDS ENT
                 STA CLEAR_MOD_B+1
                 STA COPY_MOD_B+1
                 RTS
-
+;
+; On entry:
+;   X: line number (y coordinate)
+;
+; On exit:
+;   X,Y: unchanged
+;
 SET_SOURCE_LINE ENT
                 LDA LOBYTES,X
                 STA SCREENL

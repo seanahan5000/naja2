@@ -99,11 +99,11 @@ DRAW_PROF_TOPVIEW ENT
                 ; pixel positions in top view grid
 
 GRID_XPNTS      ENT
-                DB  cellWidth*0+8
-                DB  cellWidth*1+8
-                DB  cellWidth*2+8
-                DB  cellWidth*3+8
-                DB  cellWidth*4+8
+                DB  cellWidth*0+6
+                DB  cellWidth*1+6
+                DB  cellWidth*2+6
+                DB  cellWidth*3+6
+                DB  cellWidth*4+6
 
 AGRID_YPNTS     ENT
                 DB  cellHeight*0+73
@@ -213,11 +213,11 @@ GRID_CURSOR     DB  $31,$08
                 DB  %10000000
 
                 DB  %00000000
-                DB  %01000000
+                DB  %00000000
                 DB  %01111111
                 DB  %10000000
 
+                DB  %00000110
+                DB  %00000111
                 DB  %00000011
-                DB  %00000011
-                DB  %00000001
                 DB  %10000000

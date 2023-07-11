@@ -12,31 +12,31 @@ DOT_MASK        =   BLOCK_DATA
 
 A_DRAW_TABLES
 A_VLINE_Y1      DB  83,72-1
-A_VLINE_Y2      DB  127+1,83+1
-        do LEFT_SIDE_GRID
-A_VLINE_XI      DB  1,9
-A_HLINE_X1      DB  3,67,7
-A_HLINE_X2      DB  7,86,67
-        else
+A_VLINE_Y2      DB  127+1,83
+    do LeftSideGrid
+A_VLINE_XI      DB  0,9
+A_HLINE_X1      DB  1,70,3
+A_HLINE_X2      DB  4,86,71
+    else
 A_VLINE_XI      DB  3,11
 A_HLINE_X1      DB  3,82,21
 A_HLINE_X2      DB  22,86,83
-        fin
-A_HLINE_Y       DB  127,83
+    fin
+A_HLINE_Y       DB  127,82
 
 C_DRAW_TABLES
-C_VLINE_Y1      DB  127,171
+C_VLINE_Y1      DB  127,172
 C_VLINE_Y2      DB  171+1,183+7
-        do LEFT_SIDE_GRID
-C_VLINE_XI      DB  9,1
-C_HLINE_X1      DB  67,3,7
-C_HLINE_X2      DB  85,7,67
-        else
+    do LeftSideGrid
+C_VLINE_XI      DB  9,0
+C_HLINE_X1      DB  70,1,3
+C_HLINE_X2      DB  86,4,71
+    else
 C_VLINE_XI      DB  11,3
 C_HLINE_X1      DB  82,3,21
 C_HLINE_X2      DB  86,22,83
-        fin
-C_HLINE_Y       DB  127,171
+    fin
+C_HLINE_Y       DB  127,172
 
 VLINE_Y1        DS  2
 VLINE_Y2        DS  2
@@ -44,12 +44,6 @@ VLINE_XI        DS  2
 HLINE_X1        DS  3
 HLINE_X2        DS  3
 HLINE_Y         DS  2
-
-; TODO:
-;   - with and without grid
-;   - green or white walls
-;   - with or without extra boundaries?
-;   - with and without L/R shift
 
 
 SET_APOINTS     LDY #0
@@ -80,13 +74,13 @@ DRAW_GRID2      ENT
                 JSR GET_ADATA
                 JSR SET_APOINTS
                 LDX #0
-                LDY #4
+                LDY #5
                 JSR DRAW_GRID_DOTS
                 JSR DRAW_WALLS
 
                 JSR GET_CDATA
                 JSR SET_CPOINTS
-                LDX #5
+                LDX #6
                 LDY #11
                 JSR DRAW_GRID_DOTS
                 JSR DRAW_WALLS
@@ -94,13 +88,13 @@ DRAW_GRID2      ENT
                 JSR DRAW_DOTTED
 
                 JSR FIRST_CHAR
-:1              JSR DRAW_CHAR_TOPVIEW
+:2              JSR DRAW_CHAR_TOPVIEW
                 JSR NEXT_CHAR
-                BCC :1
+                BCC :2
                 RTS
 
 
-DRAW_WALLS      JSR SET_GREEN
+DRAW_WALLS      JSR SET_WHITE1
                 LDX #0
 :1              STX GINDEX
                 LDA GRID_HALLS,X
@@ -170,17 +164,19 @@ DRAW_VLINE      LDY INDEX3
                 TAY
 :1              JSR SET_SOURCE_LINE
                 LDA (SCREENL),Y
-                AND AND_BYTES,Y
                 ORA OR_BYTES,Y
                 STA (SCREENL),Y
+                INY
+                LDA (SCREENL),Y
+                ORA OR_BYTES,Y
+                STA (SCREENL),Y
+                DEY
                 INX
 :MOD            CPX #$FF
                 BNE :1
                 RTS
 
-AND_BYTES       HEX 00FE00FC00FB00F300EF009F
-OR_BYTES        HEX 000100010004000400100040
-
+OR_BYTES        HEX 180000000000000000000300
 
 DRAW_GRID_DOTS  STY :MOD+1
 :1              STX GINDEX
@@ -191,9 +187,12 @@ DRAW_GRID_DOTS  STY :MOD+1
                 BCC :2
                 DEX
 :2              LDA GRID_BITS,X
-                ASL
+                LSR
                 ORA GRID_BITS,X
-                EOR #%00111111
+                CPX #1
+                BCC :3
+                ORA GRID_BITS-1,X
+:3              EOR #%01111111
                 JSR DRAW_DOT_ROW
                 LDX GINDEX
                 INX
@@ -209,22 +208,41 @@ DRAW_DOT_ROW    STA DOT_MASK
                 LSR DOT_MASK
                 BCC :2
                 LDA (SCREENL),Y
-                ORA BIT_TABLE,X
+                ORA DOT_BITS,X
                 STA (SCREENL),Y
 :2              INX
                 CPX #6
                 BNE :1
                 RTS
 
-DOT_COLS        DB  1,3,5,7,9,11
+DOT_COLS        DB  0,3,5,7,9,12
 
-DRAW_DOTTED     LDX #127
+DOT_BITS        DB  %00100000
+                DB  %00000001
+                DB  %00000100
+                DB  %00010000
+                DB  %01000000
+                DB  %00000010
+
+
+DRAW_DOTTED     LDY #0
+                LDA #10
+                JSR :DOTTED_SUB
+                LDA GRID_BITS+4
+                AND GRID_BITS+5
+                AND #%00100000
+                BNE :2
+                LDY #10
+                LDA #12
+:DOTTED_SUB     STA :MOD1+1
+                LDX #127
                 JSR SET_SOURCE_LINE
-                LDY #11
 :1              LDA DOTTED_LINE,Y
+                ORA (SCREENL),Y
                 STA (SCREENL),Y
-                DEY
-                BPL :1
-                RTS
+                INY
+:MOD1           CPY #$FF
+                BNE :1
+:2              RTS
 
-DOTTED_LINE     HEX 001122440811224408112244
+DOTTED_LINE     HEX 081122440811224408112244

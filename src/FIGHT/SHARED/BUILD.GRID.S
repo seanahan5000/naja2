@@ -1,18 +1,10 @@
 
 A_BUILD_TABLES
-        do LEFT_SIDE_GRID
-A_GBITS_LRC     DB  0,%00010000,%00001111
-        else
-A_GBITS_LRC     DB  %00000001,0,%00011110
-        fin
+A_GBITS_LRC     DB  %00000001,%00100000,%00011110
 A_GBITS_OFF     DB  4,3,2,1,0
 
 C_BUILD_TABLES
-        do LEFT_SIDE_GRID
-C_GBITS_LRC     DB  %00010000,0,%00001111
-        else
-C_GBITS_LRC     DB  0,%00000001,%00011110
-        fin
+C_GBITS_LRC     DB  %00100000,%00000001,%00011110
 C_GBITS_OFF     DB  5,6,7,8,9
 
 GBITS_LRC       DS  3
@@ -59,8 +51,8 @@ SET_CDATA       LDY #6
                 BNE :1
                 RTS
 ;
-; mark squares that won't be accessible
-;   by clearing their XSIDE_MASK values
+; make squares accessible by clearing their XSIDE_MASK values
+;   (all XSIDE_MASKs were set by default in CAPTURE_HALLS)
 ;
 LIMIT_HALLS     LDX #2
 :1              LDY GRID_HALLS,X
@@ -71,15 +63,6 @@ LIMIT_HALLS     LDX #2
                 TYA
                 AND #XSIDE_MASK!$FF
                 STA GRID_HALLS,X
-
-                TYA
-                AND #XFRONT_MASK
-;               CMP #XFRONT_OPEN
-                BNE :2
-                LDA GRID_HALLS+2,X
-                AND #XSIDE_MASK!$FF
-                STA GRID_HALLS+2,X
-
 :2              INX
                 CPX #4
                 BNE :1
@@ -111,11 +94,15 @@ HIDE_WALLS      LDX #0
                 AND #SIDE_MASK          ; if SIDE is set
 ;               CMP #SIDE_OPEN
                 BEQ :2
+                TYA
+                AND #FRONT_MASK         ; and (FRONT is set
+;               CMP #FRONT_OPEN
+                BNE :11
                 LDA GRID_HALLS+2,X
-                AND #SIDE_MASK          ; and next.SIDE is set
+                AND #SIDE_MASK          ; or next.SIDE is set)
 ;               CMP #SIDE_OPEN
                 BEQ :2
-                TYA
+:11             TYA
                 AND #XFRONT_MASK!$FF    ;   then clear XFRONT
                 STA GRID_HALLS,X
 :2              INX
@@ -148,7 +135,7 @@ BUILD_GRIDBITS  LDY #0
 ;               CMP #XSIDE_OPEN
                 BEQ :2
                 TYA
-                ORA GBITS_LRC+0
+                ORA GBITS_LRC+0         ; set/fill left
                 TAY
 
 :2              LDA GRID_HALLS+1,X
@@ -156,7 +143,7 @@ BUILD_GRIDBITS  LDY #0
 ;               CMP #XSIDE_OPEN
                 BEQ :3
                 TYA
-                ORA GBITS_LRC+1
+                ORA GBITS_LRC+1         ; set/fill right
                 TAY
 :3
                 LDA GRID_HALLS-2,X
@@ -164,7 +151,7 @@ BUILD_GRIDBITS  LDY #0
 ;               CMP #FRONT_OPEN
                 BEQ :5
                 TYA
-                ORA GBITS_LRC+2
+                ORA GBITS_LRC+2         ; set/fill center bits
                 TAY
 
 :5              TYA

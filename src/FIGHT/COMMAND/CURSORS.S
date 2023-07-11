@@ -107,6 +107,16 @@ GRID_AIM        JSR INIT_AGRID_LEGAL
 ;---------------------------------------
 
 GRID_SELECT     STA WRAP_FLAG
+                ; make sure initial position is valid
+                LDX CURSOR
+:1              LDA AGRID_LEGAL,X
+                BEQ :2
+                INX
+                CPX #25
+                BNE :1
+                LDX #0
+                BEQ :1                  ; always
+:2              STX CURSOR
                 JSR DRAW_GCURSOR
                 BIT UNSTROB
                 JMP GRID_LOOP
@@ -249,13 +259,7 @@ WRAP_FLAG       DB  0
 
 *-------------------------------
 
-BOX_CURSOR      LDY #%01111110
-                LDX CURSOR
-                LDA MOD5,X
-                BNE :1
-                INY                     ; #%01111111
-:1              STY BOX_MOD
-
+BOX_CURSOR      LDX CURSOR
                 LDY MOD5,X
                 LDA GRID_XPNTS,Y
                 PHA
@@ -280,8 +284,8 @@ BOX_SHAPE       DB  $32,$00
                 DB  %01111111
                 DB  %10000000
 
-                DB  %00000001
-                DB  %10000010
+                DB  %00000011
+                DB  %10000100
 
                 DB  %00000001
                 DB  %00000001
@@ -297,11 +301,12 @@ BOX_MOD         DB  %01111110
                 DB  %01111111
                 DB  %10000000
 
-                DB  %00000010
-                DB  %00000010
-                DB  %00000010
-                DB  %00000010
-                DB  %00000001
+                DB  %00000100
+                DB  %00000100
+                DB  %00000100
+                DB  %00000100
+                DB  %00000011
+
                 DB  %10000000
 
 *-------------------------------
@@ -337,10 +342,13 @@ GROUP_CURSOR1   JSR POS_TO_XY
 
 *-------------------------------
 
-GROUP_SHAPE     DB  $22,$00
+GROUP_SHAPE     DB  $32,$00
 
                 DB  %11111111
+
                 DB  %11111111
+
+                DB  %10000001
 
                 DB  %01111111
                 DB  %01111110
@@ -348,8 +356,11 @@ GROUP_SHAPE     DB  $22,$00
                 DB  %10000000
 
                 DB  %01111111
+                DB  %01111111
                 DB  %00111111
-                DB  %00011111
+                DB  %10000000
+
+                DB  %00000001
                 DB  %10000000
 
 *-------------------------------

@@ -8,6 +8,10 @@ DRAW_ALIEN		ENT
 				JSR	POS_TO_XY
 				JSR MGRID_MOVETO
 
+				; TODO: remove once all topviews are updated to wide grid
+				LDX #1
+				JSR HMOVE
+
 				LDY	#monNUMBER
 				LDA	(MONS_PTR),Y
 				TAY

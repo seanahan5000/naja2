@@ -23,8 +23,6 @@ F_SHARED_FILE   DB  $00               ; no real file number
                 PUT TOPVIEWS
                 PUT MNAMES
 
-LEFT_SIDE_GRID  =   1
-
 GRID_HALLS      DS  6                   ; TODO: consider ZPAGE for this
 
                 PUT BUILD.GRID          ; TODO: move to loader?

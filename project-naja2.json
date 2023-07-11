@@ -173,6 +173,13 @@
       }
     },
     {
+      "name": "Grid2x3",
+      "array": {
+        "count": 6,
+        "width": 2
+      }
+    },
+    {
       "name": "2-bytes",
       "array": {
         "count": 2

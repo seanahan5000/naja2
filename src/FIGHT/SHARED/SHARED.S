@@ -14,6 +14,9 @@ INIT_CGRID      ENT
                 LDX #0
 :1              STX COUNT
                 LDA GRID_BITS+5,X
+        do LeftSideGrid
+                LSR
+        fin
                 STA MASK_BITS
                 LDX #0
 :2              LSR MASK_BITS
@@ -39,9 +42,6 @@ INIT_CGRID      ENT
 ;   A: 11 coordinate in character grid
 ;
 I25_TO_CPOS     ENT
-                LDA #$05
-
-
                 LDA MOD5,Y
                 ASL
                 ASL
@@ -80,6 +80,9 @@ INIT_AGRID      ENT
                 LDX #0
 :1              STX COUNT
                 LDA GRID_BITS+0,X
+        do LeftSideGrid
+                LSR
+        fin
                 STA MASK_BITS
                 LDX #0
 :2              LSR MASK_BITS
@@ -162,10 +165,12 @@ EZONE_VERT      DB  $12,$00
                 DB  %00000001
                 DB  %10000000
 
-EZONE_HORZ      DB  $21,$00
+EZONE_HORZ      DB  $31,$00
                 DB  %01111111
                 DB  %10000000
                 DB  %01111111
+                DB  %10000000
+                DB  %00000001
                 DB  %10000000
 
 *-------------------------------
