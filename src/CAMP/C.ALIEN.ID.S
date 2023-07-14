@@ -14,14 +14,7 @@ ImageCornerLeft   = 40-ImageCornerWidth
 ImageCornerTop    = 1
 ImageCornerHeight = 150
 
-; TODO: use DUMMY after code
-NAME_BUFFER     =   $8000
-DESC_BUFFER     =   $8500
-OFFSET_BUFFER   =   $8700
-ALIEN_COUNT     =   $8700
-OFFSET_TABLE    =   $8701
-KNOWN_LIST      =   $8800
-DATA_TABLE      =   $8900
+DATA_TABLE      =   $9000
 
 KNOWN_INDEX     =   $C0
 KNOWN_COUNT     =   $C1
@@ -64,10 +57,14 @@ ALIGNMENT       DS  72
 ; - vertically center description text
 
 IDENTIFIED_ALIENS
-                LDA #1
-                STA ALIEN_SET
+                LDX #0
+                LDA SHELL
+                CMP #3
+                BCC :0
+                INX
+:0              STX ALIEN_SET
 
-                LDA #$FF
+                LDA #0
                 STA DESC_BASE
 
                 LDA #state_missing
@@ -182,8 +179,13 @@ AKEY_LOOP       LDA KEYBRD
 
 :3              JSR CHECK_CANCEL
                 BNE AKEY_LOOP
-                ;*** return to main camp screen
-                RTS
+
+                JSR DRAW_PICT
+                PictSetPage2
+                PictCopyToPage
+                PictShowPage
+                PictEnd
+                RTS                     ; return to camp
 
 NO_KNOWN        JSR COMPOSITE_EMPTY
 ; TODO: make this GET_CANCEL in UTILS.S?
@@ -587,8 +589,11 @@ LOAD_DESC       JSR SET_DESC_FILE
                 STA DESC_BUFFER,X
                 INX
                 BNE :1
-                INC DESC_BASE
-                LDA DESC_BASE
+                LDX DESC_BASE
+                INX
+                STX DESC_BASE
+                INX
+                TXA
                 JSR SEEK_FILE
                 LDY #>DESC_BUFFER+$100
                 LDA #1                  ; one sector
@@ -639,11 +644,6 @@ DRAW_DESC       JSR DRAW_PICT
                 PictSetPage2
                 PictClear $01;153;$27;191
                 PictSetTextBox 7;155;277;191
-
-                ; PictTextIn (THIS_IS_A_TEST_OF_THE_EMERGENCY_BROADCAST_SYSTEM._THIS_IS_ONLY_A_TEST.)
-                ; PictTextIn (_THIS_IS_A_TEST_OF_THE_EMERGENCY_BROADCAST_SYSTEM._THIS_IS_ONLY_A_TEST.)
-                ; PictTextIn (_THIS_IS_A_TEST_OF_THE_EMERGENCY_BROADCAST_SYSTEM._THIS_IS_ONLY_A_TEST.)
-
                 PictEnd
                 JSR LOAD_DESC
                 JSR WRAP_TEXTBUF
@@ -857,3 +857,16 @@ ALIEN_NAME_LINES
                 DB  10*9+NameListTopY
                 DB  11*9+NameListTopY
                 ERR 12-MaxNameListCount
+
+                DS  \,$EE
+                ERR *-$A600
+
+                DUMMY *
+NAME_BUFFER     DS  $500
+DESC_BUFFER     DS  $200
+OFFSET_BUFFER
+ALIEN_COUNT     DS  1
+OFFSET_TABLE    DS  255
+KNOWN_LIST      DS  $100
+                ERR *-$AF00
+                DEND

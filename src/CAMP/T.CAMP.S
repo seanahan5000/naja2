@@ -459,7 +459,8 @@ TO_ALIENS       LDA #fileAlienId
                 BEQ :1
                 LDY #>ALIEN_ID_FILE
                 JSR LOAD_FILE
-:1              JMP IDENTIFIED_ALIENS
+:1              JSR IDENTIFIED_ALIENS
+                JMP RECAMP
 
 *-------------------------------
 

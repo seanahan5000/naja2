@@ -174,8 +174,6 @@ Xloaddata3      =   %00010000
 
 cellBlocked     =   %00100000
 
-LeftSideGrid    =   1
-
 cellWidth       =   16
 cellHeight      =   11
 

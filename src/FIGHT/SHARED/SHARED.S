@@ -14,9 +14,7 @@ INIT_CGRID      ENT
                 LDX #0
 :1              STX COUNT
                 LDA GRID_BITS+5,X
-        do LeftSideGrid
                 LSR
-        fin
                 STA MASK_BITS
                 LDX #0
 :2              LSR MASK_BITS
@@ -80,9 +78,7 @@ INIT_AGRID      ENT
                 LDX #0
 :1              STX COUNT
                 LDA GRID_BITS+0,X
-        do LeftSideGrid
                 LSR
-        fin
                 STA MASK_BITS
                 LDX #0
 :2              LSR MASK_BITS

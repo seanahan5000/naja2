@@ -1,7 +1,4 @@
 
-; GRID_HEIGHT     =   10
-; GRID_WIDTH      =   5
-
 IGRID_YPNTS     =   AGRID_YPNTS
 
 GINDEX          =   $C0
@@ -11,31 +8,19 @@ BLOCK_DATA      =   $C3
 DOT_MASK        =   BLOCK_DATA
 
 A_DRAW_TABLES
-A_VLINE_Y1      DB  83,72-1
-A_VLINE_Y2      DB  127+1,83
-    do LeftSideGrid
+A_VLINE_Y1      DB  83,71
+A_VLINE_Y2      DB  128,83
 A_VLINE_XI      DB  0,9
 A_HLINE_X1      DB  1,70,3
 A_HLINE_X2      DB  4,86,71
-    else
-A_VLINE_XI      DB  3,11
-A_HLINE_X1      DB  3,82,21
-A_HLINE_X2      DB  22,86,83
-    fin
 A_HLINE_Y       DB  127,82
 
 C_DRAW_TABLES
 C_VLINE_Y1      DB  127,172
-C_VLINE_Y2      DB  171+1,183+7
-    do LeftSideGrid
+C_VLINE_Y2      DB  172,190
 C_VLINE_XI      DB  9,0
 C_HLINE_X1      DB  70,1,3
 C_HLINE_X2      DB  86,4,71
-    else
-C_VLINE_XI      DB  11,3
-C_HLINE_X1      DB  82,3,21
-C_HLINE_X2      DB  86,22,83
-    fin
 C_HLINE_Y       DB  127,172
 
 VLINE_Y1        DS  2
@@ -93,7 +78,6 @@ DRAW_GRID2      ENT
                 BCC :2
                 RTS
 
-
 DRAW_WALLS      JSR SET_WHITE1
                 LDX #0
 :1              STX GINDEX
@@ -135,14 +119,12 @@ DRAW_WALLS      JSR SET_WHITE1
                 BNE :1
                 RTS
 
-
 DRAW_HLINE_C    LDX INDEX3
                 LDY HLINE_Y,X
                 LDX HLINE_X1+2
                 JSR MOVE_TO
                 LDX HLINE_X2+2
                 JMP HLINE_TO
-
 
 DRAW_HLINE_LR   LDX INDEX3
                 LDY HLINE_Y,X
@@ -153,7 +135,6 @@ DRAW_HLINE_LR   LDX INDEX3
                 LDY LEFT_RIGHT
                 LDX HLINE_X2,Y
                 JMP HLINE_TO
-
 
 DRAW_VLINE      LDY INDEX3
                 LDX VLINE_Y1-1,Y
@@ -223,7 +204,6 @@ DOT_BITS        DB  %00100000
                 DB  %00010000
                 DB  %01000000
                 DB  %00000010
-
 
 DRAW_DOTTED     LDY #0
                 LDA #10
