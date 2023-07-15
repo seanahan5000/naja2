@@ -55,7 +55,7 @@ GET_CDATA       LDY #6
                 BNE :1
                 RTS
 
-DRAW_GRID2      ENT
+DRAW_GRID       ENT
                 JSR GET_ADATA
                 JSR SET_APOINTS
                 LDX #0
@@ -70,13 +70,16 @@ DRAW_GRID2      ENT
                 JSR DRAW_GRID_DOTS
                 JSR DRAW_WALLS
 
-                JSR DRAW_DOTTED
+                JMP DRAW_DOTTED
 
-                JSR FIRST_CHAR
-:2              JSR DRAW_CHAR_TOPVIEW
-                JSR NEXT_CHAR
-                BCC :2
-                RTS
+DRAW_GRID_WALLS ENT
+                JSR GET_ADATA
+                JSR SET_APOINTS
+                JSR DRAW_WALLS
+
+                JSR GET_CDATA
+                JSR SET_CPOINTS
+;               JMP DRAW_WALLS
 
 DRAW_WALLS      JSR SET_WHITE1
                 LDX #0

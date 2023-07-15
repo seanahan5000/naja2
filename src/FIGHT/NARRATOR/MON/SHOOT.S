@@ -27,12 +27,8 @@ MON_SHOOT       LDA #0              ;Normal blaster
                 SBC TEMP
                 SEC
                 SBC #$2D
-
-                ; A: Y coord
-                ; X: X coord low
-                ; Y: X coord high
-                LDY #0
-                JSR HPOSN
+                TAY
+                JSR SET_SHOT_START
 
                 LDY #aBlastDamage
                 LDA (ALIEN_PTR),Y
@@ -246,6 +242,6 @@ MSHOOT_GRID     JSR DRAW_SHOOTBOX
                 JSR DRAW_OVAL
 :5              JSR NEXT_CHAR
                 BCC :4
-                JMP COPY_SHOTGRID
+                JMP COPY_SHOTGRID1
 
 *-------------------------------

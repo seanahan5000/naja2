@@ -230,6 +230,13 @@ CAPTURE_CGRID   LDX #$18
 
 *-------------------------------
 
+REDRAW_CGRID    LDX #24
+                LDA #0
+:1              STA OLD_CGRID,X
+                DEX
+                BPL :1
+                ; fall through
+
 UPDATE_CGRID    LDX #0
 :1              STX COUNT
                 LDA OLD_CGRID,X

@@ -44,13 +44,8 @@ CHR_SHOOT       JSR GET_EP_ENUSE    ;Get EL,PH_DAMAGEL,H and ENERGY_L,H
                 CLC
                 ADC XCOORD
                 TAX
-
-                ; A: Y coord
-                ; X: X coord low
-                ; Y: X coord high
-                LDY #0
-                LDA YCOORD
-                JSR HPOSN           ;Set source coordinate
+                LDY YCOORD
+                JSR SET_SHOT_START
 
 * Get destination coordinate for shot, using
 *   +/- AIM * 2 for a randomizing factor
@@ -146,7 +141,7 @@ MAKE_CHITGRID   JSR DRAW_SHOOTBOX
                 PLA
                 STA CHAR_NUMBER
                 JSR SET_CHAR            ;Restore CHARDL,H to shooting char
-                JMP COPY_SHOTGRID
+                JMP COPY_SHOTGRID1
 
 *-------------------------------
 *

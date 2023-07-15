@@ -1,4 +1,15 @@
 
+DRAW_ALLMONS    ENT
+				JSR FIRST_MONSTER
+:1              LDY #monSTATUS
+                LDA (MONS_PTR),Y
+                CMP #dead
+                BEQ :2
+                JSR DRAW_ALIEN
+:2              JSR NEXT_MONSTER
+                BCC :1
+                RTS
+
 DRAW_ALIEN		ENT
 
 				LDY	#monPOSITION

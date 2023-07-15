@@ -121,16 +121,16 @@ FIGHT_SCREEN    JSR DRAW_PICT
                 PictMoveTo $CB;$48
                 PictLineTo $CB;$7E
                 PictEnd
-                JSR DRAW_GRID2
+
+                JSR DRAW_GRID
+                JSR FIRST_CHAR
+:1              JSR DRAW_CHAR_TOPVIEW
+                JSR NEXT_CHAR
+                BCC :1
+
                 JSR DRAW_ALLMONS
                 JSR DRAW_MNAMES
                 JMP DRAW_STATS_BOX
-
-DRAW_ALLMONS    JSR FIRST_MONSTER
-:1              JSR DRAW_ALIEN
-                JSR NEXT_MONSTER
-                BCC :1
-                RTS
 
 ;---------------------------------------
 

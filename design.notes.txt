@@ -83,6 +83,8 @@ X Scroll through individuals in camp with <- and -> arrows
         * Consider making this controllable from the topview itself
         * (Depends on where the "body" of the alien is)
     * Animate image generator images instead of just drawing every other line
+    * Give each shooting alien a shot source location (or two for left/right)
+    * Give each alien a body core offset to point name at and take shots
 * Shorten max alien name length?
     * Adds space in fight screens and alien info
 

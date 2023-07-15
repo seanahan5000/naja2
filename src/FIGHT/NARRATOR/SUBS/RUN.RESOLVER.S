@@ -39,10 +39,11 @@ OPEN_FRONTS     JSR MONS_OPENROWS
 *
 *-------------------------------
 
+topLine         =   71
+bottomLine      =   190
+
 RUN_RESOLVER    JSR MRUN_DECIDER
-                JSR EOR_GRID_DOTS
-                JSR COPY_GRID
-                JSR ERASE_MNAMES
+                JSR RUN_BEGIN
 
                 LDX MOFFSET         ;Calc MONS_GAP and MSRC_BOT
                 JSR TIMES_CELL_HEIGHT
@@ -142,10 +143,10 @@ BOTH_RETREAT
                 BEQ :1
                 JSR RUN_UPDATE
                 LDA MDST_BOT
-                CMP #71
+                CMP #topLine
                 BEQ :2
                 LDA CDST_TOP
-                CMP #183
+                CMP #bottomLine
                 BNE :1
 :2              LDA #%10000000
                 STA GROUP_STATUS
@@ -177,7 +178,7 @@ C_CHASE_M
                 LDA MONS_GAP
                 BEQ MONS_CAUGHT
                 LDA MDST_BOT
-                CMP #71
+                CMP #topLine
                 BNE :1
 
 MONS_AWAY       LDA #2
@@ -216,8 +217,7 @@ MONS_CAUGHT     LDA #2
 
 *-------------------------------
 
-M_CHASE_C
-                LDA #2
+M_CHASE_C       LDA #2
                 STA C_HEADSTART
 :1              JSR C_BACKWARD
                 JSR M_FORWARD
@@ -226,7 +226,7 @@ M_CHASE_C
                 LDA CHAR_GAP
                 BEQ CHAR_CAUGHT
                 LDA CDST_TOP
-                CMP #183
+                CMP #bottomLine
                 BNE :1
 
 CHAR_AWAY       LDA #2
@@ -398,6 +398,20 @@ CMODDS_SUB      LDX TEMP
 *
 *-------------------------------
 
+RUN_BEGIN       JSR ERASE_MNAMES
+                JSR DRAW_PICT
+                PictSetPage2
+                PictClear 0;70;13;192
+                PictSetGreen
+                PictMoveTo 89;71
+                PictLineTo 89;191
+                PictCall REDRAW_CGRID
+                PictCall DRAW_ALLMONS
+                PictSetPage1
+                PictCopyTo 0;70;13;192
+                PictEnd
+                RTS
+
 RUN_CONCLUDE
 :1              LDA DIVIDER_Y       ;Move divider back to center of grid
                 CMP #127
@@ -443,7 +457,19 @@ RUN_CONCLUDE
                 ORA MOFFSET
                 BEQ :8
                 JSR DRAW_MNAMES
-:8              JMP EOR_GRID_DOTS
+:8              JSR DRAW_PICT
+                PictSetPage2
+                PictClear 0;70;13;192
+                PictSetGreen
+                PictMoveTo 89;71
+                PictLineTo 89;191
+                PictCall DRAW_GRID
+                PictCall REDRAW_CGRID
+                PictCall DRAW_ALLMONS
+                PictSetPage1
+                PictCopyTo 0;70;13;192
+                PictEnd
+                RTS
 
 *-------------------------------
 *
@@ -486,11 +512,11 @@ FAST_UPDATE     LDA CDST_TOP        ;Current top and bottom lines
 
 MONS_MOVED      LDA MSRC_BOT
                 SEC
-                SBC #72
+                SBC #topLine+1
                 STA TEMP
                 LDA MDST_BOT
                 SEC
-                SBC #72
+                SBC #topLine+1
                 CMP TEMP
                 BCS :1
                 STA TEMP
@@ -505,13 +531,13 @@ MONS_MOVED      LDA MSRC_BOT
                 JSR MONS_MOVER
                 PLA
                 SEC
-                SBC #72
+                SBC #topLine+1
                 BEQ :5
-                LDX #72
+                LDX #topLine+1
                 JMP EMPTY_LINES
 
 :3              LDA MDST_BOT
-                CMP #72
+                CMP #topLine+1
                 BCC :4
                 JSR MONS_MOVER      ;Monster grid moves upward
 :4              LDA DIVIDER_Y
@@ -525,11 +551,11 @@ MONS_MOVED      LDA MSRC_BOT
 :5              RTS
 
 
-CHAR_MOVED      LDA #182
+CHAR_MOVED      LDA #bottomLine-1
                 SEC
                 SBC CSRC_TOP
                 STA TEMP
-                LDA #182
+                LDA #bottomLine-1
                 SEC
                 SBC CDST_TOP
                 CMP TEMP
@@ -543,7 +569,7 @@ CHAR_MOVED      LDA #182
                 BMI :3
 
                 LDA CDST_TOP
-                CMP #183
+                CMP #bottomLine
                 BCS :2
                 JSR CHAR_MOVER      ;Move character grid downward
 :2              LDA CDST_TOP
@@ -560,7 +586,7 @@ CHAR_MOVED      LDA #182
                 PLA
                 TAX
                 STA TEMP
-                LDA #182
+                LDA #bottomLine-1
                 SEC
                 SBC TEMP
                 BEQ :5
@@ -583,23 +609,7 @@ MONS_MOVER      LDA MSRC_BOT
                 SBC TEMP
                 STA TEMP+1
                 INC TEMP
-                JSR CM_MOVER
-                ; fall through
-
-DRAW_DIVIDER    TXA
-                PHA
-                LDX DIVIDER_Y
-                JSR SET_DEST_LINE
-                LDX #127
-                JSR SET_SOURCE_OFF
-                LDY #11
-:1              LDA (SCREENL),Y
-                STA (DESTINL),Y
-                DEY
-                BNE :1
-                PLA
-                TAX
-                RTS
+                JMP CM_MOVER
 
 *-------------------------------
 * TEMP = number of lines to move
@@ -609,7 +619,6 @@ CHAR_MOVER      INC TEMP
                 LDX CSRC_TOP
                 LDA CDST_TOP
                 STA TEMP+1
-                JSR DRAW_DIVIDER
                 ; fall through
 
 CM_MOVER        JSR SET_SOURCE_OFF
@@ -618,14 +627,7 @@ CM_MOVER        JSR SET_SOURCE_OFF
                 STA DESTINL
                 LDA HIBYTES,Y
                 STA DESTINH
-
-                LDY #1
-                LDA (SCREENL),Y
-                EOR (DESTINL),Y
-                AND #$FE
-                EOR (DESTINL),Y
-                STA (DESTINL),Y
-                INY
+                LDY #0
 :1              LDA (SCREENL),Y
                 STA (DESTINL),Y
                 INY
@@ -643,11 +645,7 @@ CM_MOVER        JSR SET_SOURCE_OFF
 
 EMPTY_LINES     STA TEMP
 :1              JSR SET_SOURCE_LINE
-                LDY #1
-                LDA (SCREENL),Y
-                AND #$01
-                STA (SCREENL),Y
-                INY
+                LDY #0
                 LDA #$00
 :2              STA (SCREENL),Y
                 INY
@@ -657,87 +655,6 @@ EMPTY_LINES     STA TEMP
                 DEC TEMP
                 BNE :1
                 RTS
-
-*-------------------------------
-*
-*-------------------------------
-
-COPY_GRID       LDX #71
-:1              JSR SET_SOURCE_LINE
-                JSR SET_DEST_OFF
-                LDY #12
-:2              LDA (SCREENL),Y
-                STA (DESTINL),Y
-                DEY
-                BPL :2
-                INX
-                CPX #190
-                BNE :1
-                RTS
-
-*-------------------------------
-*
-*-------------------------------
-
-EOR_GRID_DOTS   LDA #72
-                STA TEMP
-                LDA #0
-                STA TEMP+1
-:1              LDX #4
-:2              TXA
-                CLC
-                ADC TEMP+1
-                TAY
-                ;
-                ; skip removing dots in the middle of large topviews
-                ;
-                LDA AGRID_MAIN,Y
-                BPL :3
-                EOR AGRID_MAIN+6,Y
-                AND #%10111111
-                BEQ :4
-:3              LDY TEMP
-                JSR EOR_DOT
-:4              LDA TEMP
-                CLC
-                ADC #55
-                TAY
-                JSR EOR_DOT
-                DEX
-                BPL :2
-                LDA TEMP+1
-                CLC
-                ADC #5
-                STA TEMP+1
-                LDA TEMP
-                CLC
-                ADC #11
-                STA TEMP
-                CMP #138
-                BNE :1
-                RTS
-
-*-------------------------------
-* X = 0 to 4 coordinate
-* Y = Screen Y coordinate
-*-------------------------------
-
-EOR_DOT         LDA LOBYTES,Y
-                STA SCREENL
-                LDA HIBYTES,Y
-                STA SCREENH
-                LDY XTABLE,X
-                LDA (SCREENL),Y
-                EOR STABLE,X
-                STA (SCREENL),Y
-                RTS
-
-XTABLE          DB  3,5,7,9,11
-STABLE          DB  %00000010
-                DB  %00000100
-                DB  %00001000
-                DB  %00010000
-                DB  %00100000
 
 *-------------------------------
 

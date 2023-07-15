@@ -74,7 +74,7 @@ CGRID_MOVETO    ENT
                 TAY
                 JMP MOVE_TO
 
-DRAW_CHAR_TOPVIEW
+DRAW_CHAR_TOPVIEW ENT
                 JSR CPOS_TO_XY
                 JSR CGRID_MOVETO
 DRAW_PROF_TOPVIEW ENT
@@ -104,14 +104,15 @@ GRID_XPNTS      ENT
                 DB  cellWidth*2+6
                 DB  cellWidth*3+6
                 DB  cellWidth*4+6
-
+;
+; NOTE: assumed to be sequential and contiguous
+;
 AGRID_YPNTS     ENT
                 DB  cellHeight*0+73
                 DB  cellHeight*1+73
                 DB  cellHeight*2+73
                 DB  cellHeight*3+73
                 DB  cellHeight*4+73
-
 CGRID_YPNTS     ENT
                 DB  cellHeight*0+128
                 DB  cellHeight*1+128

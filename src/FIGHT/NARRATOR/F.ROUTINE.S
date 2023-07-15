@@ -32,16 +32,6 @@ CLRLOOP         STA (SCREENL),Y
                 BNE CLOOP2
                 RTS
 
-; XYTEXT          PHA
-;                 LDY CHAR_NUMBER
-;                 LDA YPOINTS,Y
-;                 STA YPNT
-;                 PLA
-;                 JSR DOXY2
-;                 LDX #$71
-;                 LDY YPNT
-;                 JMP DRAW_TEXTBUF_XY
-
 COMCALC         TAX
                 ASL
                 ASL
@@ -302,48 +292,3 @@ MAXCUTS         DB  $16,$33,$50
                 DB  $66,$82,$FF
 TMUNITS         DB  $36,$18,$12
                 DB  $09,$07,$06
-
-; TEXTER          TYA
-;                 ASL
-;                 TAY
-;                 LDA TEXTS,Y
-;                 STA POINTL
-;                 LDA TEXTS+1,Y
-;                 STA POINTH
-;                 JMP TEXTOUT
-
-; TEXTS           DW  TDELMOD
-;                 DW  TSPAMOD
-;                 DW  OPEN_TEXT       ;In Running code
-
-; TDELMOD         PLOTAT  210;75;(DELAY_MODE)
-;                 PLOTAT  207;109;(<SPACE>_FOR)
-;                 PLOTAT  213;117;(STEP_MODE)+
-
-; TSPAMOD         PLOTAT  213;75;(STEP_MODE)
-;                 PLOTAT  225;85;(PRESS)
-;                 PLOTAT  219;93;(<SPACE>)
-;                 PLOTAT  207;109;(<RETRN>_FOR)
-;                 PLOTAT  210;117;(DELAY_MODE)+
-
-DRAW_SHOOTBOX   JSR DRAW_PICT
-                PictSetPage2
-                PictClear 0;64;40;192
-                PictSetWhite1
-                PictRect $07;$47;$55;$B7
-                PictMoveTo $06;$47
-                PictLineTo $06;$B7
-                PictMoveTo $56;$47
-                PictLineTo $56;$B7
-                PictMoveTo $59;$47
-                PictLineTo $59;$B7
-                PictMoveTo $00;$40
-                PictLineTo $00;$46
-                PictMoveTo $01;$46
-                PictLineTo $01;$40
-                PictLineTo $5B;$40
-                PictLineTo $5B;$46
-                PictMoveTo $5C;$40
-                PictLineTo $5C;$46
-                PictEnd
-                RTS

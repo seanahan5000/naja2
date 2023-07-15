@@ -480,8 +480,7 @@ ZONE            LDA CURSOR_UL
                 LDX #$FF                ; lower-right
 :ZONE_SUB       STA CURSOR
                 STX EZONE_FLAG
-                JSR EZONE_CURSOR
-                JMP CLEAN_FRONT
+                JMP EZONE_CURSOR
 
 *-------------------------------
 
