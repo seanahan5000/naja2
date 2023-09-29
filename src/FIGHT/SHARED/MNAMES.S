@@ -168,9 +168,9 @@ DRAW_MNAME      TYA
                 JMP DRAW_TEXTBUF_X
 :5              RTS
 
-MONSTER_NAMES   USR (UNKNOWN)=
-                USR (ALIEN)=
-                USR (ROBOT)=
+MONSTER_NAMES   TXI "UNKNOWN"
+                TXI "ALIEN"
+                TXI "ROBOT"
 
 DRAW_SMALL_ARROW
                 LDX #<SMALL_ARROW

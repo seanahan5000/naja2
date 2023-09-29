@@ -420,18 +420,18 @@ DRAW_MODE_MSG   JSR DRAW_PICT
                 LDA DELAY_MODE
                 BNE :1
                 JSR DRAW_PICT
-                PictTextAt 210;75;(DELAY_MODE)
-                PictTextAt 207;109;(<SPACE>_FOR)
-                PictTextAt 213;117;(STEP_MODE)
+                PictTextAt 210;75;"DELAY MODE"
+                PictTextAt 207;109;"<SPACE> FOR"
+                PictTextAt 213;117;"STEP MODE"
                 PictEnd
                 RTS
 
 :1              JSR DRAW_PICT
-                PictTextAt 213;75;(STEP_MODE)
-                PictTextAt 225;85;(PRESS)
-                PictTextAt 219;93;(<SPACE>)
-                PictTextAt 207;109;(<RETRN>_FOR)
-                PictTextAt 210;117;(DELAY_MODE)
+                PictTextAt 213;75;"STEP MODE"
+                PictTextAt 225;85;"PRESS"
+                PictTextAt 219;93;"<SPACE>"
+                PictTextAt 207;109;"<RETRN> FOR"
+                PictTextAt 210;117;"DELAY MODE"
                 PictEnd
                 RTS
 

@@ -112,6 +112,6 @@ ENUDATE         BIT FLIPPED_FLAG
                 JSR DRAW_TEXTBUF_XY
                 JMP SET_PAGE1
 
-MINUS_TEXT      USR (_MINUS)
+MINUS_TEXT      TXT " MINUS"
 
 *-------------------------------

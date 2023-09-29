@@ -45,7 +45,7 @@ GRPNUMB         DB  6           ; $BCFF ; number of living characters in group
 
                 ERR $BD00-*
 
-CHAR_0          USR (BLASTER___)-
+CHAR_0          TXC "BLASTER___"
                 DFB healthy         ;healthy
                 HEX 0001            ;Level
                 DFB warrior*16+deneb
@@ -107,7 +107,7 @@ CHAR_0          USR (BLASTER___)-
                 HEX EE
                 HEX 00              ;Misc
 
-CHAR_1          USR (ETRON_____)-
+CHAR_1          TXC "ETRON_____"
                 DFB healthy
                 HEX 0040            ;Level
                 DFB robot*16+none
@@ -169,7 +169,7 @@ CHAR_1          USR (ETRON_____)-
                 HEX EE
                 HEX 00              ;Misc
 
-CHAR_2          USR (ELECTRODE_)-
+CHAR_2          TXC "ELECTRODE_"
                 DFB healthy
                 HEX 0001            ;Level
                 DFB juicer*16+orn
@@ -231,7 +231,7 @@ CHAR_2          USR (ELECTRODE_)-
                 HEX EE
                 HEX 00              ;Misc
 
-CHAR_3          USR (RELAYER___)-
+CHAR_3          TXC "RELAYER___"
                 DFB healthy
                 HEX 0001            ;Level
                 DFB android*16+xxtys
@@ -293,7 +293,7 @@ CHAR_3          USR (RELAYER___)-
                 HEX EE
                 HEX 00              ;Misc
 
-CHAR_4          USR (CYBORG____)-
+CHAR_4          TXC "CYBORG____"
                 DFB healthy
                 HEX 0001            ;Level
                 DFB cybernate*16+stilicx
@@ -355,7 +355,7 @@ CHAR_4          USR (CYBORG____)-
                 HEX EE
                 HEX 00              ;Misc
 
-CHAR_5          USR (BLADE_____)-
+CHAR_5          TXC "BLADE_____"
                 DFB healthy
                 HEX 0001            ;Level
                 DFB physician*16+stilicx

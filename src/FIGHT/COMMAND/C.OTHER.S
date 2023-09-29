@@ -11,7 +11,7 @@ OTHER           JSR OTHER_SUB
                 PHA
                 JSR CLEAR_CANCEL_IN
                 JSR DRAW_PICT
-                PictTextAt 114;152;(SEE_WHOSE_FIGHTING_PLAN?)
+                PictTextAt 114;152;"SEE WHOSE FIGHTING PLAN?"
                 PictEnd
                 PLA
                 JSR SELECT_CHAR
@@ -22,8 +22,8 @@ OTHER           JSR OTHER_SUB
                 JSR CLEAR_WTIME
                 JSR DOCOM3
                 JSR DRAW_PICT
-                PictTextAt 107;152;(<SPACE>)
-                PictTextAt 104;162;(TO_LEAVE)
+                PictTextAt 107;152;"<SPACE>"
+                PictTextAt 104;162;"TO LEAVE"
                 PictEnd
 :KEYLOOP         JSR SPACE_WAIT
                 BCC :KEYLOOP

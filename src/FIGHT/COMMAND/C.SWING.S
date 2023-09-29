@@ -3,7 +3,7 @@ SWING_X         DB  0                   ; TODO: move to per-command ZPAGE
 
 SWING           JSR CLEAR_CANCEL_IN
                 JSR DRAW_PICT
-                PictTextAt 111;133;(SWING_WITH_WHICH_HAND/S?)
+                PictTextAt 111;133;"SWING WITH WHICH HAND/S?"
                 PictEnd
 
                 LDX PLANNER
@@ -73,11 +73,11 @@ NONWHIP_SWING   JSR PICK_SWING
                 DEX
                 BNE :1
                 JSR DRAW_PICT
-                PictTextAt 117;142;(SWING_AT_WHICH_SQUARE?)
+                PictTextAt 117;142;"SWING AT WHICH SQUARE?"
                 PictEnd
                 BNE :2                  ; always
 :1              JSR DRAW_PICT
-                PictTextAt 114;142;(THRUST_AT_WHICH_SQUARE?)
+                PictTextAt 114;142;"THRUST AT WHICH SQUARE?"
                 PictEnd
 :2              JSR PICK_OF_3
                 JSR DRAW_PICT
@@ -94,9 +94,9 @@ SWING_COMMON    STY DEBOXMOD+1
                 BEQ :SKIPA
                 JSR SWING_BOX_Y
 :SKIPA          JSR DRAW_PICT
-                PictTextAt 120;132;(SWING_HOW_MANY_TIMES?)
-                PictTextAt 125;143;(=)
-                PictTextAt 141;143;(OF_SWINGS:)
+                PictTextAt 120;132;"SWING HOW MANY TIMES?"
+                PictTextAt 125;143;"="
+                PictTextAt 141;143;"OF SWINGS:"
                 PictEnd
                 LDX #$7F
                 LDY #$8F
@@ -234,10 +234,10 @@ PICK_OF_3       JSR INIT_AGRID_LEGAL
 *-------------------------------
 
 PICK_SWING      JSR DRAW_PICT
-                PictTextAt 111;134;(USE_WHICH_TYPE_OF_SWING?)
-                PictTextAt 150;147;(HORIZONTAL)
-                PictTextAt 150;157;(VERTICAL)
-                PictTextAt 150;167;(THRUST)
+                PictTextAt 111;134;"USE WHICH TYPE OF SWING?"
+                PictTextAt 150;147;"HORIZONTAL"
+                PictTextAt 150;157;"VERTICAL"
+                PictTextAt 150;167;"THRUST"
                 PictEnd
                 LDX #<SWING_CDEF
                 LDY #>SWING_CDEF

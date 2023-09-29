@@ -3,8 +3,8 @@ COMPRESS		CLC
 				BCS	:HAS_ENERGY
 
 				JSR DRAW_PICT
-				PictTextAt 171;62;(NOT_ENOUGH_ENERGY)
-				PictTextAt 195;71;(TO_USE_IT)
+				PictTextAt 171;62;"NOT ENOUGH ENERGY"
+				PictTextAt 195;71;"TO USE IT"
 				PictEnd
 				JMP :SPACE_EXIT
 
@@ -16,13 +16,13 @@ COMPRESS		CLC
 				PictMoveTo 171;60
 				PictCall DRAW_TRIMMED_NAME
 				; NOTE: not enough space for period at end
-				PictText (_HAS_NO)
-				PictTextAt 171;68;(ROOM_TO_CARRY_A)
-				PictTextAt 171;76;(COMPRESSED_PERSON)
+				PictText "_HAS_NO"
+				PictTextAt 171;68;"ROOM TO CARRY A"
+				PictTextAt 171;76;"COMPRESSED PERSON"
 				PictEnd
 
 :SPACE_EXIT		JSR DRAW_PICT
-				PictTextAt 201;87;(<SPACE>)
+				PictTextAt 201;87;"<SPACE>"
 				PictCall GET_SPACE_ENTER
 				PictClear 24;50;39;104
 				PictEnd
@@ -32,8 +32,8 @@ COMPRESS		CLC
 				JSR	BIG_STATS_BOX
 
 				JSR DRAW_PICT
-				PictTextAt 180;84;(USE_COMPRESSOR)
-				PictTextAt 198;93;(ON_WHOM?)
+				PictTextAt 180;84;"USE COMPRESSOR"
+				PictTextAt 198;93;"ON WHOM?"
 				PictEnd
 
 				JSR	RESET_CHRLIST
@@ -58,14 +58,14 @@ COMPRESS		CLC
 
 				JSR DRAW_PICT
 				PictClear 2;70;8;77
-				PictTextAt 10;70;(>>>HAS_UNCOMPRESSABLE_EQUIPMENT<<<__<SPACE>)
+				PictTextAt 10;70;">>>HAS UNCOMPRESSABLE EQUIPMENT<<<  <SPACE>"
 				PictEnd
 				JSR	GET_SPACE_ENTER
 				JMP HIDE_BIG_STATS      ; return back to C.ISTATS.S
 
 :CAN_COMPRESS	JSR DRAW_PICT
 				PictClear 2;70;8;77
-				PictTextAt 25;70;(PRESS_<SPACE>_TO_VERIFY__<C>_TO_CANCEL)
+				PictTextAt 25;70;"PRESS <SPACE> TO VERIFY  <C> TO CANCEL"
 				PictEnd
 
 				BIT	UNSTROB

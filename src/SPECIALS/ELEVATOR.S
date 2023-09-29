@@ -31,8 +31,8 @@ ELEVATOR_CMN    STA FLAG_345
                 PictEnd
 :0              JSR DRAW_PICT
                 PictImage PANEL
-                PictTextAt 140;80;(PRESS)
-                PictTextAt 122;88;(SHELL-NUMBER)
+                PictTextAt 140;80;"PRESS"
+                PictTextAt 122;88;"SHELL-NUMBER"
                 PictEnd
                 LDA FLAG_345
                 BNE :1

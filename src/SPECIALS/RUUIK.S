@@ -20,11 +20,11 @@ RUUIK           JSR DRAW_PICT
                 PictClearPage
                 PictSetBlue
                 PictRect $36;$00;$E2;$27
-                PictTextAt 60;3;()-
-                USR (I_AM_RUUIK,_SUPREME_EMPEROR\n)-
-                USR (OF_THIS_PLANET._DO_YOU_SEEK\n)-
-                USR (THE_SECRET_CODE_NUMBER_TO\n)-
-                USR (THE_GREEN_NET_BARRIERS?_)
+                PictTextAt_ 60;3
+                TXC "I AM RUUIK, SUPREME EMPEROR\n"
+                TXC "OF THIS PLANET. DO YOU SEEK\n"
+                TXC "THE SECRET CODE NUMBER TO\n"
+                TXT "THE GREEN NET BARRIERS? "
                 PictSwap $07;$00;$21;$2A
                 PictSetPage2
                 PictEnd
@@ -45,9 +45,9 @@ NOWANT          JSR DRAW_PICT
 YESWANT         JSR DRAW_PICT
                 PictImage RU_HAND_DOWN
                 PictClear $08;$01;$20;$27
-                PictTextAt 60;3;()-
-                USR (IN_EXCHANGE_FOR_THE_CODE,_I\n)-
-                USR (DEMAND_FOUR_LIGHT_RIFLES.)
+                PictTextAt_ 60;3
+                TXC "IN EXCHANGE FOR THE CODE, I\n"
+                TXT "DEMAND FOUR LIGHT RIFLES."
                 PictEnd
 
                 JSR RIFLER
@@ -56,9 +56,9 @@ YESWANT         JSR DRAW_PICT
                 BNE CSCREEN
 
 BSCREEN         JSR DRAW_PICT
-                PictTextAt 60;21;()-
-                USR (SINCE_YOU_DON'T_HAVE_THEM,\n)-
-                USR (I_SUGGEST_YOU_GO_GET_SOME!)
+                PictTextAt_ 60;21
+                TXC "SINCE YOU DON'T HAVE THEM,\n"
+                TXT "I SUGGEST YOU GO GET SOME!"
                 PictEnd
 
                 LDY #$14
@@ -66,9 +66,9 @@ BSCREEN         JSR DRAW_PICT
                 JMP FSCREEN
 
 CSCREEN         JSR DRAW_PICT
-                PictTextAt 60;21;()-
-                USR (I_SEE_THAT_YOU_HAVE_THEM.\n)-
-                USR (IS_IT_A_DEAL?_)
+                PictTextAt_ 60;21
+                TXC "I SEE THAT YOU HAVE THEM.\n"
+                TXT "IS IT A DEAL? "
                 PictEnd
 
                 BIT UNSTROB
@@ -84,9 +84,9 @@ NOIS            JMP ESCREEN
 
 YESIS           JSR DRAW_PICT
                 PictClear $08;$01;$20;$27
-                PictTextAt 60;5;(I_KNEW_YOU_WOULDN'T_REFUSE!)
-                PictTextAt 60;16;(THE_NET_CODE_IS_GN-28_AND)
-                PictTextAt 60;27;(THE_ROYAL_PASSWORD_IS_CRUU)
+                PictTextAt 60;5;"I KNEW YOU WOULDN'T REFUSE!"
+                PictTextAt 60;16;"THE NET CODE IS GN-28 AND"
+                PictTextAt 60;27;"THE ROYAL PASSWORD IS CRUU"
                 PictSetOrange
                 PictMoveTo $9B;$18
                 PictLineTo $B9;$18
@@ -102,8 +102,8 @@ YESIS           JSR DRAW_PICT
 
 ESCREEN         JSR DRAW_PICT
                 PictClear $08;$01;$20;$27
-                PictTextAt 60;5;(THEN_YOU_NEED_THE_RIFLES)
-                PictTextAt 60;15;(MORE_THAN_I_DO...)
+                PictTextAt 60;5;"THEN YOU NEED THE RIFLES"
+                PictTextAt 60;15;"MORE THAN I DO..."
                 PictEnd
 
                 LDY #$04
@@ -111,7 +111,7 @@ ESCREEN         JSR DRAW_PICT
                 BIT UNSTROB
 
                 JSR DRAW_PICT
-                PictTextAt 114;27;(GUARDS!!!)
+                PictTextAt 114;27;"GUARDS!!!"
                 PictEnd
 
                 ; generate an encounter with RUUIKs MEN
@@ -180,11 +180,11 @@ XXDATA          DFB $CE
 
 FSCREEN         JSR DRAW_PICT
                 PictClear $08;$01;$20;$27
-                PictTextAt 60;3;()-
-                USR (I_HAVE_NO_OTHER_INFORMATION\n)-
-                USR (FOR_YOU,_SO_LEAVE_MY_DOMAIN\n)-
-                USR (WITH_YOUR_LIVES_BEFORE_I\n)-
-                USR (CHANGE_MY_MIND!)
+                PictTextAt_ 60;3
+                TXC "I HAVE NO OTHER INFORMATION\n"
+                TXC "FOR YOU, SO LEAVE MY DOMAIN\n"
+                TXC "WITH YOUR LIVES BEFORE I\n"
+                TXT "CHANGE MY MIND!"
                 PictEnd
 
                 LDY #$16

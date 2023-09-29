@@ -1,4 +1,4 @@
-AA				USR	(VEGAN_WARRIOR___)-
+AA				TXC	'VEGAN_WARRIOR___'
 				DS	48,0
 
 				DB	$37,$CC
@@ -14,7 +14,7 @@ AA				USR	(VEGAN_WARRIOR___)-
 				DB	$7E,$6F,$67,$68,$26,$06,$0C
 				DB	$FF
 
-BB				USR	("OILER"_________)-
+BB				TXC	'"OILER"_________'
 				DS	48,0
 
 				DB	$26,$46,$CC
@@ -28,7 +28,7 @@ BB				USR	("OILER"_________)-
 				DB	$00,$01,$07,$80
 				DB	$FF
 
-CC				USR	("SNOOZER"_______)-
+CC				TXC	'"SNOOZER"_______'
 				DS	48,0
 
 				DB	$37,$CC
@@ -45,7 +45,7 @@ CC				USR	("SNOOZER"_______)-
 				DB	$00,$03,$00,$01,$00,$03,$06
 				DB	$FF
 
-DD				USR	(MPC9_ROBOT______)-
+DD				TXC	'MPC9_ROBOT______'
 				DS	48,0
 
 				DB	$16,$CC
@@ -65,7 +65,7 @@ DD				USR	(MPC9_ROBOT______)-
 				DB	$00,$01,$01,$80
 				DB	$FF
 
-EE				USR	(AIMTAK_AMPHIBIAN)-
+EE				TXC	'AIMTAK_AMPHIBIAN'
 				DS	48,0
 
 				DB	$36,$CC
@@ -80,7 +80,7 @@ EE				USR	(AIMTAK_AMPHIBIAN)-
 				DB	$0E,$03,$80
 				DB	$FF
 
-FF				USR	("AIR_SWIMMER"___)-
+FF				TXC	'"AIR_SWIMMER"___'
 				DS	48,0
 
 				DB	$36,$DD
@@ -93,7 +93,7 @@ FF				USR	("AIR_SWIMMER"___)-
 				DB	$30,$30,$10,$80
 				DB	$FF
 
-GG				USR	(POISONOUS_PEST__)-
+GG				TXC	'POISONOUS_PEST__'
 				DS	48,0
 
 				DB	$36,$CC
@@ -126,7 +126,7 @@ GG				USR	(POISONOUS_PEST__)-
 
 				DB	$FF
 
-HH				USR	(TANDEM_TENTICLES)-
+HH				TXC	'TANDEM_TENTICLES'
 				DS	48,0
 
 				DB	$16,$56,$CC
@@ -141,7 +141,7 @@ HH				USR	(TANDEM_TENTICLES)-
 				DB	$63,$37,$1E,$80
 				DB	$FF
 
-II				USR	(RUUIK'S_SOLDIER_)-
+II				TXC	"RUUIK'S_SOLDIER_"
 				DS	48,0
 
 				DB	$26,$46,$CC
@@ -158,7 +158,7 @@ II				USR	(RUUIK'S_SOLDIER_)-
 				DB	$18,$16,$06,$80
 				DB	$FF
 
-JJ				USR	(WINGED_"BUG-EYE")-
+JJ				TXC	'WINGED_"BUG-EYE"'
 				DS	48,0
 
 				DB	$E6,$CC
@@ -176,7 +176,7 @@ JJ				USR	(WINGED_"BUG-EYE")-
 				DB	$80
 				DB	$FF
 
-KK				USR	("BLAST_CLAPPER"_)-
+KK				TXC	'"BLAST_CLAPPER"_'
 				DS	48,0
 
 				DB	$26,$46,$CC
@@ -188,7 +188,7 @@ KK				USR	("BLAST_CLAPPER"_)-
 				DB	$07,$0E,$0D,$0D,$1E,$1B,$58
 				DB	$FF
 
-LL				USR	("LOOP_HEAD"_____)-
+LL				TXC	'"LOOP_HEAD"_____'
 				DS	48,0
 
 				DB	$E7,$CC
@@ -210,7 +210,7 @@ LL				USR	("LOOP_HEAD"_____)-
 				DB	$80
 				DB	$FF
 
-MM				USR	(FLYING_SAUCER___)-
+MM				TXC	'FLYING_SAUCER___'
 				DS	48,0
 
 				DB	$E7,$CC
@@ -233,7 +233,7 @@ MM				USR	(FLYING_SAUCER___)-
 				DB	$3B,$3D,$1E,$0F,$07,$01,$00
 				DB	$FF
 
-NN				USR	(PHASE_WORM______)-
+NN				TXC	'PHASE_WORM______'
 				DS	48,0
 
 				DB	$47,$CC
@@ -296,7 +296,7 @@ NN				USR	(PHASE_WORM______)-
 
 				DB	$FF
 
-OO				USR	(ORGANISM_CLOUD__)-
+OO				TXC	'ORGANISM_CLOUD__'
 				DS	48,0
 
 				DB	$26,$CC
@@ -312,7 +312,7 @@ OO				USR	(ORGANISM_CLOUD__)-
 				DB	$10,$41,$0C,$80
 				DB	$FF
 
-PP				USR	("HEXICLAW"______)-
+PP				TXC	'"HEXICLAW"______'
 				DS	48,0
 
 				DB	$E6,$CC
@@ -330,7 +330,7 @@ PP				USR	("HEXICLAW"______)-
 				DB	$26,$03,$02,$80
 				DB	$FF
 
-QQ				USR	(ACRUXITE________)-
+QQ				TXC	'ACRUXITE________'
 				DS	48,0
 
 				DB	$E6,$CC
@@ -348,7 +348,7 @@ QQ				USR	(ACRUXITE________)-
 				DB	$34,$68,$5A,$80
 				DB	$FF
 
-RR				USR	("FINGERS"_______)-
+RR				TXC	'"FINGERS"_______'
 				DS	48,0
 
 				DB	$E7,$CC
@@ -370,7 +370,7 @@ RR				USR	("FINGERS"_______)-
 				DB	$3F,$67,$6D,$6D,$0C,$06,$03
 				DB	$FF
 
-SS				USR	(RIGELIAN_SNIPER_)-
+SS				TXC	'RIGELIAN_SNIPER_'
 				DS	48,0
 
 				DB	$EE,$DD
@@ -411,7 +411,7 @@ SS				USR	(RIGELIAN_SNIPER_)-
 
 				DB	$FF
 
-TT				USR	("STINKY"________)-
+TT				TXC	'"STINKY"________'
 				DS	48,0
 
 				DB	$E6,$CC
@@ -425,7 +425,7 @@ TT				USR	("STINKY"________)-
 				DB	$00,$01,$1F,$3F,$3F,$79,$00
 				DB	$FF
 
-UU				USR	(PARTICLE_MAN____)-
+UU				TXC	'PARTICLE_MAN____'
 				DS	48,0
 
 				DB	$F7,$CC
@@ -441,7 +441,7 @@ UU				USR	(PARTICLE_MAN____)-
 				DB	$1C,$3B,$7B,$6C,$67,$60,$20
 				DB	$FF
 
-VV				USR	("BARACKADER"____)-
+VV				TXC	'"BARACKADER"____'
 				DS	48,0
 
 				DB	$27,$28,$CC
@@ -457,7 +457,7 @@ VV				USR	("BARACKADER"____)-
 				DB	$3B,$0C,$18,$80
 				DB	$FF
 
-WW				USR	(PROBE_DROID_____)-
+WW				TXC	'PROBE_DROID_____'
 				DS	48,0
 
 				DB	$E6,$DD
@@ -474,7 +474,7 @@ WW				USR	(PROBE_DROID_____)-
 				DB	$80
 				DB	$FF
 
-XX				USR	(VEGAN_OFFICER___)-
+XX				TXC	'VEGAN_OFFICER___'
 				DS	48,0
 
 				DB	$37,$CC
@@ -490,7 +490,7 @@ XX				USR	(VEGAN_OFFICER___)-
 				DB	$7E,$6F,$67,$68,$26,$06,$0C
 				DB	$FF
 
-YY				USR	(ROBIEN_BRAIN____)-
+YY				TXC	'ROBIEN_BRAIN____'
 				DS	48,0
 
 				DB	$16,$36,$56,$DD
@@ -503,7 +503,7 @@ YY				USR	(ROBIEN_BRAIN____)-
 				DB	$09,$80
 				DB	$FF
 
-ZZ				USR	(????????????????)-
+ZZ				TXC	'????????????????'
 				DS	48,0
 
 				DB	$E7,$DD

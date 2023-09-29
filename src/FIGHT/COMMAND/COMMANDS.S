@@ -118,19 +118,19 @@ BUILD_CMD       LDA INSTR1
                 PHA
                 RTS
 
-CMD_WORDS       USR (SWN)=
-                USR (SHT)=
-                USR (ENR)=
-                USR (THW)=
-                USR (USE)=
-                USR (XXX)=
-                USR (AIM)=
-                USR (MOV)=
-                USR (IDN)=
-                USR (EXC)=
-                USR (PAR)=
-                USR (RUN)=
-                USR (TES)=
+CMD_WORDS       TXI "SWN"
+                TXI "SHT"
+                TXI "ENR"
+                TXI "THW"
+                TXI "USE"
+                TXI "XXX"
+                TXI "AIM"
+                TXI "MOV"
+                TXI "IDN"
+                TXI "EXC"
+                TXI "PAR"
+                TXI "RUN"
+                TXI "TES"
 
 TYPES           DW  CXY-1
                 DW  CXF-1
@@ -353,26 +353,26 @@ OPTIONS         JSR TIME_TABLE
 
 :COL_X          DB  114,173,244
 
-:COL_NAMES      USR (SWING)=
-                USR (SHOOT)=
-                USR (ENERGY)=
-                USR (THROW)=
-                USR (USE)=
-                USR (_)=
-                USR (1)=
-                USR (MOVE)=
-                USR (IDENTIFY)=
-                USR (EXCHANGE)=
-                USR (PARRY)=
-                USR (RUN)=
-                USR (TESSERACT)=        ; TODO: get rid of
-                USR (2)=
-                USR (END)=
-                USR (BACK1)=
-                USR (REDO)=
-                USR (OTHER)=
-                USR (FLIP)=
-                USR (DELAY)=
+:COL_NAMES      TXI "SWING"
+                TXI "SHOOT"
+                TXI "ENERGY"
+                TXI "THROW"
+                TXI "USE"
+                TXI "_"
+                TXI "1"
+                TXI "MOVE"
+                TXI "IDENTIFY"
+                TXI "EXCHANGE"
+                TXI "PARRY"
+                TXI "RUN"
+                TXI "TESSERACT"         ; TODO: get rid of
+                TXI "2"
+                TXI "END"
+                TXI "BACK1"
+                TXI "REDO"
+                TXI "OTHER"
+                TXI "FLIP"
+                TXI "DELAY"
 
 CAN_CANT        JSR SET_HANDFLAGS
                 JSR MAKE_CONVERT

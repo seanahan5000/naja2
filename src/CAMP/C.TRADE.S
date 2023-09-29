@@ -32,8 +32,8 @@ TANSWER         DS  4
                 DEND
 
 TRADE           JSR DRAW_PICT
-                PictTextAt 16;70;(CANCEL)
-                PictTextAt 86;88;(TRADE_FROM_WHO?)
+                PictTextAt 16;70;"CANCEL"
+                PictTextAt 86;88;"TRADE FROM WHO?"
                 PictEnd
 
                 JSR PICK_CHAR
@@ -48,7 +48,7 @@ TRADE           JSR DRAW_PICT
                 JSR TRADE_MARKER
 
                 JSR DRAW_PICT
-                PictTextAt 152;88;(WHO?)
+                PictTextAt 152;88;"WHO?"
                 PictEnd
 
                 JSR CNAME_TO_TEXT
@@ -57,7 +57,7 @@ TRADE           JSR DRAW_PICT
                 JSR DRAW_TEXTBUF_XY
 
                 JSR DRAW_PICT
-                PictTextAt 134;98;(TO_WHOM?)
+                PictTextAt 134;98;"TO_WHOM?"
                 PictEnd
 
                 JSR MENU_SELECT_NEXT
@@ -237,9 +237,9 @@ DRAW_TRADE_WHICH LDX TLINTABL+10
                 STX :LEAVE_MOD+2
                 JSR DRAW_PICT
                 PictClear 6;73;34;80
-                PictTextAt 47;73;(TRADE_WHICH_PIECE_OF_EQUIPMENT?)
+                PictTextAt 47;73;"TRADE WHICH PIECE OF EQUIPMENT?"
                 PictClear 5;164;34;171
-:LEAVE_MOD      PictTextAt 35;181;(LEAVE)
+:LEAVE_MOD      PictTextAt 35;181;"LEAVE"
                 PictEnd
                 RTS
 
@@ -247,9 +247,9 @@ DRAW_PUT_WHERE  LDX TLINTABL+10
                 STX :CANCEL_MOD+2
                 JSR DRAW_PICT
                 PictClear 6;73;34;80
-                PictTextAt 68;73;(PUT_THE_EQUIPMENT_WHERE?)
+                PictTextAt 68;73;"PUT THE EQUIPMENT WHERE?"
                 PictClear 5;164;34;171
-:CANCEL_MOD     PictTextAt 175;181;(CANCEL)
+:CANCEL_MOD     PictTextAt 175;181;"CANCEL"
                 PictEnd
                 RTS
 
@@ -719,7 +719,7 @@ ROSKIP1         INC COUNT
                 BNE VSLOOPA
 VISDOUT         RTS
 
-WRDATA          USR (UL:)
+WRDATA          TXT "UL:"
 
 WRITSUB         TAY
                 PHA

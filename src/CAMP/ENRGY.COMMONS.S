@@ -59,13 +59,13 @@ DRAW_ENERGY_PER	ENT
 				JSR GET_IND_STRING
 				JMP DRAW_TEXTBUF
 
-PERTEXTS		USR	(/SWING)=
-				USR	(/SHOT)=
-				USR	(/USE)=
-				USR	(/HEAL)=
-				USR	(/ROUND)=
-				USR	(/THROW)=
-				USR	(??????/?????)=
+PERTEXTS		TXI	"/SWING"
+				TXI	"/SHOT"
+				TXI	"/USE"
+				TXI	"/HEAL"
+				TXI	"/ROUND"
+				TXI	"/THROW"
+				TXI	"??????/?????"
 
 PARSTAT			ENT
 				LDA	#TextLT

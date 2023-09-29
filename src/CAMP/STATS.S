@@ -51,17 +51,17 @@ DRAW_STATS_BOX_A ENT
 STATS_HEADER    JSR DRAW_PICT
         do NAME_FIRST
                 PictHMoveTo 16
-                PictText (NAME)
+                PictText "NAME"
                 PictHMoveTo 75
-                PictText (PROF)
+                PictText "PROF"
         else
                 PictHMoveTo 14
-                PictText (PROF)
+                PictText "PROF"
                 PictHMoveTo 58
-                PictText (NAME)
+                PictText "NAME"
         fin
                 PictHMoveTo 219
-                PictText (ENERGY)
+                PictText "ENERGY"
                 PictEnd
                 LDA SELECT
 
@@ -71,16 +71,16 @@ STATS_HEADER2   STA SELECT
                 BVC :DAMSTAT
 :SHIELD         JSR DRAW_PICT
                 PictHMoveTo 105
-                PictText (EL)
+                PictText "EL"
                 PictHMoveTo 121
-                PictText (PH)
+                PictText "PH"
                 PictEnd
                 JMP :DAMSTAT
 
 ; TODO: get rid of XY completely
 :XY             JSR DRAW_PICT
                 PictHMoveTo 113
-                PictText (XY)
+                PictText "XY"
                 PictEnd
 :DAMSTAT        LDA SELECT
                 LSR
@@ -91,13 +91,13 @@ STATS_HEADER2   STA SELECT
 
 :DAMAGE         JSR DRAW_PICT
                 PictHMoveTo 147
-                PictText (HEALTH)
+                PictText "HEALTH"
                 PictEnd
                 RTS
 
 :STATUS         JSR DRAW_PICT
                 PictHMoveTo 147
-                PictText (STATUS)
+                PictText "STATUS"
                 PictEnd
                 RTS
 
@@ -260,15 +260,15 @@ PROF_OFFS       DB  WARRIOR-PROF_NAMES
 ; TODO: Consider moving profession and race strings back into $200,
 ;   assuming text insertion is removed.
 PROF_NAMES
-WARRIOR         USR (WARRIOR)=
-ANDROID         USR (ANDROID)=
-CYBERN          USR (CYBERNATE)=
-JUICER          USR (JUICER)=
-PHYSIC          USR (PHYSICIAN)=
-MUTANT          USR (MUTANT)=
-EMEDIC          USR (EMD/E-MEDIC)=
-GENIUS          USR (GENIUS)=
-ROBOT           USR (ROBOT)=
+WARRIOR         TXI "WARRIOR"
+ANDROID         TXI "ANDROID"
+CYBERN          TXI "CYBERNATE"
+JUICER          TXI "JUICER"
+PHYSIC          TXI "PHYSICIAN"
+MUTANT          TXI "MUTANT"
+EMEDIC          TXI "EMD/E-MEDIC"
+GENIUS          TXI "GENIUS"
+ROBOT           TXI "ROBOT"
 
 CPOS_TO_TEXT    LDY #position
                 LDA (CHARDL),Y
@@ -535,9 +535,9 @@ RACE_TO_TEXT    ENT
                 JMP GET_IND_STRING
 
 RACE_NAMES
-HUMAN           USR (HUMAN)=
-ORN             USR (ORN)=
-STILICX         USR (STILICX)=
-XXTYS           USR (XXTYS)=
-DENEB           USR (DENEB)=
-NONE            USR (NONE)=
+HUMAN           TXI "HUMAN"
+ORN             TXI "ORN"
+STILICX         TXI "STILICX"
+XXTYS           TXI "XXTYS"
+DENEB           TXI "DENEB"
+NONE            TXI "NONE"

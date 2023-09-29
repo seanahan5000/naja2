@@ -336,20 +336,24 @@ PictSetTextBox  MAC
 
 PictText        MAC
                 DB  OpText
-                USR ]1
+                TXT ]1
                 EOM
 
-PictTextAt      MAC
+PictTextAt_     MAC
                 DB  OpTextAt
                 DB  ]1,]2
-                USR ]3
 ]X              =   ]1
 ]Y              =   ]2
                 EOM
 
+PictTextAt      MAC
+                PictTextAt_
+                TXT ]3
+                EOM
+
 PictTextIn      MAC
                 DB  OpTextIn
-                USR ]1
+                TXT ]1
                 EOM
 
 PictTextbuf     MAC

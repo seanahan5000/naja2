@@ -330,7 +330,7 @@ COMPOSITE_ALIEN JSR DRAW_PICT
                 ; fall through
 
 COMPOSITE_CMN   JSR DRAW_PICT
-                PictTextAt 9;4;(IDENTIFIED_ALIENS)
+                PictTextAt 9;4;"IDENTIFIED ALIENS"
                 PictSetGreen
                 PictRect 3;0;115;149
                 PictRect 3;152;277;191
@@ -340,7 +340,7 @@ COMPOSITE_CMN   JSR DRAW_PICT
                 BEQ :1
 
                 JSR DRAW_PICT
-                PictTextAt 6;140;(FULLSCREEN_<SPACE>)
+                PictTextAt 6;140;"FULLSCREEN <SPACE>"
                 PictEnd
 
                 JSR DRAW_ALIEN_NAMES
@@ -354,8 +354,8 @@ COMPOSITE_CMN   JSR DRAW_PICT
                 JMP :2
 
 :1              JSR DRAW_PICT
-                PictTextAt 34;73;(NONE_YET)
-                PictTextAt 37;82;(C>ANCEL)
+                PictTextAt 34;73;"NONE YET"
+                PictTextAt 37;82;"C>ANCEL"
                 PictEnd
 
 :2              JSR DRAW_PICT

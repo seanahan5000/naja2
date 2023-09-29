@@ -28,10 +28,10 @@ BOTTOM_COM      STA BOTTOUT+1
                 PictMoveTo $5F;$A3
                 PictLineTo $10F;$A3
                 PictSetTextHeight 8
-                PictTextAt 102;166;()-
-                USR (HAND/S:\n)-
-                USR (WEAPON:\n)-
-                USR (ENERGY:)
+                PictTextAt_ 102;166
+                TXC "HAND/S:\n"
+                TXC "WEAPON:\n"
+                TXT "ENERGY:"
                 PictMoveTo 150;166
                 PictEnd
                 LDA CURHOLD
@@ -40,7 +40,7 @@ BOTTOM_COM      STA BOTTOUT+1
                 LDA HANDTAB,X
                 BNE PUTE2
                 JSR DRAW_PICT
-                PictTextAt 150;174;(<BARE_HAND>______<1>)
+                PictTextAt 150;174;"<BARE_HAND>______<1>"
                 PictEnd
                 JMP BOTTOUT
 
@@ -112,7 +112,7 @@ CANCEL_IN       JSR DRAW_PICT
                 PictMoveTo $E8;$BF
                 PictLineTo $105;$BF
                 PictLineTo $105;$B8
-                PictTextAt 235;185;(C>ANCEL)
+                PictTextAt 235;185;"C>ANCEL"
                 PictSetGreen
                 PictMoveTo $E7;$BE
                 PictLineTo $E7;$B7
@@ -125,7 +125,7 @@ CANCEL_OUT      JSR DRAW_PICT
                 PictMoveTo $E7;$BE
                 PictLineTo $E7;$B7
                 PictLineTo $104;$B7
-                PictTextAt 235;185;(C>ANCEL)
+                PictTextAt 235;185;"C>ANCEL"
                 PictSetGreen
                 PictMoveTo $E8;$BF
                 PictLineTo $105;$BF

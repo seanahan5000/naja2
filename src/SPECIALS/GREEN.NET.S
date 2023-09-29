@@ -91,7 +91,7 @@ PASSER          JSR OPEN_NET
                 RTS                     ; back to halls
 
 ; TODO: generate/randomize and save in game data?
-GDASH28         USR (GN-28)-
+GDASH28         TXC "GN-28"
 
 CLOSE_NET       JSR DRAW_PICT
                 PictSetWhite1
@@ -292,7 +292,7 @@ BOXIN           JSR DRAW_PICT
                 PictLineTo $B4;$B0
                 PictMoveTo $B5;$B0
                 PictLineTo $B5;$A7
-                PictTextAt $65;$A9;(CODE)
+                PictTextAt $65;$A9;"CODE"
                 PictHMoveTo $81
                 PictTile NUMSIGN0
                 PictTile NUMSIGN1

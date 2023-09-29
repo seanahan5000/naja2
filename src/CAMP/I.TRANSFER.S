@@ -60,8 +60,8 @@ RT_START2       LDA ITARGET_CHAR
 FROMJ_TRANSFER	JSR	BIG_STATS_BOX
 
 				JSR DRAW_PICT
-				PictTextAt 177;84;(TRANSFER_ENERGY)
-				PictTextAt 198;93;(TO_WHOM?)
+				PictTextAt 177;84;"TRANSFER ENERGY"
+				PictTextAt 198;93;"TO WHOM?"
 				PictEnd
 
 				LDX	ISOURCE_CHAR
@@ -97,8 +97,8 @@ TOJ_TRANSFER    JSR DRAW_PICT
                 PictEnd
 
 TRANSFER_CMN    JSR DRAW_PICT
-				PictTextAt 48;26;(ENERGY_TRANSFER_AMOUNT:)
-                PictTextAt 195;51;(C>ANCEL)
+				PictTextAt 48;26;"ENERGY TRANSFER AMOUNT:"
+                PictTextAt 195;51;"C>ANCEL"
 				PictEnd
 
                 LDA ITARGET_CHAR

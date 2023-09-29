@@ -1,6 +1,6 @@
 THROW           JSR CLEAR_CANCEL_IN
                 JSR DRAW_PICT
-                PictTextAt 102;133;(CONFIRM_OBJECT_TO_BE_THROWN)
+                PictTextAt 102;133;"CONFIRM OBJECT TO BE THROWN"
                 PictEnd
 
                 LDA #$02
@@ -17,7 +17,7 @@ THROW           JSR CLEAR_CANCEL_IN
                 LDX #cmdTHROW+%00010000
 :SKIPA          STX INSTR1
                 JSR DRAW_PICT
-                PictTextAt 96;142;(THROW_OBJECT_TO_WHICH_SQUARE?)
+                PictTextAt 96;142;"THROW OBJECT TO WHICH SQUARE?"
                 PictEnd
                 LDX USEDLOC
                 LDA #$FF

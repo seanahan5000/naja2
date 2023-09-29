@@ -92,10 +92,10 @@ BOGUS_MONARR
 ;*** use grid mul5 table
 MULT5           DB  0,5,10,15,20,25
 
-BTEXT           USR (SWING)-
-                USR (MOVE_)-
-                USR (AIM__)-
-                USR (SHOOT)-
-                USR (PARRY)-
+BTEXT           TXI "SWING"
+                TXI "MOVE "
+                TXI "AIM  "
+                TXI "SHOOT"
+                TXI "PARRY"
 ********************************
 ********************************

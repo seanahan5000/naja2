@@ -35,18 +35,18 @@ NOTRAP          BIT UNSTROB
                 DEX
                 BNE :1
                 JSR DRAW_PICT
-                PictTextAt 124;152;(THE_ATTACKER_HAS_THE)
+                PictTextAt 124;152;"THE ATTACKER HAS THE"
                 PictEnd
                 BNE :3                  ; always
 :1              JSR DRAW_PICT
-                PictTextAt 118;152;(THE_ATTACKERS_HAVE_THE)
+                PictTextAt 118;152;"THE ATTACKERS HAVE THE"
                 PictEnd
                 BNE :3                  ; always
 :2              JSR DRAW_PICT
-                PictTextAt 148;152;(YOU_HAVE_THE)
+                PictTextAt 148;152;"YOU HAVE THE"
                 PictEnd
 :3              JSR DRAW_PICT
-                PictTextAt 130;161;(ELEMENT_OF_SUPRISE)
+                PictTextAt 130;161;"ELEMENT OF SUPRISE"
                 PictEnd
 
 SURPRISE_DONE   JSR SHOW_PAGE
@@ -121,9 +121,9 @@ DOOVER          JSR CLEAR_TUNITS_BOX
                 PictMoveTo $106;$BF
                 PictLineTo $115;$BF
                 PictLineTo $115;$B8
-                PictTextAt 97;140;(ORDER_ENTRY_PHASE_IS_COMPLETE)
-                PictTextAt 97;159;(WILL_YOU_A>CCEPT_THESE_ORDERS)
-                PictTextAt 133;169;(OR_R>EDO_THEM?_)
+                PictTextAt 97;140;"ORDER ENTRY PHASE IS COMPLETE"
+                PictTextAt 97;159;"WILL YOU A>CCEPT THESE ORDERS"
+                PictTextAt 133;169;"OR R>EDO THEM? "
                 PictEnd
 
                 JSR GET_INPUT_KEY
@@ -164,8 +164,8 @@ TIME_NOTCH_IN   JSR DRAW_PICT
 DRAW_TUNITS_BOX JSR CLEAR_TUNITS_BOX
                 ; fall through
 TUNITS_LABEL    JSR DRAW_PICT
-                PictTextAt 208;76;(T.UNITS)
-                PictTextAt 253;76;(=)
+                PictTextAt 208;76;"T.UNITS"
+                PictTextAt 253;76;"="
                 PictEnd
                 RTS
 
@@ -187,10 +187,10 @@ CLEAR_MARKERS   JSR FIRST_CHAR
 
 HITR            JSR CLEAR_WTIME
                 JSR DRAW_PICT
-                PictTextAt 124;139;(DO_YOU_WANT_TO_REDO)
-                PictTextAt 136;153;(THE_ENTIRE_GROUP)
-                PictTextAt 136;163;(ONE_GROUP_MEMBER)
-                PictTextAt 136;173;(CANCEL)
+                PictTextAt 124;139;"DO YOU WANT TO REDO"
+                PictTextAt 136;153;"THE ENTIRE GROUP"
+                PictTextAt 136;163;"ONE GROUP MEMBER"
+                PictTextAt 136;173;"CANCEL"
                 PictEnd
 
                 LDX #<REDO_CDEF
@@ -227,7 +227,7 @@ ONEMEMB         JSR CLEAR_WTIME
                 JSR TIME_NOTCH_IN
                 JSR CANCEL_IN
                 JSR DRAW_PICT
-                PictTextAt 118;152;(REDO_WHOSE_FIGHT_PLAN?)
+                PictTextAt 118;152;"REDO WHOSE FIGHT PLAN?"
                 PictEnd
                 JSR OTHER_SUB
                 LDA #$EE

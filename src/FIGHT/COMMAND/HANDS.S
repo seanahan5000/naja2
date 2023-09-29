@@ -25,11 +25,11 @@ GET_HAND_STRING LDX #<:HAND_STRINGS
                 LDY #>:HAND_STRINGS
                 JMP GET_IND_STRING
 
-:HAND_STRINGS   USR(UPPER_)=
-                USR(LOWER_)=
-                USR(LEFT)=
-                USR(RIGHT)=
-                USR(LEFT/RIGHT)=
+:HAND_STRINGS   TXI "UPPER "
+                TXI "LOWER "
+                TXI "LEFT"
+                TXI "RIGHT"
+                TXI "LEFT/RIGHT"
 
 *===============================
 *
@@ -88,9 +88,9 @@ CONFIRM_SELECT  LDX #$00
                 JSR MOVE_TO
                 JSR DRAW_PICT
                 PictHSave
-                PictText (CONFIRM)
+                PictText "CONFIRM"
                 PictHRestore
-                PictText (_SELECT)
+                PictText " SELECT"
                 PictEnd
 :3              RTS
 
@@ -105,20 +105,20 @@ EQUIP_DRAW      BIT ROBDEN_FLAG
                 BVS :DENEB
 
 :NORMAL         JSR DRAW_PICT
-                PictTextAt 111;146;(LEFT:)
-                PictTextAt 105;154;(RIGHT:)
+                PictTextAt 111;146;"LEFT:"
+                PictTextAt 105;154;"RIGHT:"
                 PictEnd
                 BNE :COMMON            ; always
 
 :DENEB          JSR DRAW_PICT
                 PictSetTextHeight 8
-                PictTextAt 123;146;(UL:\nUR:\nLL:\nLR:)
+                PictTextAt 123;146;"UL:\nUR:\nLL:\nLR:"
                 PictEnd
                 BNE :COMMON            ; always
 
 :ROBOT          JSR DRAW_PICT
                 PictSetTextHeight 8
-                PictTextAt 123;146;(_L:\n__:\n_R:\n__:)
+                PictTextAt 123;146;"_L:\n__:\n_R:\n__:"
                 PictEnd
 
 :COMMON         LDX #0

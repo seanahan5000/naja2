@@ -1,6 +1,6 @@
 USE             JSR CLEAR_CANCEL_IN
                 JSR DRAW_PICT
-                PictTextAt 108;133;(CONFIRM_OBJECT_TO_BE_USED)
+                PictTextAt 108;133;"CONFIRM OBJECT TO BE USED"
                 PictEnd
 
                 LDA #$03
@@ -25,8 +25,8 @@ USE             JSR CLEAR_CANCEL_IN
 
 :SKIPA          JSR CLEAR_WCANCEL
                 JSR DRAW_PICT
-                PictTextAt 114;137;(SELECT_SQUARE_TO_DIRECT)
-                PictTextAt 132;146;(TREATMENT_TOWARDS)
+                PictTextAt 114;137;"SELECT SQUARE TO DIRECT"
+                PictTextAt 132;146;"TREATMENT TOWARDS"
                 PictEnd
                 JSR BOTTOMR
 
@@ -46,8 +46,8 @@ NOUCANC         LDA CURSOR
 
                 JSR DRAW_PICT
                 PictClear 16;137;36;153
-                PictTextAt 120;132;(HEAL_HOW_MUCH_DAMAGE?)
-                PictTextAt 117;143;(DAMAGE_HEALED:)
+                PictTextAt 120;132;"HEAL HOW MUCH DAMAGE?"
+                PictTextAt 117;143;"DAMAGE HEALED:"
                 PictEnd
                 LDX #<LIMIT_USE
                 LDY #>LIMIT_USE

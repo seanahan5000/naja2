@@ -4,11 +4,11 @@ EXCHANGE        JSR CLEAR_CANCEL_IN
                 BVS DCHOICE
 
                 JSR DRAW_PICT
-                PictTextAt 114;131;(PRESS_<SPACE>_TO_VERIFY)
+                PictTextAt 114;131;"PRESS <SPACE> TO VERIFY"
                 PictEnd
                 JSR SCROLLER
                 JSR DRAW_PICT
-                PictTextAt 120;139;(EXCHANGE_OF_EQUIPMENT)
+                PictTextAt 120;139;"EXCHANGE OF EQUIPMENT"
                 PictEnd
                 JSR SPACE_WAIT
                 BCS EXENT
@@ -18,7 +18,7 @@ EXENT           LDA #$10
                 JMP EXCOMN
 
 DCHOICE         JSR DRAW_PICT
-                PictTextAt 102;133;('EXCHANGE'_FROM_WHICH_HAND?)
+                PictTextAt 102;133;"'EXCHANGE' FROM WHICH HAND?"
                 PictEnd
 
                 LDA #$84
@@ -28,7 +28,7 @@ DCHOICE         JSR DRAW_PICT
 
 :SKIPA          JSR DRAW_PICT
                 PictClear 14;133;38;140
-                PictTextAt 108;133;('EXCHANGE'_TO_WHICH_HAND?)
+                PictTextAt 108;133;"'EXCHANGE' TO WHICH HAND?"
                 PictEnd
                 LDA CURSOR
                 PHA

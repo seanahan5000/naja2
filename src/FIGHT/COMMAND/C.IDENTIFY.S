@@ -1,8 +1,8 @@
 IDENTIFY        JSR CLEAR_CANCEL_IN
                 JSR DRAW_PICT
-                PictTextAt 112;141;(DO_YOU_WANT_TO_I.D._SCAN)
-                PictTextAt 138;154;(AN_INDIVIDUAL_SQUARE)
-                PictTextAt 138;164;(THE_ENTIRE_AREA)
+                PictTextAt 112;141;"DO YOU WANT TO I.D. SCAN"
+                PictTextAt 138;154;"AN INDIVIDUAL SQUARE"
+                PictTextAt 138;164;"THE ENTIRE AREA"
                 PictEnd
                 LDX #<ID_CDEF
                 LDY #>ID_CDEF
@@ -16,7 +16,7 @@ IDENTIFY        JSR CLEAR_CANCEL_IN
                 BNE :SKIPA
                 JSR CLEAR_WCANCEL
                 JSR DRAW_PICT
-                PictTextAt 115;152;(I.D._SCAN_WHICH_SQUARE?)
+                PictTextAt 115;152;"I.D. SCAN WHICH SQUARE?"
                 PictEnd
                 JSR GRID_AIM
                 PHP

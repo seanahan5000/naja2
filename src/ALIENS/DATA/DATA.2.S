@@ -1,4 +1,4 @@
-SNOWJOB			USR	("SUBZERO"_______)-	;A.1
+SNOWJOB			TXC	'"SUBZERO"_______'	;A.1
 				DS	48,0
 
 				DB	$FF,$DD
@@ -15,7 +15,7 @@ SNOWJOB			USR	("SUBZERO"_______)-	;A.1
 				DB	$10,$68,$80
 				DB	$FF
 
-REPAIR			USR	(REPAIR_UNIT_1000)-	;B.2
+REPAIR			TXC	'REPAIR_UNIT_1000'	;B.2
 				DS	48,0
 
 				DB	$FF,$DD
@@ -44,7 +44,7 @@ REPAIR			USR	(REPAIR_UNIT_1000)-	;B.2
 				DB	$80
 				DB	$FF
 
-TWISTER			USR	("TWISTER"_______)-	;C.3
+TWISTER			TXC	'"TWISTER"_______'	;C.3
 				DS	48,0
 
 				DB	$36,$CC
@@ -59,7 +59,7 @@ TWISTER			USR	("TWISTER"_______)-	;C.3
 				DB	$05,$08,$10,$80
 				DB	$FF
 
-PLATFORM		USR	(BETA_CENTAURIAN_)-	;D.4
+PLATFORM		TXC	'BETA_CENTAURIAN_'	;D.4
 				DS	48,0
 
 				DB	$E7,$CC
@@ -81,7 +81,7 @@ PLATFORM		USR	(BETA_CENTAURIAN_)-	;D.4
 				DB	$1B,$0D,$06,$03,$80
 				DB	$FF
 
-SIXARMED		USR	("HEXICLAW"______)-	;E.5
+SIXARMED		TXC	'"HEXICLAW"______'	;E.5
 				DS	48,0
 
 				DB	$E6,$CC
@@ -99,7 +99,7 @@ SIXARMED		USR	("HEXICLAW"______)-	;E.5
 				DB	$26,$03,$02,$80
 				DB	$FF
 
-CEILING			USR	(TANDEM_TENTICLES)-	;F.6
+CEILING			TXC	'TANDEM_TENTICLES'	;F.6
 				DS	48,0
 
 				DB	$16,$56,$CC
@@ -114,7 +114,7 @@ CEILING			USR	(TANDEM_TENTICLES)-	;F.6
 				DB	$63,$37,$1E,$80
 				DB	$FF
 
-SCAVENGE		USR	(SCAVENGER_______)-	;G.7
+SCAVENGE		TXC	'SCAVENGER_______'	;G.7
 				DS	48,0
 
 				DB	$FF,$DD
@@ -124,7 +124,7 @@ SCAVENGE		USR	(SCAVENGER_______)-	;G.7
 				DB	$06,$0F,$0F,$09,$09,$86
 				DB	$FF
 
-SNOUT			USR	(MUTANT_INSECTOID)-	;H.8
+SNOUT			TXC	'MUTANT_INSECTOID'	;H.8
 				DS	48,0
 
 				DB	$FF,$DD
@@ -145,7 +145,7 @@ SNOUT			USR	(MUTANT_INSECTOID)-	;H.8
 				DB	$0E,$0C,$80
 				DB	$FF
 
-FIREMAN			USR	(K-60_FIRE_UNIT__)-	;I.9
+FIREMAN			TXC	'K-60_FIRE_UNIT__'	;I.9
 				DS	48,0
 
 				DB	$FF,$DD
@@ -162,7 +162,7 @@ FIREMAN			USR	(K-60_FIRE_UNIT__)-	;I.9
 				DB	$66,$7F,$0C,$80
 				DB	$FF
 
-LEASHDOG		USR	(LEASHED_GRUNTER_)-	;J.A
+LEASHDOG		TXC	'LEASHED_GRUNTER_'	;J.A
 				DS	48,0
 
 				DB	$FF,$DD
@@ -183,7 +183,7 @@ LEASHDOG		USR	(LEASHED_GRUNTER_)-	;J.A
 				DB	$0F,$0F,$0F,$70,$1F,$07,$0B
 				DB	$FF
 
-TENTICLE		USR	(TENTICLES_______)-	;K.B
+TENTICLE		TXC	'TENTICLES_______'	;K.B
 				DS	48,0
 
 				DB	$FF,$DD
@@ -205,7 +205,7 @@ TENTICLE		USR	(TENTICLES_______)-	;K.B
 
 				DB	$FF
 
-CAUGHTIN		USR	(ULLDA_NICH______)-	;L.C
+CAUGHTIN		TXC	'ULLDA_NICH______'	;L.C
 				DS	48,0
 
 				DB	$FF,$DD
@@ -218,7 +218,7 @@ CAUGHTIN		USR	(ULLDA_NICH______)-	;L.C
 				DB	$01,$03,$02,$80
 				DB	$FF
 
-RAGALIEN		USR	(MEERN_MUTATION__)-	;M.D
+RAGALIEN		TXC	'MEERN_MUTATION__'	;M.D
 				DS	48,0
 
 				DB	$46,$CC
@@ -237,7 +237,7 @@ RAGALIEN		USR	(MEERN_MUTATION__)-	;M.D
 				DB	$3E,$03,$01,$80
 				DB	$FF
 
-ROBIEN			USR	(ROBIEN_BRAIN____)-	;N.E
+ROBIEN			TXC	'ROBIEN_BRAIN____'	;N.E
 				DS	48,0
 
 				DB	$16,$36,$56,$DD
@@ -250,7 +250,7 @@ ROBIEN			USR	(ROBIEN_BRAIN____)-	;N.E
 				DB	$09,$80
 				DB	$FF
 
-STRINGY			USR	(ACRUXITE________)-	;O.F
+STRINGY			TXC	'ACRUXITE________'	;O.F
 				DS	48,0
 
 				DB	$E6,$CC
@@ -268,7 +268,7 @@ STRINGY			USR	(ACRUXITE________)-	;O.F
 				DB	$34,$68,$5A,$80
 				DB	$FF
 
-POINTY			USR	(POINTY_HEAD_____)-	;P.10
+POINTY			TXC	'POINTY_HEAD_____'	;P.10
 				DS	48,0
 
 				DB	$FF,$DD
@@ -297,7 +297,7 @@ POINTY			USR	(POINTY_HEAD_____)-	;P.10
 
 				DB	$FF
 
-SPOOLER			USR	(NUNKI_BLUE_DEVIL)-	;Q.11
+SPOOLER			TXC	'NUNKI_BLUE_DEVIL'	;Q.11
 				DS	48,0
 
 				DB	$FF,$DD
@@ -314,7 +314,7 @@ SPOOLER			USR	(NUNKI_BLUE_DEVIL)-	;Q.11
 				DB	$0E,$0E,$0E,$80
 				DB	$FF
 
-OMOEBA			USR	(AMOEBOID________)-	;R.12
+OMOEBA			TXC	'AMOEBOID________'	;R.12
 				DS	48,0
 
 				DB	$FF,$DD
@@ -351,7 +351,7 @@ OMOEBA			USR	(AMOEBOID________)-	;R.12
 
 				DB	$FF
 
-FURNACE			USR	("SHOVELER"______)-	;S.13
+FURNACE			TXC	'"SHOVELER"______'	;S.13
 				DS	48,0
 
 				DB	$FF,$DD
@@ -372,7 +372,7 @@ FURNACE			USR	("SHOVELER"______)-	;S.13
 				DB	$01,$80
 				DB	$FF
 
-LONGARM			USR	(LONG_ARMED_EPE__)-	;T.14
+LONGARM			TXC	'LONG_ARMED_EPE__'	;T.14
 				DS	48,0
 
 				DB	$FF,$DD
@@ -393,7 +393,7 @@ LONGARM			USR	(LONG_ARMED_EPE__)-	;T.14
 				DB	$03,$03,$03,$03,$03,$80
 				DB	$FF
 
-SLICER			USR	(SLICER_SPHERE___)-	;U.15
+SLICER			TXC	'SLICER_SPHERE___'	;U.15
 				DS	48,0
 
 				DB	$FF,$DD
@@ -414,7 +414,7 @@ SLICER			USR	(SLICER_SPHERE___)-	;U.15
 				DB	$00,$78,$3F,$80
 				DB	$FF
 
-TREADBOT		USR	(PROTOTYPE_2000-7)-	;V.16
+TREADBOT		TXC	'PROTOTYPE_2000-7'	;V.16
 				DS	48,0
 
 				DB	$FF,$DD
@@ -431,7 +431,7 @@ TREADBOT		USR	(PROTOTYPE_2000-7)-	;V.16
 				DB	$06,$07,$80
 				DB	$FF
 
-STICKY			USR	(????????????????)-	;W.17
+STICKY			TXC	'????????????????'	;W.17
 				DS	48,0
 
 				DB	$E7,$DD
@@ -455,7 +455,7 @@ STICKY			USR	(????????????????)-	;W.17
 				DB	$01,$01,$01,$01,$80
 				DB	$FF
 
-METALMIT		USR	(METAL_MITES_____)-	;X.18
+METALMIT		TXC	'METAL_MITES_____'	;X.18
 				DS	48,0
 
 				DB	$FF,$DD
@@ -480,7 +480,7 @@ METALMIT		USR	(METAL_MITES_____)-	;X.18
 
 				DB	$FF
 
-STAFF			USR	(SCEPTARIAN______)-	;Y.19
+STAFF			TXC	'SCEPTARIAN______'	;Y.19
 				DS	48,0
 
 				DB	$FF,$DD
@@ -497,7 +497,7 @@ STAFF			USR	(SCEPTARIAN______)-	;Y.19
 				DB	$6F,$10,$80
 				DB	$FF
 
-DIZZY			USR	("DIZZY"_________)-	;Z.1A
+DIZZY			TXC	'"DIZZY"_________'	;Z.1A
 				DS	48,0
 
 				DB	$FF,$DD
@@ -514,7 +514,7 @@ DIZZY			USR	("DIZZY"_________)-	;Z.1A
 				DB	$07,$01,$80
 				DB	$FF
 
-BRANCHES		USR	(PSILOTIS_PEDETUM)-	;AA.1B
+BRANCHES		TXC	'PSILOTIS_PEDETUM'	;AA.1B
 				DS	48,0
 
 				DB	$FF,$DD
@@ -531,7 +531,7 @@ BRANCHES		USR	(PSILOTIS_PEDETUM)-	;AA.1B
 				DB	$1D,$1E,$07,$80
 				DB	$FF
 
-SPOOR			USR	(SPOOR_PLANT_____)-	;BB.1C
+SPOOR			TXC	'SPOOR_PLANT_____'	;BB.1C
 				DS	48,0
 
 				DB	$FF,$DD
@@ -576,7 +576,7 @@ SPOOR			USR	(SPOOR_PLANT_____)-	;BB.1C
 
 				DB	$FF
 
-LIZARD			USR	(ADHARAN_LIZARD__)-	;CC.1D
+LIZARD			TXC	'ADHARAN_LIZARD__'	;CC.1D
 				DS	48,0
 
 				DB	$FF,$DD
@@ -591,7 +591,7 @@ LIZARD			USR	(ADHARAN_LIZARD__)-	;CC.1D
 				DB	$07,$07,$07,$03,$03,$81
 				DB	$FF
 
-CONSTRIC		USR	(ANKAA_STRANGLER_)-	;DD.1E
+CONSTRIC		TXC	'ANKAA_STRANGLER_'	;DD.1E
 				DS	48,0
 
 				DB	$FF,$DD
@@ -604,7 +604,7 @@ CONSTRIC		USR	(ANKAA_STRANGLER_)-	;DD.1E
 				DB	$01,$03,$0E,$80
 				DB	$FF
 
-LITPLANE		USR	(SPICA_V_FIGHTER_)-	;EE.1F
+LITPLANE		TXC	'SPICA_V_FIGHTER_'	;EE.1F
 				DS	48,0
 
 				DB	$FF,$DD
@@ -619,7 +619,7 @@ LITPLANE		USR	(SPICA_V_FIGHTER_)-	;EE.1F
 				DB	$01,$43,$7D,$0D,$03,$81
 				DB	$FF
 
-WATTOWER		USR	(MOIKLER_________)-	;FF.20
+WATTOWER		TXC	'MOIKLER_________'	;FF.20
 				DS	48,0
 
 				DB	$FF,$DD
@@ -632,7 +632,7 @@ WATTOWER		USR	(MOIKLER_________)-	;FF.20
 				DB	$19,$01,$06,$80
 				DB	$FF
 
-ENUNLOAD		USR	(ENERGY_UNLOADER_)-	;GG.21
+ENUNLOAD		TXC	'ENERGY_UNLOADER_'	;GG.21
 				DS	48,0
 
 				DB	$FF,$DD
@@ -645,7 +645,7 @@ ENUNLOAD		USR	(ENERGY_UNLOADER_)-	;GG.21
 				DB	$20,$0F,$07,$80
 				DB	$FF
 
-INSECT			USR	(WORKER_INSECT___)-	;HH.22
+INSECT			TXC	'WORKER_INSECT___'	;HH.22
 				DS	48,0
 
 				DB	$FF,$DD
@@ -660,7 +660,7 @@ INSECT			USR	(WORKER_INSECT___)-	;HH.22
 				DB	$07,$04,$3B,$66,$63,$40,$00
 				DB	$FF
 
-WEB				USR	(ULLDA_NICH_WEB__)-	;II.23
+WEB				TXC	'ULLDA_NICH_WEB__'	;II.23
 				DS	48,0
 
 				DB	$FF,$DD

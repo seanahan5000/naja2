@@ -1,12 +1,12 @@
 SHOOT           JSR CLEAR_CANCEL_IN
                 JSR DRAW_PICT
-                PictTextAt 105;133;(CONFIRM_WEAPON_TO_BE_AIMED)
+                PictTextAt 105;133;"CONFIRM WEAPON TO BE AIMED"
                 PictEnd
                 LDA #$01
                 JSR SELECT_HAND
                 JSR GETUSCO
                 JSR DRAW_PICT
-                PictTextAt 123;142;(AIM_AT_WHICH_SQUARE?)
+                PictTextAt 123;142;"AIM AT WHICH SQUARE?"
                 PictEnd
                 JSR BOTTOMR
                 JSR GRID_AIM
@@ -27,9 +27,9 @@ SHOOT           JSR CLEAR_CANCEL_IN
                 LDA TIMLEFT
                 STA CTIMTAB,X
                 JSR DRAW_PICT
-                PictTextAt 123;132;(FIRE_HOW_MANY_TIMES?)
-                PictTextAt 131;143;(=)
-                PictTextAt 147;143;(OF_SHOTS:)
+                PictTextAt 123;132;"FIRE HOW MANY TIMES?"
+                PictTextAt 131;143;"="
+                PictTextAt 147;143;"OF SHOTS:"
                 PictEnd
                 LDX #$85
                 LDY #$8F

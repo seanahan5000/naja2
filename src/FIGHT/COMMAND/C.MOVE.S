@@ -6,8 +6,8 @@ MOVE            JSR UNDERS
                 JSR CLEAR_WTIME
 
                 JSR DRAW_PICT
-                PictTextAt 108;132;(SELECT_DESTINATION_SQUARE)
-                PictTextAt 126;180;(L>EAVE_MOVE_COMMAND)
+                PictTextAt 108;132;"SELECT DESTINATION SQUARE"
+                PictTextAt 126;180;"L>EAVE MOVE COMMAND"
                 PictEnd
 
                 LDA #$00
@@ -25,7 +25,7 @@ MOVE2           LDA COMCNT
                 BEQ PS2
 
                 JSR DRAW_PICT
-                PictTextAt 132;171;(B>ACK_ONE_COMMAND)
+                PictTextAt 132;171;"B>ACK ONE COMMAND"
                 PictEnd
                 LDA #"B"
                 BNE PS2                 ; always

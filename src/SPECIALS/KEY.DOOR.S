@@ -75,7 +75,7 @@ KEY_TURN_AWAY   LDA KEYBRD
 HAVE_KEYS       JSR DRAW_PICT
                 PictSetPage2
                 PictClear 7;183;33;192
-                PictTextAt 53;184;(DO_YOU_WANT_TO_INSERT_KEYS?_)
+                PictTextAt 53;184;"DO YOU WANT TO INSERT KEYS? "
                 PictSwap 7;183;33;191
                 PictSetPage1
                 PictEnd
@@ -98,7 +98,7 @@ HAVE_KEYS       JSR DRAW_PICT
                 PictSetPage2
                 PictImageFill PEDESTALS
                 PictClear 8;140;32;192
-                PictTextAt 60;142;(SELECT_A_KEY_TO_PLACE:)
+                PictTextAt 60;142;"SELECT A KEY TO PLACE:"
                 PictCall DRAW_KEY_NAMES
                 PictSetPage1
                 PictSwap 8;191;32;140
@@ -124,7 +124,7 @@ HAVE_KEYS       JSR DRAW_PICT
 :FAIL           JSR DRAW_PICT
                 PictSetPage2
                 PictClear 12;183;28;192
-                PictTextAt 92;184;(NOTHING_HAPPENED)
+                PictTextAt 92;184;"NOTHING HAPPENED"
                 PictSwap 12;183;28;191
                 PictSetPage1
                 PictEnd

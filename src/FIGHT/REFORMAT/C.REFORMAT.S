@@ -33,11 +33,11 @@ REFORMAT
 				PictLineTo $B6;$84
 				PictMoveTo $AA;$7A
 				PictLineTo $C2;$7A
-				PictTextAt 132;152;(<SPACE>_TO_ENTER)
-				PictTextAt 125;119;(J_OR)
-				PictTextAt 217;119;(OR_K)
-				PictTextAt 180;103;(A)
-				PictTextAt 180;135;(Z)
+				PictTextAt 132;152;"<SPACE> TO ENTER"
+				PictTextAt 125;119;"J OR"
+				PictTextAt 217;119;"OR K"
+				PictTextAt 180;103;"A"
+				PictTextAt 180;135;"Z"
 				PictEnd
 
 				JSR DRAW_SEL_MEMB
@@ -112,8 +112,8 @@ KEYHIT_A		BIT	UNSTROB
 
 FRONT_EMPTY		JSR	DRAW_PICT
 				PictClear 15;161;38;185
-				PictTextAt 106;170;(THERE_MUST_BE_AT_LEAST_ONE)
-				PictTextAt 112;178;(PERSON_IN_THE_FRONT_ROW)
+				PictTextAt 106;170;"THERE MUST BE AT LEAST ONE"
+				PictTextAt 112;178;"PERSON IN THE FRONT ROW"
 				PictEnd
 				LDY	#$05
 :1				LDA	#$00
@@ -124,7 +124,7 @@ FRONT_EMPTY		JSR	DRAW_PICT
 :2				BIT	UNSTROB
 				JSR	DRAW_PICT
 				PictClear 15;170;38;185
-				PictTextAt 162;170;(L>EAVE)
+				PictTextAt 162;170;"L>EAVE"
 				PictEnd
 				JMP	KEYLOOP_A
 
@@ -569,17 +569,17 @@ SORT_GRID25		LDA #0
 
 DRAW_SEL_MEMB	JSR DRAW_PICT
 				PictClear 15;86;37;93
-				PictTextAt 108;86;(SELECT_MEMBER_TO_BE_MOVED)
+				PictTextAt 108;86;"SELECT MEMBER TO BE MOVED"
 				PictClear 22;170;29;177
-				PictTextAt 162;170;(L>EAVE)
+				PictTextAt 162;170;"L>EAVE"
 				PictEnd
 				RTS
 
 DRAW_SEL_DEST	JSR DRAW_PICT
 				PictClear 15;86;37;93
-				PictTextAt 126;86;(SELECT_DESTINATION)
+				PictTextAt 126;86;"SELECT DESTINATION"
 				PictClear 22;170;29;177
-				PictTextAt 160;170;(C>ANCEL)
+				PictTextAt 160;170;"C>ANCEL"
 				PictEnd
 				RTS
 
@@ -590,13 +590,13 @@ DRAW_GRID       JSR DRAW_PICT
                 PictMoveTo $07;$7F
                 PictLineTo $55;$7F
 ;                 PictSetTextHeight 11
-;                 PictTextAt $00;$4B;(J\nI\nH\nG\nF\nE\nD\nC\nB\nA)
+;                 PictTextAt $00;$4B;"J\nI\nH\nG\nF\nE\nD\nC\nB\nA"
 ;                 PictSetTextHeight $00
-;                 PictTextAt $0E;$B9;(1)
-;                 PictTextAt $1D;$B9;(2)
-;                 PictTextAt $2C;$B9;(3)
-;                 PictTextAt $3B;$B9;(4)
-;                 PictTextAt $4A;$B9;(5)
+;                 PictTextAt $0E;$B9;"1"
+;                 PictTextAt $1D;$B9;"2"
+;                 PictTextAt $2C;$B9;"3"
+;                 PictTextAt $3B;$B9;"4"
+;                 PictTextAt $4A;$B9;"5"
                 PictEnd
 
                 ; draw grid dots (no HPLOT anymore)

@@ -16,227 +16,227 @@ BLOCK_LIST      DW  BLOCK_00
 
 
 BLOCK_00
-                USR (SWINGS)=
-                USR (STRIKES)=
-                USR (POKES)=
-                USR (SCRATCHES)=
-                USR (CLAWS)=
-                USR (STABS)=
-                USR (THRUSTS)=
-                USR (HACKS)=
-                USR (SLASHES)=
-                USR (BITES)=
-                USR (SNIPS)=
-                USR (PUNCHES)=
-                USR (GRABS)=
-                USR (REACHES)=
-                USR (KICKES)=
-                USR (WHIPS)=
+                TXI "SWINGS"
+                TXI "STRIKES"
+                TXI "POKES"
+                TXI "SCRATCHES"
+                TXI "CLAWS"
+                TXI "STABS"
+                TXI "THRUSTS"
+                TXI "HACKS"
+                TXI "SLASHES"
+                TXI "BITES"
+                TXI "SNIPS"
+                TXI "PUNCHES"
+                TXI "GRABS"
+                TXI "REACHES"
+                TXI "KICKES"
+                TXI "WHIPS"
 
 BLOCK_10
-                USR (SWOOPS)=
-                USR (SPRAYS)=
-                USR (LUNGES)=
-                USR (JUMPS)=
-                USR (AS)=
-                USR (TO)=
-                USR (THE)=
-                USR (HIT)=
-                USR (GRENADE)=
-                USR (EXPLODES)=
-                USR (SONIC)=
-                USR (BURNED)=
-                USR (BLINDED)=
-                USR (GYRO)=
-                USR (TOWARD)=
-                USR (ARCS)=
+                TXI "SWOOPS"
+                TXI "SPRAYS"
+                TXI "LUNGES"
+                TXI "JUMPS"
+                TXI "AS"
+                TXI "TO"
+                TXI "THE"
+                TXI "HIT"
+                TXI "GRENADE"
+                TXI "EXPLODES"
+                TXI "SONIC"
+                TXI "BURNED"
+                TXI "BLINDED"
+                TXI "GYRO"
+                TXI "TOWARD"
+                TXI "ARCS"
 
 BLOCK_20
-                USR (BOOMERANG)=
-                USR (BEING)=
-                USR (ANYTHING)=
-                USR (CUTS)=
-                USR (SCANS)=
-                USR (FAILS)=
-                USR (IDENTIFY)=
-                USR (IDENTIFIES)=
-                USR (SLICES)=
-                USR (DOESN'T)=
-                USR (THRASHES)=
-                USR (SWIPES)=
-                USR (TRANSMIT)=
-                USR (TRANSMITS)=
-                USR (SWING)=
-                USR (CRACKS)=
+                TXI "BOOMERANG"
+                TXI "BEING"
+                TXI "ANYTHING"
+                TXI "CUTS"
+                TXI "SCANS"
+                TXI "FAILS"
+                TXI "IDENTIFY"
+                TXI "IDENTIFIES"
+                TXI "SLICES"
+                TXI "DOESN'T"
+                TXI "THRASHES"
+                TXI "SWIPES"
+                TXI "TRANSMIT"
+                TXI "TRANSMITS"
+                TXI "SWING"
+                TXI "CRACKS"
 
 BLOCK_30
-                USR (AND)=
-                USR (FOR)=
-                USR (NOTHING)=
-                USR (INFLICTS)=     ;|
-                USR (CAUSES)=       ;|
-                USR (CONNECTS)=     ;|
-                USR (HITS)=         ;|
-                USR (DAMAGE)=
-                USR (IS)=
-                USR (KILLED)=       ;|
-                USR (DESTROYED)=    ;|
-                USR (FIRE)=         ;  |
-                USR (SHOOT)=        ;  |
-                USR (BLAST)=        ;  |
-                USR (SHOT)=         ;  |
-                USR (MISSES)=       ;|
+                TXI "AND"
+                TXI "FOR"
+                TXI "NOTHING"
+                TXI "INFLICTS"      ;|
+                TXI "CAUSES"        ;|
+                TXI "CONNECTS"      ;|
+                TXI "HITS"          ;|
+                TXI "DAMAGE"
+                TXI "IS"
+                TXI "KILLED"        ;|
+                TXI "DESTROYED"     ;|
+                TXI "FIRE"          ;  |
+                TXI "SHOOT"         ;  |
+                TXI "BLAST"         ;  |
+                TXI "SHOT"          ;  |
+                TXI "MISSES"        ;|
                                     ;|
 BLOCK_40                            ;|
-                USR (WHIZZES)=      ;|
-                USR (FLIES)=        ;|
-                USR (BUZZES)=       ;|
-                USR (WITH)=
-                USR (BUT)=
-                USR (IT)=
-                USR (RICOCHETS)=
-                USR (PAST)=
-                USR (ATTACKER)=
-                USR (BRAIN)=
-                USR (JAMMING)=
-                USR (WAVES)=
-                USR (WIDE)=
-                USR (VIBRATE)=
-                USR (OF)=
-                USR (UNLOADS)=
+                TXI "WHIZZES"       ;|
+                TXI "FLIES"         ;|
+                TXI "BUZZES"        ;|
+                TXI "WITH"
+                TXI "BUT"
+                TXI "IT"
+                TXI "RICOCHETS"
+                TXI "PAST"
+                TXI "ATTACKER"
+                TXI "BRAIN"
+                TXI "JAMMING"
+                TXI "WAVES"
+                TXI "WIDE"
+                TXI "VIBRATE"
+                TXI "OF"
+                TXI "UNLOADS"
 
 BLOCK_50
-                USR (SEEM)=
-                USR (HAVE)=
-                USR (WEAK)=
-                USR (HARMLESS)=
-                USR (UNIT)=
-                USR (LETS_LOOSE)=
-                USR (THROWS)=
-                USR (DISCHARGES)=
-                USR (RELEASES)=
-                USR (EMITS)=
-                USR (SCORCHING)=    ;|
-                USR (BURNING)=      ;|
-                USR (SEARING)=      ;|
-                USR (CRACKLING)=    ;   |
-                USR (PULSATING)=    ;   |
-                USR (GLOWING)=      ;   |
+                TXI "SEEM"
+                TXI "HAVE"
+                TXI "WEAK"
+                TXI "HARMLESS"
+                TXI "UNIT"
+                TXI "LETS LOOSE"
+                TXI "THROWS"
+                TXI "DISCHARGES"
+                TXI "RELEASES"
+                TXI "EMITS"
+                TXI "SCORCHING"     ;|
+                TXI "BURNING"       ;|
+                TXI "SEARING"       ;|
+                TXI "CRACKLING"     ;   |
+                TXI "PULSATING"     ;   |
+                TXI "GLOWING"       ;   |
                                     ;   |
 BLOCK_60                            ;   |
-                USR (BRILLIANT)=    ;   |
-                USR (BLINDING)=     ;   |
-                USR (GLARING)=      ;   |
-                USR (BOLT)=
-                USR (FLASH)=
-                USR (ENERGY)=
-                USR (RUNS)=
-                USR (OUT)=
-                USR (BLOCKED)=
-                USR (INTERCEPTED)=
-                USR (WALL)=
-                USR (STARTS)=
-                USR (EFFECT)=
-                USR (STOPS)=
-                USR (ABRUPTLY)=
-                USR (IN)=
+                TXI "BRILLIANT"     ;   |
+                TXI "BLINDING"      ;   |
+                TXI "GLARING"       ;   |
+                TXI "BOLT"
+                TXI "FLASH"
+                TXI "ENERGY"
+                TXI "RUNS"
+                TXI "OUT"
+                TXI "BLOCKED"
+                TXI "INTERCEPTED"
+                TXI "WALL"
+                TXI "STARTS"
+                TXI "EFFECT"
+                TXI "STOPS"
+                TXI "ABRUPTLY"
+                TXI "IN"
 
 BLOCK_70
-                USR (WAY)=
-                USR (NO)=
-                USR (ONE)=
-                USR (AFFECTED)=
-                USR (THAT)=
-                USR (EVERYBODY)=
-                USR (SO)=
-                USR (OFF)=
-                USR (IT'S)=
-                USR (RESTRAINING)=
-                USR (MESSAGE)=
-                USR (ABSORBED)=
-                USR (BY)=
-                USR (INTO)=
-                USR (REMAINS)=
-                USR (DODGES)=       ;|
+                TXI "WAY"
+                TXI "NO"
+                TXI "ONE"
+                TXI "AFFECTED"
+                TXI "THAT"
+                TXI "EVERYBODY"
+                TXI "SO"
+                TXI "OFF"
+                TXI "IT'S"
+                TXI "RESTRAINING"
+                TXI "MESSAGE"
+                TXI "ABSORBED"
+                TXI "BY"
+                TXI "INTO"
+                TXI "REMAINS"
+                TXI "DODGES"        ;|
                                     ;|
 BLOCK_80                            ;|
-                USR (DUCKS)=        ;|
-                USR (EVADES)=       ;|
-                USR (AVOIDS)=       ;|
-                USR (BLOCKS)=
-                USR (ATTACK)=
-                USR (DAMAGED)=      ;|
-                USR (INJURED)=      ;|
-                USR (HARMED)=       ;|
-                USR (GOES)=
-                USR (ISN'T)=
-                USR (QUICK)=
-                USR (ENOUGH)=
-                USR (THIN_AIR)=                 ;|
-                USR (NOBODY)=                   ;|
-                USR (AN_EMPTY_SQUARE)=      ;|
-                USR (DEFLECTED)=
+                TXI "DUCKS"         ;|
+                TXI "EVADES"        ;|
+                TXI "AVOIDS"        ;|
+                TXI "BLOCKS"
+                TXI "ATTACK"
+                TXI "DAMAGED"       ;|
+                TXI "INJURED"       ;|
+                TXI "HARMED"        ;|
+                TXI "GOES"
+                TXI "ISN'T"
+                TXI "QUICK"
+                TXI "ENOUGH"
+                TXI "THIN AIR"                  ;|
+                TXI "NOBODY"                    ;|
+                TXI "AN EMPTY SQUARE"       ;|
+                TXI "DEFLECTED"
 
 BLOCK_90
-                USR (BADLY)=
-                USR (BLOW)=
-                USR (RECEIVED)=
-                USR (ANYONE)=
-                USR (IGNORED)=
-                USR (OBEYED)=
-                USR (POWERFUL)=     ;|
-                USR (DEVASTATING)=  ;|
-                USR (DESTRUCTIVE)=  ;|
-                USR (UNKNOWN)=      ;   |
-                USR (ALIEN)=        ;   |
-                USR (ROBOT)=        ;   |
-                USR (EXCHANGES)=
-                USR (EQUIPMENT)=
-                USR (HEALS)=        ;|
-                USR (REPAIRS)=      ;|
+                TXI "BADLY"
+                TXI "BLOW"
+                TXI "RECEIVED"
+                TXI "ANYONE"
+                TXI "IGNORED"
+                TXI "OBEYED"
+                TXI "POWERFUL"      ;|
+                TXI "DEVASTATING"   ;|
+                TXI "DESTRUCTIVE"   ;|
+                TXI "UNKNOWN"       ;   |
+                TXI "ALIEN"         ;   |
+                TXI "ROBOT"         ;   |
+                TXI "EXCHANGES"
+                TXI "EQUIPMENT"
+                TXI "HEALS"         ;|
+                TXI "REPAIRS"       ;|
 
 BLOCK_A0
-                USR (LONGER)=
-                USR (SNIFFS)=
-                USR (MUSCLE)=       ;|
-                USR (REFLEX)=       ;|
-                USR (DIES)=
-                USR (INSTANTLY)=
-                USR (NOT)=
-                USR (RETURNS)=
-                USR (A)=
-                USR (AT)=
-                USR (AN)=
-                USR (STRIKE)=
-                USR (DETONATE)=
-                USR (CRASHES)=
-                USR (FLOOR)=
-                USR (DOES)=
+                TXI "LONGER"
+                TXI "SNIFFS"
+                TXI "MUSCLE"        ;|
+                TXI "REFLEX"        ;|
+                TXI "DIES"
+                TXI "INSTANTLY"
+                TXI "NOT"
+                TXI "RETURNS"
+                TXI "A"
+                TXI "AT"
+                TXI "AN"
+                TXI "STRIKE"
+                TXI "DETONATE"
+                TXI "CRASHES"
+                TXI "FLOOR"
+                TXI "DOES"
 
 BLOCK_B0
-                USR (GIVES)=
-                USR (RETREAT)=
-                USR (SIGNAL)=
-                USR (ACTIVATE)=
-                USR (ENVELOPS)=
-                USR (IMMOBILIZER)=
-                USR (IMMOBILIZE)=
-                USR (SEND)=
-                USR (SENDS)=
-                USR (HAS)=
-                USR (CRITICAL)=
-                USR (BROKEN)=
-                USR (IMMOBILE)=
-                USR (RESTRAINED)=
-                USR (JAMMED)=
-                USR (X)=            ;*
+                TXI "GIVES"
+                TXI "RETREAT"
+                TXI "SIGNAL"
+                TXI "ACTIVATE"
+                TXI "ENVELOPS"
+                TXI "IMMOBILIZER"
+                TXI "IMMOBILIZE"
+                TXI "SEND"
+                TXI "SENDS"
+                TXI "HAS"
+                TXI "CRITICAL"
+                TXI "BROKEN"
+                TXI "IMMOBILE"
+                TXI "RESTRAINED"
+                TXI "JAMMED"
+                TXI "X"             ;*
 
 
 *** THESE ARE USED IN RUN RESOLVER CODE
 BLOCK_E0
-                USR (GROUP)=
-                USR (ALIENS)=
-                USR (SUCCESSFULLY)=
-                USR (ATTEMPT)=
-                USR (UNSUCCESSFUL)=
-                USR (RETREATED)=
+                TXI "GROUP"
+                TXI "ALIENS"
+                TXI "SUCCESSFULLY"
+                TXI "ATTEMPT"
+                TXI "UNSUCCESSFUL"
+                TXI "RETREATED"

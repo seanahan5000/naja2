@@ -49,7 +49,7 @@ NOMO2			JSR	MARKIT
 				JSR	USE2TO1
 				JSR DRAW_PICT
 				PictClear 24;63;39;81
-				PictTextAt 171;68;(MOVE_IT_TO_WHERE?)
+				PictTextAt 171;68;"MOVE IT TO WHERE?"
 				PictEnd
 				JSR	CURSIT2
 				JSR	COMNKEY
@@ -198,8 +198,8 @@ RECOMN			JSR	COMNKEY
 
 				JSR DRAW_PICT
 				PictClear 24;63;39;81
-				PictTextAt 174;63;(PRESS_<SPACE>_TO)
- 				PictTextAt 189;72;(VERIFY_DROP)
+				PictTextAt 174;63;"PRESS <SPACE> TO"
+ 				PictTextAt 189;72;"VERIFY DROP"
 				PictEnd
 
 VERKEY			LDA	KEYBRD
@@ -234,19 +234,19 @@ PICDROP			JSR	RESET_EQLIST
 				RTS
 
 DRAW_USE_WHICH 	JSR DRAW_PICT
-				PictTextAt 177;63;(USE)
+				PictTextAt 177;63;"USE"
 				PictEnd
 				JMP WHICH_CMN
 DRAW_MOVE_WHICH JSR DRAW_PICT
-				PictTextAt 174;63;(MOVE)
+				PictTextAt 174;63;"MOVE"
 				PictEnd
 				JMP WHICH_CMN
 DRAW_DROP_WHICH JSR DRAW_PICT
-				PictTextAt 174;63;(DROP)
+				PictTextAt 174;63;"DROP"
 				PictEnd
 WHICH_CMN		JSR DRAW_PICT
-				PictTextAt 204;63;(WHICH_PIECE)
- 				PictTextAt 183;72;(OF_EQUIPMENT?)
+				PictTextAt 204;63;"WHICH PIECE"
+ 				PictTextAt 183;72;"OF EQUIPMENT?"
 				PictEnd
 				RTS
 
@@ -256,7 +256,7 @@ PRESUB			JSR DRAW_PICT
 				PictLineTo 271;50
 				PictMoveTo 171;104
 				PictLineTo 271;104
-				PictTextAt 201;84;(C>ANCEL)
+				PictTextAt 201;84;"C>ANCEL"
 				PictEnd
 				JMP	CURSIT2
 

@@ -27,9 +27,9 @@ ENTER_CAMP      ENT
                 ;	Mothership and adjusted accordingly
                 ; TODO: too close to edge of byte
                 PictRect 106;14;174;35
-                PictTextAt 123;17;()-
-                USR (MEMBERS\n)-
-                USR (LEAVE)
+                PictTextAt_ 123;17
+                TXC "MEMBERS\n"
+                TXT "LEAVE"
                 PictEnd
                 LDA #0
                 STA CCURPOS_MS
@@ -41,11 +41,11 @@ ENTER_CAMP      ENT
                 PictSetViolet
                 ; TODO: too close to edge of byte
                 PictRect 106;14;174;53
-                PictTextAt 123;17;()-
-                USR (MEMBERS\n)-
-                USR (FORMAT\n)-
-                USR (CODEX\n)-
-                USR (LEAVE)
+                PictTextAt_ 123;17
+                TXC "MEMBERS\n"
+                TXC "FORMAT\n"
+                TXC "CODEX\n"
+                TXT "LEAVE"
                 PictEnd
                 LDA #0
                 STA CCURPOS_TRACC
@@ -65,7 +65,10 @@ ENTER_CAMP      ENT
                 PictSetPage1
                 PictSetViolet
                 PictRect $72;$21;$A6;$3F
-                PictTextAt 131;36;(MORE\nFLIP\nEXIT)
+                PictTextAt_ 131;36
+                TXC "MORE\n"
+                TXC "FLIP\n"
+                TXT "EXIT"
                 PictEnd
                 LDX #<STATS_MENU
                 LDY #>STATS_MENU
@@ -226,27 +229,27 @@ CAMP_MENU_BOX   LDA SHELL
 
 :MOTHER			JSR DRAW_PICT
                 PictSetBlue
-                ; PictRect $3A;$7C;$DC;$AE
+;               PictRect $3A;$7C;$DC;$AE
                 PictRect $3A;$7C;$DC;$A5
-                PictTextAt 81;128;()-
-                USR (TRADE\n)-
-                ; USR (POOL_CREDITS\n)-
-                USR (INDIVIDUAL_STATISTICS\n)-
-                USR (FLIP_STATS_TABLE\n)-
-                USR (LEAVE)
+                PictTextAt_ 81;128
+                TXC "TRADE\n"
+;               TXC "POOL CREDITS\n"
+                TXC "INDIVIDUAL STATISTICS\n"
+                TXC "FLIP STATS TABLE\n"
+                TXT "LEAVE"
                 PictEnd
                 RTS
 
 :TRACC			JSR DRAW_PICT
                 PictSetOrange
                 PictRect $3B;$7C;$DD;$B7
-                PictTextAt 81;128;()-
-                USR (TRADE\n)-
-                USR (REFORMAT_GROUP\n)-
-                USR (INDIVIDUAL_STATISTICS\n)-
-                USR (ALIEN_COMPENDIUM\n)-
-                USR (FLIP_STATS_TABLE\n)-
-                USR (LEAVE)
+                PictTextAt_ 81;128
+                TXC "TRADE\n"
+                TXC "REFORMAT GROUP\n"
+                TXC "INDIVIDUAL STATISTICS\n"
+                TXC "ALIEN COMPENDIUM\n"
+                TXC "FLIP STATS TABLE\n"
+                TXT "LEAVE"
                 PictEnd
                 RTS
 
@@ -321,11 +324,11 @@ EXIT_CAMP		JSR	DRAW_PICT
 
 TO_ISTATS		JSR DRAW_PICT
 		do SMALL_GROUP
-				PictTextAt 16;71;(CANCEL)
+				PictTextAt 16;71;"CANCEL"
 		else
-				PictTextAt 16;70;(CANCEL)
+				PictTextAt 16;70;"CANCEL"
 		fin
-				PictTextAt 63;96;(INDIVIDUAL_STATS_FOR_WHOM?)
+				PictTextAt 63;96;"INDIVIDUAL STATS FOR WHOM?"
 				PictEnd
 				JSR	PICK_CHAR
 				CPX #7

@@ -539,128 +539,128 @@ WORD_EXIT		LDA #TextLineEnd
 				RTS
 
 
-GROUP_BLAST		USR	(FLY)=					;*0          Group 0
-				USR	(LIGHT)=				;*1
-				USR	(MEDIUM)=				;*2
-				USR	(HEAVY)=				;*3
-				USR	(ULTRA)=				;*4
-				USR	(ZIFFER'S)=      		;*5
-UGROUP_WEAP		USR	(PISTOL)=				;*6 *0       Group 1
-				USR	(RIFLE)=				;*7 *1
-				USR	(CANNON)=				;*8 *2
-				USR	(BEAM)=					;   *3
-				USR	(LASER)=				;   *4
-				USR	(WEAPON)=				;   *5
-				USR	(SWORD)=				;   *6
-				USR	(SHOULDER)=				;   *7
-				USR	(CURVED)=				;   *8
-				USR	(SMALL)=				;   *9
-				USR	(THROWABLE)=			;   *A
-				USR	(OBJECT)=				;   *B
-				USR	(LARGE)=				;   *C
-UGROUP_SCAN		USR	(ELECTRONIC)=			;*0 *D       Group 2
-				USR	(METAL_ROD)=			;*1
-				USR	(GADGET)=				;*2
-				USR	(VISOR)=				;*3
-				USR	(RUBBERY)=				;*4
-				USR	(BOOTS)=				;*5
-				USR	(STRANGE_ARMOR)=		;*6
-GROUP_SCAN		USR	(SCANNER)=				;*7 *0       Group 3
-				USR	(I.D.)=					;   *1
-				USR	(FACE_TRACKER)=			;   *2
-				USR	(ORGANIC)=				;   *3
-				USR	(ROBOTIC)=				;   *4
-				USR	(DETECTOR)=				;   *5
-				USR	(DOOR_UNLOCKER)=		;   *6
-				USR	(VIBRATION_SENSOR)=		;   *7
+GROUP_BLAST		TXI	"FLY" 					;*0          Group 0
+				TXI	"LIGHT" 				;*1
+				TXI	"MEDIUM" 				;*2
+				TXI	"HEAVY" 				;*3
+				TXI	"ULTRA" 				;*4
+				TXI	"ZIFFER'S"       		;*5
+UGROUP_WEAP		TXI	"PISTOL" 				;*6 *0       Group 1
+				TXI	"RIFLE" 				;*7 *1
+				TXI	"CANNON" 				;*8 *2
+				TXI	"BEAM" 					;   *3
+				TXI	"LASER" 				;   *4
+				TXI	"WEAPON" 				;   *5
+				TXI	"SWORD" 				;   *6
+				TXI	"SHOULDER" 				;   *7
+				TXI	"CURVED" 				;   *8
+				TXI	"SMALL" 				;   *9
+				TXI	"THROWABLE" 			;   *A
+				TXI	"OBJECT" 				;   *B
+				TXI	"LARGE" 				;   *C
+UGROUP_SCAN		TXI	"ELECTRONIC" 			;*0 *D       Group 2
+				TXI	"METAL_ROD" 			;*1
+				TXI	"GADGET" 				;*2
+				TXI	"VISOR" 				;*3
+				TXI	"RUBBERY" 				;*4
+				TXI	"BOOTS" 				;*5
+				TXI	"STRANGE_ARMOR" 		;*6
+GROUP_SCAN		TXI	"SCANNER" 				;*7 *0       Group 3
+				TXI	"I.D." 					;   *1
+				TXI	"FACE_TRACKER" 			;   *2
+				TXI	"ORGANIC" 				;   *3
+				TXI	"ROBOTIC" 				;   *4
+				TXI	"DETECTOR" 				;   *5
+				TXI	"DOOR_UNLOCKER" 		;   *6
+				TXI	"VIBRATION_SENSOR" 		;   *7
 
-GROUP_ARMHELM	USR	(CLEAR)=				;*0          Group 4
-				USR	(BENDER)=				;*1
-				USR	(MIRAGE)=				;*2
-				USR	(IMAGE)=				;*3
-				USR	(MIRROR)=				;*4
-				USR	(ARMOR)=				;*5
-				USR	(HELMET)=				;*6
-				USR	(FORCE_SHIELD)=			;*7
-				USR	(MECHANICAL)=			;*8
-				USR	(SMART)=				;*9
+GROUP_ARMHELM	TXI	"CLEAR" 				;*0          Group 4
+				TXI	"BENDER" 				;*1
+				TXI	"MIRAGE" 				;*2
+				TXI	"IMAGE" 				;*3
+				TXI	"MIRROR" 				;*4
+				TXI	"ARMOR" 				;*5
+				TXI	"HELMET" 				;*6
+				TXI	"FORCE_SHIELD" 			;*7
+				TXI	"MECHANICAL" 			;*8
+				TXI	"SMART" 				;*9
 
-GROUP_MISC		USR	(CONTROLLER)=			;   *0       Group 5
-				USR	(MUSCLE)=				;   *1
-				USR	(REFLEX)=				;   *2
-				USR	(MAROON)=				;   *3
-				USR	(SILVER)=				;   *4
-				USR	(POWDER)=				;   *5
-				USR	(COMPRESSD_PERSON)=		;   *6
-				USR	(DATA)=					;   *7
-				USR	(JUNK)=					;   *8
-GROUP_ROBO		USR	(ROBOT)=				;*0 *9       Group 6
-				USR	(CARD)=					;*1 *A
-				USR	(PROGRAM)=				;*2
-				USR	(HAND)=					;*3
-				USR	(ATTACHMENT)=			;*4
-				USR	(MECHANICAL)=			;*5
-				USR	(BLASTER)=				;*6
-GROUP_BEAM		USR	(DAGGER)=				;*7 *0       Group 7
-				USR	(SWORD)=				;*8 *1
-				USR	(BLUE_BEAM)=			;   *2
-				USR	(GREEN_BEAM)=			;   *3
-				USR	(RED_BEAM)=				;   *4
-				USR	(LASBEAM)=				;   *5
-				USR	(WHIP)=					;   *6
-UGROUP_MEDIC	USR	(LASER)=				;   *7 *0    Group 8
-				USR	(MEDICAL_DEVICE)=		;      *1
-				USR	(GADGET)=				;      *2
-				USR	(HEAD_GEAR)=			;      *3
-GROUP_MEDIC		USR	(CAPSULE)=				;*0    *4    Group 9
-				USR	(DIAGNOSER)=			;*1    *5
-				USR	(CELL_REGENERATOR)=		;*2
-				USR	(CIRCUIT_REPAIRER)=		;*3
-				USR	(ATOM_COMPRESSOR)=		;*4
-				USR	(CAUTERIZER)=			;*5
-				USR	(SIGHT_RESTORER)=		;*6
-				USR	(BRAIN_EQUALIZER)=		;*7
-				USR	(DRUG_INFUSOR)=			;*8
+GROUP_MISC		TXI	"CONTROLLER" 			;   *0       Group 5
+				TXI	"MUSCLE" 				;   *1
+				TXI	"REFLEX" 				;   *2
+				TXI	"MAROON" 				;   *3
+				TXI	"SILVER" 				;   *4
+				TXI	"POWDER" 				;   *5
+				TXI	"COMPRESSD_PERSON" 		;   *6
+				TXI	"DATA" 					;   *7
+				TXI	"JUNK" 					;   *8
+GROUP_ROBO		TXI	"ROBOT" 				;*0 *9       Group 6
+				TXI	"CARD" 					;*1 *A
+				TXI	"PROGRAM" 				;*2
+				TXI	"HAND" 					;*3
+				TXI	"ATTACHMENT" 			;*4
+				TXI	"MECHANICAL" 			;*5
+				TXI	"BLASTER" 				;*6
+GROUP_BEAM		TXI	"DAGGER" 				;*7 *0       Group 7
+				TXI	"SWORD" 				;*8 *1
+				TXI	"BLUE_BEAM" 			;   *2
+				TXI	"GREEN_BEAM" 			;   *3
+				TXI	"RED_BEAM" 				;   *4
+				TXI	"LASBEAM" 				;   *5
+				TXI	"WHIP" 					;   *6
+UGROUP_MEDIC	TXI	"LASER" 				;   *7 *0    Group 8
+				TXI	"MEDICAL_DEVICE" 		;      *1
+				TXI	"GADGET" 				;      *2
+				TXI	"HEAD_GEAR" 			;      *3
+GROUP_MEDIC		TXI	"CAPSULE" 				;*0    *4    Group 9
+				TXI	"DIAGNOSER" 			;*1    *5
+				TXI	"CELL_REGENERATOR" 		;*2
+				TXI	"CIRCUIT_REPAIRER" 		;*3
+				TXI	"ATOM_COMPRESSOR" 		;*4
+				TXI	"CAUTERIZER" 			;*5
+				TXI	"SIGHT_RESTORER" 		;*6
+				TXI	"BRAIN_EQUALIZER" 		;*7
+				TXI	"DRUG_INFUSOR" 			;*8
 
-GROUP_ANTI		USR	(ANTI-)=				;*0          Group A
-				USR	(POISON)=				;*1
-				USR	(FUNGUS)=				;*2
-				USR	(PARASITE)=				;*3
-				USR	(VIRUS)=				;*4
-				USR	(BACTERIA)=				;*5
-				USR	(PENGUIN)=				;*6
+GROUP_ANTI		TXI	"ANTI-" 				;*0          Group A
+				TXI	"POISON" 				;*1
+				TXI	"FUNGUS" 				;*2
+				TXI	"PARASITE" 				;*3
+				TXI	"VIRUS" 				;*4
+				TXI	"BACTERIA" 				;*5
+				TXI	"PENGUIN" 				;*6
 
 ;*** NOTE: also referenced indirectly by KEY.DOOR.S
-GROUP_KEY		USR	(WHITE_SAND)=			;*0          Group B
-				USR	(HEAVY_STONE)=			;*1
-				USR	(CHANGING_CRYSTAL)=		;*2
-				USR	(PLASTEEL_CIRCUIT)=		;*3
-				USR	(PETRIFIED_LEAF)=		;*4
+GROUP_KEY		TXI	"WHITE_SAND" 			;*0          Group B
+				TXI	"HEAVY_STONE" 			;*1
+				TXI	"CHANGING_CRYSTAL" 		;*2
+				TXI	"PLASTEEL_CIRCUIT" 		;*3
+				TXI	"PETRIFIED_LEAF" 		;*4
 
 ; TODO: change these back once there's a way for
 ;	the player to know them at key door time
-;				USR	(TERRAN)=				;*5
-;				USR	(TOUHTAAN)=				;*6
-;				USR	(ZINAN)=				;*7
-;				USR	(!!!)=					;*8
-;				USR	(GILLOITAN)=			;*9
-				USR (HUMAN)=				;*5
-				USR (ORN)=					;*6
-				USR (STILICX)=				;*7
-				USR (XXTYS)=				;*8
-				USR (DENEB)=				;*9
+;				TXI	"TERRAN" 				;*5
+;				TXI	"TOUHTAAN" 				;*6
+;				TXI	"ZINAN" 				;*7
+;				TXI	"!!!" 					;*8
+;				TXI	"GILLOITAN" 			;*9
+				TXI "HUMAN" 				;*5
+				TXI "ORN" 					;*6
+				TXI "STILICX" 				;*7
+				TXI "XXTYS" 				;*8
+				TXI "DENEB" 				;*9
 
-				USR	(KEY)=					;*A
+				TXI	"KEY" 					;*A
 
-GROUP_ATTACH	USR	(%_DISSIPATOR)=			;*0          Group C
-				USR	(%_GROUNDERS)=			;*1
-				USR	(IMAGE_GENERATOR)=		;*2
-				USR	(BLAST_VISOR)=			;*3
-				USR	(EXOSKELETON)=			;*4
+GROUP_ATTACH	TXI	"%_DISSIPATOR" 			;*0          Group C
+				TXI	"%_GROUNDERS" 			;*1
+				TXI	"IMAGE_GENERATOR" 		;*2
+				TXI	"BLAST_VISOR" 			;*3
+				TXI	"EXOSKELETON" 			;*4
 
-GROUP_MSCWEAP	USR	(GYRO_BOOMERANG)=		;*0          Group D
-				USR	(DISINTEGRATOR)=		;*1
-				USR	(BRAIN_JAMMER)=			;*2
-				USR	(IMMOBILIZER)=			;*3
-				USR	(SONIC_GRENADE)=		;*4
-				USR	(ROBOT_RESTRAINER)=		;*5
+GROUP_MSCWEAP	TXI	"GYRO_BOOMERANG" 		;*0          Group D
+				TXI	"DISINTEGRATOR" 		;*1
+				TXI	"BRAIN_JAMMER" 			;*2
+				TXI	"IMMOBILIZER" 			;*3
+				TXI	"SONIC_GRENADE" 		;*4
+				TXI	"ROBOT_RESTRAINER" 		;*5

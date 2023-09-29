@@ -18,16 +18,16 @@ RESTATS			JSR DRAW_PICT
 				PictSetGreen
 				PictRect $A5;$00;$115;$BF
 				PictCall DRAW_CHAR_ROBO
-				PictTextAt 171;116;(EQUIPMENT_OPTIONS)
-				PictTextAt 198;125;()-
-				USR (MOVE\n)-
-				USR (DROP\n)-
-				USR (USE\n)-
-				USR (EXAMINE)
-				PictTextAt 180;162;()-
-				USR (TRANSFER_ENERGY\n)-
-				USR (SEE_STATISTICS)
-				PictTextAt 180;181;(LEAVE)
+				PictTextAt 171;116;"EQUIPMENT OPTIONS"
+				PictTextAt_ 198;125
+				TXC "MOVE\n"
+				TXC "DROP\n"
+				TXC "USE\n"
+				TXT "EXAMINE"
+				PictTextAt_ 180;162
+				TXC "TRANSFER_ENERGY\n"
+				TXT "SEE_STATISTICS"
+				PictTextAt 180;181;"LEAVE"
 				PictShowPage
 				PictEnd
 
@@ -116,9 +116,9 @@ TO_USE          LDA SHELL
 				PictLineTo $10F;$32
 				PictMoveTo $AB;$67
 				PictLineTo $10F;$67
-		        PictTextAt 177;63;(NOT_ALLOWED_IN)
-                PictTextAt 189;72;(MOTHERSHIP)
-                PictTextAt 198;84;(<SPACE>)
+		        PictTextAt 177;63;"NOT ALLOWED IN"
+                PictTextAt 189;72;"MOTHERSHIP"
+                PictTextAt 198;84;"<SPACE>"
 				PictEnd
                 BIT UNSTROB
 :KEYLOOP        LDA KEYBRD
@@ -387,15 +387,15 @@ DRAW_ITEMS		JSR IS_ROBOT
 				JMP DRAW_ROBO_ITEMS
 
 DRAW_CHAR_EQUIP	JSR	DRAW_PICT
-				PictTextAt 42;0;(HEAD)
-				PictTextAt 50;9;(:)
-				PictTextAt 50;17;(:)
-				PictTextAt 42;33;(BACK)
-				PictTextAt 42;98;(HANDS)
-				PictTextAt 42;147;(ARMOR)
-				PictTextAt 50;156;(:)
-				PictTextAt 42;172;(FEET)
-				PictTextAt 50;181;(:)
+				PictTextAt 42;0;"HEAD"
+				PictTextAt 50;9;":"
+				PictTextAt 50;17;":"
+				PictTextAt 42;33;"BACK"
+				PictTextAt 42;98;"HANDS"
+				PictTextAt 42;147;"ARMOR"
+				PictTextAt 50;156;":"
+				PictTextAt 42;172;"FEET"
+				PictTextAt 50;181;":"
 				PictEnd
 
 				; draw variable number of back slots
@@ -408,7 +408,7 @@ DRAW_CHAR_EQUIP	JSR	DRAW_PICT
 				LDX #38+6
 				JSR MOVE_TO
 				JSR DRAW_PICT
-:TEXT_MOD		PictText (1:)
+:TEXT_MOD		PictText "1:"
 				PictEnd
 				LDX :TEXT_MOD+1
 				DEX
@@ -439,13 +439,13 @@ DRAW_HAND_LABELS
 
 				JSR	DRAW_PICT
 				PictSetTextHeight 8
-				PictTextAt 38;107;(_L:\n_R:)
+				PictTextAt 38;107;"_L:\n_R:"
 				PictEnd
 				RTS
 
 :DENEB			JSR	DRAW_PICT
 				PictSetTextHeight 8
-				PictTextAt 38;107;(UL:\nUR:\nLL:\nLR:)
+				PictTextAt 38;107;"UL:\nUR:\nLL:\nLR:"
 				PictEnd
 				RTS
 
@@ -485,12 +485,12 @@ DRAW_INFO		JSR IS_ROBOT
 				JMP DRAW_ROBO_INFO
 
 DRAW_CHAR_INFO	JSR DRAW_PICT
-				PictTextAt 171;4;()-
-				USR(NAME:\n)-
-				USR(RACE:\n)-
-				USR(PROF:\n)-
-				USR(LEVL:\n)-
-				USR(EXPR:)
+				PictTextAt_ 171;4
+				TXC "NAME:\n"
+				TXC "RACE:\n"
+				TXC "PROF:\n"
+				TXC "LEVL:\n"
+				TXT "EXPR:"
 				PictMoveTo $CC;4
 				PictCall CNAME_TO_TEXT
 				PictTextbufRet
@@ -510,23 +510,23 @@ DRAW_ROBO_EQUIP	LDX #9
 				LDA	(CHARDL),Y
 				BPL	:NOWITH
 				JSR DRAW_PICT
-				PictTextAt 26;9;(WITH:)
+				PictTextAt 26;9;"WITH:"
 				PictEnd
 				LDX #0
 :NOWITH			STX :VMOVE_MOD+2
 				JSR DRAW_PICT
-:VMOVE_MOD		PictTextAt 26;9;(HEAD:)
+:VMOVE_MOD		PictTextAt 26;9;"HEAD:"
 				PictEnd
 				JSR DRAW_PICT
-				PictTextAt 42;33;(ARMS)
+				PictTextAt 42;33;"ARMS"
 				PictSetTextHeight 8
-				PictTextAt 44;42;(L:\n_:\nR:\n_:)
-				PictTextAt 42;104;(BACK)
-				PictTextAt 50;113;(:)
-				PictTextAt 42;128;(PROGRAM)
-				PictTextAt 50;137;(:)
-				PictTextAt 42;152;(MOVEMENT_TYPE)
-				PictTextAt 50;161;(:)
+				PictTextAt 44;42;"L:\n_:\nR:\n_:"
+				PictTextAt 42;104;"BACK"
+				PictTextAt 50;113;":"
+				PictTextAt 42;128;"PROGRAM"
+				PictTextAt 50;137;":"
+				PictTextAt 42;152;"MOVEMENT TYPE"
+				PictTextAt 50;161;":"
 				PictEnd
 				; fall through
 
@@ -540,8 +540,9 @@ DRAW_ROBO_ITEMS LDX #9
 				STA :RANGE_MOD
 				JSR DRAW_PICT
 				PictHMoveTo 26
-:VMOVE_MOD		PictTextAt 66;9;(<SIGHT_RANGE-)-
-:RANGE_MOD		USR	(_>)
+:VMOVE_MOD		PictTextAt_ 66;9
+				TXC "<SIGHT_RANGE-"
+:RANGE_MOD		TXT	"_>"
 				PictEnd
 
 				LDX #0
@@ -608,17 +609,17 @@ REQUIP_LINES	DB	9
 				DB	137
 				DB  161					; movement type
 
-RTREAD_NAMES	USR(TREAD)=
-				USR(LEVITATOR)=
-				USR(TETRA-LEG)=
-				USR(BI-LEG)=
+RTREAD_NAMES	TXI "TREAD"
+				TXI "LEVITATOR"
+				TXI "TETRA-LEG"
+				TXI "BI-LEG"
 
 DRAW_ROBO_INFO	JSR DRAW_PICT
-				PictTextAt 171;4;()-
-				USR(NAME:\n)-
-				USR(PROF:\n)-
-				USR(LEVL:\n)-
-				USR(OWNR:)
+				PictTextAt_ 171;4
+				TXC "NAME:\n"
+				TXC "PROF:\n"
+				TXC "LEVL:\n"
+				TXT "OWNR:"
 				PictMoveTo $CC;4
 				PictCall CNAME_TO_TEXT
 				PictTextbufRet
@@ -700,7 +701,7 @@ BIG_STATS_BOX	LDA #$42
                 BCC :1
 
 				JSR DRAW_PICT
-				PictTextAt 16;70;(CANCEL)
+				PictTextAt 16;70;"CANCEL"
 				PictSetPage2
 				PictSwap $00;$00;$28;$50
 				PictMoveTo $AB;$68

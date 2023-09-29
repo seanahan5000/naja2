@@ -358,21 +358,21 @@ RECT_LOOP       STX TOP
                 AND LEFT_MASKS,X
                 EOR TEMP_COLOR
                 STA (SCREENL),Y
-:3              LDA TEMP_COLOR
+                LDA TEMP_COLOR
                 AND #$80
                 ORA BIT_TABLE,X
                 STA LEFT_MASK
 
                 LDA TEMP_COLOR
                 PHA
-:4              EOR TEMP_TOGGLE
+:1              EOR TEMP_TOGGLE
                 INY
                 CPY RIGHT_DIV7
-                BEQ :5
+                BEQ :2
                 STA (SCREENL),Y
-                BNE :4              ; always
+                BNE :1              ; always
 
-:5              STA TEMP_COLOR
+:2              STA TEMP_COLOR
                 LDX RIGHT_MOD7
                 LDA (SCREENL),Y
                 EOR TEMP_COLOR
@@ -387,14 +387,14 @@ RECT_LOOP       STX TOP
 
                 LDX TOP
                 CPX BOTTOM
-                BNE :6
+                BNE :3
                 RTS
 
-:6              INX
+:3              INX
 FILLRECT_MOD    CLC
                 BCS RECT_LOOP
 
-:7              LDA LOBYTES,X
+:4              LDA LOBYTES,X
                 STA SCREENL
                 LDA HIBYTES,X
                 STA SCREENH
@@ -413,7 +413,7 @@ FILLRECT_MOD    CLC
 
                 INX
                 CPX BOTTOM
-                BNE :7
+                BNE :4
                 JMP RECT_LOOP       ; always
 
 THIN_RECT       LDX LEFT_MOD7

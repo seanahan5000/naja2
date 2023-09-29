@@ -161,10 +161,10 @@ COPY_MESSAGE    LDX #181
                 BNE :6
                 RTS
 
-SIDE_LETTERS    USR (MTTF)-
-                USR (S123)-
+SIDE_LETTERS    TXC "MTTF"
+                TXC "S123"
 
-MESSAGES        USR (INSERT_SIDE_XX_)
-                USR (WRITE_PROTECTED)
+MESSAGES        TXT "INSERT_SIDE_XX_"
+                TXT "WRITE_PROTECTED"
 
 *-------------------------------

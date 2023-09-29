@@ -35,24 +35,24 @@ DIAGNOSER		STA	DEATH_FLAG
 				PictImage THERMOMETER
 				PictImage WAVES
 				PictImage BODY
-				PictTextAt 20;175;(BODY)
-				PictTextAt 20;183;(TEMP)
-				PictTextAt 75;175;(BRAIN)
-				PictTextAt 66;183;(ACTIVITY)
-				PictTextAt 121;179;(CONDITION)
-				PictTextAt 214;150;(PULSE)
-				PictTextAt 195;183;(RESPIRATION)
-				PictTextAt 5;2;(PATIENT:)
+				PictTextAt 20;175;"BODY"
+				PictTextAt 20;183;"TEMP"
+				PictTextAt 75;175;"BRAIN"
+				PictTextAt 66;183;"ACTIVITY"
+				PictTextAt 121;179;"CONDITION"
+				PictTextAt 214;150;"PULSE"
+				PictTextAt 195;183;"RESPIRATION"
+				PictTextAt 5;2;"PATIENT:"
 				PictSetTextHeight 8
-				PictTextAt 11;10;()-
-				USR (__PROF:\n)-
-				USR (__RACE:\n)-
-				USR (HEALTH:\n)-
-				USR (ENERGY:\n)-
-				USR (STATUS:)
-				PictTextAt 47;50;(:)
-				PictTextAt 5;58;(PHYSICN:)
-				PictTextAt 11;66;(ENERGY:)
+				PictTextAt_ 11;10
+				TXC "  PROF:\n"
+				TXC "  RACE:\n"
+				TXC "HEALTH:\n"
+				TXC "ENERGY:\n"
+				TXT "STATUS:"
+				PictTextAt 47;50;":"
+				PictTextAt 5;58;"PHYSICN:"
+				PictTextAt 11;66;"ENERGY:"
 				PictCall STATTER
 				PictShowPage
 				PictEnd
@@ -88,14 +88,14 @@ NOT_NORMAL		CMP	#dead
 				JSR DRAW_PICT
 				PictSetTextBox 146;11;278;44
 				PictCall WRAP_TRIMMED_NAME
-				PictTextIn (_IS_DEAD_AND_BEYOND_HELP_HERE.)
+				PictTextIn " IS DEAD AND BEYOND HELP HERE."
 				PictEnd
 				JMP	HEAL_OUT
 
 NOT_DEAD		JSR DRAW_PICT
 				PictSetTextBox 146;11;278;44
 				PictCall WRAP_TRIMMED_NAME
-				PictTextIn (_NEEDS_)
+				PictTextIn " NEEDS "
 				PictEnd
 				LDA	#$41			;Medical equipment
 				STA	ETABLE+0
@@ -120,7 +120,7 @@ NOT_DEAD		JSR DRAW_PICT
 				JSR	ETABLE_TO_TEXT
 				JSR WRAP_TEXTBUF
 				JSR DRAW_PICT
-				PictTextIn (.)
+				PictTextIn "."
 				PictEnd
 
 :SKIPA			LDA	MEDIC_CHAR
@@ -138,23 +138,23 @@ NOT_DEAD		JSR DRAW_PICT
 				JSR DRAW_PICT
 				PictSetTextBox 146;39;278;64
 				PictCall WRAP_TRIMMED_NAME
-				PictTextIn (_DOES_NOT_HAVE_)
+				PictTextIn " DOES NOT HAVE "
 				PictEnd
 
 				PLA
 				BNE :SKIPC
 
 				JSR DRAW_PICT
-				PictTextIn (THE_EQUIPMENT)
+				PictTextIn "THE EQUIPMENT"
 				PictEnd
 				JMP :SKIPD
 
 :SKIPC			JSR DRAW_PICT
-				PictTextIn (ENOUGH_ENERGY)
+				PictTextIn "ENOUGH ENERGY"
 				PictEnd
 
 :SKIPD			JSR DRAW_PICT
-				PictTextIn (_TO_GIVE_TREATMENT.)
+				PictTextIn " TO GIVE TREATMENT."
 				PictEnd
 
 				JSR SPACE_TEXT
@@ -165,9 +165,9 @@ CAN_TREAT		LDA	ITARGET_CHAR
 				JSR	SET_CHAR
 
 				JSR DRAW_PICT
-				PictTextAt 161;39;(PRESS_<SPACE>_TO)
-				PictTextAt 164;47;(GIVE_TREATMENT_)
-				PictTextAt 188;55;(C>ANCEL)
+				PictTextAt 161;39;"PRESS <SPACE> TO"
+				PictTextAt 164;47;"GIVE TREATMENT "
+				PictTextAt 188;55;"C>ANCEL"
 				PictEnd
 
 				LDA	#"C"
@@ -212,7 +212,7 @@ GENERAL_HEAL	ADC #0
 				JSR DRAW_PICT
 				PictSetTextBox 146;3;278;44
 				PictCall WRAP_TRIMMED_NAME
-				PictTextIn (_IS_IN_PERFECT_HEALTH._NO_TREATMENT_IS_NEEDED.)
+				PictTextIn " IS IN PERFECT HEALTH. NO TREATMENT IS NEEDED."
 				PictEnd
 				JMP	HEAL_OUT
 
@@ -224,7 +224,7 @@ GENERAL_HEAL	ADC #0
 				JSR DRAW_PICT
 				PictSetTextBox 146;3;278;44
 				PictCall WRAP_TRIMMED_NAME
-				PictTextIn (_IS_IN_CRITICAL_CONDITION_AND_DESPARATELY)
+				PictTextIn " IS IN CRITICAL CONDITION AND DESPARATELY"
 				PictEnd
 				JMP :SKIPD
 
@@ -237,23 +237,23 @@ GENERAL_HEAL	ADC #0
 				BNE :ONLY
 
 :ALSO			JSR DRAW_PICT
-				PictTextIn (_ALSO)
+				PictTextIn " ALSO"
 				PictEnd
 				JMP :SKIPD
 
 :ONLY			JSR DRAW_PICT
-				PictTextIn (_ONLY)
+				PictTextIn " ONLY"
 				PictEnd
 :SKIPD
 				JSR DRAW_PICT
-				PictTextIn (_NEEDS_THE_FOLLOWING:\n)
+				PictTextIn " NEEDS THE FOLLOWING:\n"
 				PictEnd
 
 				LDA	DFLAG
 				BEQ	:SKIPE
 
 				JSR DRAW_PICT
-				PictTextIn (___GENERAL_HEALING\n)
+				PictTextIn "   GENERAL HEALING\n"
 				PictEnd
 
 				LDY	#status
@@ -261,7 +261,7 @@ GENERAL_HEAL	ADC #0
 				BPL	HEAL_OUT
 
 :SKIPE			JSR DRAW_PICT
-				PictTextIn (___ENERGY_TRANSFER\n)
+				PictTextIn "   ENERGY TRANSFER\n"
 				PictEnd
 
 HEAL_OUT		JSR SPACE_TEXT
@@ -275,7 +275,7 @@ HEAL_EXIT		LDA	MEDIC_CHAR
 				RTS						; return back to C.ISTATS.S
 
 SPACE_TEXT		JSR DRAW_PICT
-				PictTextAt 233;65;(<SPACE>)
+				PictTextAt 233;65;"<SPACE>"
 				PictEnd
 				RTS
 
@@ -286,9 +286,9 @@ ROBOT_NAME		JSR WRAP_TRIMMED_NAME
 SHOW_DEATH		JSR	MULTI_WAIT
 				JSR DRAW_PICT
 				PictSetTextBox 146;11;278;44
-				PictTextIn (THERE_IS_NOTHING_THAT_CAN_BE_DONE_TO_SAVE_)
+				PictTextIn "THERE IS NOTHING THAT CAN BE DONE TO SAVE "
 				PictCall WRAP_TRIMMED_NAME
-				PictTextIn (_NOW.)
+				PictTextIn " NOW."
 				PictEnd
 
 				JSR SPACE_TEXT
@@ -303,7 +303,7 @@ SHOW_DEATH		JSR	MULTI_WAIT
 				JSR DRAW_PICT
 				PictSetTextBox 146;11;278;44
 				PictCall WRAP_TRIMMED_NAME
-				PictTextIn (_HAS_DIED.)
+				PictTextIn " HAS DIED."
 				PictEnd
 
 				JSR	:SUBA
@@ -316,16 +316,16 @@ SHOW_DEATH		JSR	MULTI_WAIT
 				JSR SET_CHAR
 				JSR DRAW_PICT
 				PictSetTextBox 146;11;278;44
-				PictTextIn (BECAUSE_OF_THE_DEATH_OF_)
+				PictTextIn "BECAUSE OF THE DEATH OF "
 				PictCall WRAP_TRIMMED_NAME
-				PictTextIn (,_THE_ROBOT,_)
+				PictTextIn ", THE ROBOT, "
 				PictEnd
 
 				PLA
 				JSR SET_CHAR
 				JSR DRAW_PICT
 				PictCall WRAP_TRIMMED_NAME
-				PictTextIn (,_IS_NOW_USELESS.)
+				PictTextIn ", IS NOW USELESS."
 				PictEnd
 
 				JSR SET_BROKEN
@@ -797,26 +797,26 @@ BWORDER			LDA	YCURSOR,Y
 X_STARTS		DB	20,78,136
 SECONDS			DB	15,16,0,16
 
-STAT_STRINGS	USR	(COLD)=
-				USR	(COOL)=
-				USR	(NORMAL)=
-				USR	(WARM)=
-				USR	(FEVER)=
+STAT_STRINGS	TXI	"COLD"
+				TXI	"COOL"
+				TXI	"NORMAL"
+				TXI	"WARM"
+				TXI	"FEVER"
 
-				USR	(BRAIN)=			; 5
-				USR	(UNDER)=			; 6
-				USR	(NORMAL)=
-				USR	(OVER)=				; 8
-				USR	(SEIZURE)=
+				TXI	"BRAIN"				; 5
+				TXI	"UNDER"				; 6
+				TXI	"NORMAL"
+				TXI	"OVER"				; 8
+				TXI	"SEIZURE"
 
-				USR	(DEAD)=
-				USR	(CRITICL)=
-				USR	(POOR)=
-				USR	(FAIR)=
-				USR	(GOOD)=
+				TXI	"DEAD"
+				TXI	"CRITICL"
+				TXI	"POOR"
+				TXI	"FAIR"
+				TXI	"GOOD"
 
-				USR	(DEAD)=				; 15
-				USR	(ACTIVE)=			; 16
+				TXI	"DEAD"				; 15
+				TXI	"ACTIVE"			; 16
 
 
 UDSUB1			LDY	SCOLUMN
@@ -957,10 +957,10 @@ TREATMENTS		DB	$09,0			;poisoned
 				DB	$06,2			;blind
 				DB	$07,3			;confused
 
-TREAT_STRINGS	USR (AN_INFUSION_OF_)=
-				USR (CAUTERIZING)=
-				USR (SIGHT_RESTORING)=
-				USR (BRAIN_EQUALIZING)=
+TREAT_STRINGS	TXI "AN INFUSION OF "
+				TXI "CAUTERIZING"
+				TXI "SIGHT RESTORING"
+				TXI "BRAIN EQUALIZING"
 
 LEVEL			DB	$91,$7E,$6B
 				DB	$58,$4F

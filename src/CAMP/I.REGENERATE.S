@@ -15,8 +15,8 @@ REGENERATE		STA	HEAL_TYPE+1
 				JSR	BIG_STATS_BOX
 
 RECYCLE			JSR DRAW_PICT
-				PictTextAt 180;84;(GIVE_TREATMENT)
-				PictTextAt 198;93;(TO_WHOM?)
+				PictTextAt 180;84;"GIVE TREATMENT"
+				PictTextAt 198;93;"TO WHOM?"
 				PictEnd
 
 HEAL_TYPE		LDA	#$FF				; modified
@@ -39,7 +39,7 @@ BOTH_TYPES		LDX	#<NEED_HEAL
 :NO_CANCEL      JSR RT_START
 
 				JSR DRAW_PICT
-				PictTextAt 40;26-2;(DAMAGE_TO_HEAL:)
+				PictTextAt 40;26-2;"DAMAGE TO HEAL:"
 				PictEnd
 
                 LDA ITARGET_CHAR

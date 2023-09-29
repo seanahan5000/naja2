@@ -9,7 +9,7 @@
 GET_MULTIPLE    STX LIMIT_SUB+1
                 STY LIMIT_SUB+2
                 JSR DRAW_PICT
-                PictTextAt 129;152;(ENERGY_USED:)
+                PictTextAt 129;152;"ENERGY USED:"
                 PictEnd
                 LDX #$00
                 STX HOWCUR1

@@ -432,12 +432,12 @@ SHOW_EACH_STATS LDX #0
 DRAW_STATS      JSR DRAW_PICT
                 PictClear 13;22;30;108
                 PictSetTextHeight 9
-                PictTextAt 100;22;()-
-                USR (NAME:\n)-
-                USR (PROF:\n)-
-                USR (RACE:\n)-
-                USR (EXPR:\n)-
-                USR (LEVL:)
+                PictTextAt_ 100;22
+                TXC "NAME:\n"
+                TXC "PROF:\n"
+                TXC "RACE:\n"
+                TXC "EXPR:\n"
+                TXT "LEVL:"
                 PictMoveTo 136;22
                 PictCall CNAME_TO_TEXT
                 PictTextbufRet
@@ -449,19 +449,19 @@ DRAW_STATS      JSR DRAW_PICT
                 PictTextbufRet
                 PictCall CLEVEL_TO_TEXT
                 PictTextbufRet
-                PictTextAt 116;75;(MISSING_AND)
-                PictTextAt 130;101;(<SPACE>)
+                PictTextAt 116;75;"MISSING AND"
+                PictTextAt 130;101;"<SPACE>"
                 PictEnd
                 LDY #status
                 LDA (CHARDL),Y
                 CMP #lost
                 BEQ :1
                 JSR DRAW_PICT
-                PictTextAt 92;84;(PRESUMED_COMPRESSED)
+                PictTextAt 92;84;"PRESUMED COMPRESSED"
                 PictEnd
                 RTS
 :1              JSR DRAW_PICT
-                PictTextAt 110;84;(PRESUMED_LOST)
+                PictTextAt 110;84;"PRESUMED LOST"
                 PictEnd
                 RTS
 
@@ -516,39 +516,39 @@ WAITS           DB  $0D,$0D,$0D,$03
 DRAW_MESSAGE    DEX
                 BPL :1
                 JSR DRAW_PICT
-                PictTextAt 0;17;()-
-                USR (TRACC_INTELLIGENCE\n)-
-                USR (DIVISION_HERE,_MR.\n)-
-                USR (LELVK.__INFORMATION\n)-
-                USR (ON_THE_FOLLOWING\n)-
-                USR (CADETS_JUST_IN...)
+                PictTextAt_ 0;17
+                TXC "TRACC INTELLIGENCE\n"
+                TXC "DIVISION HERE, MR.\n"
+                TXC "LELVK.  INFORMATION\n"
+                TXC "ON THE FOLLOWING\n"
+                TXT "CADETS JUST IN..."
                 PictEnd
                 RTS
 :1              DEX
                 BPL :2
                 JSR DRAW_PICT
-                PictTextAt 0;17;()-
-                USR (THE_DEATHS_WILL_BE\n)-
-                USR (ENTERED_HERE_SO_THE\n)-
-                USR (COMPUTER_FILES_WILL\n)-
-                USR (BE_UP_TO_DATE.__OF\n)-
-                USR (COURSE_YOU_WILL...)
+                PictTextAt_ 0;17
+                TXC "THE DEATHS WILL BE\n"
+                TXC "ENTERED HERE SO THE\n"
+                TXC "COMPUTER FILES WILL\n"
+                TXC "BE UP TO DATE.  OF\n"
+                TXT "COURSE YOU WILL..."
                 PictEnd
                 RTS
 :2              DEX
                 BPL :3
                 JSR DRAW_PICT
-                PictTextAt 0;17;()-
-                USR (INFORM_NEXT_OF_KIN\n)-
-                USR (THAT_THEY_HAVE\n)-
-                USR (BEEN_POSTHUMOUSLY\n)-
-                USR (AWARDED_THE_T.F.\n)-
-                USR (MEDAL_OF_HONOR.)
+                PictTextAt_ 0;17
+                TXC "INFORM NEXT OF KIN\n"
+                TXC "THAT THEY HAVE\n"
+                TXC "BEEN POSTHUMOUSLY\n"
+                TXC "AWARDED THE T.F.\n"
+                TXT "MEDAL OF HONOR."
                 PictEnd
                 RTS
 :3              JSR DRAW_PICT
-                PictTextAt 0;17;()-
-                USR (TRACC_INTELLIGENCE_OUT.)
+                PictTextAt_ 0;17
+                TXT "TRACC INTELLIGENCE OUT."
                 PictEnd
                 RTS
 

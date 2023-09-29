@@ -1,4 +1,4 @@
-A				USR	(SPACE_MAN_______)-
+A				TXC	'SPACE_MAN_______'
 				DS	48,0
 
 				DB	$26,$CC
@@ -17,7 +17,7 @@ A				USR	(SPACE_MAN_______)-
 				DB	$03,$03,$02,$80
 				DB	$FF
 
-B				USR	("AIR_SWIMMER"___)-
+B				TXC	'"AIR_SWIMMER"___'
 				DS	48,0
 
 				DB	$36,$DD
@@ -30,7 +30,7 @@ B				USR	("AIR_SWIMMER"___)-
 				DB	$30,$30,$10,$80
 				DB	$FF
 
-C				USR	(SHIELDED_OOMAR__)-
+C				TXC	'SHIELDED_OOMAR__'
 				DS	48,0
 
 				DB	$36,$CC
@@ -43,7 +43,7 @@ C				USR	(SHIELDED_OOMAR__)-
 				DB	$03,$06,$0F,$1B,$18,$07,$00
 				DB	$FF
 
-D				USR	(MONOPTIC_HOPPER_)-
+D				TXC	'MONOPTIC_HOPPER_'
 				DS	48,0
 
 				DB	$36,$CC
@@ -63,7 +63,7 @@ D				USR	(MONOPTIC_HOPPER_)-
 				DB	$80
 				DB	$FF
 
-E				USR	(MPC3_ROBOT______)-
+E				TXC	'MPC3_ROBOT______'
 				DS	48,0
 
 				DB	$16,$CC
@@ -83,7 +83,7 @@ E				USR	(MPC3_ROBOT______)-
 				DB	$00,$01,$01,$80
 				DB	$FF
 
-F				USR	("FROWNER"_______)-
+F				TXC	'"FROWNER"_______'
 				DS	48,0
 
 				DB	$36,$CC
@@ -98,7 +98,7 @@ F				USR	("FROWNER"_______)-
 				DB	$00,$01,$80
 				DB	$FF
 
-G				USR	(MEERN_MUTATION__)-
+G				TXC	'MEERN_MUTATION__'
 				DS	48,0
 
 				DB	$46,$CC
@@ -117,7 +117,7 @@ G				USR	(MEERN_MUTATION__)-
 				DB	$3E,$03,$01,$80
 				DB	$FF
 
-H				USR	(BURROWING_TAAN__)-
+H				TXC	'BURROWING_TAAN__'
 				DS	48,0
 
 				DB	$27,$37,$47,$DD
@@ -138,7 +138,7 @@ H				USR	(BURROWING_TAAN__)-
 				DB	$18,$0C,$06,$06,$83
 				DB	$FF
 
-I				USR	(ROBOTROID_______)-
+I				TXC	'ROBOTROID_______'
 				DS	48,0
 
 				DB	$26,$46,$CC
@@ -152,7 +152,7 @@ I				USR	(ROBOTROID_______)-
 				DB	$0F,$0F,$0E,$80
 				DB	$FF
 
-J				USR	(JUNGLE_SWINGER__)-
+J				TXC	'JUNGLE_SWINGER__'
 				DS	48,0
 
 				DB	$36,$CC
@@ -167,7 +167,7 @@ J				USR	(JUNGLE_SWINGER__)-
 				DB	$18,$03,$80
 				DB	$FF
 
-K				USR	(ROLLER_ALIEN____)-
+K				TXC	'ROLLER_ALIEN____'
 				DS	48,0
 
 				DB	$46,$CC
@@ -185,7 +185,7 @@ K				USR	(ROLLER_ALIEN____)-
 				DB	$80
 				DB	$FF
 
-L				USR	(NUNKI_STARBEAST_)-
+L				TXC	'NUNKI_STARBEAST_'
 				DS	48,0
 
 				DB	$56,$CC
@@ -199,7 +199,7 @@ L				USR	(NUNKI_STARBEAST_)-
 				DB	$6F,$76,$58,$80
 				DB	$FF
 
-M				USR	(ELATION_TRAITOR_)-
+M				TXC	'ELATION_TRAITOR_'
 				DS	48,0
 
 				DB	$26,$CC
@@ -213,7 +213,7 @@ M				USR	(ELATION_TRAITOR_)-
 				DB	$03,$03,$03,$80
 				DB	$FF
 
-N				USR	(UNKNOWN_PLANT___)-
+N				TXC	'UNKNOWN_PLANT___'
 				DS	48,0
 
 				DB	$17,$27,$CC
@@ -238,7 +238,7 @@ N				USR	(UNKNOWN_PLANT___)-
 				DB	$01,$00,$00,$00,$00,$01,$00
 				DB	$FF
 
-O				USR	(ROLLER_ALIEN____)-
+O				TXC	'ROLLER_ALIEN____'
 				DS	48,0
 
 				DB	$46,$CC
@@ -256,7 +256,7 @@ O				USR	(ROLLER_ALIEN____)-
 				DB	$80
 				DB	$FF
 
-P				USR	(FROBOT__________)-
+P				TXC	'FROBOT__________'
 				DS	48,0
 
 				DB	$36,$CC
@@ -270,7 +270,7 @@ P				USR	(FROBOT__________)-
 				DB	$03,$03,$80
 				DB	$FF
 
-Q				USR	("TWISTER"_______)-
+Q				TXC	'"TWISTER"_______'
 				DS	48,0
 
 				DB	$36,$CC
@@ -285,7 +285,7 @@ Q				USR	("TWISTER"_______)-
 				DB	$05,$08,$10,$80
 				DB	$FF
 
-R				USR	("BARACKADE"_____)-
+R				TXC	'"BARACKADE"_____'
 				DS	48,0
 
 				DB	$27,$28,$CC
@@ -321,7 +321,7 @@ R				USR	("BARACKADE"_____)-
 
 				DB	$FF
 
-S				USR	(PHASE_WORM______)-
+S				TXC	'PHASE_WORM______'
 				DS	48,0
 
 				DB	$F7,$CC
@@ -383,7 +383,7 @@ S				USR	(PHASE_WORM______)-
 
 				DB	$FF
 
-T				USR	(PROBE_DROID_____)-
+T				TXC	'PROBE_DROID_____'
 				DS	48,0
 
 				DB	$E6,$DD
@@ -400,7 +400,7 @@ T				USR	(PROBE_DROID_____)-
 				DB	$80
 				DB	$FF
 
-U				USR	(ARMORED_ALIEN___)-
+U				TXC	'ARMORED_ALIEN___'
 				DS	48,0
 
 				DB	$F6,$CC
@@ -414,7 +414,7 @@ U				USR	(ARMORED_ALIEN___)-
 				DB	$0F,$03,$80
 				DB	$FF
 
-V				USR	(GRUNTER_PACK_DOG)-
+V				TXC	'GRUNTER_PACK_DOG'
 				DS	48,0
 
 				DB	$36,$CC
@@ -428,7 +428,7 @@ V				USR	(GRUNTER_PACK_DOG)-
 				DB	$78,$0F,$03,$80
 				DB	$FF
 
-W				USR	("DRAGON_FLY"____)-
+W				TXC	'"DRAGON_FLY"____'
 				DS	48,0
 
 				DB	$26,$CC
@@ -446,7 +446,7 @@ W				USR	("DRAGON_FLY"____)-
 				DB	$80
 				DB	$FF
 
-X				USR	("SQUINTER"______)-
+X				TXC	'"SQUINTER"______'
 				DS	48,0
 
 				DB	$36,$CC
@@ -460,7 +460,7 @@ X				USR	("SQUINTER"______)-
 				DB	$00,$0F,$1F,$0F,$80
 				DB	$FF
 
-Y				USR	(BETA_CENTAURIAN_)-
+Y				TXC	'BETA_CENTAURIAN_'
 				DS	48,0
 
 				DB	$E7,$CC
@@ -482,7 +482,7 @@ Y				USR	(BETA_CENTAURIAN_)-
 				DB	$1B,$0D,$06,$03,$80
 				DB	$FF
 
-Z				USR	(LANTHOSER_______)-
+Z				TXC	'LANTHOSER_______'
 				DS	48,0
 
 				DB	$E6,$DD

@@ -17,10 +17,10 @@ OPEN_FRONTS     JSR MONS_OPENROWS
                 STA CHAR_ADVFLAG
 
                 JSR DRAW_PICT
-                PictTextAt 99;143;(THERE_IS_SPACE_IN_THE_FRONT)
-                PictTextAt 99;152;(ROW_TO_BE_OCCUPIED._WILL_THE)
-                PictTextAt 99;161;(GROUP_A>DVANCE_OR)
-                PictTextAt 135;170;(R>ETREAT?_)
+                PictTextAt 99;143;"THERE IS SPACE IN THE FRONT"
+                PictTextAt 99;152;"ROW TO BE OCCUPIED. WILL THE"
+                PictTextAt 99;161;"GROUP A>DVANCE OR"
+                PictTextAt 135;170;"R>ETREAT? "
                 PictEnd
 
                 JSR GET_INPUT_KEY

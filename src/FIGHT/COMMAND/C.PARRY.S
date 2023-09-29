@@ -1,7 +1,7 @@
 PARRY           JSR CLEAR_WTIME
                 JSR DRAW_PICT
-                PictTextAt 102;150;(PARRY_FOR_HOW_MANY_T.UNITS?)
-                PictTextAt 138;162;(<MAXIMUM:_)
+                PictTextAt 102;150;"PARRY FOR HOW MANY T.UNITS?"
+                PictTextAt 138;162;"<MAXIMUM: "
                 PictEnd
                 LDA TIMLEFT
                 JSR DIGIT_DRAW

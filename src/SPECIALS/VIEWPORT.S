@@ -91,8 +91,8 @@ DO_VIEWPORT     STA VARIATION
                 BNE VP_NOASK
 
 VP_ASK          JSR DRAW_PICT
-                PictTextAt $20;$06;(NO_ONE_CAN_TRANSLATE_THE_WRITING._DO)
-                PictTextAt $20;$0F;(YOU_WANT_TO_TRY_PRESSING_BUTTONS?_)
+                PictTextAt $20;$06;"NO ONE CAN TRANSLATE THE WRITING. DO"
+                PictTextAt $20;$0F;"YOU WANT TO TRY PRESSING BUTTONS? "
                 PictEnd
 
                 JSR GET_INPUT_KEY

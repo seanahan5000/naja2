@@ -39,32 +39,32 @@ STATUS_NUMS     DB  healthy,dead
                 DB  choking,critical
                 DB  rundown
 
-STATUS_NAMES    USR (_HEALTHY)=
-                USR (__DEAD)=
-                USR (ABANDONED)=
-                USR (_BROKEN)=
-                USR (IN-TRACC)=
-                USR (COMPRESSD)=
-                USR (IN-LIMBO)=
-                USR (__LOST)=
-                USR (CORRODING)=
-                USR (POISONED)=
-                USR (BLEEDING)=
-                USR (RADIATED)=
-                USR (___ILL)=
-                USR (__BLIND)=
-                USR (CONFUSED)=
-                USR (SMOTHERIN)=
-                USR (__FAST)=
-                USR (_STRONG)=
-                USR (SLIPPING)=
-                USR (__NUMB)=
-                USR (RAN_AWAY)=
-                USR (_ON_FIRE)=
-                USR (__DIZZY)=
-                USR (_STUNNED)=
-                USR (IMMOBILE)=
-                USR (CONTROLLD)=
-                USR (_CHOKING)=
-                USR (CRITICAL)=
-                USR (RUN_DOWN)=
+STATUS_NAMES    TXI " HEALTHY"
+                TXI "  DEAD"
+                TXI "ABANDONED"
+                TXI " BROKEN"
+                TXI "IN-TRACC"
+                TXI "COMPRESSD"
+                TXI "IN-LIMBO"
+                TXI "  LOST"
+                TXI "CORRODING"
+                TXI "POISONED"
+                TXI "BLEEDING"
+                TXI "RADIATED"
+                TXI "   ILL"
+                TXI "  BLIND"
+                TXI "CONFUSED"
+                TXI "SMOTHERIN"
+                TXI "  FAST"
+                TXI " STRONG"
+                TXI "SLIPPING"
+                TXI "  NUMB"
+                TXI "RAN AWAY"
+                TXI " ON FIRE"
+                TXI "  DIZZY"
+                TXI " STUNNED"
+                TXI "IMMOBILE"
+                TXI "CONTROLLD"
+                TXI " CHOKING"
+                TXI "CRITICAL"
+                TXI "RUN DOWN"

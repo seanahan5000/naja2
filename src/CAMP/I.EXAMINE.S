@@ -3,7 +3,7 @@ EXAMINE         JSR DRAW_PICT
                 PictClearPage
                 PictSetGreen
                 PictRect $B9;00;$115;$BF
-                PictTextAt 214;95;(LEAVE)
+                PictTextAt 214;95;"LEAVE"
                 PictEnd
 
                 JSR SETVTAB

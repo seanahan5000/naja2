@@ -25,7 +25,7 @@ AWARDER         JSR DRAW_PICT
                 PictRect $01;$47;$115;$BF
                 PictMoveTo $01;$85
                 PictLineTo $115;$85
-                PictTextAt 40;80;(ALIENS)
+                PictTextAt 40;80;"ALIENS"
                 PictImage AWARD_IMAGES
                 PictEnd
 
@@ -94,27 +94,27 @@ AWARDER         JSR DRAW_PICT
                 ORA ATOTAL3
                 BNE :4
 :3              JSR DRAW_PICT
-                PictTextAt 43;149;(THERE_ARE_NO_REMAINS_THAT_CAN_BE)
-                PictTextAt 52;158;(SCANNED_FOR_USABLE_EQUIPMENT.)
+                PictTextAt 43;149;"THERE ARE NO REMAINS THAT CAN BE"
+                PictTextAt 52;158;"SCANNED FOR USABLE EQUIPMENT."
                 PictEnd
                 JMP :7
 
 :4              LDA THE_ANDROID
                 BPL :5
                 JSR DRAW_PICT
-                PictTextAt 13;149;()-
-                USR (NO_ONE_IN_THE_GROUP_IS_CAPABLE_OF_SCANNING\n)-
-                USR (THE_REMAINS_FOR_USABLE_EQUIPMENT.)
+                PictTextAt_ 13;149
+                TXC "NO ONE IN THE GROUP IS CAPABLE OF SCANNING\n"
+                TXT "THE REMAINS FOR USABLE EQUIPMENT."
                 PictEnd
                 JMP :7
 
 :5              LDA ROOM_FOUND
                 BNE :6
                 JSR DRAW_PICT
-                PictTextAt 13;144;()-
-                USR (ALL_GROUP_MEMBERS_ARE_NOW_CARRYING_AS_MUCH\n)-
-                USR (AS_POSSIBLE_AND_WILL_NOT_BE_ABLE_TO_KEEP\n)-
-                USR (ANY_MORE_NEW_EQUIPMENT.)
+                PictTextAt_ 13;144
+                TXC "ALL GROUP MEMBERS ARE NOW CARRYING AS MUCH\n"
+                TXC "AS POSSIBLE AND WILL NOT BE ABLE TO KEEP\n"
+                TXT "ANY MORE NEW EQUIPMENT."
                 PictEnd
                 BNE :7                  ; always
 
@@ -123,12 +123,12 @@ AWARDER         JSR DRAW_PICT
                 JSR DRAW_PICT
                 PictMoveTo 13;149
                 PictCall DRAW_TRIMMED_NAME
-                PictText (_HAS_SCANNED_THROUGH_THE_REMAINS)
-                PictTextAt 13;158;(BUT_HAS_NOT_FOUND_ANY_USABLE_EQUIPMENT.)
+                PictText " HAS SCANNED THROUGH THE REMAINS"
+                PictTextAt 13;158;"BUT HAS NOT FOUND ANY USABLE EQUIPMENT."
                 PictEnd
 
 :7              JSR DRAW_PICT
-                PictTextAt 118;180;(<SPACE>)
+                PictTextAt 118;180;"<SPACE>"
                 PictShowPage
                 PictEnd
 
@@ -143,7 +143,7 @@ AWARDER         JSR DRAW_PICT
                 DB  fileControl9
 
 HAVE_ROOM       JSR DRAW_PICT
-                PictTextAt 166;138;(NEW_EQUIPMENT:)
+                PictTextAt 166;138;"NEW EQUIPMENT:"
                 PictMoveTo $AC;$93
                 PictEnd
 
@@ -175,14 +175,14 @@ HAVE_ROOM       JSR DRAW_PICT
 EKDONE          JSR DRAW_PICT
                 PictMoveTo 10;138
                 PictCall DRAW_TRIMMED_NAME
-                PictText (_HAS_SCANNED)
+                PictText " HAS SCANNED"
                 PictSetTextHeight 8
-                PictTextAt 10;146;()-
-                USR (THROUGH_THE_REMAINS\n)-
-                USR (AND_HAS_DISCOVERED\n)-
-                USR (EQUIPMENT_THAT_MIGHT\n)-
-                USR (BE_USABLE.)
-                PictTextAt 46;180;(<SPACE>)
+                PictTextAt_ 10;146
+                TXC "THROUGH THE REMAINS\n"
+                TXC "AND HAS DISCOVERED\n"
+                TXC "EQUIPMENT THAT MIGHT\n"
+                TXT "BE_USABLE."
+                PictTextAt 46;180;"<SPACE>"
                 PictShowPage
                 PictCall GET_SPACE_ENTER
                 PictClear $01;$86;$15;$BF
@@ -197,11 +197,11 @@ EKDONE          JSR DRAW_PICT
                 PictMoveTo $37;$44
                 PictLineTo $37;$4C
                 PictLineTo $03;$4C
-                PictTextAt 16;68;(NOBODY)
-                PictTextAt 16;150;(SELECT_GROUP_MEMBER)
-                PictTextAt 28;159;(TO_RECEIVE_THIS)
-                PictTextAt 19;168;(PIECE_OF_EQUIPMENT)
-                PictTextAt 46;180;(<SPACE>)
+                PictTextAt 16;68;"NOBODY"
+                PictTextAt 16;150;"SELECT GROUP MEMBER"
+                PictTextAt 28;159;"TO RECEIVE THIS"
+                PictTextAt 19;168;"PIECE OF EQUIPMENT"
+                PictTextAt 46;180;"<SPACE>"
                 PictEnd
 
                 LDA #0
@@ -249,11 +249,11 @@ EKDONE          JSR DRAW_PICT
                 JMP NO_FULL
 
 :4              JSR DRAW_PICT
-                PictTextAt 13;144;()-
-                USR (ALL_GROUP_MEMBERS_ARE_NOW_CARRYING_AS_MUCH\n)-
-                USR (AS_POSSIBLE_AND_WILL_NOT_BE_ABLE_TO_KEEP\n)-
-                USR (ANY_MORE_NEW_EQUIPMENT.)
-                PictTextAt 118;180;(<SPACE>)
+                PictTextAt_ 13;144
+                TXC "ALL GROUP MEMBERS ARE NOW CARRYING AS MUCH\n"
+                TXC "AS POSSIBLE AND WILL NOT BE ABLE TO KEEP\n"
+                TXT "ANY MORE NEW EQUIPMENT."
+                PictTextAt 118;180;"<SPACE>"
                 PictCall GET_SPACE_ENTER
                 PictEnd
 
@@ -280,17 +280,17 @@ ALL_DONE        LDA #0
                 JSR DRAW_PICT
                 PictMoveTo 13;153
                 PictCall DRAW_TRIMMED_NAME
-                PictText (_NEEDS_MEDICAL_ATTENTION...QUICK!)
+                PictText " NEEDS MEDICAL ATTENTION...QUICK!"
                 PictEnd
                 BNE :3                  ; always
 :2              JSR DRAW_PICT
                 PictMoveTo 13;153
                 PictCall DRAW_TRIMMED_NAME
-                PictText (_NEEDS_TO_BE_COMPRESSED.)
+                PictText " NEEDS TO BE COMPRESSED."
                 PictEnd
                 DEC :MOD1+1
 :3              JSR DRAW_PICT
-                PictTextAt 118;180;(<SPACE>)
+                PictTextAt 118;180;"<SPACE>"
                 PictEnd
                 JSR SPACE_AND_CLEAR
 :4              JSR NEXT_CHAR

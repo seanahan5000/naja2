@@ -72,7 +72,7 @@ TOTAL_LINE		JSR DRAW_PICT			; Draw TOTALS heading
 				PictHLineTo $10D
 				PictVMove 3
 				PictHMoveTo $0A
-				PictText (EXPEDITION_TOTALS)
+				PictText "EXPEDITION TOTALS"
 				PictEnd
 
 				LDX #3					; Total alien kills

@@ -225,7 +225,7 @@ VOWEL_CHECK     STY :MOD1+1
                 STA TEXTBUF,Y
 :EXIT           RTS
 
-VOWELS          USR (AEIOU)-
+VOWELS          TXC "AEIOU"
 
 *-------------------------------
 

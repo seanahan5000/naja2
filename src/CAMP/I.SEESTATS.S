@@ -3,19 +3,19 @@ SEESTAT			JSR	DRAW_PICT
 				PictClearPage
 				PictSetGreen
 				PictRect $A5;$00;$115;$BF
-				PictTextAt 171;54;()-
-				USR	(STATUS:\n)-
-				USR	(HEALTH:\n)-
-				USR	(SHIELD:\n)-
-				USR	(CREDIT:)
-				PictTextAt 204;95;(ENERGY)
-				PictTextAt 171;118;()-
-				USR	(INTELLIGENCE:\n)-
-				USR	(____STRENGTH:\n)-
-				USR	(UPPER_REFLEX:\n)-
-				USR	(LOWER_REFLEX:\n)-
-				USR	(___%_ORGANIC:\n)-
-				USR	(_%_INORGANIC:)
+				PictTextAt_ 171;54
+				TXC	"STATUS:\n"
+				TXC	"HEALTH:\n"
+				TXC	"SHIELD:\n"
+				TXT	"CREDIT:"
+				PictTextAt 204;95;"ENERGY"
+				PictTextAt_ 171;118
+				TXC	"INTELLIGENCE:\n"
+				TXC	"    STRENGTH:\n"
+				TXC	"UPPER REFLEX:\n"
+				TXC	"LOWER REFLEX:\n"
+				TXC	"   % ORGANIC:\n"
+				TXT	" % INORGANIC:"
 
 				PictMoveTo 171;$32
 				PictLineTo 271;$32
@@ -83,7 +83,7 @@ DRAW_STATS_VALS JSR DRAW_PICT
 				PictTextbufRet
 				PictCall HEALTH_TO_TEXT_L
 				PictTextbuf
-				PictTextAt 219;72;(E-___P-\n)
+				PictTextAt 219;72;"E-   P-\n"
 				PictMoveTo 231;72
 				PictEnd
 

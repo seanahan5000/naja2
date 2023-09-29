@@ -15,13 +15,13 @@ REFRESH_STATS   JSR DRAW_PICT
                 PictVMoveTo 2
         fin
                 PictHMoveTo 105
-                PictText (EL)
+                PictText "EL"
                 PictHMoveTo 121
-                PictText (PH)
+                PictText "PH"
                 PictHMoveTo 147
-                PictText (STATUS)
+                PictText "STATUS"
                 PictHMoveTo 192
-                PictText (IQ_ST_LR_UR_OR)
+                PictText "IQ ST LR UR OR"
         do SMALL_GROUP
                 PictVMove 11
         else

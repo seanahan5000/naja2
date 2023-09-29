@@ -1,8 +1,8 @@
 DELAY           JSR CLEAR_WTIME
 
                 JSR DRAW_PICT
-                PictTextAt 132;146;(MAXIMUM_DELAY:_99)
-                PictTextAt 132;156;(CURRENT_DELAY:_)
+                PictTextAt 132;146;"MAXIMUM DELAY: 99"
+                PictTextAt 132;156;"CURRENT DELAY: "
                 PictEnd
 
                 LDA DELAY_TIME
@@ -10,7 +10,7 @@ DELAY           JSR CLEAR_WTIME
                 JSR DRAW_TEXTBUF
 
                 JSR DRAW_PICT
-                PictTextAt 156;166;(NEW_DELAY:_)
+                PictTextAt 156;166;"NEW_DELAY: "
                 PictEnd
 
                 LDA #$99

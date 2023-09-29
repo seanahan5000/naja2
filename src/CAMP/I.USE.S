@@ -64,8 +64,8 @@ CC_COM          ; PHA
 DIAGNOSE        JSR BIG_STATS_BOX
 
                 JSR DRAW_PICT
-                PictTextAt 184;84;(USE_DIAGNOSER)
-                PictTextAt 198;93;(ON_WHOM?)
+                PictTextAt 184;84;"USE DIAGNOSER"
+                PictTextAt 198;93;"ON WHOM?"
                 PictEnd
 
                 JSR RESET_CHLIST        ; excludes robot

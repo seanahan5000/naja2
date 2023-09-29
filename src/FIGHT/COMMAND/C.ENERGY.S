@@ -1,8 +1,8 @@
 ENERGY          JSR PICKECT
                 JSR CLEAR_CANCEL_IN
                 JSR DRAW_PICT
-                PictTextAt 111;146;(SELECT_UPPER-LEFT_CORNER)
-                PictTextAt 120;156;(OF_ENERGY_STRIKE_ZONE)
+                PictTextAt 111;146;"SELECT UPPER-LEFT CORNER"
+                PictTextAt 120;156;"OF ENERGY STRIKE ZONE"
                 PictEnd
                 JSR GET_UL_EZONE
                 BCS :SKIPA
@@ -11,7 +11,7 @@ ENERGY          JSR PICKECT
 
 :SKIPA          JSR DRAW_PICT
                 PictClear 15;146;37;153
-                PictTextAt 108;146;(SELECT_LOWER-RIGHT_CORNER)
+                PictTextAt 108;146;"SELECT LOWER-RIGHT CORNER"
                 PictEnd
                 LDA CURSOR
                 STA CURSOR_UL
@@ -35,10 +35,10 @@ ENERGY          JSR PICKECT
                 LDA TIMES+timeAIM
                 JSR GENERAL_POST
                 JSR DRAW_PICT
-                PictTextAt 105;134;(EMIT_WHICH_TYPE_OF_ENERGY?)
-                PictTextAt 150;147;(ELECTRICAL)
-                PictTextAt 150;157;(HEAT)
-                PictTextAt 150;167;(LIGHT)
+                PictTextAt 105;134;"EMIT WHICH TYPE OF ENERGY?"
+                PictTextAt 150;147;"ELECTRICAL"
+                PictTextAt 150;157;"HEAT"
+                PictTextAt 150;167;"LIGHT"
                 PictEnd
                 LDX #<ENERGY_CDEF
                 LDY #>ENERGY_CDEF
@@ -65,9 +65,9 @@ ENERGY_CDEF     DB  $83
 
 EPICKED         JSR CLEAR_WCANCEL
                 JSR DRAW_PICT
-                PictTextAt 120;135;(EMIT_HOW_MUCH_ENERGY?)
-                PictTextAt 129;153;(PER_SQUARE:)
-                PictTextAt 159;163;(TOTAL:)
+                PictTextAt 120;135;"EMIT HOW MUCH ENERGY?"
+                PictTextAt 129;153;"PER SQUARE:"
+                PictTextAt 159;163;"TOTAL:"
                 PictEnd
 
                 LDX CURSOR_UL
