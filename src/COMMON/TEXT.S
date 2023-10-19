@@ -38,13 +38,11 @@ TEXT_HEIGHT     DB  TextLineHeight
 ;   Y: Address of string (high)
 ;-------------------------------------------------------------------------------
 
-OP_TEXTBUF      ENT
-                LDX #<DRAW_TEXTBUF
+OP_TEXTBUF      LDX #<DRAW_TEXTBUF
                 LDA #>DRAW_TEXTBUF
                 JMP OP_CALL_PROC
 
-OP_TEXTBUF_RET  ENT
-                JSR OP_TEXTBUF
+OP_TEXTBUF_RET  JSR OP_TEXTBUF
                 JMP NEXT_LINE
 
 DRAW_TEXTBUF_RET ENT

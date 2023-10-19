@@ -356,19 +356,23 @@ PictTextIn      MAC
                 TXT ]1
                 EOM
 
+; Draw the text currently in the text buffer at the current position
 PictTextbuf     MAC
                 DB  OpTextbuf
                 EOM
 
+; Draw the text currently in the text buffer at the current position, followed by "\n"
 PictTextbufRet  MAC
                 DB  OpTextbufRet
                 EOM
 
+; Decompress image to current screen with transparency
 PictImage       MAC
                 DB  OpImage
                 DW  ]1
                 EOM
 
+; Decompress image to current screen, filling transparent with black
 PictImageFill   MAC
                 DB  OpImageFill
                 DW  ]1
@@ -390,40 +394,57 @@ PictCopyTo      MAC
                 DB  ]1,]2,]3,]4
                 EOM
 
+; Swap an area of the screen between page 1 and 2
+;
+;   left byte
+;   top line (INCLUSIVE)
+;   right byte (exclusive)
+;   bottom line (INCLUSIVE)
+;
+; If top > bottom, transfer happens in reverse order.
 PictSwap        MAC
                 DB  OpSwap
                 DB  ]1,]2,]3,]4
                 EOM
 
+; Set the drawing page to 1
 PictSetPage1    MAC
                 DB  OpSetPage1
                 EOM
 
+; Set the drawing page to 2
 PictSetPage2    MAC
                 DB  OpSetPage2
                 EOM
 
+; Set the drawing page to the opposite of the current drawing page
 PictSetPageX    MAC
                 DB  OpSetPageX
                 EOM
 
+; Display the currently set drawing page
 PictShowPage    MAC
                 DB  OpShowPage
                 EOM
 
+; Clear the currently set drawing page to black
 PictClearPage   MAC
                 DB  OpClearPage
                 EOM
 
+; Copy to the current drawing page from the opposite page
 PictCopyToPage  MAC
                 DB  OpCopyToPage
                 EOM
 
+; Call the given function
 PictCall        MAC
                 DB  OpCall
                 DW  ]1
                 EOM
 
+; End the picture
+; required end to every DRAW_PICT call
 PictEnd         MAC
                 DB  OpEnd
                 EOM

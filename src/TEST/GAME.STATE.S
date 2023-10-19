@@ -6,7 +6,7 @@
 
                 ORG $BA00
 
-MAP_VISITED_17  DS  217;,$FF     ;*** ; cleared by default
+MAP_VISITED_17  DS  217 ;,$FF     ;*** ; cleared by default
                 DS  39
 MAP_VISITED_15  DS  169
 MAP_VISITED_13  DS  127

@@ -1,7 +1,8 @@
 
                 EXP OFF
 
-SAME_PAGE_AS    MAC
+; slightly different name to avoid COMMON/VARS version
+SAME_PAGE_AS_   MAC
                 ERR >(*-1!]1)
                 EOM
 
@@ -265,7 +266,7 @@ DENIBLR
 				INY
 				CPY	HOLDA
 				BNE	:LOOP2
-				SAME_PAGE_AS :LOOP1
+				SAME_PAGE_AS_ :LOOP1
 				LDX	BANK
 *** HIT BANK SWITCH HERE IF NEEDED
 				RTS
@@ -611,7 +612,7 @@ DELOOP			DEX
 NOCARRY			SEC
 				SBC	#$01
 				BNE	DELAYER
-				SAME_PAGE_AS DELAYER
+				SAME_PAGE_AS_ DELAYER
 				RTS
 
 DELAYS2			DB	$70,$2C,$26
