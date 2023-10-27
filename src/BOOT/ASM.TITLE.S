@@ -2,5 +2,5 @@
                 ORG $6000
                 PUT TITLE.PAGE.S
                 PUT TITLE.DATA.S
-                PUT /NAJA/BOOT/NDOS.BOOT2
+                ; PUT /NAJA/BOOT/NDOS.BOOT2
                 SAV TITLE.PAGE
