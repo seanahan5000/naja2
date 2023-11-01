@@ -1,4 +1,3 @@
-
             do 1
 
 ARM_EVEN        DB  $00,$00,$14,$10
@@ -167,7 +166,6 @@ SOFTWARE_INC    DB  $11,$6A,$14,$0C
                 DB  $FF
 
             else ; !GsFade
-
 SOFTWARE_INC    HEX 781F7E477F713F5C3B7C0F7F637F0000387C3B7C0F00
                 HEX 781F7E477F713F5C3B7C0F7F637F0000387C3B7C0F00
                 HEX 381C0E470300075C3B1C0E4763010000385C3B1C0F00
@@ -282,7 +280,6 @@ MOON            DB  $17,$92,$08,$2E
                 DB  $FF
 
             else
-
 PLANET          HEX 0480808080
                 HEX 1C80808080
                 HEX 3880808080
@@ -370,7 +367,6 @@ MOON            HEX 8080800080808080
                 HEX 8080FCD5F3018080
                 HEX 808060FF1F808080
                 HEX 8080808080808080
-
             fin
 
             do NajaFade
@@ -438,7 +434,6 @@ NAJA_UNDER      DB  $01,$89,$0D,$0B
                 DB  $FF
 
             else ; !NajaFade
-
 NAJA_N          HEX C0810000000000000000
                 HEX E0830000000000000000
                 HEX B0860000000000000000
@@ -676,10 +671,9 @@ NAJA_UNDER      HEX 95DBEEFFFFFFBFD6EEFFFFF7BA
                 HEX D5D6AAD5AAD5AAD5AAD5AAD5E6
                 HEX D5FCFFFFFFFFFFFFFFFFFFFFC7
                 HEX D5828080808080808080808080
-
             fin ; !NajaFade
 
-            do NewBubbles
+            do 1
 
 BUBBLES         DB  $00,$00,$05,$87
                 HEX 8180A12A918180A5BF0109C701090ABF012AB70139022002
@@ -695,8 +689,7 @@ BUBBLES         DB  $00,$00,$05,$87
                 HEX 092AB70939200220B709490AB70957BF0937918000
                 DB  $FF
 
-            else ; !NewBubbles
-
+            else
 BUBBLE_0        HEX 80802A8080
                 HEX 80552A5580
                 HEX 80552A5580
@@ -840,8 +833,7 @@ BUBBLE_8        HEX 80802A8080
                 HEX 2A552A552A
                 HEX 2A552A552A
                 HEX 80552A5580
-
-            fin ; !NewBubbles
+            fin
 
 ; NOTE: Some of the 0x80 black values in SPACESHIP are used
 ;   to control transparency during slide effect.

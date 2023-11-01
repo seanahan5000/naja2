@@ -57,8 +57,8 @@ X Scroll through individuals in camp with <- and -> arrows
 * Limit credits and experience to 6 digits instead of 8 (3 bytes)
 * Show hallway structure in fight grid
     * Maybe make bigger once extra characters are gone
-* Rework fight grid to show actual hall configuration
-    * Mimic map display
+X Rework fight grid to show actual hall configuration
+    X Mimic map display
     X Remove row and column coordinates
 * FROG_BOT - lots of them in a certain area, like pests? Easy to kill?
 * Limit juicer max energy area in fight based on level
@@ -73,7 +73,7 @@ X Scroll through individuals in camp with <- and -> arrows
     * Fold IDENTIFY and HEAL together?
     * Require Physician to be next to character to heal?
     * Rename FLIP to STATS? Or get rid of STATS?
-    * Use shape instead of ">" before alien names (small left arrow?)
+    X Use shape instead of ">" before alien names (small left arrow?)
     * Rename OTHER to PLANS?
     * Move PARRY to top/center so it's easier to get to
     * Allow juicer to charge other characters -- not just alien damage
@@ -82,11 +82,26 @@ X Scroll through individuals in camp with <- and -> arrows
     X Point alien name at bottom of tall topviews instead of the top
         * Consider making this controllable from the topview itself
         * (Depends on where the "body" of the alien is)
-    * Animate image generator images instead of just drawing every other line
+        * Give each alien a body core offset to point name at and take shots
     * Give each shooting alien a shot source location (or two for left/right)
-    * Give each alien a body core offset to point name at and take shots
+    * Animate image generator images instead of just drawing every other line
+    * Have some aliens call in reinforcements
+        * Maybe one has to be killed before it runs and tells others?
+    * Use tab key to jump between aliens to target?
 * Shorten max alien name length?
     * Adds space in fight screens and alien info
+* Put Tesseract/port in camp entry menu
+* Character format
+    * Split data into stored information and in-station state
+    * Redo equipment format
+        * Probably only 2 or at most 3 bytes per item
+        * Instance count (grenades)
+        * Multiple levels of same item (I,II,III,IV,V, etc.)
+        * Split off quest items? (Treat as group items?)
+            * List separately in camp?
+* In-game text descriptions of equipment
+    * Tie into Compendium?
+* Story: Style, Structure, Substance, and the Principles of Screenwriting by Robert McKee
 
 =================================
 Old notes from /WORK1.PO/TF.NOTES

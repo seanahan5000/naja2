@@ -291,5 +291,5 @@ UNPACK_CMN2     LDA (DATAL),Y
                 STA (SCREENL),Y
 :MOVE_MODB      CPX #$FF
                 BNE :MOVE_LOOP
-                SAME_PAGE_AS :MOVE_LOOP
+                ; SAME_PAGE_AS :MOVE_LOOP   ; TODO: fixme
                 JMP :COLUMN_LOOP

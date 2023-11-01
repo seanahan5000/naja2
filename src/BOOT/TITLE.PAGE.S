@@ -1,27 +1,30 @@
+;-------------------------------------------------------------------------------
 ;
 ; Original Naja title screen animation
 ;
-;   Written ??/1983
-; Rewritten 10/2023
+;     Written ??/1983
+;   Rewritten 10/2023
 ;
+; NOTE: Much of the code has been left unchanged
+;   in order to maintain the original sound timing.
+;
+;-------------------------------------------------------------------------------
+
                 PUT /COMMON/VARS
                 PUT /COMMON/EXT
 
 GsFade          =   1
 NajaFade        =   1
-NewBubbles      =   1
 
 ; LINENUM         EQU $00
 BEGCOLM         EQU $C1
 START2          EQU $C1
 STARTS          EQU $C1
 POINT           EQU $C1
-LINE2x          EQU $C2
 ; COLUMN          EQU $C2
 COLUMN2         EQU $C2
 LINECNT         EQU $C2
 TOPLINE         EQU $C2
-LINE4           EQU $C4
 COLUMN4         EQU $C4
 DATACOL         EQU $C4
 NUMBER          EQU $C4
@@ -33,19 +36,13 @@ GAP             EQU $C5
 LINUM4          EQU $C5
 STARTER         EQU $C6
 CYCLE           EQU $C7
-ARMDATL         EQU $08
-LNCDATL         EQU $08
-DATAL           EQU $08
-MOONL           EQU $08
-ARMDATH         EQU $09
-LNCDATH         EQU $09
-DATAH           EQU $09
-MOONH           EQU $09
 SPCOUNT         EQU $CA
 DATAPNT         EQU $CA
 ROW             EQU $CB
 LENGTH          EQU $CC
 HOWLONG         EQU $CC
+DATAL           EQU $08
+DATAH           EQU $09
 PITCH           EQU $0D
 PARTL           EQU $0D
 PARTH           EQU $0E
@@ -54,7 +51,6 @@ PBEGLIN         EQU $B2
 ENDLINE         EQU $B3
 MBEGLIN         EQU $B3
 BEGROW          EQU $B4
-ROWNUM          EQU $B4
 ENDROW          EQU $B5
 AWAIT1          EQU $B6
 AWAIT2          EQU $B7
@@ -94,10 +90,41 @@ EROWTS          EQU $18
 APITCH1         EQU $10
 APITCH2         EQU $01
 
-STAR_BUFFER1    =   $A800
-STAR_BUFFER2    =   $A900
-ARM_EVEN_BUFFER =   $AB00               ; 2 pages
-ARM_ODD_BUFFER  =   $AD00               ; 2 pages
+STAR_BUFFER1    =   $9000
+STAR_BUFFER2    =   $9100
+STAR_BUFFER3    =   $9200
+ARM_EVEN_BUFFER =   $9200               ; 2 pages
+ARM_ODD_BUFFER  =   $9400               ; 2 pages
+
+;-------------------------------------------------------------------------------
+
+; Copy from current drawing page to memory buffer
+;
+;   left byte
+;   top line
+;   right byte (exclusive)
+;   bottom line (exclusive)
+;   memory ptr
+HookCopyToMem   MAC
+                DB  OpHook0
+                DB  ]1,]2,]3,]4
+                DW  ]5
+                EOM
+
+; Copy memory buffer to current drawing page
+;
+;   left byte
+;   top line
+;   right byte (exclusive)
+;   bottom line (exclusive)
+;   memory ptr
+HookCopyFromMem MAC
+                DB  OpHook1
+                DB  ]1,]2,]3,]4
+                DW  ]5
+                EOM
+
+;-------------------------------------------------------------------------------
 
 ; *** boot conditions ***
                 JSR DRAW_PICT
@@ -105,10 +132,13 @@ ARM_ODD_BUFFER  =   $AD00               ; 2 pages
                 PictClearPage
                 PictShowPage
                 PictEnd
-
 ;
 ; Draw star field
 ;
+                LDX #<PICT_HOOKS
+                LDY #>PICT_HOOKS
+                JSR SET_PICT_HOOKS
+
                 BIT KEYBRD
                 BPL STAR_LOOP
                 JMP MESSAGE
@@ -121,15 +151,15 @@ STAR_LOOP       JSR DRAW_PICT
                 PictClearPage
                 PictCall DRAW_DOT_STARS
                 PictCall DRAW_BIG_STARS
-                PictCopyToMem $14;$5C;$23;$6B;STAR_BUFFER1
-                PictCopyToMem $00;$3B;$08;$57;STAR_BUFFER2
+                HookCopyToMem $14;$5C;$23;$6B;STAR_BUFFER1
+                HookCopyToMem $00;$3B;$08;$57;STAR_BUFFER2
                 PictShowPage
                 PictSetPage2
                 PictImage SPACESHIP
                 PictImageFill ARM_EVEN
                 PictImageFill ARM_ODD
-                PictCopyToMem $00;$00;$14;$10;ARM_EVEN_BUFFER
-                PictCopyToMem $00;$10;$14;$20;ARM_ODD_BUFFER
+                HookCopyToMem $00;$00;$14;$10;ARM_EVEN_BUFFER
+                HookCopyToMem $00;$10;$14;$20;ARM_ODD_BUFFER
                 PictSetPage1
                 PictEnd
 ;
@@ -153,15 +183,16 @@ NOKEY10         JSR SLIDEIN
                 STA $22B1
                 STA $2BAE
 
+                ; restore stars behind spaceship
                 JSR DRAW_PICT
-                PictCopyFromMem $00;$3B;$08;$57;STAR_BUFFER2
+                HookCopyFromMem $00;$3B;$08;$57;STAR_BUFFER2
                 PictEnd
 
                 LDA NXTSTEP+1
                 INC NXTSTEP+1
                 CMP #$3D
                 BNE SLOOP
-                JMP ARMIN
+                JMP ARM_IN
 ;
 ; Draw one pass of space ship slide.
 ;
@@ -207,7 +238,7 @@ NOSTORE         LDA CLICK
 ;
 ; Slide ship arm over then down
 ;
-ARMIN           LDA #$00
+ARM_IN          LDA #$00
                 JSR WAIT
                 LDA #APITCH1
                 STA AWAIT1
@@ -222,11 +253,11 @@ TIMEA           LDA #$5C
                 BCS :1
                 LDX #<ARM_ODD_BUFFER
                 LDY #>ARM_ODD_BUFFER
-                BNE :2                  ; always
+                BCC :2                  ; always
 :1              LDX #<ARM_EVEN_BUFFER
                 LDY #>ARM_EVEN_BUFFER
-:2              STX ARMDATL
-                STY ARMDATH
+:2              STX DATAL
+                STY DATAH
 NOTHROW         LDA #$13
                 STA DATACOL
                 LDA STARTS
@@ -237,7 +268,7 @@ NOTHROW         LDA #$13
                 LDA HIBYTES,X
                 STA SCREENH
 MOROFRW         LDY DATACOL
-                LDA (ARMDATL),Y
+                LDA (DATAL),Y
                 LDY COLUMN
                 CPY #$23
                 BCC NOWORRY
@@ -260,12 +291,12 @@ NODO            DEC DATACOL
                 DEC COLUMN
                 CMP #$14
                 BNE MOROFRW
-                LDA ARMDATL
+                LDA DATAL
                 CLC
                 ADC #$14
-                STA ARMDATL
+                STA DATAL
                 BCC NOCARRY
-                INC ARMDATH
+                INC DATAH
 NOCARRY         LDA LINENUM
                 INC LINENUM
                 CMP #$6B
@@ -283,7 +314,7 @@ NOTIME          BIT KEYBRD
 
 :SKIPA          JSR DRAW_PICT
                 PictSetPage2
-                PictCopyFromMem $14;$5C;$23;$6B;STAR_BUFFER1
+                HookCopyFromMem $14;$5C;$23;$6B;STAR_BUFFER1
                 PictCopyTo $14;$6C;$27;$88
                 PictSetPage1
                 PictEnd
@@ -452,11 +483,11 @@ LAUNCHA         LDA #$60
                 BCC :1
                 LDX #<LAUNCH_ODD
                 LDY #>LAUNCH_ODD
-                BNE :2                  ; always
+                BCS :2                  ; always
 :1              LDX #<LAUNCH_EVEN
                 LDY #>LAUNCH_EVEN
-:2              STX LNCDATL
-                STY LNCDATH
+:2              STX DATAL
+                STY DATAH
 GOROW           LDA #$06
                 STA DATACOL
                 LDA STARTS
@@ -467,7 +498,7 @@ GOROW           LDA #$06
                 LDA HIBYTES,X
                 STA SCREENH
 GOROW2          LDY DATACOL
-                LDA (LNCDATL),Y
+                LDA (DATAL),Y
                 LDY COLUMN
                 CMP #$80
                 BNE SKIPPER
@@ -483,12 +514,12 @@ SKIPPER         STA (SCREENL),Y
                 DEC COLUMN
                 CMP #$14
                 BNE GOROW2
-                LDA LNCDATL
+                LDA DATAL
                 CLC
                 ADC #$07
-                STA LNCDATL
+                STA DATAL
                 BCC NOTCARR
-                INC LNCDATH
+                INC DATAH
 NOTCARR         LDA LINENUM
                 INC LINENUM
                 CMP #$75
@@ -519,7 +550,6 @@ NOTCARR         LDA LINENUM
                 STA TOPLINE
                 LDA #$75
                 STA ENDLINE
-
                 LDA #$C6                ; DEC zp: pitch up
                 STA HERE2A
                 STA HERE2
@@ -547,25 +577,25 @@ SYNC_BEAM       JSR SET_PAGE2
                 STA SCREENH
                 LDY #$27
                 LDA #$80
-:LOOP0          STA (SCREENL),Y
+:1              STA (SCREENL),Y
                 DEY
-                BPL :LOOP0
+                BPL :1
 
 ; watch for $80 on the bus to know where the scanning beam is
 
                 LDA #$00
                 SEC
-:LOOP1          PHA
-:LOOP2          BIT $C057
-                BMI :SKIPA
+:2              PHA
+:3              BIT $C057
+                BMI :4
                 SBC #$01
-                BNE :LOOP2
+                BNE :3
                 PLA
                 SBC #$01
-                BNE :LOOP1
-                BEQ :SKIPB              ; always
-:SKIPA          PLA
-:SKIPB
+                BNE :2
+                BEQ :5              ; always
+:4              PLA
+:5
 
 NOTLAST         LDA #$00
                 STA BEGROW
@@ -623,7 +653,8 @@ CLOOPA          JSR CDRAW
                 JMP CLOOPA
 CEXIT           RTS
 
-CLOOP2          STA PRIMARY
+CLOOP2          JSR SHOW_PAGE1
+
                 LDA #$3F
                 JSR WAIT
                 LDY #$0A
@@ -631,8 +662,6 @@ GOWAIT          PHA
                 PLA
                 DEY
                 BPL GOWAIT
-                NOP
-                NOP
 
                 JSR DRAW_PICT
                 PictSetPage2
@@ -652,7 +681,7 @@ GOWAIT          PHA
                 PictEnd
 
                 LDA BEGROW
-CPNT            CMP #$27
+CPNT            CMP #$27                ; modified
                 BEQ CEXIT2
                 INC BEGROW
                 INC ENDROW
@@ -1008,9 +1037,9 @@ HERE            LDA #$04
                 BNE LOOPNT1
                 RTS
 
-GSMASKS         DFB $81,$90,$84
-                DFB $C0,$82,$A0
-                DFB $88
+GSMASKS         DB  $81,$90,$84
+                DB  $C0,$82,$A0
+                DB  $88
 
 ;
 ; Scroll up "Software, Inc."
@@ -1321,9 +1350,9 @@ MORDOTS         LDA DOTSTAB,X
 DOTOUT          JMP GOPLAN
 
 DOTSTAB         DB  $0E,$47,$03
+
 ;
-; White noise generator used during
-;   "Graphic" and "Simulations" fades.
+; White noise generator used during "C" launching
 ;
 NOISE           LDY POINT
                 LDA $6000,Y
@@ -1357,9 +1386,31 @@ NOKEY6          JSR WAIT
                 PictSetPage1
                 PictClearPage
                 PictCall DRAW_DOT_STARS
+                HookCopyToMem $0F;$33;$14;$5B;STAR_BUFFER1
+                HookCopyToMem $17;$47;$1F;$75;STAR_BUFFER3
+                PictEnd
+
+                LDA #$33
+                STA PLANET+1
+                LDA #$47
+                STA MOON+1
+
+                JSR DRAW_PICT
+                PictImage PLANET
+                PictImage MOON
                 PictShowPage
                 PictSetPage2
                 PictCopyToPage
+                PictEnd
+
+                LDA #$98
+                STA PLANET+1
+                LDA #$92
+                STA MOON+1
+
+                JSR DRAW_PICT
+                HookCopyFromMem $0F;$33;$14;$5B;STAR_BUFFER1
+                HookCopyFromMem $17;$47;$1F;$75;STAR_BUFFER3
                 PictImageFill PLANET
                 PictImageFill MOON
                 PictSetPage1
@@ -1369,8 +1420,6 @@ NOKEY6          JSR WAIT
                 STA PBEGLIN
                 LDA #$47
                 STA MBEGLIN
-                JSR DRAW_MOON
-                JSR DRAW_PLANET
 MORUPIT         LDA #$00
                 STA NUMBER
 LOOPER5         LDA #$A0
@@ -1397,14 +1446,14 @@ NOKEY9          LDA PBEGLIN
 ;
 ; Scroll in ringed planet
 ;
-DRAW_PLANET     LDA PBEGLIN             ; planet-specific
+DRAW_PLANET     LDA PBEGLIN
                 STA LINENUM
-                LDX #$98                ; planet-specific
+                LDX #$98
 :1              LDA LOBYTES,X
-                STA MOONL
+                STA DATAL
                 LDA HIBYTES,X
                 EOR #$60
-                STA MOONH
+                STA DATAH
                 LDY LINENUM
                 LDA LOBYTES,Y
                 STA SCREENL
@@ -1415,14 +1464,14 @@ DRAW_PLANET     LDA PBEGLIN             ; planet-specific
                 STA SCREENH
                 INY
                 STY LINENUM
-                LDY #$0F                ; planet-specific
-:2              LDA (MOONL),Y
+                LDY #$0F
+:2              LDA (DATAL),Y
                 CMP #$80
                 BNE :3
                 LDA (SCREENL),Y
 :3              STA (DESTINL),Y
                 INY
-                CPY #$14                ; planet-specific
+                CPY #$14
                 BNE :2
                 INX
                 CPX #192
@@ -1431,14 +1480,14 @@ DRAW_PLANET     LDA PBEGLIN             ; planet-specific
 ;
 ; Scroll in "moon"
 ;
-DRAW_MOON       LDA MBEGLIN             ; moon-specific
+DRAW_MOON       LDA MBEGLIN
                 STA LINENUM
-                LDX #$92                ; moon-specific
+                LDX #$92
 :1              LDA LOBYTES,X
-                STA MOONL
+                STA DATAL
                 LDA HIBYTES,X
                 EOR #$60
-                STA MOONH
+                STA DATAH
                 LDY LINENUM
                 LDA LOBYTES,Y
                 STA SCREENL
@@ -1449,14 +1498,14 @@ DRAW_MOON       LDA MBEGLIN             ; moon-specific
                 STA SCREENH
                 INY
                 STY LINENUM
-                LDY #$17                ; moon-specific
-:2              LDA (MOONL),Y
+                LDY #$17
+:2              LDA (DATAL),Y
                 CMP #$80
                 BNE :3
                 LDA (SCREENL),Y
 :3              STA (DESTINL),Y
                 INY
-                CPY #$1F                ; moon-specific
+                CPY #$1F
                 BNE :2
                 INX
                 CPX #192
@@ -1472,15 +1521,13 @@ LANDSCAPE_IN    JSR DRAW_PICT
                 PictSetPage1
                 PictEnd
 
-                LDA #$BF
-                STA BEGLINE
-INLOOP0         LDA #$00
+                LDX #$BF
+:1              STX BEGLINE
+                LDA #$00
                 STA LINECNT
-                LDA BEGLINE
-                STA LINUM2
                 LDA #$4D
                 STA LINUM4
-INLOOP1         LDX LINUM2
+:2              STX LINUM2
                 LDA LOBYTES,X
                 STA DESTINL
                 LDA HIBYTES,X
@@ -1491,29 +1538,36 @@ INLOOP1         LDX LINUM2
                 LDA HIBYTES,X
                 EOR #$60
                 STA SCREENH
+
                 LDY #$27
-INLOOP2         LDA (SCREENL),Y
                 LDX LINECNT
                 CPX #$22
-                BCS DONT1
+                BCS :5
+:3              LDA (SCREENL),Y
                 CMP #$80
-                BEQ DONT2
-DONT1           STA (DESTINL),Y
-DONT2           DEY
-                BPL INLOOP2
-                INC LINUM4
+                BEQ :4
+                STA (DESTINL),Y
+:4              DEY
+                BPL :3
+                BMI :6                  ; always
+:5              LDA (SCREENL),Y
+                STA (DESTINL),Y
+                DEY
+                BPL :5
+:6              INC LINUM4
                 INC LINECNT
-                LDA LINUM2
-                INC LINUM2
-                CMP #$BF
-                BNE INLOOP1
+                LDX LINUM2
+                INX
+                CPX #192
+                BNE :2
+
                 BIT KEYBRD
-                BPL NOKEY8
+                BPL :7
                 JMP GOMESS1
-NOKEY8          LDA BEGLINE
-                DEC BEGLINE
-                CMP #$4D
-                BNE INLOOP0
+:7              LDX BEGLINE
+                DEX
+                CPX #$4C
+                BNE :1
 ;
 ; Delay and then fade in "NAJA"
 ;
@@ -1521,7 +1575,6 @@ NOKEY8          LDA BEGLINE
                 JSR WAIT
                 JSR WAIT
                 JSR WAIT
-
 FADE_NAJA
             do NajaFade
                 JSR DRAW_PICT
@@ -1662,14 +1715,14 @@ MORPART         LDY PARTNUM
 
                 JMP BUBBLER
 
-LINEBEG         DFB $55,$56,$6C
-                DFB $55,$89
-LINEEND         DFB $8B,$8D,$9B
-                DFB $93,$93
-ROWBEG          DFB $02,$08,$09
-                DFB $0E,$01
-ROWEND          DFB $0B,$0F,$11
-                DFB $17,$0D
+LINEBEG         DB  $55,$56,$6C
+                DB  $55,$89
+LINEEND         DB  $8B,$8D,$9B
+                DB  $93,$93
+ROWBEG          DB  $02,$08,$09
+                DB  $0E,$01
+ROWEND          DB  $0B,$0F,$11
+                DB  $17,$0D
 STARTIN         DW  NAJA_N
                 DW  NAJA_A1
                 DW  NAJA_J
@@ -1738,15 +1791,13 @@ NOENDCY         LDA ROW
                 BNE FADPNT0
                 RTS
 
-ISOMASK         DFB $C0,$84,$90
-                DFB $81,$A0,$82
-                DFB $88
-SLTMASK         DFB $BF,$FB,$EF
-                DFB $FE,$DF,$FD
-                DFB $F7
-
+ISOMASK         DB  $C0,$84,$90
+                DB  $81,$A0,$82
+                DB  $88
+SLTMASK         DB  $BF,$FB,$EF
+                DB  $FE,$DF,$FD
+                DB  $F7
             fin ; !NajaFade
-
 ;
 ; Delay and then animate green bubbles.
 ;
@@ -1755,13 +1806,11 @@ BUBBLER         LDA #$00
                 JSR WAIT
                 JSR WAIT
 
-            do NewBubbles
                 JSR DRAW_PICT
                 PictSetPage2
                 PictImageFill BUBBLES
                 PictSetPage1
                 PictEnd
-            fin
 
                 LDA #$00
                 STA PICNUM
@@ -1794,25 +1843,11 @@ ISTIME2         TXA
                 LDA DELNUM,X
                 STA BDELAY,Y
 
-            do NewBubbles
                 LDY PICNUM
                 LDA CYCOUNT,Y
                 STA CYCLE
-                JSR NEW_BUBBLE
-            else
-                LDY PICNUM
-                LDA CYCOUNT,Y
-                STA CYCLE
-                LDA BROWTAB,Y
-                STA BEGROW
-                LDA EROWTAB,Y
-                STA ENDROW
-                LDA BLINTAB,Y
-                STA BEGLINE
-                LDA ELINTAB,Y
-                STA ENDLINE
-                JSR BUBLOUT
-            fin
+                JSR DRAW_BUBBLE
+
                 LDA #$03
                 CMP CYCOUNT
                 BNE NOTINC
@@ -1862,14 +1897,12 @@ GONGAIN         JMP AGAIN
 ;
 ; Animate one bubble.
 ;
-            do NewBubbles
-
 BUBBLE_INDEX    =   PICNUM
 FRAME_INDEX     =   CYCLE
 SRC_LINE        =   LINENUM
 DST_LINE        =   POINT
 
-NEW_BUBBLE      LDX BUBBLE_INDEX
+DRAW_BUBBLE     LDX BUBBLE_INDEX
                 LDA :BUBBLE_COLS,X
                 STA :BEGCOL+1
                 LDA :BUBBLE_ROWS,X
@@ -1912,7 +1945,7 @@ NEW_BUBBLE      LDX BUBBLE_INDEX
                 LDA FRAME_INDEX
                 CMP #$05
                 BNE :5
-                JSR RANDOM              ; use new RANDOM here
+                JSR RANDOM              ; okay to use new RANDOM here
                 AND #$03
                 ADC #$02
                 STA :WAIT_MOD+1
@@ -1938,78 +1971,6 @@ NEW_BUBBLE      LDX BUBBLE_INDEX
 :BUBBLE_COLS    DB  $12,$1A,$18,$1E
 :BUBBLE_ROWS    DB  $B0,$B0,$A0,$98
 
-            else ; !NewBubbles
-
-BUBLOUT         LDA #$00
-                STA POINT
-                LDA CYCLE
-                ASL A
-                TAY
-                LDA PICPNT,Y
-                STA BMODPNT+1
-                INY
-                LDA PICPNT,Y
-                STA BMODPNT+2
-                LDA BEGLINE
-                STA LINENUM
-BUBLR           LDX LINENUM
-                LDA LOBYTES,X
-                STA SCREENL
-                LDA HIBYTES,X
-                STA SCREENH
-                LDY BEGROW
-MORBUBL         LDX POINT
-BMODPNT         LDA $FFFF,X             ; modified
-                CMP #$80
-                BEQ STORENO
-                STA (SCREENL),Y
-STORENO         INC POINT
-                INY
-                CPY ENDROW
-                BNE MORBUBL
-                LDA LINENUM
-                INC LINENUM
-                CMP ENDLINE
-                BNE BUBLR
-
-                LDA CYCLE
-                CMP #$05
-                BNE BUBEXIT
-
-                JSR RNDMIZE
-                LDA RANDOM1
-                AND #$03
-                ADC #$02
-                STA MPNT2+1
-                LDY #$20
-MORPOP          LDA CLICK
-MPNT2           LDA #$FF
-                JSR WAIT
-                DEY
-                BNE MORPOP
-
-BUBEXIT         RTS
-
-;
-; bubble pointers
-;
-PICPNT          DW  BUBBLE_0
-                DW  BUBBLE_1
-                DW  BUBBLE_2
-                DW  BUBBLE_3
-                DW  BUBBLE_4
-                DW  BUBBLE_5
-                DW  BUBBLE_6
-                DW  BUBBLE_7
-                DW  BUBBLE_8
-
-BROWTAB         DB  $12,$1A,$18,$1E
-EROWTAB         DB  $17,$1F,$1D,$23
-BLINTAB         DB  $B0,$B0,$A0,$98
-ELINTAB         DB  $BE,$BE,$AE,$A6
-
-            fin ; !NewBubbles
-
 BDELAY          DB  $B9,$04,$C0,$0D
                 DB  $C5,$09,$C4,$05
 CYCOUNT         DB  $03,$01,$02,$04
@@ -2029,12 +1990,12 @@ MESSAGE         JSR DRAW_PICT
                 PictShowPage1
                 PictSetPage2
                 PictClearPage
-                PictTextAt 12;15;"PRESS_ANY_KEY_TO_BEGIN_THE_SIMULATION_AND"
-                PictTextAt 54;24;"WE_HOPE_YOU_ENJOY_YOURSELF."
-                PictTextAt 12;165;"COPYRIGHT_<C>_1988__ALL_RIGHTS_RESERVED_BY"
-                PictTextAt 36;173;"GRAPHIC_SIMULATIONS_SOFTWARE,_INC."
+                PictTextAt 12;15;"PRESS ANY KEY TO BEGIN THE SIMULATION AND"
+                PictTextAt 54;24;"WE HOPE YOU ENJOY YOURSELF."
+                PictTextAt 12;165;"COPYRIGHT <C> 1988  ALL RIGHTS RESERVED BY"
+                PictTextAt 36;173;"GRAPHIC SIMULATIONS SOFTWARE, INC."
                 PictTextAt_ 78;184
-                TXC "SERIAL_NUMBER_"
+                TXC "SERIAL NUMBER "
 SERIAL_MOD      TXT "000001"
                 PictImage SIGNATURES
                 PictShowPage
@@ -2059,13 +2020,13 @@ MORSTAR         STX LINENUM
                 LDA HIBYTES,X
                 STA SCREENH
                 LDY #39
-MORELIN         JSR RNDMIZE
+MORELIN         JSR RANDOM
                 CMP #$07
                 BCS TOOBIG
                 TAX
                 LDA STARS,X
                 TAX
-                BIT RANDOM1+1
+                JSR RANDOM
                 BPL GREVIO
                 TXA
                 ORA #$80
@@ -2101,7 +2062,7 @@ MASK            DB  $55,$2A
 
 DRAW_BIG_STARS  LDA #$00
                 STA POINT
-MORSM2          LDY POINT
+:1              LDY POINT
                 LDA SPOTS,Y
                 STA LINENUM
                 LDA #$00
@@ -2109,7 +2070,7 @@ MORSM2          LDY POINT
                 INY
                 LDA SPOTS,Y
                 TAY
-MORSMAL         LDX LINENUM
+:2              LDX LINENUM
                 LDA LOBYTES,X
                 STA SCREENL
                 LDA HIBYTES,X
@@ -2121,33 +2082,33 @@ MORSMAL         LDX LINENUM
                 LDA LINECNT
                 INC LINECNT
                 CMP #$02
-                BNE MORSMAL
+                BNE :2
                 INC POINT
                 LDA POINT
                 INC POINT
                 CMP #$0B
-                BNE MORSM2
+                BNE :1
                 LDA #$12
                 STA LINENUM
                 LDA #$00
                 STA POINT
-MORBIG2         LDX LINENUM
+:3              LDX LINENUM
                 LDA LOBYTES,X
                 STA SCREENL
                 LDA HIBYTES,X
                 STA SCREENH
                 LDY #$1A
-MORBIG1         LDX POINT
+:4              LDX POINT
                 LDA BIG1,X
                 STA (SCREENL),Y
                 INC POINT
                 INY
                 CPY #$1C
-                BNE MORBIG1
+                BNE :4
                 LDA LINENUM
                 INC LINENUM
                 CMP #$1E
-                BNE MORBIG2
+                BNE :3
                 RTS
 
 SMALL1          DB  $08,$1C,$08
@@ -2165,23 +2126,77 @@ BIG1            DB  $00,$01,$00
                 DB  $01,$00,$01
                 DB  $00,$01
 
-; NOTE: Use old randomize function and seed in order
-;   to get original star pattern and bubble sequence.
+;-------------------------------------------------------------------------------
 
-RNDMIZE         LDA RANDOM1+5           ; Must not change Y register
-                LDX #4
-                CLC
-:1              ADC RANDOM1,X
-                STA RANDOM1,X
-                DEX
-                BPL :1
-                LDX #5
-:2              INC RANDOM1,X
+PICT_HOOKS      DW  OP_COPY_TO_MEM
+                DW  OP_COPY_FROM_MEM
+
+LEFT            =   LEFT_DIV7
+RIGHT           =   LEFT_MOD7
+
+OP_COPY_TO_MEM  LDA #$38                ; SEC
+                BNE COPY_MEM_CMN
+OP_COPY_FROM_MEM
+                LDA #$18                ; CLC
+COPY_MEM_CMN    STA :SWITCHMOD
+                LDA (OP_PTR),Y
+                STA LEFT
+                INY
+                LDA (OP_PTR),Y
+                STA TOP
+                INY
+                LDA (OP_PTR),Y
+                STA RIGHT
+                INY
+                LDA (OP_PTR),Y
+                STA BOTTOM
+                INY
+                LDA (OP_PTR),Y
+                STA :SRCMOD+1
+                STA :DSTMOD+1
+                INY
+                LDA (OP_PTR),Y
+                STA :SRCMOD+2
+                STA :DSTMOD+2
+                INY
+                STY OP_INDEX
+
+                LDX #0
+                LDY TOP
+:1              STY TOP
+                LDA LOBYTES,Y
+                STA SCREENL
+                LDA HIBYTES,Y
+                STA SCREENH
+
+                LDY LEFT
+:SWITCHMOD      CLC                     ; modified
+                BCS :3
+
+:SRCMOD         LDA $FFFF,X
+                STA (SCREENL),Y
+                INX
+                BNE :2
+                INC :SRCMOD+2
+:2              INY
+                CPY RIGHT
+                BNE :SRCMOD
+                BEQ :5                  ; always
+
+:3              LDA (SCREENL),Y
+:DSTMOD         STA $FFFF,X
+                INX
+                BNE :4
+                INC :DSTMOD+2
+:4              INY
+                CPY RIGHT
                 BNE :3
-                DEX
-                BPL :2
-:3              LDA RANDOM1
+
+:5              LDY TOP
+                INY
+                CPY BOTTOM
+                BNE :1
+                SAME_PAGE_AS :1
                 RTS
 
-RANDOM1         DB  $B4,$07,$EA
-                DB  $71,$4C,$3B
+;-------------------------------------------------------------------------------

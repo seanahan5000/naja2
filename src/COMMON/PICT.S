@@ -1,28 +1,25 @@
 
-; *** reconcile with TEXT.S ***
-
-OP_PTR          =   $50
-OP_PTR_H        =   $51
-OP_INDEX        =   $52
-OP_COLOR        =   $53
-
-; TODO: SHARE WITH ALL GRAPHICS?
-LEFT_DIV7       =   $54
-LEFT_MOD7       =   $55
-RIGHT_DIV7      =   $56
-RIGHT_MOD7      =   $57
-TOP             =   $58
-BOTTOM          =   $59
-AND_MASK        =   $5A
-LEFT_MASK       =   $5B
-RIGHT_MASK      =   $5C
-MAX_DIV7        =   $5F             ; TEXT-only
-
 ; TODO: use LOCAL_TEMP?
 TEMP_COLOR      =   $00
 TEMP_TOGGLE     =   $01
 
 ;-------------------------------------------------------------------------------
+
+;
+; On Entry:
+;   X: pointer to hook table (low)
+;   Y: pointer to hook table (high)
+;
+SET_PICT_HOOKS  ENT
+                STX OP_PTR
+                STY OP_PTR_H
+                LDY #0
+:1              LDA (OP_PTR),Y
+                STA OP_HOOKS,Y
+                INY
+                CPY #4
+                BNE :1
+                RTS
 
 DRAW_PICT       ENT
                 PLA
@@ -95,9 +92,17 @@ OP_TABLE        DW  OP_SET_COLOR
                 DW  SET_PAGE2
                 DW  SET_PAGEX
                 DW  SHOW_PAGE
+                DW  SHOW_PAGE1
+                DW  SHOW_PAGE2
                 DW  CLEAR_PAGE
+                DW  CLEAR_PAGE1
+                DW  CLEAR_PAGE2
                 DW  COPY_TO_PAGE
+                DW  COPY_TO_PAGE1
+                DW  COPY_TO_PAGE2
                 DW  OP_CALL
+OP_HOOKS        DW  $FFFF               ; OP_HOOK0
+                DW  $FFFF               ; OP_HOOK1
 
 OP_CALL         LDA (OP_PTR),Y
                 TAX

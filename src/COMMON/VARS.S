@@ -56,6 +56,23 @@ DATPNTH         =   $4E
 
 ; PICT.S uses $50-$5F
 
+; *** reconcile with TEXT.S ***
+OP_PTR          =   $50
+OP_PTR_H        =   $51
+OP_INDEX        =   $52
+OP_COLOR        =   $53
+; TODO: SHARE WITH ALL GRAPHICS?
+LEFT_DIV7       =   $54
+LEFT_MOD7       =   $55
+RIGHT_DIV7      =   $56
+RIGHT_MOD7      =   $57
+TOP             =   $58
+BOTTOM          =   $59
+AND_MASK        =   $5A
+LEFT_MASK       =   $5B
+RIGHT_MASK      =   $5C
+MAX_DIV7        =   $5F             ; TEXT-only
+
 ; TODO: conflict here?
 
 ; HALLS use $50-$5F
@@ -181,9 +198,17 @@ OpSetPage1      =   32
 OpSetPage2      =   33
 OpSetPageX      =   34
 OpShowPage      =   35
-OpClearPage     =   36
-OpCopyToPage    =   37
-OpCall          =   38
+OpShowPage1     =   36
+OpShowPage2     =   37
+OpClearPage     =   38
+OpClearPage1    =   39
+OpClearPage2    =   40
+OpCopyToPage    =   41
+OpCopyToPage1   =   42
+OpCopyToPage2   =   43
+OpCall          =   44
+OpHook0         =   45
+OpHook1         =   46
 
 OpEnd           =   $FF
 
@@ -389,6 +414,13 @@ PictClear       MAC
                 DB  ]1,]2,]3,]4
                 EOM
 
+; Copy an area of the screen to current page, from opposite page.
+;   Unlike OP_SWAP, only top-to-bottom copy is supported here
+;
+;   left byte
+;   top line
+;   right byte (exclusive)
+;   bottom line (exclusive)
 PictCopyTo      MAC
                 DB  OpCopyTo
                 DB  ]1,]2,]3,]4
@@ -427,14 +459,44 @@ PictShowPage    MAC
                 DB  OpShowPage
                 EOM
 
+; Display page 1
+PictShowPage1   MAC
+                DB  OpShowPage1
+                EOM
+
+; Display page 2
+PictShowPage2   MAC
+                DB  OpShowPage2
+                EOM
+
 ; Clear the currently set drawing page to black
 PictClearPage   MAC
                 DB  OpClearPage
                 EOM
 
+; Clear page 1 to black
+PictClearPage1  MAC
+                DB  OpClearPage1
+                EOM
+
+; Clear page 2 to black
+PictClearPage2  MAC
+                DB  OpClearPage2
+                EOM
+
 ; Copy to the current drawing page from the opposite page
 PictCopyToPage  MAC
                 DB  OpCopyToPage
+                EOM
+
+; Copy to page 1 from page 2
+PictCopyToPage1 MAC
+                DB  OpCopyToPage1
+                EOM
+
+; Copy to page 2 from page1
+PictCopyToPage2 MAC
+                DB  OpCopyToPage2
                 EOM
 
 ; Call the given function

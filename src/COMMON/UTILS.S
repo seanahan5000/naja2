@@ -1,7 +1,13 @@
 
+CLEAR_PAGE1     ENT
+                LDA #$20
+                BNE CLEAR_CMN           ; always
+CLEAR_PAGE2     ENT
+                LDA #$40
+                BNE CLEAR_CMN           ; always
 CLEAR_PAGE      ENT
                 LDA PAGE
-                CMP CLR_LOOP+2
+CLEAR_CMN       CMP CLR_LOOP+2
                 BEQ :SKIP1
                 LDX #3*31
 :LOOP1          LDA CLR_LOOP+2,X
@@ -50,9 +56,15 @@ CLR_LOOP        STA $2000,X
                 SAME_PAGE_AS CLR_LOOP
                 RTS
 
-COPY_TO_PAGE    ;ENT
+COPY_TO_PAGE1   ENT
+                LDA #$20
+                BNE COPY_TO_CMN           ; always
+COPY_TO_PAGE2   ENT
+                LDA #$40
+                BNE COPY_TO_CMN           ; always
+COPY_TO_PAGE    ENT
                 LDA PAGE
-                STA :DST_MOD+2
+COPY_TO_CMN     STA :DST_MOD+2
                 EOR #$60
                 STA :SRC_MOD+2
                 LDY #32
