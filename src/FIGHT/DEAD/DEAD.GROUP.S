@@ -403,7 +403,7 @@ SHOW_EACH_STATS LDX #0
 :1              STX CHAR_INDEX
                 TXA
                 JSR SET_CHAR
-                JSR DRAW_STATS
+                JSR SHOW_STATS
                 LDA CHAR_INDEX
                 BEQ :2
                 JSR DRAW_PICT
@@ -429,7 +429,7 @@ SHOW_EACH_STATS LDX #0
                 PictEnd
                 RTS
 
-DRAW_STATS      JSR DRAW_PICT
+SHOW_STATS      JSR DRAW_PICT
                 PictClear 13;22;30;108
                 PictSetTextHeight 9
                 PictTextAt_ 100;22

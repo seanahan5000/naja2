@@ -17,6 +17,8 @@ SET_FILE_TABLE  ENT
 ;
 ; On entry:
 ;   A: on/off flag
+;    (IS_SPINNING | NOT_SPINNING)
+;    (KEEP_SPINNING | STOP_SPINNING)
 ;
 SET_NEXT_ON_OFF ENT
                 STA ON_OFF_FLAG

@@ -32,6 +32,15 @@ $ASM BOOT   ASM.TITLE   -lst $OBJ/TITLE.LST                           || ERR=1
 $ASM NDOS   NDOS.525    -lst $OBJ/NDOS.LST     -ent $SRC/NDOS/EXT.S   || ERR=1
 $ASM HALLS  ASM.HALLS   -lst $OBJ/HALLS.LST    -ent $SRC/HALLS/EXT.S  || ERR=1
 $ASM CAMP   ASM.CAMP    -lst $OBJ/CAMP.LST     -ent $SRC/CAMP/EXT.S   || ERR=1
+
+$ASM MOTHER/CONTROL   ASM.MOTHER    -lst $OBJ/MOTHER.LST    || ERR=1
+$ASM MOTHER/ENTEST    ASM.ENTEST    -lst $OBJ/ENTEST.LST    || ERR=1
+$ASM MOTHER/GROUP     ASM.GROUP     -lst $OBJ/GROUP.LST     || ERR=1
+$ASM MOTHER/INFIRMARY ASM.INFIRMARY -lst $OBJ/INFIRMARY.LST || ERR=1
+$ASM MOTHER/ENERGY    ASM.ENERGY    -lst $OBJ/ENERGY.LST    || ERR=1
+$ASM MOTHER/ARSENAL   ASM.ARSENAL   -lst $OBJ/ARSENAL.LST   || ERR=1
+$ASM MOTHER/ROBOTS    ASM.ROBOTS    -lst $OBJ/ROBOTS.LST    || ERR=1
+
 ### TODO: .lst files only needed for sizing information ###
 $ASM ALIENS ASM.PICS    -lst $OBJ/ALIEN.PICS.LST        || ERR=1
 $ASM ALIENS ASM.DATA    -lst $OBJ/ALIEN.DATA.LST        || ERR=1
@@ -65,13 +74,26 @@ fi
 # Build disk .nib images
 #---------------------------------------
 
+A2NIB_MS="a2nib -disk $DSK/naja0.nib"
 A2NIB_T1="a2nib -disk $DSK/naja1.nib"
 A2NIB_T2="a2nib -disk $DSK/naja2.nib"
 A2NIB_T3="a2nib -disk $DSK/naja3.nib"
 
+$A2NIB_MS -create -volume 0
 $A2NIB_T1 -create -volume 1
 $A2NIB_T2 -create -volume 2
 $A2NIB_T3 -create -volume 3
+
+# mothership
+$A2NIB_MS $OBJ/DELETE.CHAR     -t 0E -s 00   # 10 sectors
+$A2NIB_MS $OBJ/TESSERPORT      -t 0E -s 0C   #  4 sectors
+$A2NIB_MS $OBJ/INFO.SELLER     -t 0F -s 00   #  7 sectors
+$A2NIB_MS $OBJ/ENROLL.TEST     -t 13 -s 00   # 64 sectors
+$A2NIB_MS $OBJ/GROUP.ASSEMBLY  -t 11 -s 00   # 32 sectors
+$A2NIB_MS $OBJ/INFIRMARY       -t 17 -s 00   # 24 sectors
+$A2NIB_MS $OBJ/ENERGY.CENTER   -t 19 -s 00   # 24? sectors
+$A2NIB_MS $OBJ/ARSENAL         -t 1B -s 00   # 24? sectors
+$A2NIB_MS $OBJ/ROBOT.REPAIR    -t 1F -s 00   # 64 sectors
 
 # shell 17,15
 $A2NIB_T1 $OBJ/ALIEN.PICS.12   -t 00 -s 00   # A900

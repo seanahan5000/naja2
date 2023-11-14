@@ -1,3 +1,12 @@
+;
+; On entry:
+;   X: step type
+;
+UPDATE_HALL     ENT
+                CPX #3
+                BEQ SCAN_HALL
+                JSR CLEAR_PAGE
+                ; fall through
 
 DRAW_HALL       ENT
                 LDA #0

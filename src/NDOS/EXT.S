@@ -1,3 +1,5 @@
+DRIVE_ON         =   $0400
+DRIVE_OFF        =   $0403
 CHECK_WRITPRO    =   $058A
 SET_FILE_HOOK    =   $0783
 SET_DISK_SIDE    =   $0792

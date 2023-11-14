@@ -1,0 +1,57 @@
+{
+  "syntax": "merlin",
+  "upperCase": "true",
+  "tabSize": 4,
+  "tabStops": [0, 16, 20, 40],
+  "srcDir": "src",
+  "includes": [
+    "/NAJA/VARS/CONSTANTS",
+    "/COMMON/VARS",
+    "/COMMON/EXT",
+    "/HALLS/VARS",
+    "/HALLS/EXT",
+    "/NDOS/VARS",
+    "/NDOS/EXT",
+    "/CAMP/EXT",
+    "/FIGHT/FIGHT.CONSTS",
+    "/FIGHT/FIGHT.MACROS",
+    "/FIGHT/FIGHT.ZPAGE"
+  ],
+  "modules": [
+    { "src": "/COMMON/ASM.COMMON"           },
+    { "src": "/BOOT/ASM.TITLE"              },
+
+    { "src": "/NDOS/NDOS.525"               },
+    { "src": "/HALLS/ASM.HALLS"             },
+    { "src": "/CAMP/ASM.CAMP"               },
+
+    { "src": "/MOTHER/CONTROL/ASM.MOTHER"   },
+    { "src": "/MOTHER/ENTEST/ASM.ENTEST"    },
+    { "src": "/MOTHER/GROUP/ASM.GROUP"      },
+    { "src": "/MOTHER/INFIRMARY/ASM.INFIRMARY" },
+    { "src": "/MOTHER/ENERGY/ASM.ENERGY"    },
+    { "src": "/MOTHER/ARSENAL/ASM.ARSENAL"  },
+    { "src": "/MOTHER/ROBOTS/ASM.ROBOTS"    },
+
+    { "src": "/ALIENS/ASM.PICS"             },
+    { "src": "/ALIENS/ASM.DATA"             },
+    { "src": "/ALIENS/ALIEN.DESC.12"        },
+    { "src": "/ALIENS/ALIEN.DESC.345"       },
+
+    { "src": "/FIGHT/SHARED/ASM.SHARED"     },
+    { "src": "/FIGHT/LOADER/ASM.LOADER"     },
+    { "src": "/FIGHT/COMMAND/ASM.COMMAND"   },
+    { "src": "/FIGHT/NARRATOR/ASM.NARRATOR" },
+    { "src": "/FIGHT/REFORMAT/ASM.REFORMAT" },
+    { "src": "/FIGHT/ASM.FIGHT"             },
+
+    { "src": "/LEVELS/INIT"                 },
+    { "src": "/LEVELS/ASM.17"               },
+    { "src": "/LEVELS/ASM.15"               },
+    { "src": "/LEVELS/ASM.13"               },
+    { "src": "/LEVELS/ASM.11"               },
+    { "src": "/LEVELS/ASM.9"                },
+
+    { "src": "/TEST/GAME.STATE"             }
+  ]
+}

@@ -4,6 +4,7 @@ NEXT_CHAR        =   $1A19
 IS_ROBOT         =   $1A7C
 DRAW_STATS_BOX   =   $1A82
 DRAW_STATS_BOX_A =   $1A84
+DRAW_STATS       =   $1A98
 STATS_LINE2      =   $1B3E
 STATUS_WORD      =   $1B75
 DAMAGE_STATUS    =   $1B88

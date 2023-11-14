@@ -40,7 +40,7 @@ CONTROL_BOOT    JSR INIT_RANDOM
 
                 LDA CONTROL_MODULE
                 SEC
-                SBC #fileControl17-1
+                SBC #fileControlMS
                 TAX
                 STX SHELL
                 LDA DISK_SIDES,X
@@ -52,14 +52,17 @@ CONTROL_BOOT    JSR INIT_RANDOM
                 DEX
                 BPL :1
 
-                LDA #5
-                STA MAP_FACE
-                LDA #2
-                STA MAP_X
-                LDA #4
-                STA MAP_Y
-                LDA #3
-                STA MAP_DIR
+                LDA SHELL
+                ASL
+                ASL
+                TAY
+                LDX #0
+:2              LDA POSITIONS,Y
+                STA MAP_FACE,X
+                INY
+                INX
+                CPX #4
+                BNE :2
 
                 LDA #6
                 STA RANGE
@@ -70,3 +73,10 @@ CONTROL_BOOT    JSR INIT_RANDOM
                 JSR GET_NSEW
                 JSR DRAW_HALL
                 JMP HALL_KEYS
+
+POSITIONS       DB  0,0,4,EAST          ; mothership
+                DB  5,2,4,3             ; shell 17
+                DB  5,2,4,3             ; shell 15
+                DB  5,2,4,3             ; shell 13
+                DB  5,2,4,3             ; shell 11
+                DB  5,2,4,3             ; shell 9

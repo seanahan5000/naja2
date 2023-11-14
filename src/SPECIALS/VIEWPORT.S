@@ -31,7 +31,11 @@ VP_IS_OPEN      DB  $00                 ; TODO: move this
 ; On entry:
 ;   A: SPECIAL_DIR bits
 ;
-DO_VIEWPORT     STA VARIATION
+DO_VIEWPORT     ASL
+                ASL
+                ASL
+                ASL
+                STA VARIATION
                 BIT VARIATION
                 BVC :LR_ONLY
 

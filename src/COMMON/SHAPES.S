@@ -208,6 +208,9 @@ DRAW_TILE_A     ENT
 ;   XCOORD,XSHIFT: set to x position
 ;   YCOORD: set to y position
 ;
+; On exit:
+;   XCOORD advanced by one byte
+;
 DRAW_TILE       ENT
                 STX TILE_SRC_MOD+1
                 STY TILE_SRC_MOD+2
@@ -222,6 +225,9 @@ DRAW_TILE       ENT
 ;   XSHIFT: current X right shift (0 to 6)
 ;   TABLER_L,H: list of 7 hires line pointers
 ;   TILE_SRC_MOD+1,2: pointer to source data
+;
+; Output:
+;   XCOORD: advanced by one byte column
 ;
 ; Uses:
 ;   SCREENL,H

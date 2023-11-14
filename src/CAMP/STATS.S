@@ -28,6 +28,7 @@ DRAW_STATS_BOX_A ENT
         fin
                 PictEnd
                 PLA
+DRAW_STATS      ENT
                 STA SELECT
                 JSR STATS_HEADER
         do SMALL_GROUP

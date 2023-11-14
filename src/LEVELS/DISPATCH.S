@@ -91,6 +91,10 @@ DISP_SPECIAL    LDX MAP_FACE
                 LDA SPECIAL_LIST+1,X
                 STA :MOD+2
                 LDA SPECIAL_DIR,Y
+                LSR
+                LSR
+                LSR
+                LSR
                 LDX STEP_TYPE
 :MOD            JMP $FFFF
 
@@ -110,7 +114,7 @@ DISP_ENCOUNTER  LDX MAP_FACE
                 LDA DISP_YX
                 CMP SPECIAL_YX,Y
                 BEQ :3
-                BNE DISP_NEXT           ; always
+                JMP DISP_NEXT
 
 :4              LDA ENCOUNTER_ID,Y
                 STA SAVE_SPAWN

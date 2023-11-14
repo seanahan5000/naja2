@@ -70,20 +70,28 @@ UNPACK_NEXT     LDA (DATAL),Y
                 BMI UNPACK_DONE
                 STA START_COLUMN
                 INY
-                LDA (DATAL),Y
+                BNE :1
+                INC DATAH
+:1              LDA (DATAL),Y
                 STA START_LINE
                 INY
+                BNE UNPACK_CMN2
+                INC DATAH
 UNPACK_CMN2     LDA (DATAL),Y
                 CLC
                 ADC START_COLUMN
                 STA END_COLUMN
                 INY
-                LDA (DATAL),Y
+                BNE :1
+                INC DATAH
+:1              LDA (DATAL),Y
 ;               CLC
                 ADC START_LINE
                 STA END_LINE
                 INY
-                STY DATA_INDEX
+                BNE :2
+                INC DATAH
+:2              STY DATA_INDEX
 
                 STX UFLAGS
 
@@ -115,9 +123,9 @@ UNPACK_CMN2     LDA (DATAL),Y
                 LDA (DATAL),Y
                 BMI :OPCODE
                 INY
-                BNE :1
+                BNE :3
                 INC DATAH
-:1              STY DATA_INDEX
+:3              STY DATA_INDEX
                 ORA HIGH_BIT
                 TAY
                 LDA LOBYTES,X
@@ -132,9 +140,9 @@ UNPACK_CMN2     LDA (DATAL),Y
                 SAME_PAGE_AS :COLUMN_LOOP
 
 :OPCODE         INY
-                BNE :2
+                BNE :4
                 INC DATAH
-:2              STY DATA_INDEX
+:4              STY DATA_INDEX
                 AND #$7F
                 LSR A
                 BCS :NOSKIP
@@ -169,9 +177,9 @@ UNPACK_CMN2     LDA (DATAL),Y
 
 :COPYN          LDA (DATAL),Y
                 INY
-                BNE :3
+                BNE :5
                 INC DATAH
-:3              STY DATA_INDEX
+:5              STY DATA_INDEX
                 STX TEMP_LINE
                 CLC
                 ADC TEMP_LINE
@@ -184,9 +192,9 @@ UNPACK_CMN2     LDA (DATAL),Y
                 LDY DATA_INDEX
                 LDA (DATAL),Y
                 INY
-                BNE :4
+                BNE :6
                 INC DATAH
-:4              STY DATA_INDEX
+:6              STY DATA_INDEX
                 LDY CUR_COLUMN
                 STA (SCREENL),Y
 :COPYN_MOD      CPX #$FF
@@ -252,18 +260,18 @@ UNPACK_CMN2     LDA (DATAL),Y
 :MOVE           LDY DATA_INDEX
                 LDA (DATAL),Y
                 INY
-                BNE :5
+                BNE :7
                 INC DATAH
-:5              LSR A
+:7              LSR A
                 ROL TEMP_LINE
 ;               CLC
                 ADC START_COLUMN
                 STA :MOVE_MODA+1
                 LDA (DATAL),Y
                 INY
-                BNE :6
+                BNE :8
                 INC DATAH
-:6
+:8
 ;               CLC
                 ADC START_LINE
                 STA SRC_LINE

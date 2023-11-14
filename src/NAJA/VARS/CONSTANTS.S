@@ -63,14 +63,16 @@ notchless		=	%00000000
 wspace			=	%10000000
 wyesno			=	%11000000
 
+charNameLength  =   10
+
 *** For character data tables
 name			=	$00
 status			=	$0A
-level			=	$0B
+level			=	$0B                 ; TODO: trim to 1 byte
 profrace		=	$0D
 experience		=	$0E                 ; TODO: trim to 3 bytes
 *
-credits			=	$13                 ; TODO: trim to 3 bytes
+credits			=	$13                 ; TODO: trim to 3 bytes, move to common state
 strength		=	$17
 upreflex		=	$18
 lwreflex		=	$19
@@ -86,8 +88,16 @@ energylev		=	$24
 energymax		=	$27
 powerconsumpt	=	$2A
 *
-disklocation	=	$2D
-robotcyblink	=	$2E
+
+; 1000.iiii
+;   i: roster index
+; $00: undefined/unused
+rosterLocation  =   $2D
+roboCyberLink 	=	$2E
+
+disklocation	=	$2D                ;*** phase this out
+robotcyblink	=	$2E                ;*** phase this out
+
 powerfraction	=	$2F
 basepowercons	=	$31
 baseshielding	=	$33
@@ -165,27 +175,6 @@ side_T1         =   1
 side_T2         =   2
 side_F1			=	3
 
-*** File numbers for mothership
-mHallsPicts				=	0
-mPictures				=	1
-mTesseract				=	2
-mInfoSeller				=	3
-mWriter					=	4
-mGroupAssembly_Start	=	5
-mGroupAssembly_Control	=	6
-mEnrollTest_Start		=	7
-mEnrollTest_Control		=	8
-mEnrollTest_Enroll		=	9
-mEnrollTest_Test		=	10
-mInfirmary_Start		=	11
-mInfirmary_Control		=	12
-mEnergyCenter_Start		=	13
-mEnergyCenter_Control	=	14
-mArsenal_Start			=	15
-mArsenal_Control		=	16
-mRobotRepair_Start		=	17
-mRobotRepair_Control	=	18
-
 ; charTrack		=	$0100		;Track/Sector for character data
 
 
@@ -208,25 +197,46 @@ fileDiagnose    =   $30
 fileAlienId     =   $31
 
 ; NOTE: must be consecutive in this order
+fileControlMS   =   $32
 fileControl17   =   $33
 fileControl15   =   $34
 fileControl13   =   $35
 fileControl11   =   $36
 fileControl9    =   $37
 
-fileFightLoader1 =  $38
+fileFightLoader1      = $38
 
-fileFightLoader2 =  $40
-fileFightShared =   $41
-fileFightCommand =  $42
-fileFightNarrator = $43
-fileFightHalls  =   $44
-fileFightAwarder =  $45
-fileDeadGroup   =   $46
-fileReformat    =   $47
+fileFightLoader2      = $40
+fileFightShared       = $41
+fileFightCommand      = $42
+fileFightNarrator     = $43
+fileFightHalls        = $44
+fileFightAwarder      = $45
+fileDeadGroup         = $46
+fileReformat          = $47
 
-fileElevator    =   $50
-fileViewport    =   $51
-fileRuuik       =   $52
+fileElevator          = $50
+fileViewport          = $51
+fileRuuik             = $52
 
-fileKeyDoor     =   $60
+fileKeyDoor           = $60
+
+fileDeleteChar        = $70
+fileTesserport        = $71
+fileInfoSeller        = $72
+
+fileEnroll_Load       = $73
+fileEnroll_Control    = $74
+fileEnroll_Test       = $75
+fileAssembly_Load     = $76
+fileAssembly_Control  = $77
+fileInfirmary_Load    = $78
+fileInfirmary_Control = $79
+fileEnergy_Load       = $7A
+fileEnergy_Control    = $7B
+fileArsenal_Load      = $7C
+fileArsenal_Control   = $7D
+fileRobotRep_Load     = $7E
+fileRobotRep_Control  = $7F
+
+fileSaveGame          = $80

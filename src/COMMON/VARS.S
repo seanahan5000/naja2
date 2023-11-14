@@ -136,7 +136,7 @@ CREDITS         DS  4
 EXPERIENCE      DS  4
 
 LOST_CHARS      DS  1           ; $BCFD
-GRPCONT         DS  1           ; $BCFE ; number of characters, including dead/compressed?
+GRPCONT         DS  1           ; $BCFE ; number of characters, including dead/compressed
 GRPNUMB         DS  1           ; $BCFF ; number of living characters in group
 
                 ERR $BD00-*
@@ -325,6 +325,12 @@ PictHRestore    MAC
                 DB  OpHRestore
                 EOM
 
+; Draw a framed rectangle in the current color
+;
+;   left pixel
+;   top line
+;   right pixel (INCLUSIVE)
+;   bottom line (INCLUSIVE)
 PictRect        MAC
             DO ]3/256
                 DB  OpRectHigh
@@ -343,6 +349,7 @@ PictFillRect    MAC
                 DB  ]1,]2,<]3,]4
                 EOM
 
+; Set text line height for current DRAW_PICT sequence
 PictSetTextHeight MAC
                 DB  OpSetTextHeight
                 DB ]1
@@ -408,6 +415,13 @@ PictTile        MAC
                 DW  ]1
                 EOM
 
+; Clear a rectangle to black #$00
+;
+;   left byte
+;   top line
+;   right byte (exclusive)
+;   bottom line (exclusive)
+;
 ; NOTE: external dependencies on this format
 PictClear       MAC
                 DB  OpClear

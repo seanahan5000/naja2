@@ -1,30 +1,26 @@
-GUARD                               ;LDX PICHERE
-                                    ;DEX
-                                    ;BEQ :SKIPA
-                LDA #$40
-                STA PAGE
-                JSR CLEAR2
-                JSR NOSCAN
-                LDY #$01
-                JSR PICKER
-                                    ;LDA #$20
-                                    ;STA PAGE
-:SKIPA          STA SCNDARY
-                JSR MOVE_NOISE
-:LOOP1          JSR SCANNER
+
+GUARD           JSR DRAW_PICT
+                PictSetPage2
+                PictClearPage
+                PictCall DRAW_HALL
+                PictImage GUARD_PIC
+                PictShowPage
+                PictEnd
+:1              BIT UNSTROB
+                JSR SCANNER
                 LDA #$04
                 JSR WAIT
                 LDA KEYBRD
-                BPL :LOOP1
-                BIT UNSTROB
-                JSR CPARER2
-                BNE :LOOP1
-                                    ;BEQ :SKIPB
-                                    ;JMP :LOOP1
-                                    ;:SKIPB PHA
-                                    ;JSR CLEAR1
-                                    ;STA PRIMARY
-                JMP GOTDIRECTN
+                BPL :1
+                JSR CHECK_TURN
+                BNE :1
+                JSR DRAW_PICT
+                PictSetPage1
+                PictClearPage
+                PictShowPage
+                PictEnd
+                SEC
+                RTS
 
 SCANNER         DEC TDELAY
                 BPL OTHER
@@ -33,7 +29,7 @@ SCANNER         DEC TDELAY
                 LDA #$80
                 STA TDELAY+1
                 LDX #0
-                LDA #$4F            ;Line $33
+                LDY #$33
                 JSR SCAN
 OTHER           DEC BDELAY
                 BPL SCEXIT
@@ -42,37 +38,43 @@ OTHER           DEC BDELAY
                 LDA #$60
                 STA BDELAY+1
                 LDX #1
-                LDA #$57            ;Line $35
+                LDY #$35
+                ; fall through
+
 SCAN            STX SELECT
-                STA :MOD1+2
+                LDA LOBYTES,Y
+                STA SCREENL
+                LDA HIBYTES,Y
+                STA SCREENH
+
                 LDA CYCLE,X
                 ASL
                 ASL
                 TAX
-                LDY #0
-:LOOP1          LDA SDATA,X
-:MOD1           STA $FF12,Y         ;Modified
+                LDY #$12
+:1              LDA SDATA,X
+                STA (SCREENL),Y
                 INX
                 INY
-                CPY #4
-                BNE :LOOP1
+                CPY #$16
+                BNE :1
 
-:SKIPA          LDX SELECT
+                LDX SELECT
                 LDA CYCLE,X
-                BEQ :SKIPB
+                BEQ :2
                 CMP #$08
-                BNE :SKIPC
+                BNE :3
                 LDA DIRECT,X
                 BNE DOWN
                 DEC DIRECT,X
                 RTS
 
-:SKIPB          LDA DIRECT,X
+:2              LDA DIRECT,X
                 BPL UP
                 INC DIRECT,X
                 RTS
 
-:SKIPC          LDA DIRECT,X
+:3              LDA DIRECT,X
                 BMI DOWN
 UP              INC CYCLE,X
                 RTS
@@ -91,3 +93,44 @@ SDATA           DB  $A8,$85,$80,$80
                 DB  $80,$80,$AA,$81
                 DB  $80,$80,$A8,$85
                 DB  $80,$80,$A0,$95
+
+GUARD_PIC       DB  $0A,$2E,$13,$89
+                HEX FE8E8000202028282A992820EAFE40405050545455556535
+                HEX 8D655589158B050000E6F2AF00474A721C27299705434971
+                HEX 1D0700EEE29F033F9D1565394E531497074065390E0300F4
+                HEX D6970147A90A0A02A705444A721C070100F4406070C6BF06
+                HEX 315515150565390D0C896C3C0F65390E63343597064B9D40
+                HEX 70507C200099200099A70B53A850895C5C2A2A7F7FB6609F
+                HEX 0046A90A0A020200407097084840701C47711C47711C0701
+                HEX 01075C70970A689F0C1E7F8B5528009128A70C53AF0C53A6
+                HEX 004040535355557F7F8480406078188D786010995047408C
+                HEX 801F7555991515656579797C91003E7B000060380E63380E
+                HEX 6338970B45970E347C7E7FA5557F2A555400895455A70E53
+                HEX AF0F539AA70D1D0A0A027F7F8305202A027F8095807F8C20
+                HEX 28282A6A2A28282084807F2A91BF0C1F40711F970D3A5C67
+                HEX 616089781C27713032AD7C2A2A7F552A2A5400542A2AA710
+                HEX 53B71153957F0089505055950501000040407F7F805584A7
+                HEX 10038240505455895D9B55555455575F807D751593750525
+                HEX 21298D202E03970E386E037014749B831195FF804070543C
+                HEX 5C54547450282080FFD5970E51552A8B971254A71255AF12
+                HEX 551450A32A994A897272970A85802A84A7120382020A2A2B
+                HEX 8B3A9B2B2A8B6A7A803F2F288B0F505455A954555057404F
+                HEX 082F289B830FFF80030E2A3D3A2B2A2F0A150580FF9F1050
+                HEX 97126597106AA71456A71556280AA3559952894E4E970C85
+                HEX 80055440A714038801010515155557551515050182807F57
+                HEX 55955410623A026A0A2A9100549974715D5175454515554F
+                HEX 4CB13F9F1350019F1368A71657A7165F00957E00890A0A2A
+                HEX 95970A6302027F7F848002071E188D1E0708990A62028C80
+                HEX 782F2A914A729F0D3917141589006A3A3A6E6E3B3B971834
+                HEX 6E6E3B3A6E6838266E0E3E3E7EA19715510089971569A718
+                HEX 56A719569805051515558D545050407F7FB607010505970A
+                HEX 3E9712314E535C5F955E5D5947455D17775D5D77971A37A7
+                HEX 1A37745C51754555155555970E5015009115A71A53AF1A53
+                HEX A49716834A4A971285B2406060AF0C3802890A971679A928
+                HEX 2B222E0B3B2EAF183597193B2E200F0A3F050099050099A7
+                HEX 1D53A80A893B3B971485AA970E40039F0F33030098018905
+                HEX 891589559554555157971A341D1D5757559D54545040DE00
+                HEX 02070FA4970D3140707C67971C22B2971782AF1D28282822
+                HEX 222AA928E2A47F60971F168DD0010171058D971E359D1515
+                HEX 05E0FE9E6020301018080C04E6
+                DB  $FF

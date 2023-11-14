@@ -1,3 +1,7 @@
+
+; TODO: should this be used here?
+TEMP			=	LOCAL_TEMP
+
 *--------------------------------------------------------
 * On entry:
 *   X,Y point to a data structure:
@@ -15,9 +19,6 @@
 *      destination table that corresponds with the cursor
 *   CURSOR holds the current position
 *	X holds CURSOR value
-
-; TODO: should this be used here?
-TEMP			=	LOCAL_TEMP
 
 MENU_INIT		ENT						; was INIT_CURSOR
 				STX	TEMP
@@ -69,6 +70,13 @@ BLINK_LOOP		LDA	#$10
 				JSR	BLINK_CURSOR	; blink erase
 				LDA	#$00
 				JSR	WAIT_KEY
+; On entry:
+;   MENU_INIT called to set up menu
+;
+; On exit:
+;   X: CURSOR
+;   Status: based on CURSOR
+;
 MENU_SELECT 	ENT					; was GETKEY
 				CLC
 				JSR	BLINK_CURSOR	; blink draw

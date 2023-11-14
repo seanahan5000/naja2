@@ -20,7 +20,13 @@ SET_PICT_HOOKS  ENT
                 CPY #4
                 BNE :1
                 RTS
-
+;
+; On entry:
+;   Return address points to list of Pict ops
+;
+; On exit:
+;   BNE always true
+;
 DRAW_PICT       ENT
                 PLA
                 STA OP_PTR
@@ -131,20 +137,19 @@ OP_CALL_PROC    STX :CALL_MOD+1
 
 ; TODO: expand these out
 
-OP_SET_COLOR    LDA (OP_PTR),Y
-                INY
-                STY OP_INDEX
-                STA OP_COLOR        ; TODO: does this really need a zpage?
-                RTS
-
 SET_GREEN       ENT
                 LDA #OpColorGreen
-                STA OP_COLOR
-                RTS
+                BNE SET_COLOR           ; always
 
 SET_WHITE1      ENT
                 LDA #OpColorWhite1
-                STA OP_COLOR
+                BNE SET_COLOR           ; always
+
+OP_SET_COLOR    LDA (OP_PTR),Y
+                INY
+                STY OP_INDEX
+SET_COLOR       ENT                     ; X,Y must be unchanged
+                STA OP_COLOR            ; TODO: does this really need a zpage?
                 RTS
 
 ;-------------------------------------------------------------------------------
