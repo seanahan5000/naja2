@@ -18,6 +18,6 @@
                 PUT CONTROL
                 PUT ROSTER
                 DS  \,$EE
-                ERR *-$8B00
+                ERR *-$8A00
 
                 SAV GROUP.ASSEMBLY

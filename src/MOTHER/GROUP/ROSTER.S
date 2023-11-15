@@ -9,11 +9,12 @@
 ;   i: roster index
 ;
 ROSTER_LIST     DS  maxRosterSize
-HLEGALS         DS  4
 NAME_BUFFER     DS  charNameLength+1
                 DEND
 
 ;---------------------------------------
+
+; *** should group be copied to roster and marked dirty? ***
 
 LOAD_ROSTER     LDA #fileSaveGame
                 JSR SET_FILE
@@ -113,7 +114,7 @@ WRITE_ROSTER    LDY #0
 
 ;---------------------------------------
 
-rosterNameX     =   8
+rosterNameX     =   8+6
 
 DRAW_ROSTER
                 ; *** SHOW ROSTER UPDATING? ***
@@ -126,12 +127,11 @@ DRAW_ROSTER
                 ; *** redo all this spacing ***
 
                 ; *** add/use PictTextAtX ***
-                ; PictTextAt 8;2;"NAME      PROFESSION   RACE   LEVEL  STATUS"
-                PictTextAt 8;2;"NAME"
-                PictTextAt 71;2;"PROFESSION"
-                PictTextAt 140;2;"RACE"
-                PictTextAt 188;2;"LEVEL"
-                PictTextAt 227;2;"STATUS"
+                PictTextAt 8+6;2;"NAME"
+                PictTextAt 71+6;2;"PROFESSION"
+                PictTextAt 140+6;2;"RACE"
+                PictTextAt 188+6;2;"LEVEL"
+                PictTextAt 227+6;2;"STATUS"
 
                 PictSetGreen
                 PictMoveTo $00;$0B
@@ -148,18 +148,18 @@ DRAW_ROSTER
                 LDX COUNT
                 LDA ROSTER_LIST,X
                 BPL :2
-                JSR DRAW_DOTS
+                JSR ROSTER_MARK
 :2              JSR DRAW_PICT
                 PictCall CNAME_TO_TEXT
                 PictTextbufX rosterNameX
                 PictCall CPROF_TO_TEXT
-                PictTextbufX 74
+                PictTextbufX 74+6
                 PictCall CRACE_TO_TEXT
-                PictTextbufX 140
+                PictTextbufX 140+6
                 PictCall CLEV_TO_TEXT_R
-                PictTextbufX 185
+                PictTextbufX 185+6
                 PictCall CSTATUS_TO_TEXT_C
-                PictTextbufX 218
+                PictTextbufX 218+6
                 PictVMove 9
                 PictEnd
                 LDX COUNT
@@ -176,37 +176,17 @@ USE_ROSTER      JSR DRAW_PICT
                 PictEnd
 
                 LDA #0
-                STA ADD_MDEF+1
-                STA REMOVE_MDEF+1
+                STA ADDREM_MDEF+1
                 STA RENAME_MDEF+1
 
-                LDA #3                  ; *** start on ADD
-                ; *** ADJUST THESE VALUES ***
+;               LDA #0                  ; start on ADD-REMOVE
 ROSTER_LOOP     STA CURSOR
                 JSR DRAW_PICT
                 PictClear 0;184;40;191
-                PictTextAt 42;184;"ADD   REMOVE   CHANGE-NAME   LEAVE"
+                PictTextAt 48;184;"ADD-REMOVE   CHANGE-NAME   LEAVE"
                 PictEnd
-
-                LDX #3
-                LDA #0
-:1              STA HLEGALS,X
-                DEX
-                BPL :1
-                LDA GRPNUMB
-                CMP #maxGroupSize
-                BEQ :2
-                JSR LEGAL_ADDS
-                JSR COUNT_LEGALS
-                BNE :3
-:2              DEC HLEGALS+0
-:3              LDA GRPNUMB
-                BEQ :4
-                JSR LEGAL_REMOVES
-                JSR COUNT_LEGALS
-                BNE HFIRST
-:4              DEC HLEGALS+1
-                BNE HFIRST              ; always
+                JSR DRAW_HARROW
+                JMP HKEYLOOP
 
 HBLINK          LDA #$10
                 JSR WAIT
@@ -234,30 +214,24 @@ HLEFT           JSR DRAW_HARROW
 :1              LDX CURSOR
                 DEX
                 BPL :2
-                LDX #3
+                LDX #2
 :2              STX CURSOR
-                LDA HLEGALS,X
-                BNE :1
                 JSR DRAW_HARROW
                 JMP HKEYLOOP
 
 HRIGHT          JSR DRAW_HARROW
-HFIRST          LDX CURSOR
+                LDX CURSOR
                 INX
-                CPX #4
+                CPX #3
                 BNE :1
                 LDX #0
 :1              STX CURSOR
-                LDA HLEGALS,X
-                BNE HFIRST
                 JSR DRAW_HARROW
                 JMP HKEYLOOP
 
 HENTER          JSR DRAW_HARROW
                 LDX CURSOR
-                BEQ DO_ADD
-                DEX
-                BEQ DO_REMOVE
+                BEQ ADD_REMOVE
                 DEX
                 BEQ TO_RENAME
 HCANCEL         JMP MAIN_LOOP1
@@ -265,111 +239,62 @@ TO_RENAME       JMP DO_RENAME
 
 ;---------------------------------------
 
-DO_ADD          JSR DRAW_PICT
+ADD_REMOVE      JSR DRAW_PICT
                 PictClear 0;184;40;191
-                PictTextAt 102;184;"ADD WHO?"   ;*** better message?
+                PictTextAt 24;184;"ADD-REMOVE WHICH GROUP MEMBER?"
                 PictTextAt 234;184;"C>ANCEL"
                 PictEnd
-                JSR LEGAL_ADDS
+                JSR BUILD_LEGALS
                 LDA ROSTER_COUNT
-                STA ADD_MDEF+0
-                LDX #<ADD_MDEF
-                LDY #>ADD_MDEF
+                STA ADDREM_MDEF+0
+                LDX #<ADDREM_MDEF
+                LDY #>ADDREM_MDEF
                 JSR MENU_INIT
                 JSR MENU_SET_CANCEL
                 JSR MENU_SELECT
-                STX ADD_MDEF+1
-                BCC :1
-                JSR ADD_RCHAR
+                BCC :4
+                INX
+                CPX ROSTER_COUNT
+                BNE :1
+                LDX #0
+:1              STX ADDREM_MDEF+1
                 LDX CURSOR
-                JSR DRAW_DOTS
-:1              LDA #3                  ; ADD -> REMOVE
-                JMP ROSTER_LOOP
-
-ADD_MDEF        DB  maxRosterSize       ; modified
-                DB  $00                 ; modified
-                DW  ROSTER_CURSOR
-
-;---------------------------------------
-
-DO_REMOVE       JSR DRAW_PICT
-                PictClear 0;184;40;191
-                PictTextAt 48;184;"REMOVE WHICH GROUP MEMBER?"
-                PictTextAt 234;184;"C>ANCEL"
-                PictEnd
-                JSR LEGAL_REMOVES
-                LDA ROSTER_COUNT
-                STA REMOVE_MDEF+0
-                LDX #<REMOVE_MDEF
-                LDY #>REMOVE_MDEF
-                JSR MENU_INIT
-                JSR MENU_SET_CANCEL
-                JSR MENU_SELECT
-                STX REMOVE_MDEF+1
-                BCC :1
+                LDA ROSTER_LIST,X
+                BPL :2
                 JSR REMOVE_RCHAR
-                LDX CURSOR
-                JSR DRAW_DOTS
-:1              LDX #0
-                LDA GRPNUMB
-                BNE :2
-                LDX #3                  ; if group empty, start on ADD
-:2              TXA
+                JMP :3
+:2              JSR ADD_RCHAR
+:3              LDX CURSOR
+                JSR ROSTER_MARK
+:4              LDA #0                  ; stay on ADD-REMOVE
                 JMP ROSTER_LOOP
 
-REMOVE_MDEF     DB  maxRosterSize       ; modified
+ADDREM_MDEF     DB  maxRosterSize       ; modified
                 DB  $00                 ; modified
                 DW  ROSTER_CURSOR
 
 ;---------------------------------------
 
 ROSTER_CURSOR   LDY ROSTER_YPNTS,X
-                LDX #$00
-                JSR DRAW_TRIANGLE
-                LDX CURSOR
+                JSR VMOVE_TO
                 LDA ROSTER_LIST,X
-                BPL :1
-                LDX #2
+                BMI :1
+                LDX #3
                 JSR HMOVE_TO
-                JMP DRAW_DOT
+                JSR DRAW_MARKER_TILE
+:1              LDX #8
+                JSR HMOVE_TO
+                JMP DRAW_MARKER_TIP_TILE
 
-:1              LDX #<270
-                JSR HMOVE_TO_H
-                LDX #<:BACK_TRI
-                LDY #>:BACK_TRI
-                JMP DRAW_TILE
-
-:BACK_TRI       DB  %00110000
-                DB  %00111000
-                DB  %00111100
-                DB  %00111111
-                DB  %00111100
-                DB  %00111000
-                DB  %00110000
-;
-; On entry:
-;   X: packed roster index
-;
-DRAW_DOTS       LDY ROSTER_YPNTS,X
-                LDX #2
+ROSTER_MARK     LDY ROSTER_YPNTS,X
+                LDX #3
                 JSR MOVE_TO
-                JSR DRAW_DOT
-                LDX #<273
-                JSR HMOVE_TO_H
-                ; fall through
-DRAW_DOT        LDX #<:DOT_SHAPE
-                LDY #>:DOT_SHAPE
-                JMP DRAW_TILE
+                JMP DRAW_MARKER_TILE
 
-; TODO: consider using square marker instead
-; *** try it out ***
-:DOT_SHAPE      DB  %00000000
-                DB  %00000110
-                DB  %00001111
-                DB  %00001111
-                DB  %00000110
-                DB  %00000000
-                DB  %00000000
+ROSTER_YPNTS    DB  14,23,32,41
+                DB  50,59,68,77
+                DB  86,95,104,113
+                DB  122,131,140,149
 
 DRAW_HARROW     LDY CURSOR
                 LDX :HARROW_XPNTS,Y
@@ -379,7 +304,7 @@ DRAW_HARROW     LDY CURSOR
                 LDY #>:HARROW_SHAPE
                 JMP DRAW_TILE
 
-:HARROW_XPNTS   DB  34,70,124,208
+:HARROW_XPNTS   DB  40,118,202
 
 :HARROW_SHAPE   DB  %00000000
                 DB  %00000011
@@ -389,11 +314,6 @@ DRAW_HARROW     LDY CURSOR
                 DB  %00000011
                 DB  %00000000
 
-ROSTER_YPNTS    DB  14,23,32,41
-                DB  50,59,68,77
-                DB  86,95,104,113
-                DB  122,131,140,149
-
 ;---------------------------------------
 ;
 ; Build LEGALS list for adding or removing to/from group
@@ -401,93 +321,71 @@ ROSTER_YPNTS    DB  14,23,32,41
 ;   Can't add robot until its cybernate is added
 ;   Can't remove a cybernate until its robot is removed
 ;
-LEGAL_ADDS      LDX #0
+BUILD_LEGALS    LDX #0
 :1              STX COUNT
                 LDA ROSTER_LIST,X
-                BMI :4
-                JSR SET_RCHARDL
-                ; TODO: what other statuses prevent add?
-                ; TODO: is this check even necessary?
-                LDY #status
-                LDA (CHARDL),Y
-                AND #%00111111
-                CMP #intracc
-                BEQ :4
-                LDY #profrace
-                LDA (CHARDL),Y
-                BPL :5
-                ; if robot, make sure its cybernate has been added
-                LDY #roboCyberLink
-                LDA (CHARDL),Y
-                STA :MOD+1
-                LDX #0
-:2              LDA ROSTER_LIST,X
-                BPL :3
-:MOD            EOR #$FF
-                AND #%00001111
-                BEQ :5
-:3              INX
-                CPX ROSTER_COUNT
-                BNE :2
-:4              LDY #-1
-                BMI :6                  ; always
-:5              LDY #0
-:6              TYA
-                LDX COUNT
-                STA LEGALS,X
-                INX
-                CPX ROSTER_COUNT
-                BNE :1
-                RTS
-
-LEGAL_REMOVES   LDX #0
-:1              STX COUNT
-                LDY #-1
-                LDA ROSTER_LIST,X
-                BPL :5
-                JSR SET_RCHARDL
+                BPL :ADDS
+;
+; prevent remove if this is cybernate and its robot is in the group
+;
+:REMOVES        JSR SET_RCHARDL
                 LDY #profrace
                 LDA (CHARDL),Y
                 AND #$F0
                 CMP #cybernate*16
-                BNE :4
-                ; if cybernate, make sure its robot has been removed
+                BNE :INCLUDE
                 LDY #roboCyberLink
                 LDA (CHARDL),Y
-                STA :MOD+1
+                BEQ :INCLUDE
+                JSR IN_GROUP
+                BCC :INCLUDE
                 LDY #-1
-                LDX #0
-:2              LDA ROSTER_LIST,X
-                BPL :3
-:MOD            EOR #$FF
-                AND #%00001111
-                BEQ :5
-:3              INX
-                CPX ROSTER_COUNT
-                BNE :2
-:4              LDY #0
-:5              TYA
-                LDX COUNT
+                BCS :EXCLUDE            ; always
+;
+; prevent add if group is already full
+;
+:ADDS           LDY #-1
+                LDA GRPNUMB
+                CMP #maxGroupSize
+                BEQ :EXCLUDE
+;
+; prevent add if this is a robot and its cybernate is not in group
+;
+                JSR SET_RCHARDL
+                LDY #profrace
+                LDA (CHARDL),Y
+                BPL :INCLUDE
+                LDY #roboCyberLink
+                LDA (CHARDL),Y
+                JSR IN_GROUP
+                LDY #-1
+                BCC :EXCLUDE
+:INCLUDE        LDY #0
+:EXCLUDE        LDX COUNT
+                TYA
                 STA LEGALS,X
                 INX
                 CPX ROSTER_COUNT
                 BNE :1
                 RTS
 ;
-; On exit:
-;   A: number of available spots in LEGALS
-;   BEQ/BNE: set based on result
+; find roster location value in list and in group
 ;
-COUNT_LEGALS    LDX ROSTER_COUNT
-                LDY #0
-:1              DEX
-                BMI :2
-                LDA LEGALS,X
+IN_GROUP        STA :MOD+1
+                LDX #0
+:1              LDA ROSTER_LIST,X
+:MOD            EOR #$FF
+                AND #$0F
+                BEQ :2
+                INX
+                CPX ROSTER_COUNT
                 BNE :1
-                INY
-                BNE :1                  ; always
-:2              TYA
-                RTS
+                BEQ :3                  ; always
+:2              SEC
+                LDA ROSTER_LIST,X
+                BMI :4
+:3              CLC
+:4              RTS
 
 ;---------------------------------------
 ;
@@ -524,50 +422,27 @@ REMOVE_RCHAR    LDA ROSTER_LIST,X
                 LDA (CHARDL),Y
 :MOD            EOR #$FF
                 AND #%00001111
-                BEQ REMOVE_CMN
+                BEQ :2
                 JSR NEXT_CHAR
                 BCC :1
-                BCS REMOVE_CMN          ; always
-;
-; On entry:
-;   X: character index in group
-;
-REMOVE_GCHAR    TXA
-                JSR SET_CHAR
-                LDY #rosterLocation
-                LDA (CHARDL),Y
-                STA :MOD+1
-                LDX #0
-:1              LDA ROSTER_LIST,X
-:MOD            EOR #$FF
-                AND #%00001111
-                BEQ :2
-                INX
-                CPX ROSTER_COUNT
-                BNE :1
-:2              LDA ROSTER_LIST,X
-                EOR #%10000000
-                ORA #%01000000
-                STA ROSTER_LIST,X
-                JSR SET_RCHARPTR
-REMOVE_CMN      LDY #$7F
-:1              LDA (CHARDL),Y
+:2              LDY #$7F
+:3              LDA (CHARDL),Y
                 STA (CHARPTR),Y
                 DEY
-                BPL :1
-DELETE_GCHAR    LDA CHARDL
+                BPL :3
+:4              LDA CHARDL
                 STA CHARPTR+0
                 LDA CHARDH
                 STA CHARPTR+1
                 JSR NEXT_CHAR
-                BCS :2
+                BCS :6
                 LDY #$7F
-:1              LDA (CHARDL),Y
+:5              LDA (CHARDL),Y
                 STA (CHARPTR),Y
                 DEY
-                BPL :1
-                BMI DELETE_GCHAR        ; always
-:2              DEC GRPNUMB
+                BPL :5
+                BMI :4                  ; always
+:6              DEC GRPNUMB
                 RTS
 ;
 ; On entry:

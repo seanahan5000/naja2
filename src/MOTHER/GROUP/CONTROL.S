@@ -78,7 +78,7 @@ MAIN_LOOP1      JSR DRAW_PICT
                 PictSetViolet
                 PictRect $24;$65;$F2;$87
                 PictTextAt 53;105;"SEE CANDIDATE ROSTER"
-                PictTextAt 53;115;"RESIGN COMMISSION <LEAVE GAME>"
+                PictTextAt 53;115;"SUSPEND COMMISSION <LEAVE GAME>"
                 PictTextAt 53;125;"LEAVE MY OFFICE"
                 PictShowPage
                 PictEnd

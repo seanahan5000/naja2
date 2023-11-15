@@ -54,7 +54,6 @@ X Scroll through individuals in camp with <- and -> arrows
 * Remove "no encounter" squares and check for them programmatically
 * Tell player when somebody has gone up a level
     * At least show a "+" on level in camp?
-* Limit credits and experience to 6 digits instead of 8 (3 bytes)
 * Show hallway structure in fight grid
     * Maybe make bigger once extra characters are gone
 X Rework fight grid to show actual hall configuration
@@ -99,6 +98,12 @@ X Rework fight grid to show actual hall configuration
         * Multiple levels of same item (I,II,III,IV,V, etc.)
         * Split off quest items? (Treat as group items?)
             * List separately in camp?
+    * Cap level at 99 instead of 9999
+        * Make credits common to group
+        * Limit credits and experience to 6 digits instead of 8 (3 bytes)
+* Weapons need either an explicit level requirement
+    * or implicit limit using energy requirements versus capacity
+    * prevent trading/transferring top equipment to low-level characters
 * In-game text descriptions of equipment
     * Tie into Compendium?
 * Story: Style, Structure, Substance, and the Principles of Screenwriting by Robert McKee
