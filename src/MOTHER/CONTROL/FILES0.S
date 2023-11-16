@@ -5,8 +5,9 @@ FILE_TABLE      DB  fileDeleteChar,        $0E,$00,$09
                 DB  fileTesserport,        $0E,$0C,$04
                 DB  fileInfoSeller,        $0F,$00,$07
                 DB  fileEnroll_Load,       $13,$00,$0C
-                DB  fileEnroll_Control,    $13,$0C,$00
-                DB  fileEnroll_Test,       $13,$00,$00
+                DB  fileEntest_Control,    $13,$0C,$04
+                DB  fileEntest_Enroll,     $14,$00,$10  ;***
+                DB  fileEntest_Test,       $14,$00,$10  ;***
                 DB  fileAssembly_Load,     $11,$00,$06
                 DB  fileAssembly_Control,  $11,$06,$0A
                 DB  fileInfirmary_Load,    $17,$00,$08

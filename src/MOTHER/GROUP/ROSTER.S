@@ -9,7 +9,7 @@
 ;   i: roster index
 ;
 ROSTER_LIST     DS  maxRosterSize
-NAME_BUFFER     DS  charNameLength+1
+NAME_BUFFER     DS  charNameLength
                 DEND
 
 ;---------------------------------------

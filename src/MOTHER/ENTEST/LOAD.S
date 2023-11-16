@@ -7,14 +7,11 @@ LOAD_ENTEST     JSR DRAW_PICT
                 PictShowPage
                 PictEnd
 
-                SEC                     ;***
-                RTS                     ;***
-
                 LDA #$7F
                 PHA
                 LDA #$FF
                 PHA
-                LDA #fileEnroll_Control
+                LDA #fileEntest_Control
                 LDY #$80
                 JMP LOAD_FILE
 

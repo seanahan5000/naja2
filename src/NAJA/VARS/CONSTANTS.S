@@ -221,13 +221,13 @@ fileRuuik             = $52
 
 fileKeyDoor           = $60
 
+fileTesserport        = $6F
 fileDeleteChar        = $70
-fileTesserport        = $71
-fileInfoSeller        = $72
-
-fileEnroll_Load       = $73
-fileEnroll_Control    = $74
-fileEnroll_Test       = $75
+fileInfoSeller        = $71
+fileEnroll_Load       = $72
+fileEntest_Control    = $73
+fileEntest_Enroll     = $74
+fileEntest_Test       = $75
 fileAssembly_Load     = $76
 fileAssembly_Control  = $77
 fileInfirmary_Load    = $78
