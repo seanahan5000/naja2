@@ -10,7 +10,30 @@ Text1           =   1
 Text9           =   9
 TextSpace       =   10
 TextA           =   11
+TextB           =   12
+TextC           =   13
+TextD           =   14
+TextE           =   15
+TextF           =   16
+TextG           =   17
+TextH           =   18
+TextI           =   19
+TextJ           =   20
+TextK           =   21
+TextL           =   22
+TextM           =   23
+TextN           =   24
+TextO           =   25
+TextP           =   26
+TextQ           =   27
+TextR           =   28
 TextS           =   29
+TextT           =   30
+TextU           =   31
+TextV           =   32
+TextW           =   33
+TextX           =   34
+TextY           =   35
 TextZ           =   36
 TextFirstSymbol =   37              ; first symbol after {0-9 A-Z}
 TextPercent     =   $27
@@ -69,8 +92,10 @@ RIGHT_MOD7      =   $57
 TOP             =   $58
 BOTTOM          =   $59
 AND_MASK        =   $5A
-LEFT_MASK       =   $5B
-RIGHT_MASK      =   $5C
+AND_MASK_L      =   AND_MASK
+AND_MASK_R      =   $5B
+LEFT_MASK       =   $5C
+RIGHT_MASK      =   $5D
 MAX_DIV7        =   $5F             ; TEXT-only
 
 ; TODO: conflict here?
@@ -110,7 +135,16 @@ PAGE            =   $E6
 
 SCRATCH_PAGE    =   $B900       ; TODO: place somewhere else
 
-                DUMMY $BA00
+maxGroupSize    =   6
+
+stateSectors    =   3
+rosterSectors   =   8
+maxRosterSize   =   rosterSectors*2
+
+GAME_STATE      =   $BA00
+GAME_STATE_MS   =   $BC00
+
+                DUMMY GAME_STATE
 
 MAP_VISITED_17  DS  217
                 DS  39
@@ -129,13 +163,18 @@ ORBS_FOUND                      ; TODO: get rid of this
 KEYS_FOUND      DS  1
 KEY_DOOR_BITS   DS  1           ; a000bbbb - a open status, b order bits
 
-                DS  9
+                DS  7
+
+ROSTER_BITS     DS  2           ; bitmap character slots filled in roster
+
+; TODO: Since these are only valid while in TRACC,
+;   consider moving to CAMP and/or ZPAGE.
 
 KILLS           DS  4           ; expedition totals (assumed sequential)
 CREDITS         DS  4
 EXPERIENCE      DS  4
 
-LOST_CHARS      DS  1           ; $BCFD
+LOST_CHARS      DS  1           ; $BCFD ; NOTE: not correctly being tracked anymore
 GRPCONT         DS  1           ; $BCFE ; number of characters, including dead/compressed
 GRPNUMB         DS  1           ; $BCFF ; number of living characters in group
 
@@ -185,32 +224,35 @@ OpSetTextBoxHigh =  20
 OpText          =   21
 OpTextAt        =   22
 OpTextIn        =   23
-OpTextbuf       =   24
-OpTextbufRet    =   25
-OpImage         =   26
-OpImageFill     =   27
-OpTile          =   28
-OpClear         =   29
-OpCopyTo        =   30
-OpSwap          =   31
+OpTextRows      =   24
+OpTextbuf       =   25
+OpTextbufX      =   26
+OpTextbufXY     =   27
+OpTextbufRet    =   28
+OpImage         =   29
+OpImageFill     =   30
+OpTile          =   31
+OpClear         =   32
+OpCopyTo        =   33
+OpSwap          =   34
 
-OpSetPage1      =   32
-OpSetPage2      =   33
-OpSetPageX      =   34
-OpShowPage      =   35
-OpShowPage1     =   36
-OpShowPage2     =   37
-OpClearPage     =   38
-OpClearPage1    =   39
-OpClearPage2    =   40
-OpCopyToPage    =   41
-OpCopyToPage1   =   42
-OpCopyToPage2   =   43
-OpCall          =   44
-OpHook0         =   45
-OpHook1         =   46
+OpSetPage1      =   35
+OpSetPage2      =   36
+OpSetPageX      =   37
+OpShowPage      =   38
+OpShowPage1     =   39
+OpShowPage2     =   40
+OpClearPage     =   41
+OpClearPage1    =   42
+OpClearPage2    =   43
+OpCopyToPage    =   44
+OpCopyToPage1   =   45
+OpCopyToPage2   =   46
+OpCall          =   47
+OpHook0         =   48
+OpHook1         =   49
 
-OpEnd           =   $FF
+OpEnd           =   50
 
 OpColorBlack1   =   0
 OpColorGreen    =   1
@@ -340,6 +382,12 @@ PictRect        MAC
                 DB  ]1,]2,<]3,]4
                 EOM
 
+; Fill a pixel-aligned rectangle in the current color
+;
+;   left pixel
+;   top line
+;   right pixel (inclusive)
+;   bottom line (inclusive)
 PictFillRect    MAC
             DO ]3/256
                 DB  OpFillRectHigh
@@ -388,9 +436,27 @@ PictTextIn      MAC
                 TXT ]1
                 EOM
 
+; Draw text at the given X and Y position and line height
+PictTextRows    MAC
+                DB  OpTextRows
+                DB  ]1,]2,]3
+                EOM
+
 ; Draw the text currently in the text buffer at the current position
 PictTextbuf     MAC
                 DB  OpTextbuf
+                EOM
+
+; Draw the text currently in the text buffer at the given X position
+PictTextbufX    MAC
+                DB  OpTextbufX
+                DB  ]1
+                EOM
+
+; Draw the text currently in the text buffer at the given X and Y position
+PictTextbufXY   MAC
+                DB  OpTextbufXY
+                DB  ]1,]2
                 EOM
 
 ; Draw the text currently in the text buffer at the current position, followed by "\n"

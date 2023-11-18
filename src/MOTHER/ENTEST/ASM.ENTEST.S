@@ -8,6 +8,7 @@
                 PUT /HALLS/VARS
                 PUT /HALLS/EXT
                 PUT /CAMP/EXT
+                PUT /MOTHER/EXT
 
                 ORG $8000
                 PUT LOAD
@@ -19,24 +20,21 @@
                 DS  \,$EE
                 ERR *-$8400
 
-;                 ERR *-$8500
-;                 PUT ENROLL/ENROLLMENT
-;                 PUT ENROLL/DEFINE.CHAR
-;                 PUT ENROLL/SAVE.CHAR
-;                 PUT ENROLL/TEXT
-;                 PUT ENROLL/DATA
-;                 DS  \,$EE
-;                 ERR *-$9F00
+                ORG $8400
+ENROLL_FILE     DB  fileEntest_Enroll
+                PUT ENROLL/ENROLLMENT
+                PUT ENROLL/DEFINE.CHAR
+                PUT ENROLL/SAVE.CHAR
+                PUT ENROLL/DATA
+                DS  \,$EE
+                ERR *-$9B00
 
-;                 ORG $8500
-;                 PUT TEST/TESTING
-;                 PUT TEST/UP.DAMAGE
-;                 PUT TEST/PASS.FAIL
-;                 PUT TEST/DATA
-;                 DS  \,$EE
-
-;                 DUMMY   *
-; CONTAB          DS  51
-;                 DEND
+                ORG $8400
+TEST_FILE       DB  fileEntest_Test
+                PUT TEST/TESTING
+                PUT TEST/UP.DAMAGE
+                PUT TEST/PASS.FAIL
+                DS  \,$EE
+                ERR *-$8E00
 
                 SAV ENROLL.TEST

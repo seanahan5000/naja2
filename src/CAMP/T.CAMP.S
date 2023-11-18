@@ -426,7 +426,7 @@ YPOINTS			ENT
 		do SMALL_GROUP
 				DB  14,23,32
 				DB	41,50,59
-				DB	0					; TODO: eventually remove
+				DB	68					; TODO: eventually remove
 				DB	71					; cancel
 		else
 				DB	$0C,$14,$1C

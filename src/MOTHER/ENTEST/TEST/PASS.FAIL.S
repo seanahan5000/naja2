@@ -35,9 +35,9 @@ PROFSET         DB  $00,$00,$01
 TOTALER         ASL
                 TAY
                 LDA SETS,Y
-                STA TEMP
+                STA :LOOP3+1
                 LDA SETS+1,Y
-                STA TEMP+1
+                STA :LOOP3+2
                 LDX #3
                 LDA #0
 :LOOP1          STA LEVTOTL,X
@@ -59,7 +59,7 @@ TOTALER         ASL
                 ASL
                 TAY
                 LDX #1
-:LOOP3          LDA (TEMP),Y
+:LOOP3          LDA $FFFF,Y             ; modified
                 STA ONERANK,X
                 INY
                 INX

@@ -90,6 +90,8 @@ X Rework fight grid to show actual hall configuration
 * Shorten max alien name length?
     * Adds space in fight screens and alien info
 * Put Tesseract/port in camp entry menu
+* Use "home world" or "planet" instead of race?
+    * Earth instead of human?
 * Character format
     * Split data into stored information and in-station state
     * Redo equipment format
@@ -101,12 +103,13 @@ X Rework fight grid to show actual hall configuration
     * Cap level at 99 instead of 9999
         * Make credits common to group
         * Limit credits and experience to 6 digits instead of 8 (3 bytes)
+    * Need for gender at all?
 * Weapons need either an explicit level requirement
     * or implicit limit using energy requirements versus capacity
     * prevent trading/transferring top equipment to low-level characters
 * In-game text descriptions of equipment
     * Tie into Compendium?
-* Story: Style, Structure, Substance, and the Principles of Screenwriting by Robert McKee
+? Story: Style, Structure, Substance, and the Principles of Screenwriting by Robert McKee
 
 =================================
 Old notes from /WORK1.PO/TF.NOTES

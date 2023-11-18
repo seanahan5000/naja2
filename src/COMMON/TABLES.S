@@ -104,7 +104,15 @@ BIT_TABLE       ENT                     ; must be low to high
                 DB  %01000000
                 DB  %10000000
 
-; TODO: consider bit MASK_TABLE too
+MASK_TABLE      ENT                     ; must be low to high
+                DB  %11111110
+                DB  %11111101
+                DB  %11111011
+                DB  %11110111
+                DB  %11101111
+                DB  %11011111
+                DB  %10111111
+                DB  %01111111
 
 LEFT_MASKS      DB  %00000000
                 DB  %00000001

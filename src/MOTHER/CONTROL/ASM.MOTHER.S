@@ -22,15 +22,11 @@ BDELAY          =   $C3                 ; only used by guard scanner
                 PUT /LEVELS/DISPATCH
                 PUT LEVEL
                 PUT FILES0
+                PUT WRITER
 
                 PUT TRANSPORT
                 PUT DOORS
                 PUT GUARD
-
-                ; DS  $AFF5-*,$EE
-OPENBUF         DS  11                  ;***$AFF5
-
-WRITE_OPEN      RTS
 
                 ; ERR *-$B000
                 SAV MOTHERSHIP
@@ -39,7 +35,7 @@ WRITE_OPEN      RTS
 DELCHAR_FILE    DB  fileDeleteChar
                 PUT DELETE
                 DS  \,$EE
-                ERR *-$AA00
+                ERR *-$A900
                 SAV DELETE.CHAR
 
                 ORG $A000

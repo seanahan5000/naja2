@@ -61,6 +61,7 @@ DRAW_MARKER_TILE ENT
 
 DRAW_MARKER_TIP ENT
                 JSR MOVE_TO
+DRAW_MARKER_TIP_TILE ENT
                 LDX #<:MARKER_TIP
                 LDY #>:MARKER_TIP
                 JMP DRAW_TILE
@@ -86,19 +87,3 @@ DRAW_TRIANGLE   ENT
                 DB  %00001111
                 DB  %00000111
                 DB  %00000011
-
-        do 0
-DRAW_BACK_TRI   ENT
-                JSR MOVE_TO
-                LDX #<:BACK_TRI
-                LDY #>:BACK_TRI
-                JMP DRAW_TILE
-
-:BACK_TRI       DB  %01100000
-                DB  %01110000
-                DB  %01111000
-                DB  %01111110
-                DB  %01111000
-                DB  %01110000
-                DB  %01100000
-        fin

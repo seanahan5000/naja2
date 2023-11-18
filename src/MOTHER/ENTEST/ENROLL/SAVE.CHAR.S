@@ -1,17 +1,13 @@
-SAVE_CHAR       LDA #0
-                STA CHARDL
-                LDA #>TEMPBUF
-                STA CHARDH
+BUILD_CHAR      JSR ALLOC_CHAR
 
                 LDA #0              ;Clear character buffer
                 LDY #$7F
 :LOOP1          STA (CHARDL),Y
                 DEY
                 BPL :LOOP1
-                STY RUINED_FLAG
 
                 LDY #name
-:LOOP2          LDA NAME,Y
+:LOOP2          LDA NAME_BUFFER,Y
                 STA (CHARDL),Y      ;NAME
                 INY
                 CPY #name+10
@@ -77,32 +73,32 @@ SAVE_CHAR       LDA #0
                 JSR DIV_BY_5
                 TXA
                 ASL
-                STA TEMP
+                STA SCRATCH
                 TYA
                 CLC
-                ADC TEMP
+                ADC SCRATCH
                 TAY
                 LDA DAMRANG,Y
-                STA TEMP            ;Was MINIMUM
+                STA SCRATCH            ;Was MINIMUM
                 INY
                 LDA DAMRANG,Y
-                STA TEMP+1          ;Was MAXIMUM
-                INC TEMP+1          ;Was MAXIMUM
-:LOOP3          JSR RNDMIZE
-                LDA RANDOM1
-                CMP TEMP+1          ;Was MAXIMUM
+                STA SCRATCH+1          ;Was MAXIMUM
+                INC SCRATCH+1          ;Was MAXIMUM
+:LOOP3          JSR RANDOM
+                CMP SCRATCH+1          ;Was MAXIMUM
                 BCS :LOOP3
-                CMP TEMP            ;Was MINIMUM
+                CMP SCRATCH            ;Was MINIMUM
                 BCC :LOOP3
+                TAX
                 AND #$0F
                 CMP #$0A
                 BCS :LOOP3
-                LDA RANDOM1
+                TXA
                 AND #$F0
                 CMP #$A0
                 BCS :LOOP3
                 LDY #damagemax+1
-                LDA RANDOM1
+                TXA
                 STA (CHARDL),Y      ;DAMAGEMAX+1
                 INY
 
@@ -158,14 +154,11 @@ SAVE_CHAR       LDA #0
                                     ;POWER CONSUMPTION,+1
                                     ;UNUSED BYTE
 
-                LDY #disklocation
-                LDA FSFLAG
-                ORA HOLDSEC
-                STA (CHARDL),Y      ;SECTOR/SEGMENT
-                INY
+                                        ; rosterLocation (already fill in)
 
-                LDA #$FF
-                STA (CHARDL),Y      ;SECTOR/SEGMENT FOR ROBOT/CYBERN
+;               LDY #roboCyberLink
+;               LDA #$00
+;               STA (CHARDL),Y          ;SECTOR/SEGMENT FOR ROBOT/CYBERN
 
                                     ;POWER LEVEL FRACTION,+1
 
@@ -226,29 +219,7 @@ SAVE_CHAR       LDA #0
                 STA (CHARDL),Y      ;MISC FLAGS
 
                 JSR CALC_ALL
-
-                LDX #0
-:LOOP5          LDA $9D00,X
-                STA $7D00,X
-                LDA $9E00,X
-                STA $7E00,X
-                INX
-                BNE :LOOP5
-
-                LDX #wNewChar
-                JSR CALL_WRITERS
-                LDX #wOpen
-                JSR CALL_WRITERS
-
-                LDX #0
-:LOOP6          LDA $7D00,X
-                STA $9D00,X
-                LDA $7E00,X
-                STA $9E00,X
-                INX
-                BNE :LOOP6
-                RTS
-
+                JMP SAVE_CHAR
 
 *-------------------------------
 * Used to determine damagemax

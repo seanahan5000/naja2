@@ -9,7 +9,6 @@
 ;   i: roster index
 ;
 ROSTER_LIST     DS  maxRosterSize
-NAME_BUFFER     DS  charNameLength
                 DEND
 
 ;---------------------------------------
@@ -514,60 +513,17 @@ RENAME_LOOP     LDX CURSOR
                 PictText "' TO WHAT? "
                 PictEnd
 
-                LDA #10
-                JSR GET_INPUT_LIMIT
-:1
-                ; *** CANCEL WITH ESCAPE??? ***
-                TXA
-                BNE :2
+                JSR ASK_CHAR_NAME
+                BCS NO_DUPES
                 LDX CURSOR
                 JSR ROSTER_CURSOR
                 LDA #1                  ; stay on RENAME
                 JMP ROSTER_LOOP
 
-:2              LDA TEXT_BUFFER
-                CMP #TextSpace
-                BNE PAD_NAME
-                JSR REGET_INPUT
-                JMP :1
+NO_DUPES        JSR DUPE_NAME_CHECK
+                BCS NO_NAJA
 
-PAD_NAME        LDX #0
-:1              LDA TEXT_BUFFER,X
-                CMP #TextLineEnd
-                BEQ :2
-                STA NAME_BUFFER,X
-                INX
-                CPX #charNameLength
-                BNE :1
-                BEQ NO_DUPES            ; always
-:2              LDA #TextSpace
-:3              STA NAME_BUFFER,X
-                INX
-                CPX #charNameLength
-                BNE :3
-
-NO_DUPES        LDX #0
-:1              STX COUNT
-                CPX CURSOR
-                BEQ :3
-                JSR SET_RCHARDL
-                LDY #name
-                LDX #0
-:2              LDA (CHARDL),Y
-                CMP NAME_BUFFER,X
-                BNE :3
-                INY
-                INX
-                CPX #charNameLength
-                BNE :2
-                BEQ :4                  ; always
-:3              LDX COUNT
-                INX
-                CPX ROSTER_COUNT
-                BNE :1
-                BEQ NO_NAJA             ; always
-
-:4              JSR DRAW_PICT
+                JSR DRAW_PICT
                 PictClear 0;184;40;191
                 PictTextAt 8;184;"'"
                 PictCall DRAW_TRIMMED_NAME
@@ -575,13 +531,8 @@ NO_DUPES        LDX #0
                 PictEnd
                 JMP BAD_NAME
 
-NO_NAJA         LDX #0
-:1              LDA NAME_BUFFER,X
-                CMP NAJA_NAME,X
-                BNE GOOD_NAME
-                INX
-                CPX #4
-                BNE :1
+NO_NAJA         JSR IS_NAJA_NAME
+                BCC GOOD_NAME
                 JSR DRAW_PICT
                 PictClear 0;184;40;191
                 PictTextAt 3;184;"NO ONE IS ALLOWED TO USE THAT NAME!!!"
@@ -589,14 +540,12 @@ NO_NAJA         LDX #0
 BAD_NAME        JSR DRAW_PICT
                 PictTextAt 237;184;"<SPACE>"
                 PictEnd
-:4              LDA KEYBRD
-                BPL :4
+:1              LDA KEYBRD
+                BPL :1
                 BIT UNSTROB
                 JSR CHECK_ENTER
-                BNE :4
+                BNE :1
                 JMP RENAME_LOOP
-
-NAJA_NAME       TXC "NAJA"
 
 GOOD_NAME       LDX CURSOR
                 LDA ROSTER_LIST,X

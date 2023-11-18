@@ -1,57 +1,77 @@
-DEFINE_CHAR     LDA #$40
-                STA PAGE
-                JSR CLEAR2
-                LDA #GREEN
-                STA COLOR
-                LDY #$07
-                JSR LINER3
-                LDY #$08
-                JSR LINER3
-                LDA #$03
-                STA COUNT
-CRLOOP2         LDY COUNT
-                JSR TEXTER3
-                DEC COUNT
-                BPL CRLOOP2
-                LDX #$00
-MORNAME         LDA NAME,X          ;DRAW NAME
-                STA TEXTBUF,X
+
+DEFINE_CHAR     JSR DRAW_PICT
+                PictSetPage2
+                PictClearPage
+                PictSetGreen
+
+                ; TODO: group into rects
+                PictMoveTo $01;$1F
+                PictLineTo $01;$00
+                PictLineTo $117;$00
+                PictLineTo $117;$3A
+                PictLineTo $01;$3A
+                PictLineTo $01;$1F
+                PictLineTo $117;$1F
+
+                ; TODO: group into rects
+                PictMoveTo $01;$A0
+                PictLineTo $01;$3A
+                PictLineTo $117;$3A
+                PictLineTo $117;$BF
+                PictLineTo $01;$BF
+                PictLineTo $01;$A0
+                PictLineTo $41;$A0
+                PictLineTo $41;$69
+                PictLineTo $01;$69
+                PictLineTo $01;$52
+                PictLineTo $41;$52
+                PictLineTo $41;$3A
+                PictLineTo $41;$BF
+
+                PictTextAt 34;2;"% INORGANIC"
+                PictTextAt 7;12;"BODY COMPOSITION"
+                PictTextAt 40;22;"% ORGANIC"
+                PictTextAt 16;41;"ENERGY USAGE  ."
+                PictTextAt 10;63;"NAME:"
+                PictTextAt 10;86;"RACE:"
+                PictTextAt 76;176;"IQ"
+                PictTextAt 102;176;"STRNGTH"
+                PictTextAt 156;171;"LOWER  UPPER"
+                PictTextAt 156;181;"REFLEX-SPEED"
+                PictTextAt 239;176;"CREDIT"
+
+                PictCall DRAW_ADAPT
+                PictCall DRAW_POSPROF
+                PictCall DRAW_RESTORE
+                PictEnd
+
+                LDX #0
+:1              LDA NAME_BUFFER,X
+                STA TEXT_BUFFER,X
                 INX
-                CPX #$0A
-                BNE MORNAME
-                LDA #$8D
-                STA TEXTBUF,X
-                LDA #$04
-                LDY #$48
-                JSR LINE
-                LDX RACE            ;DRAW RACE
-                LDA RACEOFF,X
-                TAX
-                LDY #$00
-MORACE          LDA RACEDAT,X
-                STA TEXTBUF,Y
-                INX
-                INY
-                CPY #$07
-                BNE MORACE
-                LDA #$8D
-                STA TEXTBUF,Y
-                LDA TEXTBUF+6
-                CMP #$13
-                BNE DOCYB
-                LDA #$18
-                STA TEXTBUF+6
-                BNE PCARED          ;Always
-DOCYB           CMP #$0B
-                BNE PCARED
-                LDA #$1E
-                STA TEXTBUF+6
-PCARED          LDA #$04
-                LDY #$5F
-                JSR LINE
+                CPX #charNameLength
+                BNE :1
+:2              DEX
+                BMI :3
+                LDA TEXT_BUFFER,X
+                CMP #TextSpace
+                BEQ :2
+:3              LDA #TextLineEnd
+                STA TEXT_BUFFER+1,X
+                JSR DRAW_PICT
+                PictTextbufXY $04;$48
+                PictEnd
+
+                LDA RACE
+                JSR RACE_TO_TEXT
+                JSR DRAW_PICT
+                PictTextbufXY $04;$5F
+                PictEnd
+
                 LDA #$FF
                 STA PROFSNT
                 STA PROFSNT+1
+
                 LDX RACE
                 LDA MINOFF,X        ;LOAD MINIMUM CHARACTERIST VALUES
                 TAX
@@ -63,8 +83,7 @@ MORMINS         LDA MINMUM,X
                 INY
                 CPY #$09
                 BNE MORMINS
-TOOMUCH         JSR RNDMIZE
-                LDA RANDOM1
+TOOMUCH         JSR RANDOM
                 LDX RACE
                 CMP ADRANGE,X
                 BEQ NOPROB
@@ -81,9 +100,10 @@ NOPROB          CLC
                 SBC PRSNST,Y
                 CLD
                 LDY #$06
-                STA PRSNST,Y        ;STORE IT
+                STA PRSNST,Y
                 LDY #$08
                 STA PRSNST,Y
+
                 LDA #$00
                 STA STATNUM
 MORNUMS         JSR STATOUT         ;LOOP THROUGH AND DRAW STATS
@@ -91,23 +111,23 @@ MORNUMS         JSR STATOUT         ;LOOP THROUGH AND DRAW STATS
                 LDA STATNUM
                 CMP #$09
                 BNE MORNUMS
+
                 LDY #$07            ;CLEAR MINIMUM ADAPTATION POINTS
                 LDA #$00
                 STA MINSTAT,Y
-                LDA #VIOLET
-                STA COLOR
                 LDA #$00
-                STA BOXNUM          ;SET BOX NUMBER
-                JSR BOXOUT
-                JSR PROFSN
-                LDA #$00
-                STA WHICH
-MORGRPH         LDX WHICH
+                STA BOXNUM
+                JSR DRAW_BOX
+                JSR UPDATE_PROFS
+
+                LDX #0
+MORGRPH         STX WHICH
                 JSR CALLA
-                LDA WHICH
-                INC WHICH
-                CMP #$04
+                LDX WHICH
+                INX
+                CPX #4
                 BNE MORGRPH
+
                 LDA PRSNST+5
                 JSR MOD5
                 STA MOD
@@ -117,9 +137,9 @@ MORGRPH         LDX WHICH
                 LDA PRSNST+8
                 JSR MOD5
                 STA MOD+2
-                LDA #$00
-                STA WHICH
-MORHGRP         LDX WHICH
+
+                LDX #0
+MORHGRP         STX WHICH
                 JSR ADJUSTR
                 LDA MOD,X
                 STA COUNT
@@ -129,20 +149,43 @@ MORHGRP         LDX WHICH
                 LDA #$13
                 STA XHOLD
                 JSR HSTART2
-                LDA WHICH
-                INC WHICH
-                CMP #$02
+                LDX WHICH
+                INX
+                CPX #3
                 BNE MORHGRP
-                LDA SCNDARY
+
+                JSR SHOW_PAGE
                 LDA UNSTROB
                 JMP KEYIN
+
+DRAW_RESTORE    JSR DRAW_PICT
+                PictSetGreen
+                PictTextAt 110;61;"PRESS <SPACE> WHEN FINISHED"
+                PictMoveTo $65;$3B
+                PictLineTo $65;$46
+                PictLineTo $116;$46
+                PictEnd
+                RTS
+
+DRAW_POSPROF    JSR DRAW_PICT
+                PictTextAt 10;109;"POSSIBLE"
+                PictTextAt 4;117;"PROFESSION"
+                PictEnd
+                RTS
+
+DRAW_ADAPT      JSR DRAW_PICT
+                PictTextAt 4;164;"ADAPTATION"
+                PictTextAt 16;172;"POINTS"
+                PictEnd
+                RTS
+
 MOD5            LDY #$00
+                SED
                 SEC
-MOD5A           SED
-                SBC #$05
-                CLD
+:1              SBC #$05
                 INY
-                BCS MOD5A
+                BCS :1
+                CLD
                 DEY
                 TYA
                 RTS
@@ -150,35 +193,53 @@ MOD5A           SED
 BLINKY          LDA #$10
                 JSR WAIT
                 LDA #$F0
-                JSR WAIT2
+                JSR WAIT_KEY
                 BMI KEYGOT
-                LDA #BLACK1
-                STA COLOR
-                JSR BOXOUT
+                JSR ERASE_BOX
                 LDA #$00
-                JSR WAIT2
-                LDA #VIOLET
-                STA COLOR
-                JSR BOXOUT
+                JSR WAIT_KEY
+                JSR DRAW_BOX
 KEYIN           BIT KEYBRD
                 BPL BLINKY
 KEYGOT          LDA KEYBRD
                 BIT UNSTROB
                 JSR CHECK_LEFT
-                BNE NOLEFAR
-LEFAR           LDA #BLACK1
-                STA COLOR
-                LDA BOXNUM
+                BNE :1
+                JMP GO_LEFT
+:1              JSR CHECK_RIGHT
+                BNE :2
+                JMP GO_RIGHT
+:2              JSR CHECK_UP
+                BNE :3
+                JMP GO_UP
+:3              JSR CHECK_DOWN
+                BNE :4
+                JMP GO_DOWN
+:4              JSR CHECK_ENTER
+                BNE :5
+                JMP DID_ENTER
+:5              JSR CHECK_CANCEL
+                BNE KEYIN
+                CLC
+
+LEAVE_CREATE    PHP
+                JSR DRAW_PICT
+                PictSetPage1
+                PictCall CLEAR_BOX
+                PictShowPage
+                PictEnd
+                PLP
+                RTS
+
+GO_LEFT         LDA BOXNUM
                 CMP #$02
                 BNE NOREFLX
                 LDA #$06
                 STA BOXNUM
-                JSR BOXOUT
+                JSR ERASE_BOX
                 LDA #$02
                 STA BOXNUM
-NOREFLX         JSR BOXOUT
-                LDA #VIOLET
-                STA COLOR
+NOREFLX         JSR ERASE_BOX
                 DEC BOXNUM
                 BPL NOZEROL
                 LDA #$05
@@ -188,52 +249,47 @@ NOZEROL         LDA BOXNUM
                 BNE NORFLX2
                 LDA #$06
                 STA BOXNUM
-                JSR BOXOUT
+                JSR DRAW_BOX
                 LDA #$03
                 STA BOXNUM
-NORFLX2         JSR BOXOUT
+NORFLX2         JSR DRAW_BOX
                 JMP KEYIN
-NOLEFAR         JSR CHECK_RIGHT
-                BNE NORIGAR
-RIGAR           LDA #BLACK1
-                STA COLOR
-                LDA BOXNUM
+
+
+GO_RIGHT        LDA BOXNUM
                 CMP #$03
                 BNE NOREFL
                 LDA #$06
                 STA BOXNUM
-                JSR BOXOUT
+                JSR ERASE_BOX
                 LDA #$03
                 STA BOXNUM
-NOREFL          JSR BOXOUT
-                LDA #VIOLET
-                STA COLOR
+NOREFL          JSR ERASE_BOX
                 INC BOXNUM
                 LDA BOXNUM
                 CMP #$02
                 BNE NOREFL2
                 LDA #$06
                 STA BOXNUM
-                JSR BOXOUT
+                JSR DRAW_BOX
                 LDA #$02
                 STA BOXNUM
-                BNE NOSIXR          ;Always
+                BNE NOSIXR              ; always
 NOREFL2         CMP #$06
                 BNE NOSIXR
                 LDA #$00
                 STA BOXNUM
-NOSIXR          JSR BOXOUT
+NOSIXR          JSR DRAW_BOX
                 JMP KEYIN
-NORIGAR         JSR CHECK_UP
-                BEQ UPPER
-                JMP NOUPPR
-UPPER           LDX BOXNUM
+
+GO_UP           LDX BOXNUM
                 CPX #$05
                 BNE NOORG
                 LDA PRSNST,X
                 CMP MINSTAT,X
                 BNE OKAYED
                 JMP KEYIN
+
 OKAYED          PHA
                 TXA
                 PHA
@@ -276,7 +332,7 @@ OKAYED          PHA
                 CLC
                 ADC #$01
                 JSR HGRAPH
-                JSR PROFSN
+                JSR UPDATE_PROFS
                 JMP KEYIN
 NOORG           TXA
                 BNE NOTINT
@@ -337,12 +393,11 @@ UNOT42          JSR CHNGST
                 LDX #$04
                 STX STATNUM
                 JSR STATOUT
-UNOT43          JSR PROFSN
+UNOT43          JSR UPDATE_PROFS
                 JMP KEYIN
-NOUPPR          JSR CHECK_DOWN
-                BEQ DOWNER
-                JMP NODWNR
-DOWNER          LDX BOXNUM
+
+
+GO_DOWN         LDX BOXNUM
                 CPX #$05
                 BNE NOINORG
                 LDX #$06
@@ -392,7 +447,7 @@ OKAY            PHA
                 CLC
                 ADC #$01
                 JSR HGRAPH
-                JSR PROFSN
+                JSR UPDATE_PROFS
                 JMP KEYIN
 NOINORG         LDA PRSNST,X
                 CMP MINSTAT,X
@@ -444,108 +499,133 @@ NOT42           JSR CHNGST
                 LDX #$04
                 STX STATNUM
                 JSR STATOUT
-NOT43           JSR PROFSN
+NOT43           JSR UPDATE_PROFS
                 JMP KEYIN
-NODWNR          JSR CHECK_ENTER
-                BEQ SPACIT
-                JMP KEYIN
-SPACIT          LDA #BLACK1
-                STA COLOR
-                JSR BOXOUT
-                LDY #$06
-                JSR LINER3
+
+DID_ENTER       JSR ERASE_BOX
+                LDX #6
+                JSR UPDATE_BOX_N
                 LDA PRSNST+7
                 BEQ ADAPOUT
-                LDA #$03
+                LDA #$00                ; blink adaptation points
                 JSR WBLINK
                 JMP WBCOM
 ADAPOUT         LDA PROFSNT
                 CMP #$FF
-                BNE DOSLECT
-                LDA #$02
+                BNE SELECT_PROF
+                LDA #$01                ; blink possible profession
                 JSR WBLINK
-WBCOM           LDA #VIOLET
-                STA COLOR
-                JSR BOXOUT
+WBCOM           JSR DRAW_BOX
                 LDA BOXNUM
                 CMP #$02
                 BEQ ISUPLOW
                 CMP #$03
                 BNE NOUPLOW
-ISUPLOW         LDY #$06
-                JSR LINER3
+ISUPLOW         LDX #6
+                JSR UPDATE_BOX_N
 NOUPLOW         JMP KEYIN
-DOSLECT         LDA #BLACK1
-                STA COLOR
-                LDY #$08
-                JSR LINER3
-                LDY #$01
-                JSR TEXTER3
-                JSR SETTOFF
+
+;---------------------------------------
+
+WBLINK          LDX #1
+                STX COUNT
+:1              PHA
+                JSR :BLINK1
+                PLA
+                DEC COUNT
+                BPL :1
+                RTS
+
+:BLINK1         PHA
                 LDA #$00
-                STA LEGALS
-                STA LEGALS+2
-                LDA #$7F
-                STA LINTABL
-                LDA #$89
-                STA LINTABL+1
-                STA LINTABL+2
+                JSR WAIT_KEY
+                PLA
+                PHA
+                JSR :BLINK2
+                LDA #$00
+                JSR WAIT_KEY
+                PLA
+:BLINK2         TAX
+                BNE :2
+                JMP DRAW_ADAPT
+:2              JMP DRAW_POSPROF
+
+;---------------------------------------
+
+SELECT_PROF     JSR DRAW_PICT
+                PictClear 14;59;39;71
+                PictSetBlack1
+                PictMoveTo 273;70
+                PictLineTo 277;70
+                PictClear 1;109;9;116
+                PictTextAt 10;109;"SELECT A"
+                PictEnd
+
+                LDX #0
+                STX LEGALS+0
+                STX LEGALS+1
                 LDA PROFSNT+1
                 CMP #$FF
-                BEQ FINEAS
-                LDA #$00
-                STA LEGALS+1
-                LDA #$94
-                STA CANCMOD
-                STA LINTABL+2
-FINEAS          LDA #$02
-                STA CURSOR
-                LDA #$03
-                STA XHOLD
-                LDY #$04
-                JSR TEXTER3
-                JSR KDOWN2
-                LDA #$89
-                STA CANCMOD
-                LDA CURSOR
-                CMP #$02
-                BNE NOCANCL
-                LDA #$20
-                STA PAGE
-                JSR CLRBOX
-                STA PRIMARY
-                PLA
-                PLA
-                JMP ANYONE
-NOCANCL         TAX
-                LDA PROFSNT,X
-GOOD1           ASL
+                BNE :1
+                DEX
+:1              STX LEGALS+2
+                JSR :DRAW_CANCEL
+
+                LDX #<PROFSEL_MDEF
+                LDY #>PROFSEL_MDEF
+                JSR MENU_INIT
+                JSR MENU_SET_CANCEL
+                JSR MENU_SELECT
+                BCC :2
+                BEQ :3
+                LDA PROFSNT+1
+                CMP #$FF
+                BNE :3
+
+:2              JSR DRAW_PICT
+                PictClear 1;109;9;116
+                PictTextAt 10;109;"POSSIBLE"
+                PictEnd
+                JSR :DRAW_CANCEL
+                JSR DRAW_RESTORE
+                JMP KEYIN
+
+:3              LDA PROFSNT,X
+                ASL
                 ASL
                 ASL
                 ASL
                 ORA RACE
                 STA PROFRAC
-                LDA #$20
-                STA PAGE
-                JSR CLRBOX
-                STA PRIMARY
+                SEC
+                JMP LEAVE_CREATE
+
+:DRAW_CANCEL    LDX #1
+                LDA PROFSNT+1
+                CMP #$FF
+                BEQ :4
+                INX
+:4              LDY PROFSEL_YPNTS,X
+                LDX #16
+                JSR MOVE_TO
+                JSR DRAW_PICT
+                PictText "CANCEL"
+                PictEnd
                 RTS
-WBLINK          STA TEHOLD
-                LDA #$01
-                STA COUNT
-WBLOOP          JSR OFFON
-                DEC COUNT
-                BPL WBLOOP
-                RTS
-OFFON           LDA #$00
-                JSR WAIT2
-                LDY TEHOLD
-                JSR TEXTER3
-                LDA #$00
-                JSR WAIT2
-                LDY TEHOLD
-                JMP TEXTER3
-TEHOLD          DB  $00
+
+PROFSEL_MDEF    DB  $03
+                DB  $00
+                DW  :CURSOR
+
+:CURSOR         LDY PROFSEL_YPNTS,X
+                LDX #3
+                JMP DRAW_ARROW
+
+PROFSEL_YPNTS   DB  127,136,145
+
+;---------------------------------------
+
+; code for doing flicker-free stats number updates
 
 STATOUT         LDX STATNUM
                 CPX #$04
@@ -575,22 +655,18 @@ CREDADD         LDA PRSNST
                 PLA
 ADDEDIT         LDA MISC
                 JSR SPLIT
-                LDA FEEDERH
-                STA TEXTBUF
-                LDA FEEDERL
-                STA TEXTBUF+1
+                STA TEXTBUF+0
+                STY TEXTBUF+1
                 LDA MISC+1
                 JSR SPLIT
-                LDA FEEDERH
                 STA TEXTBUF+2
-                LDA FEEDERL
-                STA TEXTBUF+3
-                LDA #$8D
+                STY TEXTBUF+3
+                LDA #TextLineEnd
                 STA TEXTBUF+4
                 LDY #$00
 ZEROUT          LDA TEXTBUF,Y
                 BNE ZEROD
-                LDA #$0A
+                LDA #TextSpace
                 STA TEXTBUF,Y
                 INY
                 CPY #$03
@@ -608,23 +684,20 @@ NORMST          CPX #$08
                 ADC #$00
                 STA MISC2
                 CLD
+                LDA #TextSpace
+                STA TEXTBUF+0
                 LDA MISC2
-                JSR SPLIT
-                LDA #$0A
-                STA TEXTBUF
-                LDA FEEDERL
+                AND #$0F
                 STA TEXTBUF+1
                 LDA MISC2+1
                 JSR SPLIT
-                LDA FEEDERH
                 STA TEXTBUF+2
-                LDA FEEDERL
-                STA TEXTBUF+3
-                LDA #$8D
+                STY TEXTBUF+3
+                LDA #TextLineEnd
                 STA TEXTBUF+4
-                LDA #$64
+                LDX #$64
                 LDY #$29
-                JSR LINE
+                JSR DRAW_TEXTBUF_XY
                 LDA TEXTBUF+1
                 ASL
                 ASL
@@ -639,19 +712,41 @@ NORMST          CPX #$08
                 ASL
                 STA MISC2+1
                 RTS
+
+MISC            DB  $00,$00
+MISC2           DB  $00,$00
+
 NORM2           LDA PRSNST,X
                 JSR SPLIT
-                LDA FEEDERH
-                BEQ NOTHER
-                STA TEXTBUF
-                JMP OTHER1
-NOTHER          LDA #$0A
-                STA TEXTBUF
-OTHER1          LDA FEEDERL
-                STA TEXTBUF+1
-                LDA #$8D
+                BNE :1
+                LDA #TextSpace
+:1              STA TEXTBUF+0
+                STY TEXTBUF+1
+                LDA #TextLineEnd
                 STA TEXTBUF+2
                 JMP TOUT
+;
+; On entry:
+;   A: value to split
+;
+; On exit:
+;   Y: high nibble
+;   A: low nibble
+;   X: unchanged
+;   BEQ/BNE: based on high nibble value
+;
+SPLIT           TAY
+                LSR
+                LSR
+                LSR
+                LSR
+                PHA
+                TYA
+                AND #$0F
+                TAY
+                PLA
+                RTS
+
 CHNGST          PHA
                 LDA PRSNST,X
                 LSR
@@ -671,45 +766,54 @@ CHNGST          PHA
                 LDA HOLDIT
                 BEQ OVERIT
                 STA TEXTBUF
-                LDA #$8D
+                LDA #TextLineEnd
                 STA TEXTBUF+1
                 JSR TOUT
 OVERIT          PLA
                 BEQ NOFIRST
                 STA TEXTBUF
-                LDA #$8D
+                LDA #TextLineEnd
                 STA TEXTBUF+1
                 JSR TOUT
 NOFIRST         LDA PRSNST,X
                 AND #$0F
                 STA TEXTBUF+1
-                LDA #$0A
+                LDA #TextSpace
                 STA TEXTBUF
-                LDA #$8D
+                LDA #TextLineEnd
                 STA TEXTBUF+2
-                JSR TOUT
+                JSR TOUT                ; erase old value
                 PLA
                 STA PRSNST,X
                 AND #$0F
                 STA TEXTBUF+1
-                LDA #$0A
+                LDA #TextSpace
                 STA TEXTBUF
-                LDA #$8D
+                LDA #TextLineEnd
                 STA TEXTBUF+2
-                JSR TOUT
+                JSR TOUT                ; draw new value
                 RTS
-TOUT            LDA EXPNT,X
-                STA XCOORD
-                LDA XSHFT,X
-                STA SHIFT
-                LDA YPNT2,X
-                STA YCOORD
-                TXA
+;
+; On entry:
+;   X: index of stat to drawn
+;   TEXT_BUFFER: text to be drawn
+;
+TOUT            TXA
                 PHA
-                JSR LINE2
+                LDY :STAT_Y,X
+                LDA :STAT_X,X
+                TAX
+                JSR DRAW_TEXTBUF_XY
                 PLA
                 TAX
                 RTS
+
+;                    IQ  ST  LR  UR  CR  OR  IN  AP  EN
+:STAT_X         DB   76,116,165,207,244,112,112, 28, 98
+:STAT_Y         DB  161,161,161,161,161, 21,  3,181, 40
+
+;---------------------------------------
+
 GRAPHA          LDA #$9F
                 STA YLEVEL
                 LDA #$00
@@ -742,7 +846,6 @@ LIN2            LDX YLEVEL
                 LDA LOBYTES,X
                 STA SCREENL
                 LDA HIBYTES,X
-                ORA PAGE
                 STA SCREENH
 PNT2            LDY #$09
 LINEUP          LDX PICPNT
@@ -797,7 +900,6 @@ GODOWN2         LDX YLEVEL
                 LDA LOBYTES,X
                 STA SCREENL
                 LDA HIBYTES,X
-                ORA PAGE
                 STA SCREENH
 PNT6            LDY #$09
                 LDA PNT7+1
@@ -837,6 +939,7 @@ NOCLEER         LDA YLEVEL
 GOTOP           INC PICPNT
                 DEC YLEVEL
                 JMP TOPOUT
+
 CALLA           TXA
                 PHA
                 JSR ADJUST
@@ -848,6 +951,7 @@ SAMETH          PLA
                 LDA PICPNT
                 STA POINTER,X
                 RTS
+
 CALL            PHA
                 LDA LEVEL,X
                 STA YLEVEL
@@ -861,6 +965,7 @@ CALL            PHA
                 TYA
                 JSR GRAPH
                 JMP SAMETH
+
 ADJUST          LDA ROWB,X
                 STA PNT2+1
                 STA PNT6+1
@@ -895,6 +1000,7 @@ ADJUST          LDA ROWB,X
                 LSR
                 TAX
                 RTS
+
 HGRAPH          STA HOLDIT
                 LDA MOD,X
                 SEC
@@ -919,7 +1025,6 @@ MOROFIT         LDY LINENUM
                 LDA LOBYTES,Y
                 STA SCREENL
                 LDA HIBYTES,Y
-                ORA PAGE
                 STA SCREENH
                 LDY DATCNT
                 LDA (DATPNTL),Y
@@ -944,6 +1049,7 @@ NOMOROF         INC XHOLD
 ALLDONE         LDA HOLDIT
                 STA MOD,X
                 RTS
+
 HDOWN           LDA MOD,X
                 CLC
                 ADC #$13
@@ -955,7 +1061,6 @@ MORDOWN         LDY LINENUM
                 LDA LOBYTES,Y
                 STA SCREENL
                 LDA HIBYTES,Y
-                ORA PAGE
                 STA SCREENH
                 LDA #$00
                 LDY XHOLD
@@ -967,6 +1072,7 @@ POINT5          CMP #$FF            ;Modified
                 LDA HOLDIT
                 STA MOD,X
                 RTS
+
 ADJUSTR         LDA BEGLINS,X
                 STA HSTART2+1
                 STA POINT4+1
@@ -986,7 +1092,8 @@ ADJUSTR         LDA BEGLINS,X
                 LSR
                 TAX
                 RTS
-PROFSN          LDA #$00
+
+UPDATE_PROFS    LDA #$00
                 STA MINPNT
                 STA BCHECKD
 PRFLP           LDY #$00
@@ -998,7 +1105,7 @@ PRFLOOP         LDA PRSNST,Y
                 INY
                 CPY #$07
                 BNE PRFLOOP
-                JSR PRFDRAW
+                JSR PROF_DRAW
 SKIPLOP         LDA BCHECKD
                 INC BCHECKD
                 CMP #$04
@@ -1008,7 +1115,7 @@ SKIPLOP         LDA BCHECKD
                 ADC MINPNT
                 STA MINPNT
                 JMP PRFLP
-FAILS           JSR PRFERAS
+FAILS           JSR PROF_ERASE
                 JMP SKIPLOP
 PRFDONE         LDA PROFSNT+1
                 TAX
@@ -1019,140 +1126,166 @@ PRFDONE         LDA PROFSNT+1
                 BNE DONE2
                 TXA
                 STA BCHECKD
-                JSR PRFERAS
-                JSR PRFDRAW
+                JSR PROF_ERASE
+                JSR PROF_DRAW
 DONE2           RTS
-PRFDRAW         LDX #$01
-ANOTHER         LDA PROFSNT,X
+
+PROF_DRAW       LDX #$01
+:1              LDA PROFSNT,X
                 CMP BCHECKD
-                BEQ ITSON
+                BEQ :3
                 DEX
-                BPL ANOTHER
+                BPL :1
                 LDX #$00
-CONTINU         LDA PROFSNT,X
+:2              LDA PROFSNT,X
                 CMP #$FF
-                BEQ OPENING
+                BEQ :4
                 INX
                 CPX #$02
-                BNE CONTINU
-                JMP ITSON
-OPENING         LDA BCHECKD
+                BNE :2
+:3              RTS
+:4              LDA BCHECKD
                 STA PROFSNT,X
-SPLICE          LDY BCHECKD
-                LDA PROFOFF,Y
-                TAY
-                TXA
+SPLICE          TXA
                 PHA
-                LDX #$00
-LOADMOR         LDA PROFDAT,Y
-                STA TEXTBUF,X
-                INX
-                INY
-                CPX #$08
-                BNE LOADMOR
                 LDA BCHECKD
-                CMP #$04
+                JSR PROF_TO_TEXT
+                LDA BCHECKD
+                CMP #physician
                 BNE NOPHYSN
-                LDA #$18
+                LDA #TextN              ; abbreviate to "PHYSICN"
                 STA TEXTBUF+6
                 DEX
-NOPHYSN         LDA #$8D
+NOPHYSN         LDA #TextLineEnd        ;*** needed?
                 STA TEXTBUF,X
                 PLA
                 TAX
-                LDA #$10
-                LDY PROFY,X
-                JSR LINE
-ITSON           RTS
-PRFERAS         LDX #$01
-NOTHERA         LDA PROFSNT,X
+                LDY PROFSEL_YPNTS,X
+                LDX #16
+                JMP DRAW_TEXTBUF_XY
+
+PROF_ERASE      LDX #$01
+:1              LDA PROFSNT,X
                 CMP BCHECKD
-                BEQ FOUNDED
+                BEQ :2
                 DEX
-                BPL NOTHERA
+                BPL :1
                 RTS
-FOUNDED         LDA #$FF
+:2              LDA #$FF
                 STA PROFSNT,X
                 JMP SPLICE
-LEVEL           DB  $00,$00,$00
-                DB  $00,$00
-POINTER         DB  $00,$00,$00
-                DB  $00,$00
-MINOFF          DB  $00,$08,$10
-                DB  $18,$20
-MINMUM          DB  $07,$11,$10
-                DB  $11,$00,$25
-                DB  $20,$28
-                DB  $13,$17,$05
-                DB  $06,$00,$35
-                DB  $25,$32
-                DB  $11,$13,$09
-                DB  $07,$00,$30
-                DB  $35,$29
-                DB  $16,$06,$10
-                DB  $10,$00,$20
-                DB  $40,$31
-                DB  $03,$05,$14
-                DB  $14,$00,$40
-                DB  $15,$30
-ADRANGE         DB  $05,$02,$09
-                DB  $02,$05
-EXPNT           DB  $0A,$10,$17
-                DB  $1D,$22,$10
-                DB  $10,$04,$0E
-XSHFT           DB  $06,$04,$04
-                DB  $04,$06,$00
-                DB  $00,$00,$02
-YPNT2           DB  $A1,$A1,$A1
-                DB  $A1,$A1,$15
-                DB  $03,$B5,$28
-PRSNST          DB  $00,$00,$00
-                DB  $00,$00,$00
-                DB  $00,$00,$00
-MINSTAT         DB  $00,$00,$00
-                DB  $00,$00,$00
-                DB  $00,$00,$00
-ROWB            DB  $09,$0F,$15
-                DB  $1B,$22
-ROWE            DB  $0E,$14,$1C
-                DB  $21,$27
-LIMIT           DB  $4B,$D7,$70
-                DB  $4E,$41
-ANDNUM          DB  $07,$00,$00
-                DB  $83,$00
-MISC            DB  $00,$00
-MISC2           DB  $00,$00
 
-BASECRD         DB  $50,$75,$25
-                DB  $00,$50
+; base/minimum stats by race
+;                    HU  OR  ST  XX  DE
+MINOFF          DB  $00,$08,$10,$18,$20 ; offset into MINMUM table (race * 8)
+
+;                    IQ  ST  LR  UR  CR  OR  ??  ??
+MINMUM          DB  $07,$11,$10,$11,$00,$25,$20,$28     ; 0-human
+                DB  $13,$17,$05,$06,$00,$35,$25,$32     ; 1-orn
+                DB  $11,$13,$09,$07,$00,$30,$35,$29     ; 2-stilicx
+                DB  $16,$06,$10,$10,$00,$20,$40,$31     ; 3-xxtys
+                DB  $03,$05,$14,$14,$00,$40,$15,$30     ; 4-deneb
+
+; randomiing limit by race
+ADRANGE         DB  $05,$02,$09,$02,$05
+
+; vertical bar graph info by stat #
+;                    IQ  ST  LR  UR  CR
+ROWB            DB  $09,$0F,$15,$1B,$22
+ROWE            DB  $0E,$14,$1C,$21,$27
+LIMIT           DB  $4B,$D7,$70,$4E,$41
+ANDNUM          DB  $07,$00,$00,$83,$00
+LWLIMIT         DB  $00,$23,$00,$06,$00
+ECHECK          DB  $FF,$22,$FF,$05,$FF
+
+; base credits by race
+;                    HU  OR  ST  XX  DE
+BASECRD         DB  $50,$75,$25,$00,$50
+
 DATPNT          DW  BRAIN
                 DW  ARM
                 DW  LEGS
                 DW  ARROWS
-                DW  CREDITS
-LWLIMIT         DB  $00,$23,$00
-                DB  $06,$00
-ECHECK          DB  $FF,$22,$FF
-                DB  $05,$FF
+                DW  CREDS
+
 MOD             DB  $00,$00,$00
+
 DATAS           DW  DNA
                 DW  TRONICS
                 DW  LBOLT
+
+; horizontal bar graph info
+;                    OR  IN  EN
 BEGLINS         DB  $14,$03,$22
 ENDLINS         DB  $1B,$0A,$36
-PROFY           DB  $7F,$89
-PROFMIN         DB  $06,$21,$19
-                DB  $20,$00,$45
-                DB  $20
-                DB  $25,$10,$16
-                DB  $15,$00,$20
-                DB  $60
-                DB  $22,$14,$11
-                DB  $11,$08,$45
-                DB  $30
-                DB  $14,$18,$17
-                DB  $17,$00,$30
-                DB  $45
-                DB  $23,$10,$14
-                DB  $19,$00,$60
-                DB  $15
+
+; minimum required stats, by profession
+;                    IQ  ST  LR  UR  CR  OR  IN
+PROFMIN         DB  $06,$21,$19,$20,$00,$45,$20     ; 0-warrior
+                DB  $25,$10,$16,$15,$00,$20,$60     ; 1-android
+                DB  $22,$14,$11,$11,$08,$45,$30     ; 2-cybernate
+                DB  $14,$18,$17,$17,$00,$30,$45     ; 3-juicer
+                DB  $23,$10,$14,$19,$00,$60,$15     ; 4-physician
+
+;---------------------------------------
+
+DRAW_BOX        LDA #OpColorViolet
+                BNE BOX_CMN             ; always
+ERASE_BOX       LDA #OpColorBlack1
+BOX_CMN         JSR SET_COLOR
+                LDX BOXNUM
+UPDATE_BOX_N    DEX
+                BPL :1
+
+:0              JSR DRAW_PICT
+                PictRect $4A;$AE;$5A;$B8
+                PictEnd
+                RTS
+
+:1              DEX
+                BPL :2
+                JSR DRAW_PICT
+                PictRect $62;$AE;$92;$B8
+                PictEnd
+                RTS
+
+:2              DEX
+                BPL :3
+                JSR DRAW_PICT
+                PictMoveTo $98;$B2
+                PictLineTo $98;$A9
+                PictLineTo $BC;$A9
+                PictLineTo $BC;$B2
+                PictEnd
+                RTS
+
+:3              DEX
+                BPL :4
+                JSR DRAW_PICT
+                PictMoveTo $C2;$B2
+                PictLineTo $C2;$A9
+                PictLineTo $E6;$A9
+                PictLineTo $E6;$B2
+                PictEnd
+                RTS
+
+:4              DEX
+                BPL :5
+                JSR DRAW_PICT
+                PictRect $EC;$AE;$114;$B8
+                PictEnd
+                RTS
+
+:5              DEX
+                BPL :6
+                JSR DRAW_PICT
+                PictRect $04;$0A;$68;$14
+                PictEnd
+                RTS
+
+:6              JSR DRAW_PICT
+                PictRect $98;$B3;$E6;$BD
+                PictEnd
+                RTS
+
+;---------------------------------------

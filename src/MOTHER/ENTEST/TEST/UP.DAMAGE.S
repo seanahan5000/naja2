@@ -6,12 +6,12 @@ DAMINC          JSR GET_LIMITS
                 LDA HIGH
                 STA LOW
                 STX HIGH
-:LOOP1          JSR RNDMIZE
-                LDA RANDOM1
+:LOOP1          JSR RANDOM
+                TAX
                 AND #$0F
                 CMP #$0A
                 BCS :LOOP1
-                LDA RANDOM1
+                TXA
                 CMP #$9A
                 BCS :LOOP1
                 CMP LOW
@@ -19,12 +19,14 @@ DAMINC          JSR GET_LIMITS
                 CMP HIGH
                 BEQ :SKIPA
                 BCS :LOOP1
-:SKIPA          JSR :SUBA
+:SKIPA          TXA
+                PHA
+                JSR :SUBA
                 LDY #damagemax+1
-                LDA (CHARDL),Y
+                PLA                     ; random number value
                 SED
                 CLC
-                ADC RANDOM1
+                ADC (CHARDL),Y
                 STA (CHARDL),Y
                 DEY
                 LDA (CHARDL),Y
@@ -36,18 +38,16 @@ DAMINC          JSR GET_LIMITS
                 STA (CHARDL),Y
                 INY
                 STA (CHARDL),Y
-:SUBA           JSR DAMAGER
+:SUBA           JSR HEALTH_TO_TEXT
                 LDA #$0A
                 LDX #4
 :LOOP2          STA TEXTBUF,X
                 DEX
                 BPL :LOOP2
-                LDY CURSOR
-                LDA TYPOINTS,Y
-                TAY
-                LDA #$8A
-                JMP LINE
-
+                LDX CURSOR
+                LDY TYPOINTS,X
+                LDX #$8A
+                JMP DRAW_TEXTBUF_XY
 
 GET_LIMITS      LDY #profrace
                 LDA (CHARDL),Y

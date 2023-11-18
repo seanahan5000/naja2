@@ -221,19 +221,20 @@ WRAP_TRIMMED_NAME ENT
                 JSR TRIM_NAME
                 JMP WRAP_TEXTBUF
 
-; NOTE: currently only used by C.ISTATS/DEAD.GROUP, so maybe move
 CPROF_TO_TEXT   ENT
                 LDY #profrace
                 LDA (CHARDL),Y
+PROF_TO_TEXT    ENT
                 LSR
                 LSR
                 LSR
                 LSR
                 TAX
                 LDY PROF_OFFS,X
-                CPX #electromedic
-                BNE :1
-                LDY #EMEDIC-PROF_NAMES+4
+                ; TODO: how should caller request full name?
+                ; CPX #electromedic
+                ; BNE :1
+                ; LDY #EMEDIC-PROF_NAMES+4
 :1              LDX #0
 :2              LDA PROF_NAMES,Y
                 BMI :3
@@ -292,7 +293,8 @@ POS_TO_TEXT     PHA
 HEALTH_TO_TEXT_L
                 LDA #TextEmpty
                 BNE HTT_CMN             ; always
-HEALTH_TO_TEXT  LDA #TextSpace
+HEALTH_TO_TEXT  ENT
+                LDA #TextSpace
 HTT_CMN         STA :FILL_MOD+1
                 LDX #0
                 SED
@@ -372,23 +374,28 @@ ETT_CMN         LDA #TextSlash
 ; NOTE: currently only used by C.ISTATS/DEAD.GROUP, so maybe move
 CEXP_TO_TEXT    ENT
                 LDY #experience
-                LDX #0
                 LDA #4
-                BNE CMN_TO_TEXT_L   ; always
+                LDX #0
+                BEQ CMN_TO_TEXT_L   ; always
 
-CSTAT_TO_TEXT_L LDX #0
-                LDA #1
-                BNE CMN_TO_TEXT_L   ; always
+CSTAT_TO_TEXT_L LDA #1
+                LDX #0
+                BEQ CMN_TO_TEXT_L   ; always
 
-CSTAT_TO_TEXT_R LDX #0
-                LDA #1
-                JSR CHAR_DIGITS_R
+CSTAT_TO_TEXT_R LDA #1
+                LDX #0
+CMN_TO_TEXT_R   JSR CHAR_DIGITS_R
                 LDA #TextLineEnd
                 STA TEXT_BUFFER,X
                 RTS
 
-; NOTE: currently only used by C.ISTATS/DEAD.GROUP, so maybe move
-CLEVEL_TO_TEXT  ENT
+CLEV_TO_TEXT_R  ENT
+                LDY #level
+                LDA #2
+                LDX #0
+                BEQ CMN_TO_TEXT_R       ; always
+
+CLEV_TO_TEXT_L  ENT
                 LDY #level
                 LDX #0
 CMN_TO_TEXT_L2  LDA #2
@@ -498,7 +505,7 @@ FORCE_LEFT      LDX #0
                 BNE :1                  ; always
 :2              RTS
 
-CSTATUS_TO_TEXT_C
+CSTATUS_TO_TEXT_C ENT
                 LDY #status
                 LDA (CHARDL),Y
                 JMP STATUS_TO_TEXT_C

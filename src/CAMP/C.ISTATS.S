@@ -498,7 +498,7 @@ DRAW_CHAR_INFO	JSR DRAW_PICT
 				PictTextbufRet
 				PictCall CPROF_TO_TEXT
 				PictTextbufRet
-				PictCall CLEVEL_TO_TEXT
+				PictCall CLEV_TO_TEXT_L
 				PictTextbufRet
 				PictCall CEXP_TO_TEXT
 				PictTextbufRet
@@ -632,7 +632,7 @@ DRAW_ROBO_INFO	JSR DRAW_PICT
 				LDA	(CHARDL),Y
 				AND	#$08
 				BNE	:1
-				JSR CLEVEL_TO_TEXT
+				JSR CLEV_TO_TEXT_L
 				LDY	#e15_PROGRAM+1
 				LDA	(CHARDL),Y
 				BPL	:2

@@ -1,22 +1,29 @@
 
-; ZBLOCK_A8       =   $A8
-; LINENUM         =   $0C
-; HOLDSEC         =   ZBLOCK_A8+5
-; SECOUNT         =   ZBLOCK_A8+6
-; XHOLD           =   ZBLOCK_A8+7
-
-; CHARBUF         =   $4000
+ZBLOCK_A0       =   $A0
+ZBLOCK_A8       =   $A8
+XHOLD           =   ZBLOCK_A8+7         ;*** ONLY IN DEFINE.CHAR.S ***
 
                 DUMMY SCRATCH_PAGE
-NAME_BUFFER     DS  charNameLength+1
 PROFRAC         DS  1
 RACE            DS  1
 GENDER          DS  1
+
+; character creation
+PRSNST          DS  9
+MINSTAT         DS  9
+
+; vertical graphic values, by stat #
+;                    IQ  ST  LR  UR  CR
+LEVEL           DB  $00,$00,$00,$00,$00
+POINTER         DB  $00,$00,$00,$00,$00
+
+; character testing
+CONTAB          DS  51
+PLUSTAB         DB  $00,$00,$00,$00
                 DEND
 
-ENROLL_TEST     LDA #$00
-                STA INMEMRY
-                STA RUINED_FLAG
+ENROLL_TEST     LDA #$FF
+                STA ENROLL_FILE
 
                 JSR DRAW_PICT
                 PictTextAt 21;145;"WELCOME, I'M THE COMPUTERIZED COUNCIL OF"
@@ -24,14 +31,13 @@ ENROLL_TEST     LDA #$00
                 PictTextAt 6;163;"IN THEIR PLACE UNTIL A NEW COUNCIL IS FORMED."
                 PictTextAt 21;172;"INFORMATION OF THE DEMISE OF THE COUNCIL"
                 PictTextAt 12;181;"CAN BE FOUND IN YOUR TACTICAL FORCE MANUAL."
+                PictCall SPACE_WAIT
                 PictEnd
 
-                JSR SPACE_WAIT
-                JSR CLEAR_BOX
-
-ANYONE          LDA #$02
-                STA CURSOR
-ANYONEX         JSR DRAW_PICT
+                LDA #2
+ENTEST_BACK     STA CURSOR
+                JSR DRAW_PICT
+                PictCall CLEAR_BOX
                 PictTextAt 6;143;"I AM HERE TO PROVIDE TWO SERVICES FOR CADETS"
                 PictTextAt 45;152;"WHICH OF THESE ARE YOU HERE FOR?"
                 PictTextAt 111;164;"TESTING"
@@ -49,32 +55,21 @@ ANYONEX         JSR DRAW_PICT
                 BNE :1
                 DEC LEGALS+0
 :1
-
-; look for open spot in roster
-;                 LDX #$00
-; FNDOPEN         LDA OPENBUF,X
-;                 CMP #$FF
-;                 BNE GOTOPEN
-;                 INX
-;                 CPX #$0B
-;                 BNE FNDOPEN
-;                 BEQ NOOPEN
-; GOTOPEN         STX HOLDSEC
-                ; STA FSFLAG
-
+                JSR IS_ROSTER_FULL
+                BCC :2
                 ; no enrollment if roster is full
-                ; DEC LEGALS+1
-; NOOPEN
-
+                DEC LEGALS+1
+:2
                 JSR DOT
                 JSR KBLINK_START
-                ; *** CANCEL CHECK ***
+                TXA
+                BMI :3
                 JSR DOT
                 LDX CURSOR
-                BEQ CANTEST
+                BEQ GO_TEST
                 DEX
-                BEQ GOROLL
-                JMP ENROLL_EXIT
+                BEQ GO_ENROLL
+:3              JMP ENROLL_EXIT
 
 :MAIN_KCURSOR   LDY :MAIN_YPNTS,X
                 LDX #$61
@@ -82,34 +77,21 @@ ANYONEX         JSR DRAW_PICT
 
 :MAIN_YPNTS     DB  $A4,$AD,$B6
 
+GO_TEST         LDA #fileEntest_Test
+                CMP TEST_FILE
+                BEQ :1
+                LDY #>TESTING
+                JSR LOAD_FILE
+:1              JMP TESTING
 
-CANTEST         LDA #$AA
-                CMP INMEMRY
-                BEQ :SKIPA
-                STA INMEMRY
-
-                ; LDA #fileEntest_Test
-                ; LDY #>TESTING
-                ; JSR LOAD_FILE
-:SKIPA          ; JMP TESTING
-
-GOROLL          LDA #$EE
-                CMP INMEMRY
-                BEQ ROLHERE
-                STA INMEMRY
-
-                LDA #fileEntest_Enroll
+GO_ENROLL       LDA #fileEntest_Enroll
+                CMP ENROLL_FILE
+                BEQ :1
                 LDY #>ENROLL
                 JSR LOAD_FILE
-ROLHERE         JMP ENROLL
+:1              JMP ENROLL
 
-ENROLL_EXIT     ; BIT RUINED_FLAG
-                ; BPL :SKIPA
-                ; LDX #mPictures
-                ; JSR SLOAD_FILE
-:SKIPA          ; JSR CLEAR_BOX
-
-                JSR DRAW_PICT
+ENROLL_EXIT     JSR DRAW_PICT
                 ; PictCall CLEAR_BOX
                 PictSetPage2
                 PictCopyToPage
@@ -151,9 +133,6 @@ SET_KBLINK_INFO STX KCURSOR_PROC+1
                 STY KCURSOR_PROC+2
                 TAX
                 STX KCURSOR_MAX
-                TAY
-                DEY
-                STY CURSOR
                 LDA #$00
 :1              DEX
                 BMI :2
@@ -237,31 +216,7 @@ DOT             LDX #$C1
                 DB  %00000000
                 DB  %00000000
 
-SHAPES
-SPDATA
-
-                DB  %00000000       ;(3) Used in testing...
-                DB  %00111110
-                DB  %00111110
-                DB  %00111110
-                DB  %00111110
-                DB  %00111110
-                DB  %00000000
-
-                DB  %00000000       ;(4) Used in testing...
-                DB  %00000011
-                DB  %00000111
-                DB  %00001111
-                DB  %00011111
-                DB  %00111111
-                DB  %00000000
-
-; *** THESE SHOULD BE DUMMYS IN SCRATCH_PAGE ***
-
-INMEMRY         DB  0
-RUINED_FLAG     DB  0
-FSFLAG          DB  0
-
+;---------------------------------------
 ;
 ; Wait for <space> while animating sweep and specks
 ;
@@ -280,6 +235,8 @@ SPACE_WAIT      JSR DRAW_PICT
                 PictClear 14;34;21;41
                 PictEnd
                 RTS
+
+;---------------------------------------
 ;
 ; Animate computer sweep bars
 ;
@@ -313,7 +270,7 @@ LINDONE         LDA LINNUMO
                 BEQ LINDONE
                 CPX #$07
                 BEQ OUT
-                BNE LOOP
+                BNE LOOP                ; always???
 OUT             LDA LINNUMO
                 INX
                 INX
@@ -335,6 +292,8 @@ OUT             LDA LINNUMO
 
 DUMMY           DB  $00                 ; *** USE ZPAGE
 LINNUMO         DB  $00                 ; *** USE ZPAGE
+
+;---------------------------------------
 ;
 ; Animate computer "speck" lights
 ;
@@ -404,3 +363,5 @@ SPECK_DATA      DB  $C8,$82,$B2
                 DB  $85,$F4,$88
                 DB  $AC,$86,$90
                 DB  $85
+
+;---------------------------------------

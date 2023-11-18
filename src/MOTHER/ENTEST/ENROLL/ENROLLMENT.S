@@ -1,5 +1,3 @@
-ZBLOCK_A0       =   $A0
-ZBLOCK_A8       =   $A8
 WHICH           =   ZBLOCK_A0+0
 ; DATPNTL         =   ZBLOCK_A0+1
 ; DATPNTH         =   ZBLOCK_A0+2
@@ -13,31 +11,19 @@ STATNUM         =   ZBLOCK_A8+1
 BOXNUM          =   ZBLOCK_A8+2
 PROFSNT         =   ZBLOCK_A8+3     ;+4
 
-; TEMPBUF         =   $7F00           ;Must be on page boundary
-
-ENROLL
-                ; LDA FSFLAG
-                ; AND #$80
-                ; STA FSFLAG
-                ; LDA #$F0
-                ; LDX FSFLAG
-                ; BEQ AFIRST
-                ; LDA #$0F
-; AFIRST
-                ; LDY HOLDSEC
-                ; ORA OPENBUF,Y
-                ; STA HOLD_MOD+1
+HOLDIT          =   ZBLOCK_A8+5         ; used by DEFINE.CHAR
 
 ; *** cancel back on each of these? ***
 
-ASK_NAME        JSR CLEAR_BOX
-                JSR DRAW_PICT
+ENROLL
+
+ASK_NAME        JSR DRAW_PICT
+                PictCall CLEAR_BOX
                 PictTextAt 54;154;"WHAT IS YOUR NAME? "
                 PictEnd
                 JSR ASK_CHAR_NAME
                 BCS GOT_NAME
-                JSR CLEAR_BOX
-                JMP ANYONE
+                JMP LEAVE_ENROLL
 
 GOT_NAME        JSR IS_NAJA_NAME
                 BCC NOT_NAJA
@@ -48,8 +34,8 @@ GOT_NAME        JSR IS_NAJA_NAME
                 JSR SPACE_WAIT
                 JMP ASK_NAME
 
-NOT_NAJA        JSR DUPE_CHECK
-                BCS ASK_RACE
+NOT_NAJA        JSR DUPE_NAME_CHECK
+                BCC ASK_RACE
                 JSR DRAW_PICT
                 PictTextAt 30;172;"SOMEONE IS REGISTERED UNDER THAT NAME."
                 PictEnd
@@ -59,12 +45,13 @@ NOT_NAJA        JSR DUPE_CHECK
 ASK_RACE        JSR DRAW_PICT
                 PictCall CLEAR_BOX
                 PictTextAt 6;143;"TO WHICH RACE DO YOU BELONG?"
-                ; *** where are you from? ***
-                PictTextAt 204;143;"HUMAN"  ; *** EARTH
-                PictTextAt 204;153;"ORN"
-                PictTextAt 204;163;"STILICX"
-                PictTextAt 204;173;"XXTYS"
-                PictTextAt 204;183;"DENEB"
+                ; *** where/WHAT PLANET are you from? ***
+                PictTextRows 204;143;10
+                TXC "HUMAN\n"  ; *** EARTH
+                TXC "ORN\n"
+                TXC "STILICX\n"
+                TXC "XXTYS\n"
+                TXT "DENEB"
                 PictEnd
 
                 LDX #<:RACE_CURSOR
@@ -73,7 +60,7 @@ ASK_RACE        JSR DRAW_PICT
                 JSR KBLINK_SUB
                 ; *** RETURN VALUE AND SAVE RACE HERE ***
                 BEQ GOT_RACE
-                JMP ANYONE
+                JMP LEAVE_ENROLL
 
 :RACE_CURSOR    LDY :RACE_YPNTS,X
                 LDX #$BE
@@ -89,9 +76,10 @@ ASK_GENDER      JSR DRAW_PICT
                 PictCall CLEAR_BOX
                 PictTextAt 30;153;"OF WHICH GENDER ARE YOU?"
                 ; *** what is your gender ***
-                PictTextAt 204;153;"MALE"
-                PictTextAt 204;163;"FEMALE"
-                PictTextAt 204;173;"OTHER"
+                PictTextRows 204;153;10
+                TXC "MALE\n"
+                TXC "FEMALE\n"
+                TXT "OTHER"
                 PictEnd
 
                 LDX #<:GENDER_CURSOR
@@ -100,7 +88,7 @@ ASK_GENDER      JSR DRAW_PICT
                 JSR KBLINK_SUB
                 ; *** RETURN VALUE AND SAVE GENDER HERE ***
                 BEQ GOT_GENDER
-                JMP ANYONE
+                JMP LEAVE_ENROLL
 
 :GENDER_CURSOR  LDY :GENDER_YPNTS,X
                 LDX #$BE
@@ -113,27 +101,27 @@ GOT_GENDER      LDA CURSOR
 
                 JSR ANIMATE_ARROWS
                 JSR DRAW_PICT
-                PictTextAt 6;150;"AN ANALYSIS HAS BEEN MADE OF YOUR ABILITIES"
-                PictTextAt 6;159;"AND I HAVE FORMULATED THE INFORMATION ON THE"
-                PictTextAt 6;168;"FOLLOWING CHART.  <REFER TO YOUR TACTICAL"
-                PictTextAt 6;177;"FORCE MANUAL FOR INSTRUCTIONS>"
+                PictTextRows 6;150;9
+                TXC "AN ANALYSIS HAS BEEN MADE OF YOUR ABILITIES\n"
+                TXC "AND I HAVE FORMULATED THE INFORMATION ON THE\n"
+                TXC "FOLLOWING CHART.  <REFER TO YOUR TACTICAL\n"
+                TXT "FORCE MANUAL FOR INSTRUCTIONS>"
                 PictEnd
 
                 JSR SPACE_WAIT
                 JSR CLEAR_BOX
-;                 JSR DEFINE_CHAR
 
-; *** IN ROSTER ***
-;                 LDY HOLDSEC
-; HOLD_MOD        LDA #$FF            ;Modified
-;                 STA OPENBUF,Y
+                JSR DEFINE_CHAR
+                BCS TAKE_OATH
+                JMP LEAVE_ENROLL         ;*** CANCEL BACK TO ASK_GENDER?
 
 TAKE_OATH       JSR DRAW_PICT
-                PictTextAt 6;145;"YOUR ENROLLMENT APPLICATION HAS BEEN"
-                PictTextAt 6;154;"ACCEPTED.  AT THIS TIME PLEASE STATE THE"
-                PictTextAt 6;163;"TACTICAL FORCE LOYALTY OATH.  <IF YOU HAVE"
-                PictTextAt 6;172;"NOT MEMORIZED IT YET, THEN REFER TO YOUR"
-                PictTextAt 6;181;"TACTICAL FORCE MANUAL> "
+                PictTextRows 6;145;9
+                TXC "YOUR ENROLLMENT APPLICATION HAS BEEN\n"
+                TXC "ACCEPTED.  AT THIS TIME PLEASE STATE THE\n"
+                TXC "TACTICAL FORCE LOYALTY OATH.  <IF YOU HAVE\n"
+                TXC "NOT MEMORIZED IT YET, THEN REFER TO YOUR\n"
+                TXT "TACTICAL FORCE MANUAL> "
                 PictEnd
 
                 ; *** TODO: default input to correct text ***
@@ -156,32 +144,37 @@ TAKE_OATH       JSR DRAW_PICT
 
 OATH            TXT "UPHOLD AND SUPPORT"
 
-PASSED_OATH
-                ; JSR SAVE_CHAR
+PASSED_OATH     JSR BUILD_CHAR
 
                 JSR DRAW_PICT
                 PictCall CLEAR_BOX
-                PictTextAt 6;149;"IN ORDER TO FORM AN EXPLORATION GROUP YOU'LL"
-                PictTextAt 6;158;"HAVE TO SEE MR. LELVK AT THE GROUP ASSEMBLY"
-                PictTextAt 6;167;"OFFICE.  TO GET THERE, GO DOWN THE HALL THAT"
-                PictTextAt 6;176;"YOU JUST CAME THROUGH AND TURN LEFT."
+                PictTextRows 6;149;9
+                TXC "IN ORDER TO FORM AN EXPLORATION GROUP YOU'LL\n"
+                TXC "HAVE TO SEE MR. LELVK AT THE GROUP ASSEMBLY\n"
+                TXC "OFFICE.  TO GET THERE, GO DOWN THE HALL THAT\n"
+                TXT "YOU JUST CAME THROUGH AND TURN LEFT."
+                PictCall SPACE_WAIT
                 PictEnd
-                JSR SPACE_WAIT
-                ; *** JOIN ***
+
                 JSR DRAW_PICT
                 PictCall CLEAR_BOX
-                PictTextAt 6;149;"GOOD LUCK, AND REMEMBER, THE ALLIANCE OF THE"
-                PictTextAt 6;158;"FIVE FREE WORLDS IS DEPENDING ON YOU TO"
-                PictTextAt 6;167;"UPHOLD YOUR POSITION AND AID IN THE DOWNFALL"
-                PictTextAt 6;176;"OF NAJA."
+                PictTextRows 6;149;9
+                TXC "GOOD LUCK, AND REMEMBER, THE ALLIANCE OF THE\n"
+                TXC "FIVE FREE WORLDS IS DEPENDING ON YOU TO\n"
+                TXC "UPHOLD YOUR POSITION AND AID IN THE DOWNFALL\n"
+                TXT "OF NAJA."
+                PictCall SPACE_WAIT
                 PictEnd
-                JSR SPACE_WAIT
 
-                JSR CLEAR_BOX
-                JMP ANYONE
+LEAVE_ENROLL    JSR CLEAR_BOX
+                LDA #0
+                JMP ENTEST_BACK
 
 ; *** FOLD THIS INTO MAIN ROUTINE ***
 KBLINK_SUB      JSR SET_KBLINK_INFO
+                LDX KCURSOR_MAX
+                DEX
+                STX CURSOR
                 JSR DRAW_PICT
                 PictTextAt 101;34;"C>ANCEL"
                 PictEnd
@@ -267,4 +260,4 @@ EXES            DB  238,244,250
 SITIONS         DB  $20,$1E,$18
                 DB  $1A,$21,$19
 
-*-------------------------------
+;---------------------------------------

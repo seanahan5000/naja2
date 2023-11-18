@@ -1,125 +1,165 @@
-TESTING         JSR CLRBOX
-                JSR CLEAR2
+
+TESTING         JSR DRAW_PICT
+                PictCall CLEAR_BOX
+                PictSetPage2
+                PictClearPage
+                PictEnd
+
                 JSR DOCOTAB
-                LDA #$40
-                STA PAGE
-                LDA #VIOLET
-                STA COLOR
-                LDY #$01
-                JSR LINER2
-                LDY #$00
-                JSR TEXTER2
-                LDY #$01
-                JSR TEXTER2
-                LDA #GREEN
-                STA COLOR
-                LDY #$00
-                JSR LINER2
+                JSR DRAW_SELMEMB
+
+                JSR DRAW_PICT
+                PictSetGreen
+                PictRect $01;$73;$115;$B6
+                PictMoveTo $01;125
+                PictLineTo $115;125
+                PictVMoveTo 117
+                PictEnd
+
                 LDA #$42
-                STA SELECT
-                LDA #$75
-                STA YPNT
-                JSR HEADER
+                JSR DRAW_STATS
+                JSR SHOW_PAGE
 
-                LDA #0
-                STA COUNT
-:LOOP1          TAY
-                LDX TYPOINTS,Y
-                STX YPNT
-                JSR STATLIN
-                INC COUNT
-                LDA COUNT
-                CMP GRPNUMB
-                BNE :LOOP1
-
-                STA SCNDARY
                 JSR RESET_CHLIST
                 LDA #0
                 STA LEGALS+7
                 STA WHICH_CDEF+1
 GOKCOMN         LDX #<WHICH_CDEF
                 LDY #>WHICH_CDEF
-                JSR INIT_CURSOR
-                JSR GETKEY
-                LDA CURSOR
-                CMP #$07
-                BNE NO_LEAVE
-                JMP LEAVES
+                JSR MENU_INIT
+                JSR MENU_SET_CANCEL
+                JSR MENU_SELECT
+                BCC LEAVE_TESTING
+                CPX #$07
+                BEQ LEAVE_TESTING
+                JMP NO_LEAVE
+
+LEAVE_TESTING   JSR DRAW_PICT
+                PictSetPage1
+                PictCall CLEAR_BOX
+                PictShowPage
+                PictEnd
+                LDA #2
+                JMP ENTEST_BACK
+
+DRAW_SELMEMB    JSR DRAW_PICT
+                PictClear $02;$00;$26;$6B
+                PictSetViolet
+                PictRect $36;$29;$E2;$44
+                PictTextAt 75;47;"SELECT GROUP MEMBER TO"
+                PictTextAt 63;56;"TAKE RANK ADVANCEMENT TEST"
+                PictTextAt 16;185;"LEAVE"
+                PictEnd
+                RTS
 
 *-------------------------------
-WHICH_CDEF      DB  $07
-                DB  $FF             ;Modified
+
+WHICH_CDEF      DB  $08
+                DB  $FF                 ; modified
                 DW  :CURSIT
+
 :CURSIT         LDX CURSOR
                 LDY TYPOINTS,X
-                LDX #$03
-                JMP ARROWER
+                LDX #3
+                JMP DRAW_ARROW
+
+MARKIT          LDX CURSOR
+                LDY  TYPOINTS,X
+                LDX #8
+                JMP DRAW_MARKER
+
+TYPOINTS        DB  128,137,146
+                DB  155,164,173
+                DB  0,185
+
 *-------------------------------
 
-NO_LEAVE        STA WHICH_CDEF+1
-                JSR POINTIT
+NO_LEAVE        STX WHICH_CDEF+1
+                TXA
+                JSR SET_CHAR
                 JSR MARKIT
+                JSR DRAW_PICT
+                PictClear 2;185;7;192   ; remove LEAVE
+                PictEnd
                 LDY #status
                 LDA (CHARDL),Y
                 CMP #healthy
-                BEQ :SKIPA
-                JSR CLRTOP
-                LDY #$01
-                JSR TEXTER2
-                LDA #RED
-                STA COLOR
-                LDY #$04
-                JSR LINER2
-                LDY #$0B
-                JSR TEXTER2
-                JSR SPACE_WAIT
-                JSR CLRTOP
+                BNE NOT_HEALTHY
+                JMP IS_HEALTHY
+
+NOT_HEALTHY     JSR DRAW_PICT
+                PictClear $02;$00;$26;$6B
+                PictSetOrange
+                ; rectangle with notch for space
+                PictMoveTo 21;76
+                PictLineTo 21;106
+                PictLineTo 213;106
+                PictLineTo 213;97
+                PictLineTo 259;97
+                PictLineTo 259;76
+                PictLineTo 21;76
+                PictTextAt 36;79;"YOU MUST BE HEALTHY IN ORDER FOR ME"
+                PictTextAt 30;88;"TO ACCURATELY DETERMINE HOW MUCH YOUR"
+                PictTextAt 60;97;"STATISTICS HAVE IMPROVED."
+                PictTextAt 219;99;"<SPACE>"
+                PictCall TSPACE_WAIT
+                PictClear $02;$00;$26;$6B
+                PictEnd
+
                 INC WHICH_CDEF+1
                 JMP PFCOMN2
-:SKIPA          LDY #$01
-                JSR TEXTER2
-                JSR PASS_FAIL
-                BCS PASSES_TEST
 
-FAILS_TEST      LDA #BLUE
-                STA COLOR
-                JSR CLRTOP
-                LDY #$03
-                JSR LINER2
-                LDY #$03
-                JSR TEXTER2
-                LDX #$01
-                JSR NAMER
-                LDY #$04
-                JSR TEXTER2
-                LDX #$01
-                JSR LEVPROF
-                LDY #$05
-                JSR TEXTER2
-                JSR MOREX
+IS_HEALTHY      JSR PASS_FAIL
+                BCC FAILS_TEST
+                JMP PASSES_TEST
+
+FAILS_TEST      JSR DRAW_PICT
+                PictClear $02;$00;$26;$6B
+                PictSetBlue
+                PictRect $1E;$00;$100;$51
+                PictTextAt 45;6;"UPON REVIEWING "
+                PictCall DRAW_TRIMMED_NAME
+                PictText "'S TEST"
+                PictTextAt 45;15;"PERFORMANCE, I HAVE DETERMINED"
+                PictTextAt 45;24;"THAT THEY HAVE NOT MET THE"
+                PictTextAt 45;33;"MINIMUM REQUIREMENTS FOR A LEVEL"
+                PictMoveTo 45;42
+                PictCall LEVEL_OUT
+                PictText " "
+                PictCall PROF_OUT
+                PictText " AND SHOULD"
+                PictTextAt 45;51;"ACCUMULATE AT LEAST "
+                PictCall MORE_EXP
+                PictText " MORE"
+                PictEnd
+
+                LDX #TextS
                 LDA LEVTOTL
                 ORA LEVTOTL+1
                 ORA LEVTOTL+2
-                BNE :SKIPA
+                BNE :1
                 LDA LEVTOTL+3
                 CMP #$01
-                BNE :SKIPA
-                LDA #$EE
-                STA PLURAL
-:SKIPA          LDY #$06
-                JSR TEXTER2
-                LDA #$1D
-                STA PLURAL
+                BNE :1
+                LDX #TextEmpty
+:1              STX :PLURAL+19
+
+                JSR DRAW_PICT
+:PLURAL         PictTextAt 45;60;"EXPERIENCE POINTS BEFORE TAKING"
+                PictTextAt 45;69;"THE TEST AGAIN."
+                PictTextAt 209;72;"<SPACE>"
+                PictEnd
+
                 INC WHICH_CDEF+1
                 JMP PFCOMN
 
-PASSES_TEST     LDA #RED
-                STA COLOR
-                JSR CLRTOP
-                LDY #$02
-                JSR LINER2
-                LDY #$02
-                JSR TEXTER2
+PASSES_TEST     JSR DRAW_PICT
+                PictSetOrange
+                PictClear $02;$00;$26;$6B
+                PictRect $1D;$00;$101;$68
+                PictTextAt 45;6;"CONGRATULATIONS. "
+                PictEnd
+
                 LDY #profrace
                 LDA (CHARDL),Y
                 AND #%11110000
@@ -132,16 +172,15 @@ PASSES_TEST     LDA #RED
                 LDA (CHARDL),Y
                 CMP #$14
                 BNE NO_EMED
-                LDX #$02
-                JSR NAMER
-                LDY #$09
-                JSR TEXTER2
-                JSR LEVEL_OUT
-                LDA #$D5
-                LDY #$0F
-                JSR LINE
-                LDY #$0A
-                JSR TEXTER2
+
+NOW_EMED        JSR DRAW_PICT
+                PictCall DRAW_TRIMMED_NAME
+                PictText " IS"
+                PictTextAt 45;15;"NOW QUALIFIED TO BE A LEVEL "
+                PictCall LEVEL_OUT
+                PictTextAt 72;24;"*** ELECTRO-MEDIC ***"
+                PictEnd
+
                 JSR PROFFER
                 LDY #profrace
                 LDA (CHARDL),Y
@@ -149,198 +188,65 @@ PASSES_TEST     LDA #RED
                 ORA #electromedic*16
                 STA (CHARDL),Y
                 JSR PROFFER
-                JMP EMEDCOM
+                JMP PASS_CMN
 
-NO_EMED         LDX #$00
-                JSR NAMER
-                LDY #$07
-                JSR TEXTER2
-                LDX #$00
-                JSR LEVPROF
-EMEDCOM         LDY #level
+; change profession in stats box
+
+PROFFER         JSR CPROF_TO_TEXT
+                LDA #TextLineEnd
+                STA TEXTBUF+3
+                LDX CURSOR
+                LDY TYPOINTS,X
+                LDX #78
+                JMP DRAW_TEXTBUF_XY
+
+NO_EMED         JSR DRAW_PICT
+                PictCall DRAW_TRIMMED_NAME
+                PictText " HAS"
+                PictTextAt 45;15;"MET THE MINIMUM REQUIREMENTS"
+                PictTextAt 45;24;"FOR A LEVEL "
+                PictCall LEVEL_OUT
+                PictText " "
+                PictCall PROF_OUT
+                PictText "."
+                PictEnd
+
+PASS_CMN        LDY #level
                 LDA LEVCNT
                 STA (CHARDL),Y
                 INY
                 LDA LEVCNT+1
                 STA (CHARDL),Y
-                LDY #$08
-                JSR TEXTER2
+
+                JSR DRAW_PICT
+                PictTextAt 45;36;"IT HAS ALSO BEEN STORED IN MY"
+                PictTextAt 45;45;"MEMORY BANKS THAT THEIR"
+                PictTextAt 45;54;"STATISTICS ARE NOW:"
+                PictTextAt 75;65;"INTELLIGENCE:"
+                PictTextAt 75;74;"UPPER REFLEX:"
+                PictTextAt 75;83;"LOWER REFLEX:"
+                PictTextAt 99;92;"STRENGTH:"
+                PictTextAt 209;95;"<SPACE>"
+                PictEnd
 
                 JSR DRWSTAT
                 JSR UPOWER
                 JSR DAMINC
 
-PFCOMN          JSR SPACE_WAIT
-PFCOMN2         JSR CLRTOP
-                LDA #VIOLET
-                STA COLOR
-                LDY #$01
-                JSR LINER2
-                LDY #$00
-                JSR TEXTER2
-                LDY #$01
-                JSR TEXTER2
+PFCOMN          JSR TSPACE_WAIT
+PFCOMN2         JSR DRAW_SELMEMB
                 JSR MARKIT
                 JMP GOKCOMN
 
-SPACE_WAIT      BIT UNSTROB
-:LOOP1          LDA KEYBRD
-                BPL :LOOP1
+TSPACE_WAIT     BIT UNSTROB
+:1              LDA KEYBRD
+                BPL :1
                 BIT UNSTROB
                 JSR CHECK_ENTER
-                BNE :LOOP1
+                BNE :1
                 RTS
 
-LEAVES          LDA #$20
-                STA PAGE
-                JSR CLRBOX
-                STA PRIMARY
-                LDA #$01
-                STA CURSOR
-                JMP ANYONEX
-
-PROFFER         JSR PROFNAM
-                LDA #$8D
-                STA TEXTBUF+3
-                LDY CURSOR
-                LDA TYPOINTS,Y
-                TAY
-                LDA #$10
-                JMP LINE
-
-CLRTOP          LDX #$00
-:LOOP1          LDA LOBYTES,X
-                STA SCREENL
-                LDA HIBYTES,X
-                ORA #$40
-                STA SCREENH
-                LDY #$02
-                LDA #$00
-:LOOP2          STA (SCREENL),Y
-                INY
-                CPY #$26
-                BNE :LOOP2
-                INX
-                CPX #$6B
-                BNE :LOOP1
-                RTS
-
-MARKIT          LDY CURSOR
-                LDA TYPOINTS,Y
-                STA YPNT
-                LDA #7
-                STA XPNT
-                LDA #3
-TEST_SHAPES     LDX #<SHAPES
-                LDY #>SHAPES
-                JMP DRAW_SHAPES
-
-NAMER           LDY #name+9
-:LOOP1          LDA (CHARDL),Y
-                STA TEXTBUF,Y
-                DEY
-                BPL :LOOP1
-                LDY #$09
-NAMSTOP         LDA TEXTBUF,Y
-                CMP #$0A
-                BNE NOTSPC
-                DEY
-                BPL NAMSTOP
-NOTSPC          INY
-                TXA
-                PHA
-                LDA XDATOFF,X
-                TAX
-XDLOOP          LDA XDATA,X
-                STA TEXTBUF,Y
-                INX
-                INY
-                CMP #$8D
-                BNE XDLOOP
-                PLA
-                TAX
-                LDY #$06
-                LDA XDATX,X
-                JMP LINE
-
-XDATOFF         DB  $00,$05,$0D
-XDATA           USR (_HAS)
-                USR ('S_TEST)
-                USR (_IS)
-
-XDATX           DB  $99,$87,$99
-
-LEVPROF         TXA
-                PHA
-                JSR LEVEL_OUT
-                LDA #$0A
-                STA TEXTBUF,X
-                INX
-                LDY #profrace
-                LDA (CHARDL),Y
-                LSR
-                LSR
-                LSR
-                LSR
-                CMP #electromedic
-                BNE RESTPRF
-                LDY #0
-DOELEC          LDA ELECTRO,Y
-                STA TEXTBUF,X
-                INX
-                INY
-                CPY #$07
-                BNE DOELEC
-                LDY #$06
-                LDA PROFOFF,Y
-                TAY
-                INY
-                BNE REST2
-
-ELECTRO         USR (ELECTRO)-
-
-RESTPRF         TAY
-                LDA PROFOFF,Y
-                TAY
-REST2           LDA PROFDAT,Y
-                STA TEXTBUF,X
-                CMP #$0A
-                BEQ RESTED
-                CMP #$8D
-                BEQ RESTED
-                INY
-                INX
-                BNE REST2
-RESTED          PLA
-                PHA
-                BNE ADDMORE
-                LDA #$2D
-                STA TEXTBUF,X
-                INX
-                LDA #$8D
-                STA TEXTBUF,X
-                BNE RESTCOM
-ADDMORE         LDY #$00
-AM2             LDA SHOULD,Y
-                STA TEXTBUF,X
-                INX
-                INY
-                CPY #$0D
-                BNE AM2
-                BEQ RESTCOM
-
-SHOULD          USR (,_AND_SHOULD)
-
-RESTCOM         PLA
-                TAX
-                LDA YCS,X
-                TAY
-                LDA XCS,X
-                JMP LINE
-
-XCS             DB  $75,$2D
-YCS             DB  $18,$2A
-
+;---------------------------------------
 
 LEVEL_OUT       LDY #level+1
                 LDA (CHARDL),Y
@@ -355,25 +261,56 @@ LEVEL_OUT       LDY #level+1
                 STA LEVCNT
                 PHA
                 CLD
-                LDX #0
                 LDA #2
-                JSR LEFT_DIGITS
-                LDA #$8D
-                STA TEXTBUF+4
-                RTS
+                BNE DIGITS_OUT          ; always
 
-DRWSTAT         LDA #$03
-                STA COUNT
-UPSTATS         JSR RNDMIZE
-                LDY COUNT
-                LDA LOCS,Y
-                TAY
-                LDA RANDOM1
+MORE_EXP        LDX #3
+:1              LDA LEVTOTL,X
+                PHA
+                DEX
+                BPL :1
+                LDA #4
+                ; fall through
+
+DIGITS_OUT      LDX #0
+                JSR DIGITS_L
+                LDA #TextLineEnd
+                STA TEXTBUF,X
+                JMP DRAW_TEXTBUF
+
+;---------------------------------------
+
+PROF_OUT        LDY #profrace
+                LDA (CHARDL),Y
+                AND #$F0
+                CMP #electromedic*16
+                BEQ :1
+                JSR CPROF_TO_TEXT
+                JMP DRAW_TEXTBUF
+
+:1              LDX #0
+:2              LDA :ELECTRO,X
+                STA TEXT_BUFFER,X
+                INX
+                CMP #TextLineEnd
+                BNE :2
+                JMP DRAW_TEXTBUF
+
+:ELECTRO        TXC "ELECTRO-MEDIC"
+
+;---------------------------------------
+
+DRWSTAT
+
+; randomly increase stats points
+
+                LDX #0
+UPSTATS         JSR RANDOM
                 AND #$03
                 CMP #$03
                 BEQ UPSTATS
-                LDX COUNT
                 STA PLUSTAB,X
+                LDY LOCS,X
                 SED
                 CLC
                 ADC (CHARDL),Y
@@ -383,16 +320,17 @@ UPSTATS         JSR RNDMIZE
                 STA PLUSTAB,X
                 LDA #$99
 NOMAXD          STA (CHARDL),Y
-                DEC COUNT
-                BPL UPSTATS
+                INX
+                CPX #4
+                BNE UPSTATS
 
-                LDA #$03
-                STA COUNT
+; draw new stats values
+
                 LDA #$8D
                 STA TEXTBUF+2
-STLOOP          LDY COUNT
-                LDA LOCS,Y
-                TAY
+                LDX #0
+STLOOP          STX COUNT
+                LDY LOCS,X
                 LDA (CHARDL),Y
                 PHA
                 AND #$0F
@@ -403,30 +341,34 @@ STLOOP          LDY COUNT
                 LSR
                 LSR
                 BNE NOT0
-                LDA #$0A
+                LDA #TextSpace
 NOT0            STA TEXTBUF
-                LDY COUNT
-                LDA STATYS,Y
-                TAY
-                STA YPNT
-                LDA #$9F
-                JSR LINE
-                LDA #$AD
-                STA XPNT
-                LDY COUNT
-                LDA PLUSTAB,Y
+                LDY STATYS,X
+                LDX #$9F
+                JSR DRAW_TEXTBUF_XY
+                LDX COUNT
+                LDA PLUSTAB,X
                 BEQ MARKED
-MARLOOP         LDA #4
-                JSR TEST_SHAPES
-                LDA XPNT
-                CLC
-                ADC #$08
-                STA XPNT
+
+; draw markers for increase in stats
+
+                LDX #$AD
+                JSR HMOVE_TO
+MARLOOP         LDX #<TRIANGLE_SHAPE
+                LDY #>TRIANGLE_SHAPE
+                JSR DRAW_TILE
+                LDX #1
+                JSR HMOVE
                 LDX COUNT
                 DEC PLUSTAB,X
                 BNE MARLOOP
-MARKED          DEC COUNT
-                BPL STLOOP
+
+MARKED          INX
+                CPX #4
+                BNE STLOOP
+
+; increase number of back slots based on strength
+
                 LDY #strength
                 LDA (CHARDL),Y
                 LDY #$03
@@ -442,36 +384,24 @@ GOTBACK         TYA
                 STA (CHARDL),Y
                 RTS
 
+BACKUTS         DB  $40,$50,$60
+
+TRIANGLE_SHAPE  DB  %00000000
+                DB  %00000011
+                DB  %00000111
+                DB  %00001111
+                DB  %00011111
+                DB  %00111111
+                DB  %00000000
+
 LOCS            DB  intelligence
                 DB  upreflex
                 DB  lwreflex
                 DB  strength
 
-STATYS          DB  $41,$4A,$53
-                DB  $5C
-BACKUTS         DB  $40,$50,$60
-PLUSTAB         DB  $00,$00,$00,$00
+STATYS          DB  $41,$4A,$53,$5C
 
-MOREX           LDX #3
-:LOOP1          LDA LEVTOTL,X
-                PHA
-                DEX
-                BPL :LOOP1
-                LDA #4
-                INX
-                JSR LEFT_DIGITS
-                LDY #$00
-:LOOP2          LDA MORE,Y
-                STA TEXTBUF,X
-                INX
-                INY
-                CPY #$06
-                BNE :LOOP2
-                LDA #$A5
-                LDY #$33
-                JMP LINE
-
-MORE            USR (_MORE)
+; update power value in stats box
 
 UPOWER          JSR DOPOW
                 LDY #organic
@@ -534,7 +464,8 @@ ADDCONS         LDA (CHARDL),Y
                 STA (CHARDL),Y
                 DEY
                 STA (CHARDL),Y
-DOPOW           JSR POWROUT
+                ; fall through
+DOPOW           JSR ENERGY_TO_TEXT
                 LDX #6
                 LDA #$EE
 :LOOP1          STA TEXTBUF,X
@@ -542,9 +473,7 @@ DOPOW           JSR POWROUT
                 BPL :LOOP1
                 LDX CURSOR
                 LDY TYPOINTS,X
-                LDA #$F0
-                JMP LINE
+                LDX #$F0
+                JMP DRAW_TEXTBUF_XY
 
-TYPOINTS        DB  $7F,$87,$8F
-                DB  $97,$9F,$A7
-                DB  $AF,$B9
+;---------------------------------------

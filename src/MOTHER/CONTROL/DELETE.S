@@ -1,6 +1,6 @@
 
 ; - ask yes/no instead of A>CCEPT or R>EDO
-; - hide LEAVE will asking this
+; - hide LEAVE while asking this
 ; ? adjust panel size/location when < 6 in group
 
 
@@ -134,7 +134,7 @@ HAS_DELETES     JSR DRAW_PICT
                 BPL :1
                 BIT UNSTROB
                 CMP #"A"
-                BEQ WILLACC
+                BEQ DID_ACCEPT
                 CMP #"R"
                 BNE :1
                 JSR WHOS_RETURNING
@@ -147,9 +147,8 @@ WHOS_RETURNING  JSR DRAW_PICT
                 PictEnd
                 RTS
 
-WILLACC         JSR DELETE_MARKED
-                JSR ASK_OUT
-                ; JSR WRITE_OPEN    ;*** SAVE_GAME ? ***
+DID_ACCEPT      JSR ASK_OUT
+                JSR DELETE_MARKED
                 JMP DELCOM
 
 NO_DELETES      JSR ASK_OUT
@@ -281,18 +280,23 @@ DEL_YPNTS       DB  $7F,$87,$8F
                 DB  $97,$9F,$A7
                 DB  $AF,$B9
             fin
-
+;
+; Clear deleted characters from roster
+; Save roster state to disk
+; Remove deleted characters from group
+;
 DELETE_MARKED   LDX #0
 :1              STX COUNT
                 LDA DEL_TABLE,X
                 BPL :2
                 LDA LOC_TABLE,X
                 AND #$0F
-                JSR CLEAR_ROSTER_BIT
+                JSR CLEAR_ROSTER_LOC
 :2              LDX COUNT
                 INX
                 CPX GRPNUMB
                 BNE :1
+                JSR SAVE_GAMESTATE_MS
 
 ;               LDX GRPNUMB
                 DEX
@@ -318,24 +322,6 @@ DELETE_MARKED   LDX #0
 :7              LDX COUNT
                 DEX
                 BPL :3
-                RTS
-;
-; On entry:
-;   A: roster character index
-;
-; On exit:
-;   BNE true if bit allocated
-;
-CLEAR_ROSTER_BIT
-                LDX #0
-                CMP #8
-                AND #$07
-                BCC :1
-                INX
-:1              TAY
-                LDA ROSTER_BITS,X
-                AND MASK_TABLE,Y
-                STA ROSTER_BITS,X
                 RTS
 
 ;---------------------------------------

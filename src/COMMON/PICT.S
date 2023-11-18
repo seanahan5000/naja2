@@ -35,7 +35,9 @@ DRAW_PICT       ENT
                 LDY #1                  ; adjust for return address
 
 :DISPATCH       LDA (OP_PTR),Y
-                BMI :DONE
+                CMP #OpEnd
+                BEQ :DONE
+                BCS :ERROR
                 INY
                 ASL A
                 TAX
@@ -54,6 +56,7 @@ DRAW_PICT       ENT
                 INC OP_PTR_H
                 BCS :DISPATCH           ; always
 
+:ERROR          BRK
 :DONE           LDA OP_PTR_H
                 PHA
                 LDA OP_PTR
@@ -86,7 +89,10 @@ OP_TABLE        DW  OP_SET_COLOR
                 DW  OP_TEXT
                 DW  OP_TEXT_AT
                 DW  OP_TEXT_IN
+                DW  OP_TEXT_ROWS
                 DW  OP_TEXTBUF
+                DW  OP_TEXTBUF_X
+                DW  OP_TEXTBUF_XY
                 DW  OP_TEXTBUF_RET
                 DW  OP_IMAGE
                 DW  OP_IMAGE_FILL
@@ -162,6 +168,15 @@ OP_MOVE_TO      LDA (OP_PTR),Y
                 INY
                 STY OP_INDEX
                 TAY
+;
+; On entry:
+;   X: new horizontal position
+;   Y: new vertical position
+;
+; On exit:
+;   X: unchanged
+;   Y: unchanged
+;
 MOVE_TO         ENT
                 LDA DIV7,X
                 STA XCOORD
@@ -174,6 +189,14 @@ OP_VMOVE_TO     LDA (OP_PTR),Y
                 INY
                 STY OP_INDEX
                 TAY
+;
+; On entry:
+;   Y: new vertical position
+;
+; On exit:
+;   X: unchanged
+;   Y: unchanged
+;
 VMOVE_TO        ENT                     ; X must be unchanged
                 STY YCOORD
                 RTS
@@ -346,14 +369,12 @@ DO_RECT         LDX OP_COLOR
                 BCC :1
                 EOR TEMP_TOGGLE
 :1              STA TEMP_COLOR
-                AND #$80
-                EOR #$FF
-                STA AND_MASK
 
                 LDY LEFT_DIV7
                 CPY RIGHT_DIV7
-                BEQ THIN_RECT
-
+                BNE :2
+                JMP THIN_RECT
+:2
                 LDX TOP
 RECT_LOOP       STX TOP
                 LDA LOBYTES,X
@@ -368,10 +389,6 @@ RECT_LOOP       STX TOP
                 AND LEFT_MASKS,X
                 EOR TEMP_COLOR
                 STA (SCREENL),Y
-                LDA TEMP_COLOR
-                AND #$80
-                ORA BIT_TABLE,X
-                STA LEFT_MASK
 
                 LDA TEMP_COLOR
                 PHA
@@ -380,7 +397,7 @@ RECT_LOOP       STX TOP
                 CPY RIGHT_DIV7
                 BEQ :2
                 STA (SCREENL),Y
-                BNE :1              ; always
+                BNE :1                  ; always
 
 :2              STA TEMP_COLOR
                 LDX RIGHT_MOD7
@@ -389,11 +406,9 @@ RECT_LOOP       STX TOP
                 AND RIGHT_MASKS,X
                 EOR TEMP_COLOR
                 STA (SCREENL),Y
+
                 PLA
                 STA TEMP_COLOR
-                AND #$80
-                ORA BIT_TABLE,X
-                STA RIGHT_MASK
 
                 LDX TOP
                 CPX BOTTOM
@@ -404,26 +419,67 @@ RECT_LOOP       STX TOP
 FILLRECT_MOD    CLC
                 BCS RECT_LOOP
 
-:4              LDA LOBYTES,X
+OR_MASK_L       =   LEFT_MASK
+OR_MASK_R       =   RIGHT_MASK
+
+                LDA TEMP_COLOR
+                ASL
+                BNE :COLOR
+
+:BLACK          LDA #0
+                ROR
+                STA OR_MASK_L
+                STA OR_MASK_R
+
+                LDX LEFT_MOD7
+                LDA BIT_TABLE,X
+                ORA #$80
+                EOR #$FF
+                STA AND_MASK_L
+
+                LDX RIGHT_MOD7
+                LDA BIT_TABLE,X
+                ORA #$80
+                EOR #$FF
+                STA AND_MASK_R
+                BNE :1                  ; always
+
+:COLOR          LDA #0
+                ROR
+                TAY
+                LDX LEFT_MOD7
+                ORA BIT_TABLE,X
+                STA OR_MASK_L
+                TYA
+                LDX RIGHT_MOD7
+                ORA BIT_TABLE,X
+                STA OR_MASK_R
+
+                LDA #$7F
+                STA AND_MASK_L
+                STA AND_MASK_R
+
+:1              LDX TOP
+:2              LDA LOBYTES,X
                 STA SCREENL
                 LDA HIBYTES,X
                 STA SCREENH
 
                 LDY LEFT_DIV7
                 LDA (SCREENL),Y
-                AND AND_MASK
-                ORA LEFT_MASK
+                AND AND_MASK_L
+                ORA OR_MASK_L
                 STA (SCREENL),Y
 
                 LDY RIGHT_DIV7
                 LDA (SCREENL),Y
-                AND AND_MASK
-                ORA RIGHT_MASK
+                AND AND_MASK_R
+                ORA OR_MASK_R
                 STA (SCREENL),Y
 
                 INX
                 CPX BOTTOM
-                BNE :4
+                BNE :2
                 JMP RECT_LOOP       ; always
 
 THIN_RECT       LDX LEFT_MOD7
@@ -689,7 +745,7 @@ OP_SWAP         LDA (OP_PTR),Y
                 LDX TOP
                 CPX BOTTOM
                 BNE :INX_MOD
-                SAME_PAGE_AS :INX_MOD
+                ; SAME_PAGE_AS :INX_MOD
                 RTS
 
 ;-------------------------------------------------------------------------------
