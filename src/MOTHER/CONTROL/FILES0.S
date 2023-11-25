@@ -13,7 +13,7 @@ FILE_TABLE      DB  fileDeleteChar,        $0E,$00,$09
                 DB  fileInfirmary_Load,    $17,$00,$08
                 DB  fileInfirmary_Control, $17,$08,$00
                 DB  fileEnergy_Load,       $18,$08,$15
-                DB  fileEnergy_Control,    $19,$0D,$00
+                DB  fileEnergy_Control,    $19,$0D,$08
                 DB  fileArsenal_Load,      $1B,$00,$0E
                 DB  fileArsenal_Control,   $1B,$0E,$00
                 DB  fileRobotRep_Load,     $1F,$00,$0A

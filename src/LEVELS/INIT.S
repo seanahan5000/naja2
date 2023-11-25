@@ -48,7 +48,7 @@ CONTROL_BOOT    JSR INIT_RANDOM
 
                 LDA #0                  ; clear expedition totals
                 LDX #11                 ; assumes 4 bytes per field
-:1              STA KILLS,X
+:1              STA TOTAL_KILLS,X
                 DEX
                 BPL :1
 

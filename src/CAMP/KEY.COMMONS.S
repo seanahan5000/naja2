@@ -53,6 +53,8 @@ MENU_INIT		ENT						; was INIT_CURSOR
 				BNE	:1
 :2				LDX CURSOR
 				JSR	DOWN_SUB2
+                LDA #$18                ; CLC
+				STA CANCEL_MOD
 				LDX	#<DEFAULT_FILTER
 				LDY	#>DEFAULT_FILTER
 				; fall through
@@ -94,9 +96,16 @@ FILTER_MOD		JSR	$FFFF
 				JSR	CHECK_DOWN
 				BEQ	DOWN
 				JSR	CHECK_ENTER
+                BEQ ENTER
+CANCEL_MOD      CLC
+                BCC MENU_SELECT2
+				JSR CHECK_CANCEL
 				BNE	MENU_SELECT2
 				JSR	MENU_DRAW_CURSOR	; erase
+				CLC
+				RTS
 
+ENTER           JSR	MENU_DRAW_CURSOR	; erase
 				LDA CURSOR
 				ASL
 				TAX
@@ -106,7 +115,6 @@ JUMP_MOD		LDA $FFFF,X
 				INX
 				INY
 				BMI JUMP_MOD
-
 				SEC
 BLINK_OUT		LDX CURSOR
 				RTS
@@ -139,12 +147,19 @@ DOWN_SUB2		LDA	LEGALS,X
 				STX CURSOR
 				RTS
 
+; TODO: eventually move this into a flag in definition
+MENU_SET_CANCEL ENT
+                LDA #$38                ; SEC
+				STA CANCEL_MOD
+				RTS
+
 MENU_DRAW_CURSOR ENT
 				SEC
 BLINK_CURSOR	LDX CURSOR
 DCUR_MOD		JMP $FFFF
 
 ; DESTINATION							; legacy
-MENU_TARGET		JMP	$FFFF
+MENU_TARGET		ENT
+                JMP	$FFFF
 
 MAXIMUM			DB	0

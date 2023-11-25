@@ -1,133 +1,80 @@
-ENERGY_CENTER   LDA #$40
-                STA PAGE
-                LDX #$07
-MORBOXL         LDA LOBYTES,X
-                STA SCREENL
-                LDA HIBYTES,X
-                ORA #$40
-                STA SCREENH
-                LDY #$0C
-                LDA #$00
-MORBOXR         STA (SCREENL),Y
-                INY
-                CPY #$1D
-                BNE MORBOXR
-                INX
-                CPX #$18
-                BNE MORBOXL
-                LDY #$00
-                JSR TEXTER
-                LDA #$00
-                STA MAXTEXT
-                JSR INPUT2
-                LDA TEXTBUF
-                CMP #$9B
-                BNE NOTESCP
-                JSR CHAROUT
-                JSR MOVETO1
-                STA PRIMARY
-                JMP ENEXIT
-NOTESCP         CMP #TextLineEnd
-                BEQ RETURND
-                JSR CHAROUT
-RETURND         LDA #$20
-                STA PAGE
-                LDX #$78
-SLINES          LDA LOBYTES,X
-                STA SCREENL
-                LDA HIBYTES,X
-                ORA #$20
-                STA SCREENH
-                LDA #$6C
-                LDY #$00
-                STA (SCREENL),Y
-                LDY #$27
-                LDA #$1B
-                STA (SCREENL),Y
-                INX
-                CPX #$C0
-                BEQ SLOUT
-                CPX #$79
-                BNE SLINES
-                LDA #$1F
-                STA (SCREENL),Y
-                LDY #$00
-                LDA #$7C
-                STA (SCREENL),Y
-                JMP SLINES
-SLOUT           STA PRIMARY
-                JSR CLRTOP
-                LDA #$7F
-                STA COLOR
+; enter with page 1 visible
+
+ENERGY_CENTER   JSR DRAW_PICT
+                PictSetPage1
+                PictClear $0C;$07;$1D;$18
+                PictTextAt 87;8;"PLEASE STEP FORWARD"
+                PictTextAt 87;16;"INTO CUBICLE FIVE "
+                PictEnd
+
+                JSR GET_INPUT_KEY
+                CMP #$9B                ; escape
+                BNE :1
+                JSR DRAW_PICT
+                PictSetPage2
+                PictCopyToPage
+                PictShowPage
+                PictEnd
+                JMP LEAVE_ENERGY
+
+:1              JSR DRAW_PICT
+                PictSetPage2
+                PictShowPage
+                PictEnd
+
                 LDY #$06
                 LDA #$FF
-SETMORE         STA DOANYT,Y
+:2              STA DOANYT,Y
                 DEY
-                BPL SETMORE
+                BPL :2
+
                 LDA #$00
                 STA BCURSOR
-                STA PCURSOR
-MAIN1           LDA #$40
-                STA PAGE
-                JSR CLEAR2
+
+MAIN1           JSR DRAW_PICT
+                PictSetPage1
+                PictClearPage
+                PictEnd
+
                 LDA #$BB
                 STA BUYSELL
-                LDA #$20
-                STA PAGE
-                JSR GRPOUT
-                JSR GRPFADE
-REPEAT1         LDA #$20
-                STA PAGE
-                LDY #$01
-                JSR TEXTER
+                JSR DRAW_GROUP
+                JSR FADE_GROUP
+
+REPEAT1         JSR DRAW_PICT
+                PictSetPage2
+                PictTextAt 30;4;"WHO IS MAKING AN ENERGY TRANSACTION?"
+                PictTextAt 120;14;"L>EAVE"
+                PictEnd
                 JSR RESET_CHRLIST
                 LDY BCURSOR
-                LDA #"L"
                 JSR INPUT_SUB
+                PHP
+                JSR DRAW_PICT
+                PictClear 4;4;35;21
+                PictEnd
+                PLP
                 BCS NOLEAVE
                 JMP ENEROUT
 
 NOLEAVE         LDA CURSOR
                 STA BCURSOR
-                LDY #$01
-                JSR TEXTER
-                JSR RESET_CHLIST
-                JSR NCLEAR
-                JSR CROUT
-                JSR MOVE212
-                LDY #$02
-                JSR TEXTER
-                LDY PCURSOR
-                LDA #"C"
-                JSR INPUT_SUB
-                BCS NOCANCL
-                JSR MOVE212
-                LDY #$02
-                JSR TEXTER
-                JMP REPEAT1
 
-NOCANCL         LDA CURSOR
-                STA PCURSOR
-                LDY #$02
-                JSR TEXTER
-                JSR GRPFADE
-                LDA #$40
-                STA PAGE
-                JSR CLEAR2
-                LDY #$05
-                JSR TEXTER
-                LDA #$B4
-                STA PICLIN1+1
-                STA PICLIN2+1
-                LDY #$02
-                JSR LINER
-                LDA #$BE
-                STA PICLIN1+1
-                STA PICLIN2+1
-                LDY #$02
-                JSR LINER
-                LDA #$20
-                STA PAGE
+                JSR DRAW_PICT
+                PictSetPage1
+                PictCall FADE_GROUP
+                PictClearPage
+                PictTextAt 26;182;"<SPACE>-FINISH TRANSACTION     C>ANCEL"
+                PictCall DRAW_VLINS
+                PictEnd
+
+                LDY #$B4
+                JSR DRAW_HLIN
+                LDY #$BE
+                JSR DRAW_HLIN
+
+                JSR SET_PAGE2
+
                 LDA #$BF
                 STA ENDLINE
                 LDA #$B3
@@ -135,37 +82,31 @@ NOCANCL         LDA CURSOR
                 JSR GFADE2
                 LDA #$79
                 STA FADEMOD+1
-                LDY #$03
-                JSR TEXTER
-                LDA #$63
-                STA XPNT
-                LDA #$11
-                STA YPNT
-                LDA #$01
-                JSR SPCHARSX
-                LDA #$E1
-                STA XPNT
-                LDA #$11
-                STA YPNT
-                LDA #$02
-                JSR SPCHARSX
+
+                JSR DRAW_PICT
+                PictTextAt 40;0;"NAME"
+                PictTextAt 127;0;"ENERGY"
+                PictTextAt 211;0;"CREDITS"
+                PictTextAt 106;17;"100000"
+                PictTextAt 232;17;"1000"
+                PictEnd
+
+                LDX #$63
+                JSR DRAW_PLUS_MINUS
+                LDX #$E1
+                JSR DRAW_MINUS_PLUS
+
                 LDA BCURSOR
-                JSR POINTIT
-                LDY #$00
-                LDX #$00
-MORNAME         LDA (CHARDL),Y
-                STA TEXTBUF,X
-                INX
-                INY
-                CPX #$0A
-                BNE MORNAME
-                LDA #TextLineEnd
-                STA TEXTBUF,X
-                LDA #$16
+                JSR SET_CHAR
+                JSR CNAME_TO_TEXT
+                LDX #$16
                 LDY #$09
-                JSR LINE
-                LDY #$06
-                JSR TEXTER
+                JSR DRAW_TEXTBUF_XY
+
+                JSR DRAW_PICT
+                PictTextAt 92;75;"BUY"
+                PictEnd
+
                 JSR SETSUP
 KEYLOOP         LDA KEYBRD
                 BPL KEYLOOP
@@ -192,46 +133,50 @@ RIGHT           LDA ECURSOR
                 BVC NMATR
                 INC ECURSOR
                 BNE RIGNOR
-NMATR           JSR NUMCURS
+NMATR           JSR NUM_CURSOR
 RIGNOR          JMP KEYLOOP
 LEFT            LDA ECURSOR
                 CMP #$03
                 BEQ LIGNOR
                 INC ECURSOR
-                JSR NUMCURS
+                JSR NUM_CURSOR
 LIGNOR          JMP KEYLOOP
-ENTER           LDA PCURSOR
-                JSR POINTIT
-                LDY #$16
-                LDX #$03
-TOCRED          LDA CRCUR,X
-                STA (CHARDL),Y
-                DEY
+
+ENTER           LDX #3
+:1              LDA CRCUR,X
+                STA GROUP_CREDITS,X
                 DEX
-                BPL TOCRED
+                BPL :1
+                ; *** DIRTY STATE_MS ***
+
                 LDA BCURSOR
-                JSR POINTIT
-                LDY #$26
-                LDX #$02
-TOENER          LDA ENCUR,X
+                JSR SET_CHAR
+                LDY #energylev+2
+                LDX #2
+:2              LDA ENCUR,X
                 STA (CHARDL),Y
                 DEY
                 DEX
-                BPL TOENER
-                LDX PCURSOR
+                BPL :2
+                ; *** DIRTY MEMBER ***
+
                 LDA #$00
-                STA DOANYT,X
                 LDX BCURSOR
                 STA DOANYT,X
-CANHALF         JSR CLRTOP
+
+CANHALF         JSR DRAW_PICT
+                PictClear $03;$00;$25;$18
+                PictEnd
                 LDA BUYSELL
                 CMP #$BB
                 BNE SELERAS
-                LDY #$06
-                JSR TEXTER
+                JSR DRAW_PICT
+                PictTextAt 92;75;"BUY"
+                PictEnd
                 JMP GOMAIN1
-SELERAS         LDY #$07
-                JSR TEXTER
+SELERAS         JSR DRAW_PICT
+                PictTextAt 89;75;"SELL"
+                PictEnd
 GOMAIN1         LDA #$BF
                 STA ENDLINE
                 LDA #$B3
@@ -239,7 +184,9 @@ GOMAIN1         LDA #$BF
                 JSR GFADE2
                 LDA #$79
                 STA FADEMOD+1
+                ;*** force down to next member ***
                 JMP MAIN1
+
 WEEDUP          BIT BUYSELL
                 BVC GOUBUY
                 JMP UPSELL
@@ -248,6 +195,7 @@ WEEDWN          BIT BUYSELL
                 BVC GODBUY
                 JMP DNSELL
 GODBUY          JMP DNBUY
+
 UPBUY           LDA #$00
                 STA CHNFLAG
 LOOP1           LDY ECURSOR
@@ -268,8 +216,8 @@ SUBCR1          LDA CRCUR,X
                 BCC BADCOM1
                 JSR ADDSUB
                 LDA BCURSOR
-                JSR POINTIT
-                LDY #$29
+                JSR SET_CHAR
+                LDY #energymax+2
                 LDX #$02
                 SEC
 OVCAP           LDA ENTEMP,X
@@ -295,7 +243,7 @@ OVCAP           LDA ENTEMP,X
                 SBC #$00
                 CLD
                 BCS BADCOM1
-                LDY #$29
+                LDY #energymax+2
                 LDX #$02
 LEVLER          LDA (CHARDL),Y
                 STA ENTEMP,X
@@ -306,9 +254,10 @@ GOGCM1          JMP GOODCM1
 BADCOM1         LDA ECURSOR
                 BEQ GOKEYL
                 DEC ECURSOR
-                JSR NUMCURS
+                JSR NUM_CURSOR
                 JMP LOOP1
 GOKEYL          JMP KEYLOOP
+
 DNBUY           LDY ECURSOR
                 LDA CROFF1,Y
                 CLC
@@ -332,14 +281,15 @@ NOGOOD2         JSR ORIGIN
                 JSR NEWENER
                 LDA #$CC
                 STA BUYSELL
-                LDY #$06
-                JSR TEXTER
-                LDY #$07
-                JSR TEXTER
-                JSR NUMCURS
+                JSR DRAW_PICT
+                PictTextAt 92;75;"BUY"
+                PictTextAt 89;75;"SELL"
+                PictEnd
+                JSR NUM_CURSOR
                 JMP KEYLOOP
 GOODCM2         JSR NEWENER
                 JMP KEYLOOP
+
 UPSELL          LDY ECURSOR
                 LDA CROFF5,Y
                 CLC
@@ -363,14 +313,15 @@ NOGOOD3         JSR ORIGIN
                 JSR NEWENER
                 LDA #$BB
                 STA BUYSELL
-                LDY #$07
-                JSR TEXTER
-                LDY #$06
-                JSR TEXTER
-                JSR NUMCURS
+                JSR DRAW_PICT
+                PictTextAt 89;75;"SELL"
+                PictTextAt 92;75;"BUY"
+                PictEnd
+                JSR NUM_CURSOR
                 JMP KEYLOOP
 GOODCM3         JSR NEWENER
                 JMP KEYLOOP
+
 DNSELL          LDA #$00
                 STA CHNFLAG
 LOOP2           LDY ECURSOR
@@ -400,15 +351,16 @@ BADCOM2         LDA ECURSOR
                 CMP #$01
                 BEQ GOKEYL2
                 DEC ECURSOR
-                JSR NUMCURS
+                JSR NUM_CURSOR
                 JMP LOOP2
 GOKEYL2         JMP KEYLOOP
 GOODCM1         LDA CHNFLAG
                 BEQ NOCHNG
-                JSR NUMCURS
+                JSR NUM_CURSOR
                 JMP KEYLOOP
 NOCHNG          JSR NEWENER
                 JMP KEYLOOP
+
 ADDSUB          LDY ECURSOR
                 LDA ENOFF,Y
                 CLC
@@ -416,15 +368,16 @@ ADDSUB          LDY ECURSOR
                 TAY
                 LDX #$02
                 CLC
-ADDEN1          LDA ENCUR,X
+:1              LDA ENCUR,X
                 SED
                 ADC ENDATA,Y
                 STA ENTEMP,X
                 CLD
                 DEY
                 DEX
-                BPL ADDEN1
+                BPL :1
                 RTS
+
 SUBSUB          LDY ECURSOR
                 LDA ENOFF,Y
                 CLC
@@ -432,98 +385,92 @@ SUBSUB          LDY ECURSOR
                 TAY
                 LDX #$02
                 SEC
-SUBEN1          LDA ENCUR,X
+:1              LDA ENCUR,X
                 SED
                 SBC ENDATA,Y
                 STA ENTEMP,X
                 CLD
                 DEY
                 DEX
-                BPL SUBEN1
+                BPL :1
                 RTS
+
 LEVSUB          LDA BCURSOR
-                JSR POINTIT
-                LDY #$26
+                JSR SET_CHAR
+                LDY #energylev+2
                 LDX #$02
                 SEC
-UNDLEVL         LDA ENTEMP,X
+:1              LDA ENTEMP,X
                 SED
                 SBC (CHARDL),Y
                 STA ENTEMP2,X
                 CLD
                 DEY
                 DEX
-                BPL UNDLEVL
+                BPL :1
                 RTS
+
 ORIGIN          LDA BCURSOR
-                JSR POINTIT
-                LDY #$26
-                LDX #$02
-ORGLEVE         LDA (CHARDL),Y
+                JSR SET_CHAR
+                LDY #energylev+2
+                LDX #2
+:1              LDA (CHARDL),Y
                 STA ENTEMP,X
                 DEY
                 DEX
-                BPL ORGLEVE
-                LDY #$16
-                LDX #$03
-ORGLEVC         LDA (CHARDL),Y
+                BPL :1
+                LDX #3
+:2              LDA GROUP_CREDITS,X
                 STA CRTEMP,X
-                DEY
                 DEX
-                BPL ORGLEVC
+                BPL :2
                 RTS
+
+;*** save state (GROUP_CREDITS)
+;*** save group (those that charged)
+
 ENEROUT         LDY #$06
 ATINMOR         LDA DOANYT,Y
                 BEQ SOMTIN
                 DEY
                 BPL ATINMOR
-                JMP ENEXIT
+                JMP LEAVE_ENERGY
 SOMTIN          NOP                 ;**********
-ENEXIT          JSR CLEAR2
-                LDA #$05
-                STA XPOS
-                LDA #$09
-                STA YPOS
-                LDA #$0F
-                STA DIRECTN
-                JSR GETNSEW
-                LDA #WHITE1
-                STA COLOR
-                LDA #$40
-                STA PAGE
-                JSR NOSCAN
-                STA SCNDARY
-                JSR MOVETO1
-                STA PRIMARY
-                LDA #$20
-                STA PAGE
-                JMP RDKEY
-SETSUP          LDA PCURSOR
-                JSR POINTIT
-                LDY #$16
-                LDX #$03
-MLOOP1          LDA (CHARDL),Y
+
+LEAVE_ENERGY    JSR DRAW_PICT
+                PictSetPage1
+                PictClearPage
+                PictCall DRAW_HALL
+                PictShowPage
+                PictEnd
+                SEC
+                RTS
+
+SETSUP          LDX #3
+:1              LDA GROUP_CREDITS,X
                 STA CRTEMP,X
-                DEY
                 DEX
-                BPL MLOOP1
+                BPL :1
+
                 LDA BCURSOR
-                JSR POINTIT
-                LDY #$26
-                LDX #$02
-MLOOP2          LDA (CHARDL),Y
+                JSR SET_CHAR
+                LDY #energylev+2
+                LDX #2
+:2              LDA (CHARDL),Y
                 STA ENTEMP,X
                 DEY
                 DEX
-                BPL MLOOP2
+                BPL :2
+
                 JSR ECSHRED
                 JSR NTSUB
+
                 LDX #$00
 YETZERO         LDA CTSPLIT,X
                 BNE ALASTZ
                 CPX #$07
                 BEQ ALASTZ
-                LDA #$0A
+                LDA #TextSpace
                 STA TEXTBUF,X
                 INX
                 JMP YETZERO
@@ -534,13 +481,14 @@ ALASTZ          STA TEXTBUF,X
                 BNE LASTZ
                 LDA #TextLineEnd
                 STA TEXTBUF,X
-                LDA #$D0
+
+                LDX #$D0
                 LDY #$09
-                JSR LINE
-                JSR POWROUT
-                LDA #$6A
+                JSR DRAW_TEXTBUF_XY
+                JSR ENERGY_TO_TEXT
+                LDX #$6A
                 LDY #$09
-                JSR LINE
+                JSR DRAW_TEXTBUF_XY
                 LDA #$63
                 STA OPMX
                 LDA #$E1
@@ -553,269 +501,165 @@ STLOOP          LDA STARTUM,X
                 LDA #$03
                 STA ECURSOR
                 RTS
-STARTUM         DB  $01,$00,$00
-                DB  $00
+
+STARTUM         DB  $01,$00,$00,$00
                 DB  $01,$00,$00
                 DB  $00,$00,$00
+
 NEWENER         JSR ECSHRED
                 LDX #$05
 ASERASE         LDA ECSPLIT,X
                 CMP ETSPLIT,X
                 BNE NOSAME1
-                LDA #$0A
+                LDA #TextSpace
 NOSAME1         STA TEXTBUF,X
                 DEX
                 BPL ASERASE
                 LDA #TextLineEnd
                 STA TEXTBUF+6
-                LDA #$6A
+                LDX #$6A
                 LDY #$09
-                JSR LINE
+                JSR DRAW_TEXTBUF_XY
                 LDX #$05
 ASDRAW          LDA ETSPLIT,X
                 CMP ECSPLIT,X
                 BNE NOSAME2
-                LDA #$0A
+                LDA #TextSpace
 NOSAME2         STA TEXTBUF,X
                 DEX
                 BPL ASDRAW
-                LDA #$6A
+                LDX #$6A
                 LDY #$09
-                JSR LINE
+                JSR DRAW_TEXTBUF_XY
                 LDX #$07
 BSERASE         LDA CCSPLIT,X
                 CMP CTSPLIT,X
                 BNE NOSAME3
-                LDA #$0A
+                LDA #TextSpace
 NOSAME3         STA TEXTBUF,X
                 DEX
                 BPL BSERASE
                 LDA #TextLineEnd
                 STA TEXTBUF+8
-                LDA #$D0
+                LDX #$D0
                 LDY #$09
-                JSR LINE
+                JSR DRAW_TEXTBUF_XY
                 LDX #$07
 BSDRAW          LDA CTSPLIT,X
                 CMP CCSPLIT,X
                 BNE NOSAME4
-                LDA #$0A
+                LDA #TextSpace
 NOSAME4         STA TEXTBUF,X
                 DEX
                 BPL BSDRAW
-                LDA #$D0
+                LDX #$D0
                 LDY #$09
-                JSR LINE
+                JSR DRAW_TEXTBUF_XY
 NTSUB           LDX #$08
-NTOLD1          LDA ENTEMP,X
+:1              LDA ENTEMP,X
                 STA ENCUR,X
                 DEX
-                BPL NTOLD1
+                BPL :1
                 LDX #$0B
-NTOLD2          LDA CRTEMP,X
+:2              LDA CRTEMP,X
                 STA CRCUR,X
                 DEX
-                BPL NTOLD2
+                BPL :2
                 RTS
 
 ECSHRED         LDX #$00
                 LDY #$00
-MORLEVL         LDA ENTEMP,Y
-                JSR SPLIT
-                LDA FEEDERH
+:1              LDA ENTEMP,Y
+                PHA
+                LSR
+                LSR
+                LSR
+                LSR
                 STA ETSPLIT,X
                 INX
-                LDA FEEDERL
+                PLA
+                AND #$0F
                 STA ETSPLIT,X
                 INX
                 INY
                 CPX #$06
-                BNE MORLEVL
+                BNE :1
+
                 LDX #$00
                 LDY #$00
-MORECRD         LDA CRTEMP,Y
-                JSR SPLIT
-                LDA FEEDERH
+:2              LDA CRTEMP,Y
+                PHA
+                LSR
+                LSR
+                LSR
+                LSR
                 STA CTSPLIT,X
                 INX
-                LDA FEEDERL
+                PLA
+                AND #$0F
                 STA CTSPLIT,X
                 INX
                 INY
                 CPX #$08
-                BNE MORECRD
+                BNE :2
+
                 LDX #$00
-SPLEVL          LDA ETSPLIT,X
-                BNE DOSPCRD
-                LDA #$0A
+:3              LDA ETSPLIT,X
+                BNE :4
+                LDA #TextSpace
                 STA ETSPLIT,X
                 INX
                 CPX #$05
-                BNE SPLEVL
-DOSPCRD         LDX #$00
-SPCRED          LDA CTSPLIT,X
-                BNE SHROUT
-                LDA #$0A
+                BNE :3
+:4
+                LDX #$00
+:5              LDA CTSPLIT,X
+                BNE :6
+                LDA #TextSpace
                 STA CTSPLIT,X
                 INX
                 CPX #$07
-                BNE SPCRED
-SHROUT          RTS
+                BNE :5
+:6              RTS
 
-DOANYT          DB  $FF,$FF,$FF
-                DB  $FF,$FF,$FF
-                DB  $FF
+DRAW_GROUP      LDY #124
+                JSR VMOVE_TO
+                JSR DRAW_STATS
 
-CROUT           LDA #$40
-                STA PAGE
-                LDY #$04
-                JSR TEXTER
-                LDA #$6E
-                STA XPNT
-                LDA #$00
-                STA COUNT
-:LOOP1          JSR POINTIT
-                LDY COUNT
-                LDA YPNT2,Y
-                STA YPNT
-                LDY #profrace
-                LDA (CHARDL),Y
-                BMI :SKIPA
-                JSR CHAR_CREDOUT
-:SKIPA          JSR PROFNAM
-                LDA #$10
-                LDY YPNT
-                JSR LINE
-                INC COUNT
-                LDA COUNT
-                CMP GRPNUMB
-                BNE :LOOP1
-                LDA #$20
-                STA PAGE
+                JSR DRAW_PICT
+                PictSetWhite1
+                PictMoveTo $05;$7A
+                PictLineTo $112;$7A
+                PictMoveTo $05;$84
+                PictLineTo $112;$84
+                PictCall DRAW_VLINS
+                PictEnd
+                LDX GRPNUMB
+                LDY ENERGY_YPNTS,X
+                ; fall through
+
+DRAW_HLIN       JSR VMOVE_TO
+                JSR DRAW_PICT
+                PictHMoveTo $05
+                PictHLineTo $112
+                PictEnd
                 RTS
 
-YPNT2           DB  $0D,$15,$1D
-                DB  $25,$2D,$35
-                DB  $3D,$45
-
-CLRTOP          LDA #$00
-                STA BEGLINE
-                LDA #$17
-                STA ENDLINE
-                LDA #$03
-                STA BEGROW
-                LDA #$24
-                STA ENDROW
-                LDA #$20
-                STA PAGE
-                LDA BEGLINE
-                STA LINENUM
-CLEARER         LDX LINENUM
-                LDA LOBYTES,X
-                STA SCREENL
-                LDA HIBYTES,X
-                ORA PAGE
-                STA SCREENH
-                LDY BEGROW
-                DEY
-                LDA #$00
-CLRMORE         INY
-                STA (SCREENL),Y
-                CPY ENDROW
-                BNE CLRMORE
-                LDA LINENUM
-                INC LINENUM
-                CMP ENDLINE
-                BNE CLEARER
+DRAW_VLINS      JSR DRAW_PICT
+                PictSetWhite1
+                PictMoveTo $02;$79
+                PictLineTo $02;$BF
+                PictMoveTo $03;$79
+                PictLineTo $03;$BF
+                PictMoveTo $115;$79
+                PictLineTo $115;$BF
+                PictMoveTo $114;$79
+                PictLineTo $114;$BF
+                PictEnd
                 RTS
 
-GRPOUT          LDA #$40
-                STA PAGE
-                LDA #$42
-                STA SELECT
-                LDA #$7C
-                STA YPNT
-                JSR HEADER
-                LDA #$01
-                STA MEMBNUM
-MORMEMB         JSR STATOUT
-                LDA MEMBNUM
-                INC MEMBNUM
-                CMP GRPNUMB
-                BNE MORMEMB
-                LDY GRPNUMB
-                LDA EYPOINTS,Y
-                STA PICLIN1+1
-                STA PICLIN2+1
-                LDY #$00
-                JMP LINER
-
-MOVE212         LDY GRPNUMB
-                LDA EYPOINTS,Y
-                STA ENDLINE
-                INC ENDLINE
-                LDA #$79
-                STA LINUM1
-                LDA #$00
-                STA LINUM2
-MORMOVE         LDX LINUM2
-                LDA LOBYTES,X
-                STA SCREENL
-                LDA HIBYTES,X
-                ORA #$40
-                STA SCREENH
-                LDX LINUM1
-                LDA LOBYTES,X
-                STA DESTINL
-                LDA HIBYTES,X
-                ORA #$20
-                STA DESTINH
-                LDY #$27
-MORSWIT         LDA (SCREENL),Y
-                TAX
-                LDA (DESTINL),Y
-                STA (SCREENL),Y
-                TXA
-                STA (DESTINL),Y
-                DEY
-                BPL MORSWIT
-                INC LINUM2
-                LDA LINUM1
-                INC LINUM1
-                CMP ENDLINE
-                BNE MORMOVE
-                RTS
-
-NCLEAR          LDY GRPNUMB
-                LDA YPNT2,Y
-                STA ENDLINE
-                LDA #$00
-                STA LINENUM
-GOMORE1         LDX LINENUM
-                LDA LOBYTES,X
-                STA DESTINL
-                LDA HIBYTES,X
-                ORA #$40
-                STA DESTINH
-                LDY #$27
-                LDA #$00
-GOMORE2         STA (DESTINL),Y
-                DEY
-                BPL GOMORE2
-                LDA LINENUM
-                INC LINENUM
-                CMP ENDLINE
-                BNE GOMORE1
-                LDA ENDLINE
-                STA PICLIN3+1
-                STA PICLIN4+1
-                LDA #$40
-                STA PAGE
-                LDY #$01
-                JMP LINER
-
-GRPFADE         LDY GRPNUMB
-                LDA EYPOINTS,Y
+FADE_GROUP      LDY GRPNUMB
+                LDA ENERGY_YPNTS,Y
                 STA ENDLINE
                 INC ENDLINE
 GFADE2          LDA #$00
@@ -833,7 +677,6 @@ FADER1          LDA START
                 STA SCREENL
                 STA DESTINL
                 LDA HIBYTES,X
-                ORA #$40
                 STA SCREENH
                 EOR #$60
                 STA DESTINH
@@ -866,31 +709,26 @@ NORESET         LDA LINENUM
                 CMP #$08
                 BNE FADER0
                 RTS
-STATOUT         LDA #$42
-                STA SELECT
-                LDY MEMBNUM
-                DEY
-                LDA EYPOINTS,Y
-                STA YPNT
-                TYA
-                JMP STATLIN
 
-EYPOINTS        DB  $86,$8E,$96
-                DB  $9E,$A6,$AE
-                DB  $B6,$BE
+ENERGY_YPNTS    DB  135,144,153
+                DB  162,171,180
+                DB  189,198
 
-NUMCURS         LDA BUYSELL
+;-----------------------------------------------------------
+
+NUM_CURSOR      LDA BUYSELL
                 CMP #$BB
-                BEQ NUMCUR2
+                BEQ :1
                 LDA ECURSOR
-                BNE NUMCUR2
+                BNE :1
                 INC ECURSOR
-NUMCUR2         LDX #$09
-                LDA #$0A
-SPACIT          STA CRNEW,X
+:1              LDX #$09
+                LDA #TextSpace
+:2              STA CRNEW,X
                 DEX
-                BPL SPACIT
-                LDA #$03
+                BPL :2
+
+NUM_ENERGY      LDA #$03
                 SEC
                 SBC ECURSOR
                 TAX
@@ -899,136 +737,128 @@ SPACIT          STA CRNEW,X
                 STA ECNEW,X
                 INX
                 LDA #$00
-MAKENUM         STA ECNEW,X
+:3              STA ECNEW,X
                 INX
                 CPX #$06
-                BNE MAKENUM
+                BNE :3
                 LDA PMXS,Y
                 STA NPMX
                 LDA #TextLineEnd
                 STA TEXTBUF+6
                 LDX #$05
-SERASE          LDA ECOLD,X
+:4              LDA ECOLD,X
                 CMP ECNEW,X
-                BNE NOTEQ
-                LDA #$0A
-NOTEQ           STA TEXTBUF,X
+                BNE :5
+                LDA #TextSpace
+:5              STA TEXTBUF,X
                 DEX
-                BPL SERASE
-                LDA #$6A
+                BPL :4
+
+                LDX #$6A
                 LDY #$11
-                JSR LINE
-                LDA OPMX
-                STA XPNT
-                LDA #$11
-                STA YPNT
-                LDA #$01
-                JSR SPCHARSX
+                JSR DRAW_TEXTBUF_XY
+                LDX OPMX
+                JSR DRAW_PLUS_MINUS
+
                 LDX #$05
-SDRAW           LDA ECNEW,X
+:6              LDA ECNEW,X
                 CMP ECOLD,X
-                BNE NOTEQ2
-                LDA #$0A
-NOTEQ2          STA TEXTBUF,X
+                BNE :7
+                LDA #TextSpace
+:7              STA TEXTBUF,X
                 DEX
-                BPL SDRAW
-                LDA #$6A
+                BPL :6
+
+                LDX #$6A
                 LDY #$11
-                JSR LINE
-                LDA NPMX
-                STA XPNT
-                LDA #$11
-                STA YPNT
-                LDA #$01
-                JSR SPCHARSX
-                LDA #$03
+                JSR DRAW_TEXTBUF_XY
+                LDX NPMX
+                JSR DRAW_PLUS_MINUS
+
+NUM_CREDS       LDA #$03
                 SEC
                 SBC ECURSOR
                 TAX
                 TAY
                 LDA BUYSELL
                 CMP #$BB
-                BEQ BUYER2
+                BEQ :1
                 INY
                 INX
                 LDA #$05
-                BNE BSCOMN
-BUYER2          LDA #$01
-BSCOMN          STA CRNEW,X
+                BNE :2
+:1              LDA #$01
+:2              STA CRNEW,X
                 CPX #$03
-                BEQ NOMAKE
+                BEQ :4
                 INX
                 LDA #$00
-MAKEN2          STA CRNEW,X
+:3              STA CRNEW,X
                 INX
                 CPX #$04
-                BNE MAKEN2
-NOMAKE          LDA MPXS,Y
+                BNE :3
+:4              LDA MPXS,Y
                 STA NMPX
                 LDA #TextLineEnd
                 STA TEXTBUF+4
                 LDX #$03
-SERASE2         LDA CROLD,X
+:5              LDA CROLD,X
                 CMP CRNEW,X
-                BNE NOTQU
-                LDA #$0A
-NOTQU           STA TEXTBUF,X
+                BNE :6
+                LDA #TextSpace
+:6              STA TEXTBUF,X
                 DEX
-                BPL SERASE2
-                LDA #$E8
+                BPL :5
+
+                LDX #$E8
                 LDY #$11
-                JSR LINE
-                LDA OMPX
-                STA XPNT
-                LDA #$11
-                STA YPNT
-                LDA #$02
-                JSR SPCHARSX
+                JSR DRAW_TEXTBUF_XY
+                LDX OMPX
+                JSR DRAW_MINUS_PLUS
+
                 LDX #$03
-SDRAW2          LDA CRNEW,X
+:7              LDA CRNEW,X
                 CMP CROLD,X
-                BNE NOTQU2
-                LDA #$0A
-NOTQU2          STA TEXTBUF,X
+                BNE :8
+                LDA #TextSpace
+:8              STA TEXTBUF,X
                 DEX
-                BPL SDRAW2
-                LDA #$E8
+                BPL :7
+
+                LDX #$E8
                 LDY #$11
-                JSR LINE
-                LDA NMPX
-                STA XPNT
-                LDA #$11
-                STA YPNT
-                LDA #$02
-                JSR SPCHARSX
+                JSR DRAW_TEXTBUF_XY
+                LDX NMPX
+                JSR DRAW_MINUS_PLUS
+
                 LDA NMPX
                 STA OMPX
                 LDA NPMX
                 STA OPMX
                 LDX #$09
-NEWOLD          LDA CRNEW,X
+:9              LDA CRNEW,X
                 STA CROLD,X
                 DEX
-                BPL NEWOLD
+                BPL :9
                 RTS
 
 MPXS            DB  $E1,$E7,$ED,$F3
 PMXS            DB  $63,$69,$6F,$75
 
-*-------------------------------
-*
-*-------------------------------
+;-----------------------------------------------------------
 
 INPUT_SUB       STY :CDEF+1
+                LDA #"L"
                 STA :MOD1+1
                 LDX #<:CDEF
                 LDY #>:CDEF
-                JSR INIT_CURSOR
-                LDX #<:INTER
-                LDY #>:INTER
-                STX INTERCEPT+1
-                STY INTERCEPT+2
-                JMP GETKEY
+                JSR MENU_INIT
+                JSR MENU_SET_CANCEL
+                ; LDX #<:INTER
+                ; LDY #>:INTER
+                ; STX INTERCEPT+1
+                ; STY INTERCEPT+2
+                JMP MENU_SELECT
 
 :INTER          CMP #$9B            ;Escape
                 BNE :MOD1
@@ -1039,153 +869,63 @@ INPUT_SUB       STY :CDEF+1
                 CLC
 :EXIT           RTS
 
-*-------------------------------
-:CDEF           DB  $06
+:CDEF           DB  $08
                 DB  $00
-                DW  GCURSIT
-*-------------------------------
+                DW  :CURSOR
 
-GCURSIT         LDY CURSOR
-                LDA EYPOINTS,Y
-                STA YPNT
-                LDA #$0A
-                STA XPNT
-                LDA #$2C
-                STA TEXTBUF
-                LDA #TextLineEnd
-                STA TEXTBUF+1
-                LDA #$05
-                LDY YPNT
-                JSR LINE
-                LDA #0
-SPCHARSX        LDX #<SPDATA
-                LDY #>SPDATA
-                JMP DRAW_SHAPES
+:CURSOR         LDY ENERGY_YPNTS,X
+                ; LDX #10
+                LDX #5
+                JMP DRAW_ARROW
 
-SPDATA          DB  $00,$03,$06
-                DB  $1F,$06,$03
-                DB  $00
-                DB  $0C,$0C,$3F
-                DB  $0C,$0C,$00
-                DB  $3F
-                DB  $3F,$00,$0C
-                DB  $0C,$3F,$0C
-                DB  $0C
+;-----------------------------------------------------------
 
-TEXTER          TYA
-                ASL
-                TAX
-                LDA TEXTS,X
-                STA POINTL
-                LDA TEXTS+1,X
-                STA POINTH
-                JMP TEXTOUT
+DRAW_PLUS_MINUS LDY #$11
+                JSR MOVE_TO
+                LDX #<:PLUS_MINUS
+                LDY #>:PLUS_MINUS
+                JMP DRAW_TILE
 
-TEXTS           DW  PSTEP
-                DW  WHOTRAN
-                DW  WHOCRED
-                DW  LABELS
-                DW  PRFCRED
-                DW  BOTOPTS
-                DW  BUYTEXT
-                DW  SELTEXT
+:PLUS_MINUS     DB  %00001100
+                DB  %00001100
+                DB  %00111111
+                DB  %00001100
+                DB  %00001100
+                DB  %00000000
+                DB  %00111111
 
-PSTEP           PLOTAT  87;8;(PLEASE_STEP_FORWARD)
-                PLOTAT  87;16;(INTO_CUBICLE_FIVE_)+
+DRAW_MINUS_PLUS LDY #$11
+                JSR MOVE_TO
+                LDX #<:MINUS_PLUS
+                LDY #>:MINUS_PLUS
+                JMP DRAW_TILE
 
-WHOTRAN         PLOTAT  30;4;(WHO_IS_MAKING_AN_ENERGY_TRANSACTION?)
-                PLOTAT  120;14;(L>EAVE)+
+:MINUS_PLUS     DB  %00111111
+                DB  %00000000
+                DB  %00001100
+                DB  %00001100
+                DB  %00111111
+                DB  %00001100
+                DB  %00001100
 
-WHOCRED         PLOTAT  60;4;(WHOSE_CREDITS_WILL_BE_USED?)
-                PLOTAT  120;14;(C>ANCEL)+
+;-----------------------------------------------------------
 
-PRFCRED         PLOTAT  14;3;(PROF)
-                PLOTAT  58;3;(NAME)
-                PLOTAT  114;3;(CREDITS)+
-
-LABELS          PLOTAT  40;0;(NAME)
-                PLOTAT  127;0;(ENERGY)
-                PLOTAT  211;0;(CREDITS)
-                PLOTAT  106;17;(100000)
-                PLOTAT  232;17;(1000)+
-
-BOTOPTS         PLOTAT  26;182;(<SPACE>-FINISH_TRANSACTION_____C>ANCEL)+
-
-BUYTEXT         PLOTAT  92;75;(BUY)+
-
-SELTEXT         PLOTAT  89;75;(SELL)+
-
-LINER           TYA
-                ASL
-                TAY
-                LDA LINES,Y
-                STA POINTL
-                LDA LINES+1,Y
-                STA POINTH
-                JMP LINEOUT
-
-LINES           DW  PLINE1A
-                DW  PLINE2
-                DW  PLINE1B
-
-PLINE1A         DB  $00,$05,$7A
-                DB  $01,$12,$7A
-                DB  $FE,$00,$05
-                DB  $84,$01,$12
-                DB  $84,$FE
-PLINE1B         DB  $00
-PICLIN1         DB  $05,$EE,$01
-PICLIN2         DB  $12,$EE,$FE
-                DB  $00,$02,$BF
-                DB  $00,$02,$79
-                DB  $FE,$00,$03
-                DB  $BF,$00,$03
-                DB  $79,$FE,$01
-                DB  $15,$BF,$01
-                DB  $15,$79,$FE
-                DB  $01,$14,$BF
-                DB  $01,$14,$79
-                DB  $FF
-PLINE2          DB  $00,$05,$01
-                DB  $01,$12,$01
-                DB  $FE,$00,$05
-                DB  $0B,$01,$12
-                DB  $0B,$FE,$00
-PICLIN3         DB  $05,$EE,$01
-PICLIN4         DB  $12,$EE,$FE
-                DB  $00,$02,$00
-                DB  $00,$02,$46
-                DB  $FE,$00,$03
-                DB  $00,$00,$03
-                DB  $46,$FE,$01
-                DB  $15,$00,$01
-                DB  $15,$46,$FE
-                DB  $01,$14,$00
-                DB  $01,$14,$46
-                DB  $FF
-ENOFF           DB  $00,$03,$06
-                DB  $09
+ENOFF           DB  $00,$03,$06,$09
 ENDATA          DB  $00,$01,$00
                 DB  $00,$10,$00
                 DB  $01,$00,$00
                 DB  $10,$00,$00
-CROFF1          DB  $00,$04,$08
-                DB  $0C
-CRDATA1         DB  $00,$00,$00
-                DB  $01
-                DB  $00,$00,$00
-                DB  $10
-                DB  $00,$00,$01
-                DB  $00
-                DB  $00,$00,$10
-                DB  $00
-CROFF5          DB  $00,$04,$08
-                DB  $0C
-CRDATA5         DB  $00,$00,$00
-                DB  $00
-                DB  $00,$00,$00
-                DB  $05
-                DB  $00,$00,$00
-                DB  $50
-                DB  $00,$00,$05
-                DB  $00
+
+CROFF1          DB  $00,$04,$08,$0C
+CRDATA1         DB  $00,$00,$00,$01
+                DB  $00,$00,$00,$10
+                DB  $00,$00,$01,$00
+                DB  $00,$00,$10,$00
+
+CROFF5          DB  $00,$04,$08,$0C
+CRDATA5         DB  $00,$00,$00,$00
+                DB  $00,$00,$00,$05
+                DB  $00,$00,$00,$50
+                DB  $00,$00,$05,$00
+
+;-----------------------------------------------------------

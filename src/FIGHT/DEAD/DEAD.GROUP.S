@@ -447,7 +447,7 @@ SHOW_STATS      JSR DRAW_PICT
                 PictTextbufRet
                 PictCall CEXP_TO_TEXT
                 PictTextbufRet
-                PictCall CLEVEL_TO_TEXT
+                PictCall CLEV_TO_TEXT_L
                 PictTextbufRet
                 PictTextAt 116;75;"MISSING AND"
                 PictTextAt 130;101;"<SPACE>"

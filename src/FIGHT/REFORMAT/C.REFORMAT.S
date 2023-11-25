@@ -53,7 +53,7 @@ REFORMAT
 				JSR BUILD_GRID25
 				JSR SORT_GRID25
 
-				JSR	DRAW_GRID
+				JSR	DRAW_GRID_OLD
 				JSR DRAW_STATS_BOX
 
 MLOOP			LDX	#$00
@@ -584,7 +584,7 @@ DRAW_SEL_DEST	JSR DRAW_PICT
 				RTS
 
 ; TODO: phase this out
-DRAW_GRID       JSR DRAW_PICT
+DRAW_GRID_OLD   JSR DRAW_PICT
                 PictSetGreen
                 PictRect $07;$47;$55;$B7
                 PictMoveTo $07;$7F
@@ -629,3 +629,28 @@ DRAW_GRID       JSR DRAW_PICT
                 JSR NEXT_CHAR
                 BCC :4
                 RTS
+
+DRAW_BACK_ARROW ENT
+                JSR MOVE_TO
+                LDX #<:BACK_HEAD
+                LDY #>:BACK_HEAD
+                JSR DRAW_TILE
+                LDX #<:FONT_DASH
+                LDY #>:FONT_DASH
+                JMP DRAW_TILE
+
+:BACK_HEAD      DB  %00000000
+                DB  %00011000
+                DB  %00001100
+                DB  %01111111
+                DB  %00001100
+                DB  %00011000
+                DB  %00000000
+
+:FONT_DASH      DB  %00000000       ; -
+                DB  %00000000
+                DB  %00000000
+                DB  %00011111
+                DB  %00000000
+                DB  %00000000
+                DB  %00000000

@@ -6,6 +6,8 @@
     { "fileName": "TITLE.LST",     "bins": [{ "fileName": "TITLE.PAGE", "loadAt": "0x6000", "enabled": false }]},
     { "fileName": "INIT.LST",      "bins": [{ "fileName": "INIT",       "loadAt": "0xAF00", "enabled": true }]},
 
+    { "fileName": "COMMON.LST",    "bins": [{ "fileName": "COMMON",     "loadAt": "0x0800" }]},
+    { "fileName": "HALLS.LST",     "bins": [{ "fileName": "HALLS",      "loadAt": "0x6000" }]},
     { "fileName": "CONTROLMS.LST", "bins": [{ "fileName": "CONTROLMS",  "loadAt": "0x7800", "enabled": true }]},
     { "fileName": "ENTEST.LST" },
     { "fileName": "GROUP.LST" },
@@ -25,8 +27,6 @@
       { "fileName": "CAMP.D000.M2", "loadAt": "0xD000", "bank": 2 },
       { "fileName": "CAMP.E000",    "loadAt": "0xE000" }
     ]},
-    { "fileName": "HALLS.LST",    "bins": [{ "fileName": "HALLS",    "loadAt": "0x6000" }]},
-    { "fileName": "COMMON.LST",   "bins": [{ "fileName": "COMMON",   "loadAt": "0x0800" }]},
     { "fileName": "NDOS.LST", "bins": [
       { "fileName": "NDOS.525", "loadAt": "0x0400" },
       { "fileName": "NDOS.1E00", "loadAt": "0x1E00" }
@@ -141,8 +141,8 @@
           { "name": "energymax",     "offset": 39, "typeName": "3-bytes" },
           { "name": "powerconsumpt", "offset": 42, "typeName": "2-bytes" },
 
-          { "name": "disklocation",  "offset": 45 },
-          { "name": "robotcyblink",  "offset": 46 },
+          { "name": "rosterLocation","offset": 45 },
+          { "name": "roboCyberLink", "offset": 46 },
           { "name": "powerfraction", "offset": 47, "typeName": "2-bytes" },
           { "name": "basepowercons", "offset": 49, "typeName": "2-bytes" },
           { "name": "baseshielding", "offset": 51, "typeName": "2-bytes" },

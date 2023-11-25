@@ -163,16 +163,17 @@ ORBS_FOUND                      ; TODO: get rid of this
 KEYS_FOUND      DS  1
 KEY_DOOR_BITS   DS  1           ; a000bbbb - a open status, b order bits
 
-                DS  7
+                DS  3
+GROUP_CREDITS   DS  4
 
 ROSTER_BITS     DS  2           ; bitmap character slots filled in roster
 
 ; TODO: Since these are only valid while in TRACC,
 ;   consider moving to CAMP and/or ZPAGE.
 
-KILLS           DS  4           ; expedition totals (assumed sequential)
-CREDITS         DS  4
-EXPERIENCE      DS  4
+TOTAL_KILLS     DS  4           ; expedition totals (assumed sequential)
+TOTAL_CREDITS   DS  4
+TOTAL_EXP       DS  4
 
 LOST_CHARS      DS  1           ; $BCFD ; NOTE: not correctly being tracked anymore
 GRPCONT         DS  1           ; $BCFE ; number of characters, including dead/compressed

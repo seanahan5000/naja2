@@ -27,23 +27,6 @@ DRAW_ARROW      ENT
                 DB  %00000011
                 DB  %00000000
 
-DRAW_BACK_ARROW ENT
-                JSR MOVE_TO
-                LDX #<:BACK_HEAD
-                LDY #>:BACK_HEAD
-                JSR DRAW_TILE
-                LDX #<FONT_DASH
-                LDY #>FONT_DASH
-                JMP DRAW_TILE
-
-:BACK_HEAD      DB  %00000000
-                DB  %00011000
-                DB  %00001100
-                DB  %01111111
-                DB  %00001100
-                DB  %00011000
-                DB  %00000000
-
 DRAW_MARKER     ENT
                 JSR MOVE_TO
 DRAW_MARKER_TILE ENT

@@ -36,16 +36,18 @@ ORBS_FOUND                      ; TODO: get rid of this
 KEYS_FOUND      DB  0
 KEY_DOOR_BITS   DB  0
 
-                DS  7
+                DS  3
+
+GROUP_CREDITS   HEX 00010000
 
 ROSTER_BITS     DB  %00111001,%10000011 ; see TEST.ROSTER.S for indexes
 
 ; TODO: Since these are only valid while in TRACC,
 ;   consider moving to CAMP and/or ZPAGE.
 
-KILLS           DS  4
-CREDITS         DS  4
-EXPERIENCE      DS  4
+TOTAL_KILLS     DS  4
+TOTAL_CREDITS   DS  4
+TOTAL_EXP       DS  4
 
 LOST_CHARS      DB  0           ; $BCFD
 GRPCONT         DB  6           ; $BCFE ; number of characters, including dead/compressed?
