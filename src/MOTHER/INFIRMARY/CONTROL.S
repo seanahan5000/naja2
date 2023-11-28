@@ -1,368 +1,327 @@
-INFIRMARY       LDA #$20
-                STA PAGE
-                LDY #$14
-                JSR TEXTER
-:LOOP1          LDX #<HAND_WHITE
-                LDY #>HAND_WHITE
-                JSR :SUBA
-                BMI :SKIPA
-                LDX #<HAND_BLACK
-                LDY #>HAND_BLACK
-                JSR :SUBA
-                BPL :LOOP1
-:SKIPA          LDA KEYBRD
-                BIT UNSTROB
-                CMP #$9B            ;Escape
-                BNE :SKIPB
-                STA SCNDARY
-                JMP INFIRMARY_OUT
+; enter showing and drawing to page 1
 
-:SUBA           STX TBLPNTL
-                STY TBLPNTH
-                JSR EXPANDR
-                LDA #$80
-                JSR WAIT2
-                LDA #$00
-                JMP WAIT2
+TEMP            =   LOCAL_TEMP+0        ; +1
 
-:SKIPB          LDA #$00
-                STA RECEIVER
-                STA PAYER
-                STA TREATYPE
-                LDA #$40
-                STA PAGE
-                JSR CLEAR2
-                LDA #$00
-                STA COUNT
-PILOOP1         TAY
+ZBLOCK_A0       =   $A0
+PATIENT         =   ZBLOCK_A0+0
+TREATMENT       =   ZBLOCK_A0+1
+FLAGS           =   ZBLOCK_A0+2
+
+                DUMMY SCRATCH_PAGE
+THE_PRICE       DS  4
+PRICE_TABLE     DS  28
+                DEND
+
+INFIRMARY       JSR DRAW_PICT
+                PictTextAt 130;26;"PLEASE \"SCAN IN\" FOR"
+                PictTextAt 139;34;"IMMEDIATE MEDICAL"
+                PictTextAt 163;42;"ATTENTION"
+                PictEnd
+
+                JSR BLINK_HAND
+                BCS :1
+                JSR DRAW_PICT
+                PictSetPage2
+                PictCopyToPage
+                PictShowPage
+                PictSetPage1
+                PictEnd
+                JMP LEAVE_INFIRMARY
+
+:1              LDA #$00
+                STA PATIENT
+                STA TREATMENT
+
+                JSR DRAW_PICT
+                PictSetPage2
+                PictClearPage
+                PictEnd
+
+                LDY #0
+PILOOP1         STY COUNT
+                TYA
                 ASL
                 ASL
                 ASL
-                JSR STORER
-                LDA PICTABL,Y
+                JSR SET_PIC_X
+                LDA PIC_TABLE,Y
                 TAY
                 JSR PICKER
-                INC COUNT
-                LDA COUNT
-                CMP #$05
+                LDY COUNT
+                INY
+                CPY #5
                 BNE PILOOP1
 
-                LDA #GREEN
-                STA COLOR
-                LDY #$00
-                JSR LINER
-                LDY #$00
-                JSR TEXTER
-                LDA #WHITE1
-                STA COLOR
-                LDY #$01
-                JSR LINER
-                LDA #GREEN
-                STA COLOR
-                LDY #$03
-                JSR LINER
-                LDY #$08
-                JSR TEXTER
-                LDY #$15
-                JSR TEXTER
-                LDY #$09
-                JSR TEXTER
-                LDY #$0B
-                JSR TEXTER
+                JSR DRAW_PICT
+                PictSetGreen
+                PictMoveTo $01;$11
+                PictLineTo $117;$11
 
-                LDA #0
-                STA COUNT
-STLOOP1         JSR POINTIT
-                LDY COUNT
-                LDA IYPOINTS,Y
-                STA YPNT
-                JSR PROFNAM
-                LDA #$10
-                LDY YPNT
-                JSR LINE
-                LDY #profrace
-                LDA (CHARDL),Y
-                BMI CLSKIP1
-                JSR IMPLANT_SUB
-CLSKIP1         JSR DAMAGER
-                LDA #$A2
-                LDY YPNT
-                JSR LINE
-                JSR STATUSR
-                LDA #$DE
-                LDY YPNT
-                JSR LINE
-                INC COUNT
-                LDA COUNT
-                CMP GRPNUMB
-                BNE STLOOP1
-                STA SCNDARY
-                JSR CLEAR1
+                PictMoveTo $01;$34
+                PictLineTo $117;$34
 
-WHO_TREAT       JSR RESET_CHRLIST
-                JSR NO_GONE
-                LDA RECEIVER
-                JSR CALL_GETKEY
-                BCC INFIRMARY_OUT
+                PictMoveTo $6F;$11
+                PictLineTo $6F;$34
+
+                PictMoveTo $A7;$11
+                PictLineTo $A7;$34
+
+                PictMoveTo $37;$11
+                PictLineTo $37;$34
+                PictMoveTo $DF;$11
+                PictLineTo $DF;$34
+                PictEnd
+
+                JSR DRAW_PICT
+                PictSetGreen
+                PictRect $01;115;$115;182
+                PictMoveTo $01;125
+                PictLineTo $115;125
+                PictMoveTo 16;117
+                PictText "NAME"
+                PictHMoveTo 75
+                PictText "PROF"
+                PictHMoveTo 171
+                PictText "HEALTH"
+                PictHMoveTo 231
+                PictText "STATUS"
+                PictHMoveTo 108
+                PictText "IMPLANTED"
+                PictCall DRAW_GROUP
+                PictEnd
+
+TREAT_WHO       JSR DRAW_PICT
+                PictClear 8;53;32;112
+                PictTextAt 56;105;"WHO IS TO RECEIVE TREATMENT?"
+                PictTextAt 16;184;"LEAVE"
+                PictShowPage
+                PictEnd
+
+                JSR RESET_CHRLIST
+                JSR EXCLUDE_GONE
+                JSR PICK_PATIENT
+                BCC LEAVE_INFIRMARY
                 LDA CURSOR
                 CMP #$07
-                BNE NO_LEAVE
+                BNE PICK_TREATMENT
 
-INFIRMARY_OUT   LDA #$01
-                STA XPOS
-                LDA #$0A
-                STA YPOS
-                LDA #$F0
-                STA DIRECTN
-                JSR CLEAR1
-                LDA #$20
-                STA PAGE
-                LDA #WHITE1
-                STA COLOR
-                JSR GETNSEW
-                STA PRIMARY
-                JSR NOSCAN
-                JMP RDKEY
+LEAVE_INFIRMARY LDA DIRTY_STATE
+                BEQ :1
+                JSR SAVE_GAMESTATE_MS
+:1              LDX #0
+:2              LDA DIRTY_CHARS,X
+                EOR #$FF
+                STA LEGALS,X
+                INX
+                CPX GRPNUMB
+                BNE :2
+                JSR SAVE_MEMBERS
 
-NO_LEAVE        STA RECEIVER
-                LDA #$20
-                STA PAGE
-                JSR CLRBOTM
-                LDA #GREEN
-                STA COLOR
-                LDY #$03
-                JSR LINER
-                LDA #$40
-                STA PAGE
-                LDY #$15
-                JSR TEXTER
-                LDY #$07
-                JSR TEXTER
-                LDY #$0B
-                JSR TEXTER
-                JSR MOVE212
-                LDY #$0C
-                JSR TEXTER
-                LDY #$09
-                JSR TEXTER
-                LDY #$0A
-                JSR TEXTER
+                JSR DRAW_PICT
+                PictClearPage
+                PictCall DRAW_HALL
+                PictShowPage
+                PictEnd
+                SEC
+                RTS
 
-                LDA #$6A
-                STA XPNT
-                LDY #0
-                STY COUNT
-:LOOP1          LDA IYPOINTS,Y
-                STA YPNT
-                TYA
-                JSR POINTIT
-                LDY #status
-                LDA (CHARDL),Y
-                CMP #intracc
-                BEQ :SKIPA
-                CMP #lost
-                BEQ :SKIPA
-                LDY #profrace
-                LDA (CHARDL),Y
-                BMI :SKIPA
-                JSR CHAR_CREDOUT
-:SKIPA          INC COUNT
-                LDY COUNT
-                CPY GRPNUMB
-                BNE :LOOP1
-                LDA #$6A
-                STA XPNT
-                LDA #$B1
-                STA YPNT
-                JSR POOL_TO_TOTAL
-                JSR TOTAL_CREDOUT
-
-                JSR RESET_CHLIST
-                JSR NO_GONE
-                LDA #0
-                STA LEGALS+8
-                LDA PAYER
-                JSR CALL_GETKEY
-                BCS :SKIPB
-                JMP INFIRMARY_OUT
-:SKIPB          LDA CURSOR
-                CMP #$08
-                BNE NO_CANCEL
-
-                LDY #$0C
-                JSR TEXTER
-                LDY #$09
-                JSR TEXTER
-                LDY #$0B
-                JSR TEXTER
-                LDY #$0A
-                JSR TEXTER
-                LDY #$07
-                JSR TEXTER
-                LDY #$15
-                JSR TEXTER
-                JSR MOVE212
-                JMP WHO_TREAT
-
-NO_CANCEL       STA PAYER
+PICK_TREATMENT  STA PATIENT
+                JSR SET_CHAR
                 JSR MARKIT
-                LDA CURSOR
-                CMP #$07
-                BEQ :SKIPA
-                JSR POINTIT
-                LDY #credits+3
-                LDX #3
-:LOOP1          LDA (CHARDL),Y
-                STA TOTAL_CREDITS,X
-                DEY
-                DEX
-                BPL :LOOP1
-:SKIPA          LDY #$0C
-                JSR TEXTER
-                LDY #$0A
-                JSR TEXTER
-                LDY #$07
-                JSR TEXTER
-                LDY #$15
-                JSR TEXTER
-                JSR MOVE212
-                LDA TREATYPE
+
+                LDA TREATMENT
                 STA CURSOR
-                LDA #$20
-                STA PAGE
-                JSR CLRMIDL
-                LDA #RED
-                STA COLOR
-                LDY #$04
-                JSR LINER
-                LDA #BLACK2
-                STA COLOR
-                LDY #$05
-                JSR LINER
-                LDY #$0D
-                JSR TEXTER
-                LDY #$0E
-                JSR TEXTER
-                LDA #$A3
-                STA XPNT
-                LDA #$49
-                STA YPNT
-                JSR TOTAL_CREDOUT
-                JSR CALCOST
-                JSR COSTER
-                JSR MOVMIDL
-                LDA #$40
-                STA PAGE
+
+                JSR DRAW_PICT
+                PictClear 2;184;8;191   ; erase LEAVE
+                PictSetPage1
+                PictClearPage
+                PictSetOrange
+                PictRect $3D;$3D;$D9;$5D
+                PictImage ORANGE_ARROW
+
+                PictTextAt 67;65;"TREATMENT COST:"
+                PictTextAt 79;73;"YOUR CREDITS:"
+                PictTextAt 118;83;"C>ANCEL"
+
+                PictTextAt 92;97;"SELECT TREATMENT"
+
+                PictCall SPLIT_GCREDITS
+                PictMoveTo $A3;$49
+                PictCall DRAW_CREDITS
+                PictEnd
+
+                JSR CALC_COST
+                JSR DRAW_COST
+
+                JSR DRAW_PICT
+                PictSetPage2
+                PictCopyTo $08;53;$21;112
+                PictEnd
+
+                LDY CURSOR
+                JSR DRAW_TREATMENT
+
                 LDA #$00
-                STA FLAG
-                JSR FLAGGER
+                STA FLAGS
+                JSR UPDATE_FLAGS
+
 BBLINK          LDA #$10
                 JSR WAIT
                 LDA #$F0
-                JSR WAIT2
+                JSR WAIT_KEY
                 BMI BKEYER
-                LDA #GREEN
-                STA COLOR
-                LDY #$01
-                JSR LINER
+
+                JSR DRAW_PICT
+                PictSetWhite1
+                PictRect $6E;$11;$A6;$34
+                PictEnd
+
                 LDA #$00
-                JSR WAIT2
-                LDA #WHITE1
-                STA COLOR
-                LDY #$01
-                JSR LINER
+                JSR WAIT_KEY
+
+                JSR DRAW_PICT
+                PictSetGreen
+                PictMoveTo $6E;$11
+                PictLineTo $A6;$11
+                PictMoveTo $6E;$34
+                PictLineTo $A6;$34
+                PictSetBlack1
+                PictMoveTo $6E;$11
+                PictLineTo $6E;$34
+                PictMoveTo $A6;$11
+                PictLineTo $A6;$34
+                PictEnd
+
 BKEYER          LDA KEYBRD
                 BPL BBLINK
                 BIT UNSTROB
                 JSR CHECK_RIGHT
-                BEQ BRIGHT1
+                BEQ BLEFT1              ; NOTE: left/right swapped
                 JSR CHECK_LEFT
-                BEQ BLEFT1
+                BEQ BRIGHT1             ; NOTE: left/right swapped
                 JSR CHECK_ENTER
                 BEQ BENTER1
-                CMP #$9B            ;Escape
-                BEQ GOFIRM
-                CMP #"C"
+                JSR CHECK_CANCEL
                 BNE BKEYER
-                LDA CURSOR
-                STA TREATYPE
-                JSR CLRMIDL
+
+                LDY CURSOR
+                STY TREATMENT
+                JSR DRAW_TREATMENT
+
                 LDA #$00
                 JSR FDRAW
-                LDY #$09
-                JSR TEXTER
-                LDY #$0B
-                JSR TEXTER
                 JSR MARKIT
-                JMP WHO_TREAT
-GOFIRM          JMP INFIRMARY_OUT
+                JMP TREAT_WHO
 
-BLEFT1          JSR LEFTER
+BLEFT1          JSR SCROLL_LEFT
                 LDY CURSOR
-                JSR TEXTER
-                JSR COSTER
+                JSR DRAW_TREATMENT
+                JSR DRAW_COST
                 INC CURSOR
                 LDA CURSOR
                 CMP #$07
                 BCC BRIGHT2
                 LDA #$00
-                BEQ BRIGHT3         ;Always
+                BEQ BRIGHT3             ; always
 
-BRIGHT1         JSR RIGHTER
+BRIGHT1         JSR SCROLL_RIGHT
                 LDY CURSOR
-                JSR TEXTER
-                JSR COSTER
+                JSR DRAW_TREATMENT
+                JSR DRAW_COST
                 DEC CURSOR
                 BPL BRIGHT2
                 LDA #$06
 BRIGHT3         STA CURSOR
 BRIGHT2         LDY CURSOR
-                JSR TEXTER
-                JSR COSTER
-                JSR FLAGGER
+                JSR DRAW_TREATMENT
+                JSR DRAW_COST
+                JSR UPDATE_FLAGS
                 JMP BKEYER
 
-BENTER1         LDA FLAG
+BENTER1         LDA FLAGS
                 BEQ BENT2
-                JMP WINKLR
+                JSR BLINK_FLAGS
+                JMP BKEYER
 BENT2           LDA CURSOR
-                STA TREATYPE
+                STA TREATMENT
                 BIT UNSTROB
-                LDY #$0E
-                JSR TEXTER
-                LDY #$0F
-                JSR TEXTER
+                JSR DRAW_PICT
+                PictClear 13;97;27;104
+                PictTextAt 89;97;"<SPACE> TO VERIFY"
+                PictEnd
+
 BEKEY           LDA KEYBRD
                 BPL BEKEY
                 BIT UNSTROB
                 JSR CHECK_ENTER
-                BEQ BCONFRM
-                CMP #"C"
+                BEQ TREAT
+                JSR CHECK_CANCEL
                 BNE BEKEY
-                LDY #$0F
-                JSR TEXTER
-                LDY #$0E
-                JSR TEXTER
+                JSR DRAW_PICT
+                PictClear 12;97;28;104
+                PictTextAt 92;97;"SELECT TREATMENT"
+                PictEnd
                 JMP BBLINK
 
-BCONFRM         JSR CLRMIDL
+TREAT           JSR DRAW_PICT
+                PictClear 8;53;32;104
+                PictEnd
+                LDX PATIENT
+                INX
+                STX PATIENT_MDEF+1
                 JSR MARKIT
-                JSR TREATER
-                SEC
-                JSR CALL_SPEND
-                LDY #$0B
-                JSR TEXTER
-                LDY #$09
-                JSR TEXTER
+                JSR GIVE_TREATMENT
+                JSR DO_SPEND
                 LDA #$00
                 JSR FDRAW
-                JMP WHO_TREAT
+                LDY CURSOR
+                JSR DRAW_TREATMENT
+                JMP TREAT_WHO
 
-TREATER         LDY RECEIVER
-                LDA IYPOINTS,Y
-                STA YPNT
-                TYA
-                JSR POINTIT
+;-----------------------------------------------------------
+;
+; On entry:
+;   Y: treatment index
+;
+DRAW_TREATMENT  CPY #4
+                BNE :1
+                JSR DRAW_PICT
+                PictSetTextHeight 8
+                PictTextAt 119;1;" POWER\nFAILURE"
+                PictEnd
+                RTS
+:1              TYA
+                PHA
+                LDX :XPNTS,Y
+                LDY #5
+                JSR MOVE_TO
+                LDX #<:TREATMENTS
+                LDY #>:TREATMENTS
+                PLA
+                JSR GET_IND_STRING
+                JMP DRAW_TEXTBUF
+
+:TREATMENTS     TXI "REJUVENATE"
+                TXI "ILLNESS"
+                TXI "DECOMPRESS"
+                TXI "IMPLANTS"
+                TXI "_"
+                TXI "BLINDNESS"
+                TXI "REPAIR"
+
+:XPNTS          DB  110,119,110
+                DB  116,119,113
+                DB  122,125
+
+;-----------------------------------------------------------
+
+GIVE_TREATMENT  LDX PATIENT
+                LDA #-1
+                STA DIRTY_CHARS,X
+                LDY IYPOINTS,X
+                JSR VMOVE_TO
+
                 LDA CURSOR
                 ASL
                 TAY
@@ -372,30 +331,33 @@ TREATER         LDY RECEIVER
                 PHA
                 RTS
 
-JUMPS           DW  CLEAR_DAMAGE-1  ;rejuvenate
-                DW  CLEAR_STATUS-1  ;illness
-                DW  CLEAR_STATUS-1  ;decompress
+JUMPS           DW  CLEAR_DAMAGE-1      ; rejuvenate
+                DW  CLEAR_STATUS-1      ; illness
+                DW  CLEAR_STATUS-1      ; decompress
                 DW  IMPLANTER-1
                 DW  POWER-1
-                DW  CLEAR_STATUS-1  ;blind
-                DW  CLEAR_DAMAGE-1  ;repair
+                DW  CLEAR_STATUS-1      ; blind
+                DW  CLEAR_DAMAGE-1      ; repair
 
-IMPLANTER       JSR IMPLANT_SUB
+IMPLANTER       JSR IMPLANTED_NO
                 LDY #miscflags
                 LDA (CHARDL),Y
                 ORA #%10000000
                 STA (CHARDL),Y
-IMPLANT_SUB     LDA YPNT
-                STA TEXT10+2
-                STA TEXT11+2
-                LDX #$10
-                LDY #miscflags
+IMPLANTED_YES   JSR DRAW_PICT
+                PictHMoveTo 123
+                PictText "YES"
+                PictEnd
+                RTS
+
+IMPLANT_SUB     LDY #miscflags
                 LDA (CHARDL),Y
-                BMI :SKIPA          ;Branch if not implantable
-                INX
-:SKIPA          TXA
-                TAY
-                JMP TEXTER
+                BMI IMPLANTED_YES
+IMPLANTED_NO    JSR DRAW_PICT
+                PictHMoveTo 126
+                PictText "NO"
+                PictEnd
+                RTS
 
 POWER           LDY #miscflags
                 LDA (CHARDL),Y
@@ -404,24 +366,24 @@ POWER           LDY #miscflags
                 TAX
                 AND #%00000011
                 CMP #%00000011
-                BEQ :SKIPA
+                BEQ :1
                 TXA
                 STA (CHARDL),Y
-                BNE :SKIPD          ;Always
-:SKIPA          LDY #baseintellig
-:LOOP1          LDA (CHARDL),Y
+                BNE :5                  ; always
+:1              LDY #baseintellig
+:2              LDA (CHARDL),Y
                 SED
                 SEC
                 SBC #$05
                 CLD
-                BEQ :SKIPB
-                BPL :SKIPC
-:SKIPB          LDA #$01
-:SKIPC          STA (CHARDL),Y
+                BEQ :3
+                BPL :4
+:3              LDA #$01
+:4              STA (CHARDL),Y
                 DEY
                 CPY #basestrength-1
-                BNE :LOOP1
-:SKIPD          JSR STATSUB
+                BNE :2
+:5              JSR STATUS_SUB
                 LDY #flaglimbo
                 LDA (CHARDL),Y
                 LDY #status
@@ -430,9 +392,9 @@ POWER           LDY #miscflags
                 LDA #inlimbo
                 STA (CHARDL),Y
                 JSR CALC_ALL
-                JMP STATSUB
+                JMP STATUS_SUB
 
-CLEAR_STATUS    JSR STATSUB
+CLEAR_STATUS    JSR STATUS_SUB
                 LDY #inflictnums
                 LDA #0
                 STA (CHARDL),Y
@@ -440,351 +402,227 @@ CLEAR_STATUS    JSR STATSUB
                 LDA #healthy
                 STA (CHARDL),Y
                 JSR CALC_ALL
-STATSUB         JSR STATUSR
-                LDA #$DE
-                LDY YPNT
-                JMP LINE
+STATUS_SUB      JSR CSTATUS_TO_TEXT_C
+                LDX #222
+                JMP DRAW_TEXTBUF_X
 
-CLEAR_DAMAGE    JSR :SUBA
+CLEAR_DAMAGE    JSR :SUB
                 LDA #0
                 LDY #damagelev
                 STA (CHARDL),Y
                 INY
                 STA (CHARDL),Y
                 JSR CALC_ALL
-:SUBA           JSR DAMAGER
-                LDA #$8D
+:SUB            JSR HEALTH_TO_TEXT
+                LDA #TextLineEnd
                 STA TEXTBUF+4
-                LDA #$A2
-                LDY YPNT
-                JMP LINE
+                LDX #162
+                JMP DRAW_TEXTBUF_X
 
+;-----------------------------------------------------------
 
-LEFTER          LDA #$20
-                STA PAGE
-                JSR RSIDER
+DRAW_GROUP      LDY IYPOINTS+0
+                JSR VMOVE_TO
+                JSR FIRST_CHAR
+:1              JSR CNAME_TO_TEXT
+                LDX #16
+                JSR DRAW_TEXTBUF_X
+                JSR CPROF_TO_TEXT
+                LDA #TextLineEnd
+                STA TEXT_BUFFER+3
+                LDX #78
+                JSR DRAW_TEXTBUF_X
+                LDY #profrace
+                LDA (CHARDL),Y
+                BMI :2
+                JSR IMPLANT_SUB
+:2              JSR HEALTH_TO_TEXT
+                LDX #162
+                JSR DRAW_TEXTBUF_X
+                JSR CSTATUS_TO_TEXT_C
+                LDX #222
+                JSR DRAW_TEXTBUF_X
+                LDY #9
+                JSR VMOVE
+                JSR NEXT_CHAR
+                BCC :1
+                RTS
+
+;-----------------------------------------------------------
+
+SCROLL_LEFT     JSR DRAW_PICT
+                PictSetPage1
+                PictClear 32;19;40;51
+                PictEnd
                 LDA #$20
-                JSR STORER
+                JSR SET_PIC_X
                 LDA CURSOR
                 CLC
-                ADC #$03
-                CMP #$07
-                BCC LSKIP1
-                SEC
-                SBC #$07
-LSKIP1          TAY
+                ADC #3
+                CMP #7
+                BCC :1
+;               SEC
+                SBC #7
+:1              TAY
                 JSR PICKER
-                LDA #GREEN
-                STA COLOR
-                LDY #$02
-                JSR LINER
-                LDA #$00
-                JMP LERISUB
-LELOOP3         JSR HILO
-                LDA #$00
-                STA DCOLUMN
-                LDA #$08
-                STA SCOLUMN
-LELOOP1         JSR SHIFTER
-                INC SCOLUMN
-                INC DCOLUMN
-                LDA DCOLUMN
-                CMP #$20
-                BNE LELOOP1
-                LDY #$1F
-                LDA (DESTINL),Y
-                ORA (SCREENL),Y
-                STA (SCREENL),Y
-                INY
-LELOOP2         LDA (DESTINL),Y
-                STA (SCREENL),Y
-                INY
-                CPY #$28
-                BNE LELOOP2
-                RTS
+                JSR SET_PAGE2
 
-RIGHTER         LDA #$20
-                STA PAGE
-                JSR LSIDER
-                LDA #$00
-                JSR STORER
-                LDA CURSOR
-                SEC
-                SBC #$03
-                BPL RSKIP1
+                LDX #19
+:2              LDA LOBYTES,X
+                STA DESTINL
                 CLC
-                ADC #$07
-RSKIP1          TAY
-                JSR PICKER
-                LDA #GREEN
-                STA COLOR
-                LDY #$02
-                JSR LINER
-                LDA #$01
-LERISUB         STA LLOOP1+1
-                LDA #$13
-                STA LLSUB+1
-                LDA #$34
-                STA LLMOD2+1
-                JSR LLSUB
-                INC LLSUB+1
-                INC LLMOD2+1
-                JSR LLSUB
-                INC LLSUB+1
-                DEC LLMOD2+1
-                DEC LLMOD2+1
-                JSR LLSUB
-                LDA #$40
-                STA PAGE
-                RTS
-
-LLSUB           LDX #$13
-                STX LINENUM
-LLOOP1          LDA #$FF            ;Modified
-                BNE GORILO
-                JSR LELOOP3
-                JMP LLSKIP1
-GORILO          JSR RILOOP3
-LLSKIP1         LDA LINENUM
-                CLC
-                ADC #$03
-                STA LINENUM
-                TAX
-LLMOD2          CMP #$34
-                BNE LLOOP1
-                RTS
-RILOOP3         JSR HILO
-                LDA #$27
-                STA DCOLUMN
-                LDA #$1F
-                STA SCOLUMN
-RILOOP1         JSR SHIFTER
-                DEC DCOLUMN
-                DEC SCOLUMN
-                BPL RILOOP1
-                LDY #$07
-RILOOP2         LDA (DESTINL),Y
-                STA (SCREENL),Y
-                DEY
-                BPL RILOOP2
-                RTS
-
-HILO            LDA LOBYTES,X
+                ADC #8
                 STA SCREENL
+                LDA HIBYTES,X
+                STA DESTINH
+                STA SCREENH
+
+                LDY #0
+:3              LDA (SCREENL),Y
+                STA (DESTINL),Y
+                INY
+                CPY #31
+                BNE :3
+
+                LDA (SCREENL),Y
+                ORA #%01000000
+                STA (DESTINL),Y
+                INY
+
+                LDA DESTINL
+                STA SCREENL
+                LDA DESTINH
+                EOR #$60
+                STA SCREENH
+
+:4              LDA (SCREENL),Y
+                STA (DESTINL),Y
+                INY
+                CPY #40
+                BNE :4
+
+                INX
+                INX
+                CPX #51
+                BCC :2
+                BNE :5
+                LDX #20
+                BNE :2                  ; always
+:5              RTS
+
+SCROLL_RIGHT    JSR DRAW_PICT
+                PictSetPage1
+                PictClear 0;19;8;51
+                PictEnd
+                LDA #$00
+                JSR SET_PIC_X
+                LDA CURSOR
+                SEC
+                SBC #3
+                BCS :1
+;               CLC
+                ADC #7
+:1              TAY
+                JSR PICKER
+                JSR SET_PAGE2
+
+                LDX #19
+:2              LDA LOBYTES,X
+                STA SCREENL
+                CLC
+                ADC #8
                 STA DESTINL
                 LDA HIBYTES,X
-                ORA #$40
-                STA SCREENH
-                EOR #$60
                 STA DESTINH
-                RTS
+                STA SCREENH
 
-SHIFTER         LDY SCOLUMN
-                TYA
-                AND #$27
-                EOR #$07
-                STA SCRATCH
+                LDY #31
                 LDA (SCREENL),Y
-                LDX SCRATCH
-                BNE NOPART1
-                AND #$9F
-NOPART1         STA TEMP
-                LDY DCOLUMN
+                AND #%10111111
+                STA (DESTINL),Y
+                DEY
+:3              LDA (SCREENL),Y
+                STA (DESTINL),Y
+                DEY
+                BPL :3
+
+                LDA SCREENL
+                STA DESTINL
+                LDA SCREENH
+                EOR #$60
+                STA SCREENH
+
+                LDY #7
                 LDA (SCREENL),Y
-                LDX SCRATCH
-                BNE NOPART2
-                AND #$E0
-                ORA TEMP
-                STA (SCREENL),Y
-                RTS
-NOPART2         LDA TEMP
-                STA (SCREENL),Y
-                RTS
+                ORA #%01000000
+                STA (DESTINL),Y
+                DEY
+:4              LDA (SCREENL),Y
+                STA (DESTINL),Y
+                DEY
+                BPL :4
 
-LSIDER          LDX #$00
-                LDY #$08
-                BNE LRCOMN          ;Always
-RSIDER          LDX #$20
-                LDY #$28
-LRCOMN          STX LRMOD1+1
-                STY LRMOD2+1
-                LDX #$13
-LRLOOP2         JSR HILO
-LRMOD1          LDY #$00
-                LDA #$00
-LRLOOP1         STA (DESTINL),Y
-                INY
-LRMOD2          CPY #$27
-                BNE LRLOOP1
                 INX
-                CPX #$33
-                BNE LRLOOP2
-                RTS
-
-STORER          LDX #$02
-                JSR STORE
-                CLC
-                ADC #$07
                 INX
-STORE           STA REJUVIN,X
-                STA ILLNESS,X
-                STA DECOMPR,X
-                STA IMPLANTS,X
-                STA POWERFA,X
-                STA BLINDNE,X
-                STA REPAIR,X
-                RTS
+                CPX #51
+                BCC :2
+                BNE :5
+                LDX #20
+                BNE :2                  ; always
+:5              RTS
 
-*-------------------------------
-*
-*-------------------------------
+;-----------------------------------------------------------
 
-CALL_GETKEY     STA INF_CDEF+1
-                LDA #0
+PICK_PATIENT    LDA #0
                 STA LEGALS+7
-                LDX #<INF_CDEF
-                LDY #>INF_CDEF
-                JSR INIT_CURSOR
-                LDA #<INTER
-                STA INTERCEPT+1
-                LDA #>INTER
-                STA INTERCEPT+2
-                JMP GETKEY
-*-------------------------------
-INF_CDEF        DB  $08
-                DB  $FF             ;Modified
-                DW  :CURSIT
+                LDX #<PATIENT_MDEF
+                LDY #>PATIENT_MDEF
+                JSR MENU_INIT
+                JSR MENU_SET_CANCEL
+                JMP MENU_SELECT
 
-:CURSIT         LDX CURSOR
+PATIENT_MDEF    DB  $09
+                DB  $00                 ; modified
+                DW  :CURSOR
+
+:CURSOR         LDX CURSOR
                 LDY IYPOINTS,X
                 LDX #$03
-                JMP ARROWER
+                JMP DRAW_ARROW
 
-INTER           CMP #$9B            ;Escape
-                CLC
-                BEQ :EXIT
-                SEC
-:EXIT           RTS
-*-------------------------------
+MARKIT          LDX PATIENT
+                LDY IYPOINTS,X
+                LDX #7
+                JMP DRAW_MARKER
 
-NO_GONE         LDX #<:SUBA
-                LDY #>:SUBA
+IYPOINTS        DB  128,137,146
+                DB  155,164,173
+                DB  184,184,184
+
+;-----------------------------------------------------------
+
+EXCLUDE_GONE    LDX #<:SUB
+                LDY #>:SUB
                 JMP CSCAN_COMMON
 
-:SUBA           LDX #-1
+:SUB            LDX #-1
                 LDY #status
                 LDA (CHARDL),Y
                 CMP #intracc
-                BEQ :SKIPA
+                BEQ :1
                 CMP #lost
-                BEQ :SKIPA
+                BEQ :1
                 INX
-:SKIPA          TXA
+:1              TXA
                 RTS
 
-*-------------------------------
+;-----------------------------------------------------------
 
-MARKIT          LDY RECEIVER
-                LDA IYPOINTS,Y
-                STA YPNT
-                LDA #$07
-                STA XPNT
-                LDA #4
-                JMP SPCHARS
-
-*-------------------------------
-
-CLRMIDL         LDX #$35
-                LDA #$6B
-                BNE CLRCOMN         ;Always
-CLRBOTM         LDX #$6B
-                LDA #$C0
-CLRCOMN         STA CLRMOD+1
-CLLOOP1         LDA LOBYTES,X
-                STA SCREENL
-                LDA HIBYTES,X
-                ORA PAGE
-                STA SCREENH
-                LDY #$27
-                LDA #$00
-CLLOOP2         STA (SCREENL),Y
-                DEY
-                BPL CLLOOP2
-                INX
-CLRMOD          CPX #$C0
-                BNE CLLOOP1
-                RTS
-
-MOVMIDL         LDX #$35
-                LDA #$08
-                STA MMOD1+1
-                LDA #$21
-                STA MMOD2+1
-                LDA #$6B
-                STA MMOD3+1
-                BNE MVLOOP1         ;Always
-MOVE212         LDX #$75
-                LDA #$0F
-                STA MMOD1+1
-                LDA #$17
-                STA MMOD2+1
-                LDA #$B8
-                STA MMOD3+1
-MVLOOP1         LDA LOBYTES,X
-                STA SCREENL
-                STA DESTINL
-                LDA HIBYTES,X
-                ORA #$20
-                STA SCREENH
-                EOR #$60
-                STA DESTINH
-MMOD1           LDY #$0E
-MVLOOP2         LDA (SCREENL),Y
-                PHA
-                LDA (DESTINL),Y
-                STA (SCREENL),Y
-                PLA
-                STA (DESTINL),Y
-                INY
-MMOD2           CPY #$17
-                BNE MVLOOP2
-                INX
-                LDA MMOD2+1
-                CMP #$17
-                BNE MMOD3
-                LDY #$0E
-                LDA (SCREENL),Y
-                PHA
-                LDA (DESTINL),Y
-                STA (SCREENL),Y
-                PLA
-                AND #$F0
-                STA POINTL
-                LDA (DESTINL),Y
-                AND #$8F
-                ORA POINTL
-                STA (DESTINL),Y
-MMOD3           CPX #$B8
-                BNE MVLOOP1
-                RTS
-
-IYPOINTS        DB  $77,$7F,$87
-                DB  $8F,$97,$9F
-                DB  $A7,$B1,$B9
-
-PICTABL         DB  $05,$06,$00
-                DB  $01,$02
-
-*-------------------------------
-
-CALCOST         LDA RECEIVER
-                JSR POINTIT
-
-                LDX #27
-:LOOP0          LDA FLAT_FEES,X
+CALC_COST       LDX #27
+:1              LDA FLAT_FEES,X
                 STA PRICE_TABLE,X
                 DEX
-                BPL :LOOP0
+                BPL :1
 
                 LDY #level+1
                 LDA (CHARDL),Y
@@ -795,10 +633,10 @@ CALCOST         LDA RECEIVER
                 LDA #$50            ;??? credits/level
                 JSR MULTIPLY_12
                 LDX #2
-:LOOP4          LDA PRODUCT_3,X
+:2              LDA PRODUCT_3,X
                 STA PRICE_TABLE+9,X
                 DEX
-                BPL :LOOP4
+                BPL :2
 
                 LDY #damagelev+1
                 LDA (CHARDL),Y
@@ -809,215 +647,475 @@ CALCOST         LDA RECEIVER
                 LDA #2              ;??? credits/hit
                 JSR MULTIPLY_12
                 LDX #2
-:LOOP1          LDA PRODUCT_3,X
+:3              LDA PRODUCT_3,X
                 STA PRICE_TABLE+1,X
                 STA PRICE_TABLE+25,X
                 DEX
-                BPL :LOOP1
+                BPL :3
                 INX
 
                 LDY #status
                 LDA (CHARDL),Y
                 CMP #intracc
-                BEQ :EXIT
+                BEQ :14
                 CMP #lost
-                BEQ :EXIT
+                BEQ :14
                 CMP #compressd
-                BNE :SKIPA
+                BNE :4
                 STX PRICE_TABLE+8
                 RTS
-:SKIPA          CMP #inlimbo
-                BNE :SKIPB
+:4              CMP #inlimbo
+                BNE :5
                 STX PRICE_TABLE+16
                 RTS
-:SKIPB          AND #%00111111
+:5              AND #%00111111
                 CMP #blind
-                BNE :SKIPC
+                BNE :6
                 STX PRICE_TABLE+20
-:SKIPC          LDY #5
-:LOOP2          CMP STATUSES,Y
-                BEQ :SKIPD
+:6              LDY #5
+:7              CMP STATUSES,Y
+                BEQ :8
                 DEY
-                BPL :LOOP2
-                BMI :SKIPE          ;Always
-:SKIPD          STX PRICE_TABLE+4
+                BPL :7
+                BMI :10                 ; always
+:8              STX PRICE_TABLE+4
                 TYA
                 ASL
                 ASL
                 TAY
                 INY
                 LDX #1
-:LOOP3          LDA ILL_PRICES,Y
+:9              LDA ILL_PRICES,Y
                 STA PRICE_TABLE+4,X
                 INY
                 INX
                 CPX #4
-                BNE :LOOP3
+                BNE :9
                 LDX #0
-:SKIPE          LDY #miscflags
+:10             LDY #miscflags
                 LDA (CHARDL),Y
-                BMI :SKIPF
+                BMI :11
                 STX PRICE_TABLE+12
-:SKIPF          LDY #damagelev
+:11             LDY #damagelev
                 LDA (CHARDL),Y
-                BNE :SKIPG
+                BNE :12
                 INY
                 LDA (CHARDL),Y
-                BEQ :EXIT
-:SKIPG          LDY #profrace
+                BEQ :14
+:12             LDY #profrace
                 LDA (CHARDL),Y
-                BMI :SKIPH
+                BMI :13
                 STX PRICE_TABLE+0
                 RTS
-:SKIPH          STX PRICE_TABLE+24
-:EXIT           RTS
+:13             STX PRICE_TABLE+24
+:14             RTS
 
-STATUSES        DB  illA            ;???
-                DB  illB            ;???
-                DB  illC            ;???
-                DB  illD            ;???
-                DB  poisoned        ;???
-                DB  radiated        ;???
+STATUSES        DB  illA                ; ???
+                DB  illB                ; ???
+                DB  illC                ; ???
+                DB  illD                ; ???
+                DB  poisoned            ; ???
+                DB  radiated            ; ???
 
-ILL_PRICES      HEX 00000011        ;illA
-                HEX 00000022        ;illB
-                HEX 00000033        ;illC
-                HEX 00000044        ;illD
-                HEX 00000055        ;poisoned
-                HEX 00000066        ;radiated
+ILL_PRICES      HEX 00000011            ; illA
+                HEX 00000022            ; illB
+                HEX 00000033            ; illC
+                HEX 00000044            ; illD
+                HEX 00000055            ; poisoned
+                HEX 00000066            ; radiated
 
-*-------------------------------
-* Rejuvenate = hits to heal * ???
-*    Illness = fees (based on cost of capsules/infusor
-*               and energy use of infusor)
-* Decompress = level * ???
-*   Implants = flat fee
-* Power Fail = flat fee ?????
-*  Blindness = fee (based on energy use of sight restorer)
-*     Repair = hits to heal * ???
-*-------------------------------
+;-----------------------------------------------------------
+; Rejuvenate = hits to heal * ???
+;    Illness = fees (based on cost of capsules/infusor
+;               and energy use of infusor)
+; Decompress = level * ???
+;   Implants = flat fee
+; Power Fail = flat fee ?????
+;  Blindness = fee (based on energy use of sight restorer)
+;     Repair = hits to heal * ???
+;-----------------------------------------------------------
 
-FLAT_FEES       HEX FF000000        ;Rejuvenate
-                HEX FF000000        ;Illness
-                HEX FF000000        ;Decompress
-                HEX FF000222        ;* Implants
-                HEX FF000333        ;* Power Failure ???
-                HEX FF000444        ;* Blindness
-                HEX FF000000        ;Repair
+FLAT_FEES       HEX FF000000            ; Rejuvenate
+                HEX FF000000            ; Illness
+                HEX FF000000            ; Decompress
+                HEX FF000222            ; * Implants
+                HEX FF000333            ; * Power Failure ???
+                HEX FF000444            ; * Blindness
+                HEX FF000000            ; Repair
 
-COSTER          LDA CURSOR
+DRAW_COST       LDA CURSOR
                 ASL
                 ASL
                 TAY
                 LDX #0
-:LOOP1          LDA PRICE_TABLE,Y
+:1              LDA PRICE_TABLE,Y
                 STA THE_PRICE,X
                 CMP #$FF
-                BEQ :EXIT
+                BEQ :2
                 INY
                 INX
                 CPX #4
-                BNE :LOOP1
-                LDA #$A3
-                STA XPNT
-                LDA #$41
-                STA YPNT
+                BNE :1
                 LDX #<THE_PRICE
                 LDY #>THE_PRICE
-                JMP CREDIT_OUT
-:EXIT           RTS
+                JSR SPLIT_CREDITS
+                LDX #$A3
+                LDY #$41
+                JSR MOVE_TO
+                JMP DRAW_CREDITS
+:2              RTS
 
-FLAGGER         LDA #$0F
+;-----------------------------------------------------------
+
+UPDATE_FLAGS    LDA #$0F
                 LDX THE_PRICE
                 INX
                 BEQ FDRAW
-                LDA PAYER
-                JSR POINTIT
-                CLC
-                JSR CALL_SPEND
+                JSR TEST_SPEND
                 LDA #$F0
                 BCC FDRAW
                 LDA #$00
-FDRAW           STA SCRATCH
-                EOR FLAG
-                AND #$F0
-                BEQ NOTEXP
-                LDY #$12
-                LDA #$F0
-                STA FDMOD+1
-                JSR FDSUB
-                LDY #$06
-                JSR LINER
-NOTEXP          LDA SCRATCH
-                EOR FLAG
-                AND #$0F
-                BEQ NOTNEED
-                LDY #$13
-                LDA #$0F
-                STA FDMOD+1
-                JSR FDSUB
-                LDY #$07
-                JSR LINER
-NOTNEED         LDA SCRATCH
-                STA FLAG
+FDRAW           PHA
+                JSR UPDATE_LEFT_FLAG
+                PLA
+                PHA
+                JSR UPDATE_RIGHT_FLAG
+                PLA
+                STA FLAGS
                 RTS
 
-FDSUB           JSR TEXTER
-                LDX #BLACK1
-                LDA FLAG
-FDMOD           AND #$F0
-                BNE FSKIP1
-                LDX #VIOLET
-FSKIP1          STX COLOR
-                RTS
-
-WINKLR          LDA #$12
-                STA WMOD1+1
-                STA WMOD2+1
-                LDA #$02
+BLINK_FLAGS     LDA #$02
                 STA COUNT
-                LDA FLAG
-                BMI GOBLINK
-                INC WMOD1+1
-                INC WMOD2+1
-GOBLINK         BIT KEYBRD
-                BMI WKEYHIT
-WMOD1           LDY #$12
-                JSR TEXTER
+:1              BIT KEYBRD
+                BMI :2
+                JSR CLEAR_FLAGS
                 LDA #$00
-                JSR WAIT2
-WMOD2           LDY #$12
-                JSR TEXTER
+                JSR WAIT_KEY
+                JSR DRAW_FLAGS
                 LDA #$00
-                JSR WAIT2
+                JSR WAIT_KEY
                 DEC COUNT
-                BNE GOBLINK
-WKEYHIT         BIT UNSTROB
-                JMP BKEYER
+                BNE :1
+:2              BIT UNSTROB
+                RTS
 
-CALL_SPEND      LDA PAYER
-                EOR #7
-                PHP
-                BEQ :SKIPA
-                EOR #7
-                JSR POINTIT
-:SKIPA          LDX #<THE_PRICE
+CLEAR_FLAGS     LDA FLAGS
+                BPL :1
+                JSR CLEAR_LEFT_FLAG
+:1              LDA FLAGS
+                AND #$0F
+                BEQ :2
+                JMP CLEAR_RIGHT_FLAG
+:2              RTS
+
+DRAW_FLAGS      LDA FLAGS
+                BPL :1
+                JSR DRAW_LEFT_FLAG
+:1              LDA FLAGS
+                AND #$0F
+                BEQ :2
+                JMP DRAW_RIGHT_FLAG
+:2              RTS
+
+UPDATE_LEFT_FLAG TAX
+                EOR FLAGS
+                BPL CLEAR_LEFT_EXIT
+                TXA
+                BMI DRAW_LEFT_FLAG
+                ; fall through
+CLEAR_LEFT_FLAG JSR DRAW_PICT
+                PictClear 1;2;15;15
+                PictEnd
+CLEAR_LEFT_EXIT RTS
+
+DRAW_LEFT_FLAG  JSR DRAW_PICT
+                PictSetViolet
+                PictMoveTo 92;2
+                PictLineTo 10;2
+                PictLineTo 10;14
+                PictLineTo 92;14
+                PictImage DIAG_LEFT
+                PictTextAt 14;5;"TOO EXPENSIVE"
+                PictEnd
+                RTS
+
+UPDATE_RIGHT_FLAG TAX
+                EOR FLAGS
+                AND #$0F
+                BEQ CLEAR_RIGHT_EXIT
+                TXA
+                AND #$0F
+                BNE DRAW_RIGHT_FLAG
+                ; fall through
+CLEAR_RIGHT_FLAG JSR DRAW_PICT
+                PictClear 25;2;40;15
+                PictEnd
+CLEAR_RIGHT_EXIT RTS
+
+DRAW_RIGHT_FLAG JSR DRAW_PICT
+                PictSetViolet
+                PictMoveTo 188;14
+                PictLineTo 274;14
+                PictLineTo 274;2
+                PictLineTo 188;2
+                PictImage DIAG_RIGHT
+                PictTextAt 193;5;"NOT NECESSARY"
+                PictEnd
+                RTS
+
+DIAG_LEFT       DB  $0D,$03,$02,$0B
+                HEX 0A28208A20280A840105145014050184
+                DB  $FF
+
+DIAG_RIGHT      DB  $19,$03,$02,$0B
+                HEX 8620280A282086501405018601051450
+                DB  $FF
+
+;-----------------------------------------------------------
+
+TEST_SPEND      LDX #<THE_PRICE
                 LDY #>THE_PRICE
-                PLP
-                BNE :SKIPB
+                CLC
                 JMP GROUP_SPEND
-:SKIPB          JMP CHAR_SPEND
 
-HAND_WHITE      HEX 9EAE1E20FE07D5FE
-                HEX 04D7D5D59595D5D5
-                HEX FE04BFFE04FFBFFE
-                HEX 06BBABABD5D5F5F5
-                HEX FDFFF7F7F9FE07DD
-                HEX D5
+DO_SPEND        LDX #<THE_PRICE
+                LDY #>THE_PRICE
+                SEC
+                JSR GROUP_SPEND
+                BCC :1
+                LDA #-1
+                STA DIRTY_STATE
+:1              RTS
 
-HAND_BLACK      HEX 9EAE1E20FE04D5FE
-                HEX 04D4D0D1D1D5D595
-                HEX 95D5D5FE0980FE06
-                HEX 88A8A8D595958585
-                HEX 8191919585FE06C5
-                HEX D5
+;-----------------------------------------------------------
+; On Entry:
+;           X,Y: Pointing to credits to be taken
+;   Carry Clear: Just test if group has enough credits
+;     Carry Set: Test and take if the have enough
+;
+; On Exit:
+;   Carry Clear: They COULD NOT afford it
+;     Carry Set: They COULD afford it
+;
+;-----------------------------------------------------------
+
+; TODO: move to camp
+
+GROUP_SPEND     PHP
+                STX TEMP+0
+                STY TEMP+1
+                LDY #3
+                SEC
+                SED
+:1              LDA GROUP_CREDITS,Y
+                SBC (TEMP),Y
+                STA TEMP_CREDITS,Y
+                DEY
+                BPL :1
+                CLD
+                BCC :4
+                PLP
+                BCC :3
+                LDY #3
+:2              LDA TEMP_CREDITS,Y
+                STA GROUP_CREDITS,Y
+                DEY
+                BPL :2
+:3              SEC
+                RTS
+:4              PLP
+                CLC
+                RTS
+
+TEMP_CREDITS    DS  4
+
+;-----------------------------------------------------------
+
+SPLIT_GCREDITS  LDX #<GROUP_CREDITS
+                LDY #>GROUP_CREDITS
+SPLIT_CREDITS   STX :1+1
+                STY :1+2
+                LDY #0
+                LDX #0
+:1              LDA $FFFF,Y
+                PHA
+                LSR
+                LSR
+                LSR
+                LSR
+                STA TEXT_BUFFER,X
+                INX
+                PLA
+                AND #$0F
+                STA TEXT_BUFFER,X
+                INX
+                INY
+                CPY #4
+                BNE :1
+                LDA #TextLineEnd
+                STA TEXT_BUFFER,X
+                LDX #0
+:2              LDA TEXT_BUFFER,X
+                BNE :3
+                LDA #TextSpace
+                STA TEXT_BUFFER,X
+                INX
+                CPX #7
+                BNE :2
+:3              RTS
+
+DRAW_CREDITS    LDX #0
+:1              TXA
+                PHA
+                LDY :OFFSETS,X
+                STY :MOD+1
+                LDA TEXT_BUFFER,Y
+                PHA
+                LDA #TextLineEnd
+                STA TEXT_BUFFER,Y
+                JSR DRAW_TEXTBUF
+                LDX #2
+                JSR HMOVE
+                LDX #0
+                LDA #TextEmpty
+:2              STA TEXT_BUFFER,X
+                INX
+:MOD            CPX #$FF
+                BNE :2
+                PLA
+                STA TEXT_BUFFER,X
+                PLA
+                TAX
+                INX
+                CPX #3
+                BNE :1
+                RTS
+
+:OFFSETS        DB  2,5,8
+
+;-----------------------------------------------------------
+
+BLINK_HAND      LDX #<HAND_WHITE
+                LDY #>HAND_WHITE
+                JSR :BLINK_SUB
+                BMI :1
+                LDX #<HAND_BLACK
+                LDY #>HAND_BLACK
+                JSR :BLINK_SUB
+                BPL BLINK_HAND
+:1              LDA KEYBRD
+                BIT UNSTROB
+                CMP #$9B                ; escape
+                CLC
+                BEQ :2
+                SEC
+:2              RTS
+
+:BLINK_SUB      JSR UNPACK
+                LDA #$80
+                JSR WAIT_KEY
+                LDA #$00
+                JMP WAIT_KEY
+
+HAND_WHITE      DB  $1E,$9E,$03,$11
+                HEX 80555D997977777F7D757555552B2B3B953F7F8D3F8D5555
+                HEX 15155555578D5599
+                DB  $FF
+
+HAND_BLACK      DB  $1E,$9E,$03,$11
+                HEX 80554595051511110105051515552828089500A155551515
+                HEX 5555515150548D558D
+                DB  $FF
+
+;-----------------------------------------------------------
+
+PIC_TABLE       DB  $05,$06,$00
+                DB  $01,$02
+
+SET_PIC_X       STA REJUVINATE+0
+                STA ILLNESS+0
+                STA DECOMPRESS+0
+                STA IMPLANTS+0
+                STA POWERFAIL+0
+                STA BLINDNESS+0
+                STA REPAIR+0
+                RTS
+
+PICKER          TYA
+                ASL
+                TAY
+                LDX PICKS+0,Y
+                LDA PICKS+1,Y
+                TAY
+                JMP UNPACK_FILL
+
+PICKS           DW  REJUVINATE
+                DW  ILLNESS
+                DW  DECOMPRESS
+                DW  IMPLANTS
+                DW  POWERFAIL
+                DW  BLINDNESS
+                DW  REPAIR
+
+REJUVINATE      DB  $08,$13,$08,$20
+                HEX 9244825482448254A092228208822282089C404092118204
+                HEX 8211820482209D088902026070619D718D196179897C9538
+                HEX 407C8978077F7F3FA56F737C737F993F036C6F6F5F1F1F3F
+                HEX 3C3D7CA178957C9560075F6F67595E1F4F6F6F23C9078982
+                HEX 0F0F1F89821F3F3FA601990495
+                DB  $FF
+
+ILLNESS         DB  $18,$13,$08,$20
+                HEX C0C0828000A560008D97050BAF040B6082780C06038D060C
+                HEX 0C19188D19588D59588D9707155982070C18308D180C0C06
+                HEX D1C0C0C0
+                DB  $FF
+
+DECOMPRESS      DB  $20,$18,$08,$18
+                HEX B0962020289120208888405082545455B154548220282A89
+                HEX 820A0A2AB10A0A5555154551549704141041414589054551
+                HEX 11048602829707070A229706020A22080A028C8E019198B0
+                DB  $FF
+
+IMPLANTS        DB  $10,$13,$08,$20
+                HEX C08E402020505068681010486844546010505068508C8A28
+                HEX 727C7F917C797B7B7F7F3F2B516D7F1F0214204089208A55
+                HEX 3F7F893F7F99721747776333406948622244247886404082
+                HEX 050B172E2D5E5F8D2F2F13110B0893131027214F82827C77
+                HEX 6131301CB2822F2F20B8820589B8
+                DB  $FF
+
+POWERFAIL       DB  $00,$13,$08,$20
+                HEX 886040844060707830A6824062776F1F3C7B777B4130783C
+                HEX 1E0F061830409882010301828314183C1E0D03070F1E0FAE
+                HEX 8CB078787946384038789D80009540970603501405868001
+                HEX 8D82033C41019980008920282A2A20282A0A0200AD83023F
+                HEX 408C50545555155589050100B9807F8C97090997080AC17F
+                HEX 8CB20F8C
+                DB  $FF
+
+BLINDNESS       DB  $00,$15,$08,$18
+                HEX 92060C7636760C06908000A110040055820410009D00A940
+                HEX 2A00A9008D60703034363B632355633B3634307060008D82
+                HEX 81207C57559D2A5599577C802082555543800E3A6A6A2A91
+                HEX 552A8D6A6A3A0E804355550A2A2A2882830E818387878FEF
+                HEX F6F6EF8F8787838182282A2A0A8201058904880F8D880405
+                HEX 890182
+                DB  $FF
+
+REPAIR          DB  $10,$13,$08,$20
+                HEX AA3E38933E88AC115589118AA8183C6646067E8C86606070
+                HEX 897891708960891870604060303182406086827C7FAD5F7D
+                HEX 5F5D5D827F7F2A6E2E6E27735D4646407FA56F8D77777363
+                HEX 634C47430191050509847FDD7E9D0FFD
+                DB  $FF
+
+ORANGE_ARROW    DB  $11,$35,$06,$09
+                HEX 8000994055008D20280A02004050140501008D00020A2820
+                HEX 008D008D0105145040009D2A
+                DB  $FF
+
+;-----------------------------------------------------------
+
+DIRTY_STATE     DB  $00
+DIRTY_CHARS     DS  maxGroupSize,$00

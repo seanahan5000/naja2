@@ -22,12 +22,6 @@ ENERGY_CENTER   JSR DRAW_PICT
                 PictShowPage
                 PictEnd
 
-                LDY #$06
-                LDA #$FF
-:2              STA DOANYT,Y
-                DEY
-                BPL :2
-
                 LDA #$00
                 STA BCURSOR
 
@@ -47,18 +41,18 @@ REPEAT1         JSR DRAW_PICT
                 PictTextAt 120;14;"L>EAVE"
                 PictEnd
                 JSR RESET_CHRLIST
-                LDY BCURSOR
-                JSR INPUT_SUB
+                JSR WHO_MENU
                 PHP
                 JSR DRAW_PICT
                 PictClear 4;4;35;21
                 PictEnd
                 PLP
                 BCS NOLEAVE
-                JMP ENEROUT
+                JMP LEAVE_ENERGY
 
 NOLEAVE         LDA CURSOR
                 STA BCURSOR
+                STA WHO_MDEF+1
 
                 JSR DRAW_PICT
                 PictSetPage1
@@ -117,7 +111,7 @@ KEYLOOP         LDA KEYBRD
                 BEQ LEFT
                 JSR CHECK_RIGHT
                 BEQ RIGHT
-                CMP #"C"
+                JSR CHECK_CANCEL
                 BEQ CANHALF
                 JSR CHECK_UP
                 BNE NOWDUP
@@ -147,10 +141,14 @@ ENTER           LDX #3
                 STA GROUP_CREDITS,X
                 DEX
                 BPL :1
-                ; *** DIRTY STATE_MS ***
 
-                LDA BCURSOR
+                LDA #$FF
+                LDX BCURSOR
+                STA DIRTY_CHARS,X
+                STA DIRTY_STATE
+                TXA
                 JSR SET_CHAR
+
                 LDY #energylev+2
                 LDX #2
 :2              LDA ENCUR,X
@@ -158,11 +156,6 @@ ENTER           LDX #3
                 DEY
                 DEX
                 BPL :2
-                ; *** DIRTY MEMBER ***
-
-                LDA #$00
-                LDX BCURSOR
-                STA DOANYT,X
 
 CANHALF         JSR DRAW_PICT
                 PictClear $03;$00;$25;$18
@@ -184,7 +177,13 @@ GOMAIN1         LDA #$BF
                 JSR GFADE2
                 LDA #$79
                 STA FADEMOD+1
-                ;*** force down to next member ***
+                ; force cursor to next member
+                LDX WHO_MDEF+1
+                INX
+                CPX GRPNUMB
+                BNE :1
+                LDX #0
+:1              STX WHO_MDEF+1
                 JMP MAIN1
 
 WEEDUP          BIT BUYSELL
@@ -426,18 +425,19 @@ ORIGIN          LDA BCURSOR
                 BPL :2
                 RTS
 
-;*** save state (GROUP_CREDITS)
-;*** save group (those that charged)
+LEAVE_ENERGY    LDA DIRTY_STATE
+                BEQ :1
+                JSR SAVE_GAMESTATE_MS
+:1              LDX #0
+:2              LDA DIRTY_CHARS,X
+                EOR #$FF
+                STA LEGALS,X
+                INX
+                CPX GRPNUMB
+                BNE :2
+                JSR SAVE_MEMBERS
 
-ENEROUT         LDY #$06
-ATINMOR         LDA DOANYT,Y
-                BEQ SOMTIN
-                DEY
-                BPL ATINMOR
-                JMP LEAVE_ENERGY
-SOMTIN          NOP                 ;**********
-
-LEAVE_ENERGY    JSR DRAW_PICT
+                JSR DRAW_PICT
                 PictSetPage1
                 PictClearPage
                 PictCall DRAW_HALL
@@ -624,6 +624,7 @@ ECSHRED         LDX #$00
 
 DRAW_GROUP      LDY #124
                 JSR VMOVE_TO
+                LDA #$42                ; SELECT
                 JSR DRAW_STATS
 
                 JSR DRAW_PICT
@@ -847,35 +848,30 @@ PMXS            DB  $63,$69,$6F,$75
 
 ;-----------------------------------------------------------
 
-INPUT_SUB       STY :CDEF+1
-                LDA #"L"
-                STA :MOD1+1
-                LDX #<:CDEF
-                LDY #>:CDEF
+WHO_MENU        LDX #<WHO_MDEF
+                LDY #>WHO_MDEF
                 JSR MENU_INIT
                 JSR MENU_SET_CANCEL
-                ; LDX #<:INTER
-                ; LDY #>:INTER
-                ; STX INTERCEPT+1
-                ; STY INTERCEPT+2
+                LDX #<:FILTER
+                LDY #>:FILTER
+                JSR MENU_SET_FILTER
                 JMP MENU_SELECT
 
-:INTER          CMP #$9B            ;Escape
-                BNE :MOD1
-                JMP ENEROUT
-:MOD1           CMP #$FF            ;Modified
-                SEC
+:FILTER         CMP #"L"
                 BNE :EXIT
-                CLC
-:EXIT           RTS
+                PLA
+                PLA
+                CLC                     ; same as cancel
+                RTS
+:EXIT           SEC
+                RTS
 
-:CDEF           DB  $08
+WHO_MDEF        DB  $08
                 DB  $00
                 DW  :CURSOR
 
 :CURSOR         LDY ENERGY_YPNTS,X
-                ; LDX #10
-                LDX #5
+                LDX #4
                 JMP DRAW_ARROW
 
 ;-----------------------------------------------------------
@@ -929,3 +925,6 @@ CRDATA5         DB  $00,$00,$00,$00
                 DB  $00,$00,$05,$00
 
 ;-----------------------------------------------------------
+
+DIRTY_STATE     DB  $00
+DIRTY_CHARS     DS  maxGroupSize,$00

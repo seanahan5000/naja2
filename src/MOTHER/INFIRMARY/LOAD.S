@@ -73,9 +73,6 @@ LOAD_INFIRMARY  JSR DRAW_PICT
                 PictShowPage
                 PictEnd
 
-                SEC                     ;***
-                RTS                     ;***
-
                 LDA #$7F
                 PHA
                 LDA #$FF

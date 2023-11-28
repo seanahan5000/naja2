@@ -8,6 +8,7 @@
                 PUT /HALLS/VARS
                 PUT /HALLS/EXT
                 PUT /CAMP/EXT
+                PUT /MOTHER/EXT
 
 ZBLOCK_A0       =   $A0
 
@@ -72,10 +73,6 @@ NPMX            DB  $00
 OPMX            DB  $00
 NMPX            DB  $00
 OMPX            DB  $00
-
-DOANYT          DB  $FF,$FF,$FF
-                DB  $FF,$FF,$FF
-                DB  $FF
 
 ********************************
                 DEND

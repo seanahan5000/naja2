@@ -11,7 +11,7 @@ FILE_TABLE      DB  fileDeleteChar,        $0E,$00,$09
                 DB  fileAssembly_Load,     $11,$00,$06
                 DB  fileAssembly_Control,  $11,$06,$0A
                 DB  fileInfirmary_Load,    $17,$00,$08
-                DB  fileInfirmary_Control, $17,$08,$00
+                DB  fileInfirmary_Control, $17,$08,$0C
                 DB  fileEnergy_Load,       $18,$08,$15
                 DB  fileEnergy_Control,    $19,$0D,$08
                 DB  fileArsenal_Load,      $1B,$00,$0E
