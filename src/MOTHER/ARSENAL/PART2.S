@@ -1,14 +1,41 @@
-DRAW_SCREEN     LDA WANTED1
-                BNE :SKIPA
-                JMP ARSOUT
-:SKIPA          LDA DISPLAY
+; WANTED screen numbers
+
+;   1: "WHICH OPTION WOULD YOU LIKE?"
+;   2.0: "WHO IS BUYING EQUIPMENT?"
+;   2.1: "WHO IS SELLING EQUIPMENT?"
+;   2.2: "WHO IS IDENTIFYING EQUIPMENT?"
+;   2.3: "WHO IS REPAIRING EQUIPMENT?"
+;   3: "WHOSE CREDITS WILL BE USED?"
+;   4: (unused)
+;   5: "WHAT TYPE OF EQUIPMENT ARE YOU BUYING?"
+;   6: "WHAT TYPE OF WEAPON ARE YOU BUYING?"
+;   7: "WHAT TYPE OF PROTECTION ARE YOU BUYING?"
+;   8: "WHAT TYPE OF MISCELLANEOUS EQUIPMENT ARE YOU BUYING?"
+
+;   9: ???
+;   A: DRAW_EQUIPMNT (BEAM-WEAPONS)
+;   B: DRAW_EQUIPMNT (BLASTING-WEAPONS)
+;   C: DRAW_EQUIPMNT (MISC-WEAPONS)
+
+;   D: DRAW_ARMHELM
+;   E: DRAW_ARMHELM
+
+;   F: DRAW_EQUIPMNT (FORCE-SHIELDS)
+;  10: DRAW_EQUIPMNT (HELMET-ATTACHMNTS)
+;  11: DRAW_EQUIPMNT (MISC-PROTECTION)
+;  12: DRAW_EQUIPMNT (MEDICAL-EQUIPMNT)
+;  13: DRAW_EQUIPMNT (SCANNERS)
+;  14: DRAW_EQUIPMNT (MISCELLANEOUS)
+
+DRAW_SCREEN     LDA DISPLAY
                 ASL
                 ASL
                 ASL
                 ASL
                 ASL
                 EOR #$60
-                STA PAGE
+                JSR SET_PAGE
+
                 LDA DISPLAY
                 EOR #$03
                 STA DISPLAY
@@ -20,13 +47,13 @@ DRAW_SCREEN     LDA WANTED1
                 CMP #$09
                 BCC NOT_SPECIAL
 
-SPECIAL         BEQ :SKIPA
+SPECIAL         BEQ :1
                 CMP #$0D
-                BCC :SKIPB
+                BCC :2
                 CMP #$0F
-                BCS :SKIPB
-:SKIPA          JMP DRAW_ARMHELM
-:SKIPB          JMP DRAW_EQUIPMNT
+                BCS :2
+:1              JMP DRAW_ARMHELM
+:2              JMP DRAW_EQUIPMNT
 
 NOT_SPECIAL     LDA ON1,X
                 CMP #$09
@@ -35,164 +62,167 @@ NOT_SPECIAL     LDA ON1,X
                 BNE NOWANT2
 CHKON           TXA
                 EOR #$01
-                TAY
-                LDA ON1,Y
+                TAX
+                LDA ON1,X
                 CMP #$09
                 BCS NOWANT2
-                TYA
-                BNE ISONP2
-                JSR MOVETO2
-                JMP NOWANT2
-ISONP2          JSR MOVETO1
-NOWANT2         JSR CLRBOTM
+
+                JSR DRAW_PICT
+                PictCopyTo 0;0;40;69
+                PictEnd
+
+NOWANT2         JSR DRAW_PICT
+                PictClear 0;69;40;192
+                PictEnd
+
                 LDA WANTED1
                 CMP #$04
                 BNE :SKIPA
                 JMP SELL_ID_REP
-:SKIPA          LDA #BLUE
-                STA COLOR
-                LDY WANTED1
-                DEY
-                LDA BOXSIZE,Y
-                TAY
-                JSR LINER
-                LDY WANTED1
-                DEY
-                LDA TWOPICS,Y
-                BPL NOT12
-                CMP #$FE
-                BNE NOFE
-                LDY SOURCE
-                LDA TTABL,Y
-                BNE NOT12
-NOFE            PHA
-                LDY #$12
-                JSR TEXTER
-                PLA
-                AND #$7F
-NOT12           TAY
-                JSR TEXTER
-                LDA WANTED1
-                CMP #$03
-                BNE ISHERE
 
-                JSR THREE3
+:SKIPA          LDA WANTED1
+                CMP #2
+                BNE :1
+                JSR DRAW_WHOBOX
+                JMP ISHERE
+:1              JSR DRAW_BLUEBOX
 
 ISHERE          LDA DISPLAY
                 CMP #$01
                 BNE NOTONE
                 STA PRIMARY
-                BEQ NOISE           ;Always
+                BEQ NOISE               ; always
 NOTONE          STA SCNDARY
+
 NOISE           LDA #$20
                 STA COUNT
-:LOOP1          STA CLICK
+:1              STA CLICK
                 LDA #$08
                 JSR WAIT
                 DEC COUNT
-                BNE :LOOP1
-                RTS
-
-THREE3          JSR CLRTOP
-                LDA #GREEN
-                STA COLOR
-                LDY #$00
-                JSR LINER
-                LDY #$03
-                JSR TEXTER
-                JSR RESET_CHLIST
-                LDA #$6E
-                STA XPNT
-                LDA #0
-                STA COUNT
-:LOOP1          JSR POINTIT
-                LDY COUNT
-                LDA AYPOINTS,Y
-                STA YPNT
-                JSR PROFNAM
-                LDA #$10
-                LDY YPNT
-                JSR LINE
-                LDY #profrace
-                LDA (CHARDL),Y
-                BMI :SKIPA
-                JSR CHAR_CREDOUT
-:SKIPA          INC COUNT
-                LDA COUNT
-                CMP GRPNUMB
-                BNE :LOOP1
-                JSR POOL_TO_TOTAL
-                LDA AYPOINTS+7
-                STA YPNT
-                JSR TOTAL_CREDOUT
-                LDA #0
-                STA LEGALS+7
-                STA LEGALS+8
+                BNE :1
                 RTS
 
 *-------------------------------
 
-BOXSIZE         DB  $01,$02,$02
-                DB  $FF,$03,$03
-                DB  $01,$03
-TWOPICS         DB  $04,$FE,$0B
-                DB  $FF,$8E,$8F
-                DB  $10,$91
-TTABL           DB  $0A,$16,$17
-                DB  $25
+; TODO: adjust box tops so they're all the same, shrink box bottoms
 
-*-------------------------------
+DRAW_BLUEBOX    JSR DRAW_PICT
+                PictSetBlue
+                PictSwitch WANTED1
 
-CLRTOP          LDA #$45
-                LDX #0
-                BEQ CLRCOMN         ;Always
-CLRBOTM         LDA #$C0
-                LDX #$45
-CLRCOMN         STA :MOD1+1
-:LOOP1          LDA LOBYTES,X
-                STA SCREENL
-                LDA HIBYTES,X
-                ORA PAGE
-                STA SCREENH
-                LDY #$27
-                LDA #$00
-:LOOP2          STA (SCREENL),Y
-                DEY
-                BPL :LOOP2
-                INX
-:MOD1           CPX #$C0            ;Modified
-                BNE :LOOP1
+:0              PictCase :1
+                ; unused
+
+:1              PictCase :2
+                PictRect $2E;99;$E8;165
+                PictTextAt 56;105;"WHICH OPTION WOULD YOU LIKE?"
+                PictTextRows 119;117;9
+                TXC "BUY\n"
+                TXC "SELL\n"
+                TXC "IDENTIFY\n"
+                TXC "REPAIR\n"
+                TXT "EXIT"
+
+:2              PictCase :3
+                ; unused
+
+:3              PictCase :4
+                ; unused
+
+:4              PictCase :5
+                ; unused
+
+:5              PictCase :6
+                PictRect $2E;102;$E8;167
+                PictTextAt 74;108;"WHAT TYPE OF EQUIPMENT"
+                PictTextAt 95;116;"ARE YOU BUYING?"
+                PictTextRows 101;128;9
+                TXC "WEAPONS\n"
+                TXC "PROTECTION\n"
+                TXC "MISCELLANEOUS\n"
+                TXT "LEAVE"
+
+:6              PictCase :7
+                PictRect $2E;102;$E8;167
+                PictTextAt 83;108;"WHAT TYPE OF WEAPON"
+                PictTextAt 95;116;"ARE YOU BUYING?"
+                PictTextRows 101;128;9
+                TXC "BEAM-TYPE\n"
+                TXC "BLASTER-TYPE\n"
+                TXC "MISCELLANEOUS\n"
+                TXT "LEAVE"
+
+:7              PictCase :8
+                PictRect $2E;102;$E8;179
+                PictTextAt 71;106;"WHAT TYPE OF PROTECTION"
+                PictTextAt 95;114;"ARE YOU BUYING?"
+                PictTextRows 101;124;9
+                TXC "ARMOR\n"
+                TXC "SHIELDS\n"
+                TXC "HELMETS\n"
+                TXC "ATTACHMENTS\n"
+                TXC "MISCELLANEOUS\n"
+                TXT "LEAVE"
+
+:8              PictCase :END
+                PictRect $2E;102;$E8;167
+                PictTextAt 62;108;"WHAT TYPE OF MISCELLANEOUS"
+                PictTextAt 65;116;"EQUIPMENT ARE YOU BUYING?"
+                PictTextRows 101;128;9
+                TXC "MEDICAL\n"
+                TXC "SCANNERS\n"
+                TXC "MISCELLANEOUS\n"
+                TXT "LEAVE"
+
+:END            PictSwitchEnd
+                PictEnd
+                RTS
+
+DRAW_WHOBOX     JSR DRAW_PICT
+                PictSetBlue
+                PictRect $2E;102;$E8;120
+                PictSwitch SOURCE
+
+:0              PictCase :1
+                PictTextAt 68;108;"WHO IS BUY"
+
+:1              PictCase :2
+                PictTextAt 65;108;"WHO IS SELL"
+
+:2              PictCase :3
+                PictTextAt 53;108;"WHO IS IDENTIFY"
+
+:3              PictCase :END
+                PictTextAt 59;108;"WHO IS REPAIR"
+
+:END            PictSwitchEnd
+                PictText "ING EQUIPMENT?"
+                PictTextAt 16;70;"CANCEL"
+                PictEnd
                 RTS
 
 *-------------------------------
 
-UPDATE_CREDIT   JSR SHOW_CREDIT
+UPDATE_CREDIT   JSR MOVE_TO
+                JSR HSAVE
+                JSR DRAW_GCREDITS_AT
                 JSR TAKE_PRICE
-                JMP TOTAL_CREDOUT
-SHOW_CREDIT     STX XPNT
-                STY YPNT
-                JMP TOTAL_CREDOUT
+                JSR HRESTORE
+                JMP DRAW_GCREDITS
 
-*-------------------------------
+SHOW_CREDIT     JMP DRAW_GCREDITS_AT
 
-TAKE_PRICE      LDA WHOSPIC
-                CMP #7
-                BEQ :SKIPA
-                JSR POINTIT
-:SKIPA          LDX #<THE_PRICE
+DRAW_PRICE_AT   JSR MOVE_TO
+                LDX #<THE_PRICE
+                LDY #>THE_PRICE
+                JMP DRAW_CREDITS
+
+TAKE_PRICE      LDX #<THE_PRICE
                 LDY #>THE_PRICE
                 SEC
-                LDA WHOSPIC
-                EOR #7
-                BEQ :SKIPB
-                JSR CHAR_SPEND
-                JMP :SKIPC
-:SKIPB          JSR GROUP_SPEND
-:SKIPC          LDX #3
-:LOOP1          LDA REMAINS,X
-                STA TOTAL_CREDITS,X
-                DEX
-                BPL :LOOP1
+                JSR GROUP_SPEND
+                ; *** MARK STATE_MS DIRTY ***
                 RTS
 
 *-------------------------------
@@ -206,7 +236,7 @@ CURSITA         LDY CURRENT
                 LDA YTABLE,X
                 LDX CURSEX-1,Y
                 TAY
-                JMP ARROWER
+                JMP DRAW_ARROW
 
 CURSEX          DB  $69,$03,$03
                 DB  $03,$57,$57
@@ -221,16 +251,22 @@ YTABLE          DB  $75,$7E,$87
 
 *-------------------------------
 
-AYPOINTS        DB  $0C,$14,$1C
-                DB  $24,$2C,$34
-                DB  $3C,$46,$4E
+AYPOINTS        DB  14,23,32
+                DB	41,50,59
+                DB	68                   ; unused
+                DB	71                   ; cancel
+                DB  $4E                 ; unused TODO: why are these tabs uneven?
+
                 DB  $80,$89,$92
                 DB  $9B
+
                 DB  $7C,$85,$8E
                 DB  $97,$A0,$A9
+
 MAXOPTS         DB  $05,$08,$09
                 DB  $08,$04,$04
                 DB  $06,$04
+
 GROUPER         DB  $03,$00,$04
                 DB  $FF,$FF,$0A
                 DB  $05,$06,$07

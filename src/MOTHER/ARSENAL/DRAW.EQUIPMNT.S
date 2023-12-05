@@ -1,30 +1,26 @@
-DRAW_EQUIPMNT   LDA DISPLAY
-                CMP #$01
-                BNE WANTNO1
-                JSR CLEAR1
-                JMP WANTNO2
-WANTNO1         JSR CLEAR2
-WANTNO2         LDA #BLUE
-                STA COLOR
-                LDY #$04
-                JSR LINER
-                LDY #$01
-                JSR TEXTER
-                JSR DONPE
-                LDA #GREEN
-                STA COLOR
-                LDY #$05
-                JSR LINER
-                LDY #$00
-                JSR TEXTER
-                LDA WANTED1
-                CLC
-                ADC #$09
-                TAY
-                JSR TEXTER
+
+DRAW_EQUIPMNT   JSR DRAW_PICT
+                PictClearPage
+                PictCall DRAW_NPE
+                PictSetGreen
+                PictRect $01;$00;$117;$0C
+                PictTextAt 125;3;"PRICE"
+                PictTextAt 167;3;"STOCK"
+                PictTextAt 209;3;"ENERGY-USE"
+                PictEnd
+
                 LDA WANTED1
                 SEC
                 SBC #$0A
+                PHA
+                LDX #<EGROUP_NAMES
+                LDY #>EGROUP_NAMES
+                JSR GET_IND_STRING
+                LDX #13
+                LDY #3
+                JSR DRAW_TEXTBUF_XY
+
+                PLA
                 CMP #$01
                 BNE SINGLES
                 LDY #$00
@@ -35,7 +31,7 @@ DO4             TYA
                 BNE DO4
                 LDA #$0F
                 STA TABLE4+3
-                BNE MULTI           ;Always
+                BNE MULTI               ; always
 
 SINGLES         TAY
                 LDA GROUPER,Y
@@ -45,32 +41,51 @@ SINGLES         TAY
 MULTI           LDA #$00
                 JSR CNTDRAW
                 JSR DOBOXES
-                LDY LEAVLIN
-                LDA LINTABL,Y
-                STA TEXT2A+2
-                STA TEXT2B+2
-                TAY
+
+                LDX LEAVLIN
+                LDY LINTABL,X
+                JSR VMOVE_TO
                 LDX #$67
-                JSR SHOW_CREDIT
-                LDY #$02
-                JSR TEXTER
-                LDA #$9C
-                STA XPNT
-                LDA TEXT2A+2
-                STA YPNT
-                LDA #1
-                JSR SPCHARS
-                LDA #$2C
-                STA TEXTBUF
-                LDA #$8D
-                STA TEXTBUF+1
-                LDA #$A3
-                LDY YCOORD
-                JSR LINE
+                JSR DRAW_GCREDITS_AT
+
+                JSR DRAW_PICT
+                PictHMoveTo 13
+                PictText "LEAVE"
+                PictHMoveTo 170
+                PictText "YOUR CREDITS"
+                PictEnd
+
+                ; *** REVERSE ARROW ***
+                ; LDA #$9C
+                ; STA XPNT
+                ; LDA TEXT2A+2
+                ; STA YPNT
+                ; LDA #1
+                ; JSR SPCHARS
+                ; LDA #$2C
+                ; STA TEXTBUF
+                ; LDA #TextLineEnd
+                ; STA TEXTBUF+1
+                ; LDA #$A3
+                ; LDY YCOORD
+                ; JSR LINE
+
                 JSR ISHERE
                 LDA #$FF
                 JSR CNTDRAW
                 RTS                 ;TEMP
+
+EGROUP_NAMES    TXI "BEAM-WEAPONS"
+                TXI "BLASTING-WEAPONS"
+                TXI "MISC-WEAPONS"
+                TXI " "
+                TXI " "
+                TXI "FORCE-SHIELDS"
+                TXI "HELMET-ATTACHMNTS"
+                TXI "MISC-PROTECTION"
+                TXI "MEDICAL-EQUIPMNT"
+                TXI "SCANNERS"
+                TXI "MISCELLANEOUS"
 
 CNTDRAW         STA DRAWFLG
                 LDA #$00
@@ -112,9 +127,9 @@ COUNTUP         LDY TABLCNT
                 TAY
                 ASL
                 TAX
-                LDA STCKOFF,X
+                LDA STOCK_PTRS,X
                 STA DATPNTL
-                LDA STCKOFF+1,X
+                LDA STOCK_PTRS+1,X
                 STA DATPNTH
                 LDA MAXPER,Y
                 STA NUMBIN
@@ -175,17 +190,18 @@ MOVEQP          LDA (TEMP),Y
                 INX
                 CPX #$04
                 BNE MOVEQP
-                JSR EQUIP1
-                LDY LINECNT
-                LDA LINTABL,Y
-                STA YPNT
-                TAY
-                LDA #$0D
-                JSR LINE
+                JSR ETABLE_TO_TEXT
+
+                LDX LINECNT
+                LDY LINTABL,X
+                LDX #13
+                JSR DRAW_TEXTBUF_XY
+
                 PLA
-                JSR STOCKER
                 PHA
-                JSR TEXTER
+                JSR GET_STOCK
+                JSR DRAW_STOCK
+
                 LDX TABLCNT
                 LDA TABLE4,X
                 ASL
@@ -210,119 +226,120 @@ TOBUFF          LDA (TEMP),Y
                 BNE TOBUFF
                 LDA #$00
                 STA THE_PRICE
-                LDX #<THE_PRICE
-                LDY #>THE_PRICE
-                LDA #$67
-                STA XPNT
-                JSR CREDIT_OUT
-                JSR ENERGY2
-                LDA #$0A
-                JSR CUTUP
-                LDA #$C5
-                LDY YPNT
-                JSR LINE
-                PLA
-                TAY
-                RTS
 
-STOCKER         PHA
-                LDY LINECNT
-                LDA LINTABL,Y
-                STA MANY+2
-                STA SOME+2
-                STA LOW+2
-                STA OUT+2
+                LDX #$67
+                LDY YCOORD
+                JSR DRAW_PRICE_AT
+
+                LDX #$C5
+                JSR HMOVE_TO
+                JSR ENERGY2
+                LDA #TextSpace
+                JSR DRAW_ENERGY_PER
+
                 PLA
-                PHA
-                TAY
-                LDA (DATPNTL),Y
-                LDY #$1E
-                CMP #$08
-                BCS HIENUFF
-                INY
-                CMP #$03
-                BCS HIENUFF
-                INY
-                CMP #$01
-                BCS HIENUFF
-                INY
-HIENUFF         PLA
+                TAY                     ;*** ANYBODY USE THIS?
                 RTS
+;
+; Draw stock word (many, some, low, out)
+;
+; On entry:
+;   A: stock offset
+;   YCOORD: vertical draw position
+;
+; On exit:
+;   Y: stock word index
+;
+GET_STOCK       TAY
+                LDA (DATPNTL),Y
+                LDY #0
+                CMP #8                  ; many
+                BCS :1
+                INY
+                CMP #3                  ; some
+                BCS :1
+                INY
+                CMP #1                  ; low
+                BCS :1
+                INY
+:1              RTS
+;
+; Draw stock word (many, some, low, out)
+;
+; On entry:
+;   Y: stock index
+;   YCOORD: vertical draw position
+;
+DRAW_STOCK      LDX :XPNTS,Y
+                JSR HMOVE_TO
+                TYA
+                LDX #<:STOCKS
+                LDY #>:STOCKS
+                JSR GET_IND_STRING
+                JMP DRAW_TEXTBUF
+
+:XPNTS          DB  170,170,173,173
+
+:STOCKS         TXI "MANY"
+                TXI "SOME"
+                TXI "LOW"
+                TXI "OUT"
+
+;-----------------------------------------------------------
 
 DOBOXES         LDA #$01
                 STA COUNT
-DOLOOP1         LDY COUNT
-                LDA TABLE2,Y
-                TAX
+:1              LDY COUNT
+                LDX TABLE2,Y
                 LDA LINTABL,X
                 SEC
-                SBC #$02
-                STA GDLINE1+2
-                STA GDLINE2+2
-                LDA #GREEN
-                STA COLOR
-                LDY #$06
-                JSR LINER
+                SBC #2
+                TAY
+                JSR VMOVE_TO
+                JSR DRAW_PICT
+                PictSetGreen
+                PictHMoveTo 7
+                PictHLineTo 273
+                PictEnd
                 LDY COUNT
                 INC COUNT
-                LDA TABLE2,Y
-                CMP LEAVLIN
-                BNE DOLOOP1
-                TAY
-                LDA LINTABL,Y
+                LDX TABLE2,Y
+                CPX LEAVLIN
+                BNE :1
+                LDA LINTABL,X
                 CLC
-                ADC #$08
-                STA GMBOX1+2
-                STA GMBOX2+2
-                LDY #$07
-                JMP LINER
+                ADC #8
+                STA :MOD+1
+                JSR DRAW_PICT
+                PictMoveTo 1;12
+:MOD            PictVLineTo $FF
+                PictHLineTo 279
+                PictVLineTo 12
+                PictEnd
+                RTS
 
-DONPE           LDA WHOPIC
-                JSR POINTIT
-                LDY #$09
-NAMLOOP         LDA (CHARDL),Y
-                STA TEXTBUF,Y
-                DEY
-                BPL NAMLOOP
-                LDA #$8D
-                STA TEXTBUF+10
-                LDA #$4C
-                LDY #$A5
-                JSR LINE
-                LDY #$0D
-                LDA (CHARDL),Y
-                LSR
-                LSR
-                LSR
-                LSR
-                TAX
-                LDA PROFOFF,X
-                TAY
-                CPX #$09
-                BNE PRFCOLM
-                LDY #$5A
-PRFCOLM         LDX #$00
-MORPRF          LDA PROFDAT,Y
-                STA TEXTBUF,X
-                INY
-                INX
-                CPX #$09
-                BNE MORPRF
-                LDA #$8D
-                STA TEXTBUF,X
-                LDA #$4C
-                LDY #$AE
-                JSR LINE
-                JSR POWROUT
-                LDX #0
-:LOOP1          LDA TEXTBUF,X
-                CMP #$0A
-                BNE :SKIPA
-                LDA #$EE
-                STA TEXTBUF,X
-                INX
-                CPX #5
-                BNE :LOOP1
-:SKIPA          LDA #$4C
-                LDY #$B7
-                JMP LINE
+;-----------------------------------------------------------
+
+DRAW_NPE        JSR DRAW_PICT
+                PictSetBlue
+                PictRect $18;$A3;$FE;$BF
+                PictTextAt 40;165;"NAME:"
+                PictTextAt 40;174;"PROF:"
+                PictTextAt 28;183;"ENERGY:"
+                PictEnd
+
+                ; *** do this just once ***
+                LDA WHOPIC
+                JSR SET_CHAR
+
+                JSR DRAW_PICT
+                PictCall CNAME_TO_TEXT
+                PictTextbufXY 76;165
+                PictCall CPROF_TO_TEXT
+                PictTextbufXY 76;174
+                PictCall ENERGY_TO_TEXT_L
+                PictTextbufXY 76;183
+                PictEnd
+                RTS
+
+;-----------------------------------------------------------

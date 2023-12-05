@@ -1,26 +1,23 @@
 BUY_ARMHELM     BIT UNSTROB
                 LDA #$00
                 STA CURSPNT
-                LDA #WHITE1
-                JSR BIGSMAL
-                LDY DISPLAY
-                DEY
+                JSR DRAW_WHITE_BOX
+                LDX DISPLAY
+                DEX
                 LDA WANTED1
-                STA ON1,Y
+                STA ON1,X
                 LDA #$00
                 STA STATUS
                 JSR STATUP
 BBLINK          LDA #$10
                 JSR WAIT
                 LDA #$F0
-                JSR WAIT2
+                JSR WAIT_KEY
                 BMI BIGKEY
-                LDA #BLACK1
-                JSR BIGSMAL
+                JSR ERASE_WHITE_BOX
                 LDA #$00
-                JSR WAIT2
-                LDA #WHITE1
-                JSR BIGSMAL
+                JSR WAIT_KEY
+                JSR DRAW_WHITE_BOX
 BIGKEY          LDA KEYBRD
                 BPL BBLINK
                 BIT UNSTROB
@@ -32,19 +29,18 @@ BIGKEY          LDA KEYBRD
                 BEQ BIG_LEFT
                 JSR CHECK_RIGHT
                 BEQ BIG_RIGHT
-                CMP #$9B
-                BEQ GOBESC
+                ; CMP #$9B                ;*** CANCEL
+                ; BEQ GOBESC
                 JSR CHECK_ENTER
                 BEQ GOBENTR
-                CMP #$CC
+                JSR CHECK_CANCEL
                 BNE BIGKEY
-                LDA #BLACK1
-                STA COLOR
-                JSR DRASTAT
+                ; CMP #$CC                ;***???
+                ; BNE BIGKEY
+                JSR ERASE_STAT
                 LDA #$00
                 STA STATUS
-                LDA #BLACK1
-                JSR BIGSMAL
+                JSR ERASE_WHITE_BOX
                 LDA #$07
                 STA WANTED1
                 JSR DRAW_SCREEN
@@ -52,28 +48,24 @@ BIGKEY          LDA KEYBRD
 
 GOBIG_UP        JMP BIG_UP
 GOBIG_DOWN      JMP BIG_DOWN
-GOBESC          JMP ARSOUT
 GOBENTR         JMP BIG_ENTER
 
-BIG_LEFT        LDA #BLACK1
-                JSR BIGSMAL
+BIG_LEFT        JSR ERASE_WHITE_BOX
                 LDA CURSPNT
-                BNE :SKIPA
+                BNE :1
                 LDA #$02
                 STA CURSPNT
                 LDA WANTED1
                 CMP #$0E
-                BNE :SKIPB
+                BNE :2
                 LDA #$01
                 STA CURSPNT
-                BNE :SKIPB          ;Always
-:SKIPA          DEC CURSPNT
-:SKIPB          LDA #WHITE1
-                JSR BIGSMAL
+                BNE :2                  ; always
+:1              DEC CURSPNT
+:2              JSR DRAW_WHITE_BOX
                 JMP BIGKEY
 
-BIG_RIGHT       LDA #BLACK1
-                JSR BIGSMAL
+BIG_RIGHT       JSR ERASE_WHITE_BOX
                 INC CURSPNT
                 LDA WANTED1
                 SEC
@@ -83,18 +75,10 @@ BIG_RIGHT       LDA #BLACK1
                 BCS RBCOMN
                 LDA #$00
                 STA CURSPNT
-RBCOMN          LDA #WHITE1
-                JSR BIGSMAL
+RBCOMN          JSR DRAW_WHITE_BOX
                 JMP BIGKEY
 
-BIGSMAL         STA COLOR
-                LDA CURSPNT
-                CLC
-                ADC #$0B
-                TAY
-                JMP LINER
-
-BIG_UP          JSR BIGAROW
+BIG_UP          JSR DRAW_BIG_ARROW
                 LDX CURSPNT
                 DEC BRNCURS,X
                 LDA BRNCURS,X
@@ -102,8 +86,9 @@ BIG_UP          JSR BIGAROW
                 BPL BIG_COMN
                 LDA #$04
                 STA BRNCURS,X
-                BNE BIG_COMN        ;Always
-BIG_DOWN        JSR BIGAROW
+                BNE BIG_COMN            ; always
+
+BIG_DOWN        JSR DRAW_BIG_ARROW
                 LDX CURSPNT
                 INC BRNCURS,X
                 LDA BRNCURS,X
@@ -111,7 +96,7 @@ BIG_DOWN        JSR BIGAROW
                 BCC BIG_COMN
                 LDA MINTABL,X
                 STA BRNCURS,X
-BIG_COMN        JSR BIGAROW
+BIG_COMN        JSR DRAW_BIG_ARROW
                 JSR WILFLIP
                 JSR UPDATER
                 JSR DRAW_ENUSE
@@ -128,16 +113,22 @@ BIG_ENTER       LDA STATUS
                 BCS GOBIGKY
                 BIT UNSTROB
                 JSR NOISE
-                JSR BLANKER
-                LDY #$09
-                JSR TEXTER
+
+                JSR DRAW_PICT
+                PictClear 4;164;36;191
+                PictTextAt 46;168;"PRESS <SPACE> TO VERIFY PURCHASE"
+                PictTextAt 124;180;"C>ANCEL"
+                PictEnd
+
 CONFIRM         LDA KEYBRD
                 BPL CONFIRM
                 BIT UNSTROB
                 JSR CHECK_ENTER
                 BEQ BUY_ARMOR
-                CMP #"C"
+                JSR CHECK_CANCEL
                 BNE CONFIRM
+                ; CMP #"C"
+                ; BNE CONFIRM
                 JSR GOSCOMN
                 JMP BIGKEY
 
@@ -145,43 +136,43 @@ BUY_ARMOR       LDX #$9C
                 LDY #$13
                 JSR UPDATE_CREDIT
                 LDA WHOPIC
-                JSR POINTIT
+                JSR SET_CHAR
                 LDY OPEN_SLOT
                 LDX #0
-BELOOP2         LDA ETABLE,X
+:1              LDA ETABLE,X
                 STA (CHARDL),Y
                 INY
                 INX
                 CPX #4
-                BNE BELOOP2
+                BNE :1
                 JSR NOISE
                 JSR GOSCOMN
                 JMP BIGKEY
 
 BLINKEM         LDA #$02
                 PHA
-:LOOP1          LDA #$10
+:1              LDA #$10
                 JSR WAIT
                 LDA #$F0
-                JSR WAIT2
-                BMI :SKIPA
+                JSR WAIT_KEY
+                BMI :2
                 LDA STATUS
                 PHA
                 LDA #$00
                 STA COUNT
                 JSR STATUPA
                 LDA #$00
-                JSR WAIT2
+                JSR WAIT_KEY
                 PLA
                 STA COUNT
                 JSR STATUPA
-                BMI :SKIPA
+                BMI :2
                 PLA
                 SEC
                 SBC #$01
                 PHA
-                BNE :LOOP1
-:SKIPA          PLA
+                BNE :1
+:2              PLA
                 BIT UNSTROB
                 RTS
 
@@ -201,11 +192,11 @@ WILFLIP         LDA WANTED1
                 PHA
                 LDA #$02
                 STA CURSPNT
-                JSR BIGAROW
+                JSR DRAW_BIG_ARROW
                 LDA YNOCURS
                 EOR #$07
                 STA YNOCURS
-                JSR BIGAROW
+                JSR DRAW_BIG_ARROW
                 PLA
                 STA CURSPNT
 :EXIT           RTS
@@ -236,16 +227,17 @@ NOHELM1         TAY
                 STA TEXTBUF
                 LDA HADATA+1,Y
                 STA TEXTBUF+1
-                LDA #$8D
+                LDA #TextLineEnd
                 STA TEXTBUF+2
                 LDA WANTED1
                 CMP #$0E
                 BEQ ISHELM1
-                LDA #$0A
+                LDA #TextSpace
                 STA TEXTBUF+1
 ISHELM1         LDA HAX,X
+                TAX
                 LDY #$46
-                JSR LINE
+                JSR DRAW_TEXTBUF_XY
                 LDX CURSPNT
                 PLA
                 CLC
@@ -263,17 +255,20 @@ NOHELM2         TAY
                 LDA WANTED1
                 CMP #$0E
                 BEQ ISHELM2
-                LDA #$0A
+                LDA #TextSpace
                 STA TEXTBUF+1
 ISHELM2         LDA HAX,X
+                TAX
                 LDY #$46
-                JSR LINE
+                JSR DRAW_TEXTBUF_XY
                 LDX CURSPNT
                 LDA BRNCURS,X
                 STA ELECT,X
-UPDOUT          JSR PUTPRIC
+UPDOUT          JSR :PRICE_SUB
                 JSR AHPRICE
-                JMP PUTPRIC
+:PRICE_SUB      LDX #$9C
+                LDY #$0B
+                JMP DRAW_PRICE_AT
 
 *-------------------------------
 
@@ -322,33 +317,36 @@ CREATE_ITEM     LDA WANTED1
                 STA ETABLE+2
                 JMP ENERGY2
 
-FORMS           DB  $44,$00,$00,$89             ;Armor
-                DB  $45,$00,$00,$DF             ;Helmet
+FORMS           DB  $44,$00,$00,$89         ; armor
+                DB  $45,$00,$00,$DF         ; helmet
 
 *-------------------------------
 
 DRAW_ENUSE      LDA WANTED1
                 CMP #$0D
-                BNE :EXIT
+                BNE :1
                 LDA ENERGY_USAGE
                 ORA ENERGY_USAGE+1
                 ORA ENERGY_USAGE+2
-                BNE :SKIPA
-                LDY #$2E
-                JMP TEXTER
-:SKIPA          LDX #3
-:LOOP1          LDA ENERGY_USAGE-1,X
+                BNE :2
+                JSR DRAW_PICT
+                PictTextAt 182;2;"NONE"
+                PictEnd
+:1              RTS
+
+:2              LDX #3
+:3              LDA ENERGY_USAGE-1,X
                 PHA
                 DEX
-                BNE :LOOP1
+                BNE :3
+;               LDX #0
                 LDA #3
-                JSR RIGHT_DIGITS
-                LDA #$8D
+                JSR DIGITS_R
+                LDA #TextLineEnd
                 STA TEXTBUF,X
-                LDA #172
+                LDX #172
                 LDY #2
-                JSR LINE
-:EXIT           RTS
+                JMP DRAW_TEXTBUF_XY
 
 *-------------------------------
 
@@ -377,22 +375,22 @@ AHPRICE         LDY WANTED1
                 PLA
                 AND #%00001111
                 TAX
-:LOOP1          LDY #4
-:LOOP2          ASL PRODUCT_3+2
+:1              LDY #4
+:2              ASL PRODUCT_3+2
                 ROL PRODUCT_3+1
                 ROL PRODUCT_3+0
                 DEY
-                BNE :LOOP2
+                BNE :2
                 DEX
-                BNE :LOOP1
+                BNE :1
 
                 LDY #1
                 LDA WANTED1
                 CMP #$0D
-                BNE :SKIPA
+                BNE :3
                 LDA BRNCURS+2
                 CMP #$04
-                BNE :SKIPA
+                BNE :3
 
                 LDA #$50
                 LDX #<PRODUCT_3
@@ -403,13 +401,13 @@ AHPRICE         LDY WANTED1
                 LDY #>PRODUCT_4
                 JSR MULTIPLY_14
                 LDY #0
-:SKIPA          LDX #0
-:LOOP3          LDA PRODUCT_5,Y
+:3              LDX #0
+:4              LDA PRODUCT_5,Y
                 STA THE_PRICE,X
                 INY
                 INX
                 CPX #4
-                BNE :LOOP3
+                BNE :4
                 RTS
 
 MPLYOFF         DB  $00,$04
@@ -445,62 +443,60 @@ HADATA          DB  $01,$02,$03
 
 *-------------------------------
 
-PUTPRIC         LDA #$9C
-                STA XPNT
-                LDA #$0B
-                STA YPNT
-                LDX #<THE_PRICE
-                LDY #>THE_PRICE
-                JMP CREDIT_OUT
+DRAW_WHITE_BOX  LDA #OpColorWhite1
+                BNE WHITE_BOX_CMN       ; always
+ERASE_WHITE_BOX LDA #OpColorBlack1
+WHITE_BOX_CMN   JSR SET_COLOR
+                JSR DRAW_PICT
+                PictSwitch CURSPNT
+:0              PictCase :1
+                PictRect $28;$85;$53;$8F
+                PictMoveTo $29;$86
+                PictLineTo $29;$8E
+                PictMoveTo $52;$86
+                PictLineTo $52;$8E
+:1              PictCase :2
+                PictRect $76;$85;$A1;$8F
+                PictMoveTo $77;$86
+                PictLineTo $77;$8E
+                PictMoveTo $A0;$86
+                PictLineTo $A0;$8E
+:2              PictCase :END
+                PictRect $C4;$85;$EF;$8F
+                PictMoveTo $C5;$86
+                PictLineTo $C5;$8E
+                PictMoveTo $EE;$86
+                PictLineTo $EE;$8E
+:END            PictSwitchEnd
+                PictEnd
+                RTS
 
 *-------------------------------
 
-BIGAROW         LDX CURSPNT
-                LDA EXES,X
-                STA XPNT
-                PHA
-                LDA BRNCURS,X
+DRAW_BIG_ARROW  LDX CURSPNT
+                LDY BRNCURS,X
+                LDA :WYES,Y
+                TAY
+                LDA :EXES,X
                 TAX
-                LDA WYES,X
-                STA YPNT
-                LDA #0
-                LDX #<BIG_SHAPES
-                LDY #>BIG_SHAPES
-                JSR DRAW_SHAPES
-                LDA XPNT
-                CLC
-                ADC #7
-                STA XPNT
-                LDA #2
-                JSR REDRAW_SHAPES
-                LDA YPNT
-                CLC
-                ADC #7
-                STA YPNT
-                PLA
-                STA XPNT
-                LDA #1
-                JMP REDRAW_SHAPES
+                JSR MOVE_TO
+                LDX #<:BIG_ARROW
+                LDY #>:BIG_ARROW
+                JMP NEW_DRAW_SHAPE
 
-EXES            DB  $17,$79,$B9
-WYES            DB  $28,$3B,$4E
+:EXES           DB  $17,$79,$B9
+:WYES           DB  $28,$3B,$4E
                 DB  $61,$74
 
-BIG_SHAPES      DB  %00000011
-                DB  %00001111
-                DB  %00111111
-                DB  %01111111
-                DB  %01111111
-                DB  %01111111
-                DB  %00111111
+:BIG_ARROW      DB  $22,$00
 
-                DB  %00001111
                 DB  %00000011
-                DB  %00000000
-                DB  %00000000
-                DB  %00000000
-                DB  %00000000
-                DB  %00000000
+                DB  %00001111
+                DB  %00111111
+                DB  %01111111
+                DB  %01111111
+                DB  %01111111
+                DB  %00111111
 
                 DB  %00000000
                 DB  %00000000
@@ -509,5 +505,11 @@ BIG_SHAPES      DB  %00000011
                 DB  %00000111
                 DB  %00000001
                 DB  %00000000
+
+                DB  %00001111
+                DB  %00000011
+                DB  %10000000
+
+                DB  %10000000
 
 *-------------------------------

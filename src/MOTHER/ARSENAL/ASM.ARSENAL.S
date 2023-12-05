@@ -7,6 +7,8 @@
                 PUT /NDOS/VARS
                 PUT /HALLS/VARS
                 PUT /HALLS/EXT
+                PUT /CAMP/EXT
+                PUT /MOTHER/EXT
 
                 ORG $8000
                 PUT LOAD
@@ -15,26 +17,26 @@
                 ERR *-$8E00
 
                 ; ORG $7000
-                ; PUT CONTROL
-                ; PUT PART2
-                ; PUT BUY.EQUIPMNT
-                ; PUT BUY.ARMHELM
-                ; PUT DRAW.EQUIPMNT
-                ; PUT DRAW.ARMHELM
-                ; PUT STATUS.BOX
-                ; PUT SELL.ID.REP
-                ; PUT SELL.ITEM
-                ; PUT CALC.VALUE
-                ; PUT DATA
-                ; PUT PICTURES
-                ; PUT WEAPONS
-                ; PUT EXIT            ;Must be at $8000 or greater
-                ; LST ON
-                ; DS  \,$EE
-                ; LST OFF
+                ORG $8000
+                PUT CONTROL
+                PUT PART2
+                PUT BUY.EQUIPMNT
+                PUT BUY.ARMHELM
+                PUT DRAW.EQUIPMNT
+                PUT DRAW.ARMHELM
+                PUT STATUS.BOX
+                PUT SELL.ID.REP
+                PUT SELL.ITEM
+                PUT CALC.VALUE
+                PUT WEAPONS
+                PUT EXIT            ;Must be at $8000 or greater
+                PUT CREDITS             ; *** move to mothership? camp? ***
 
-                ; DUMMY   *
-                ; PUT TABLES
-                ; DEND
+                DS  \,$EE
+                ; ERR *-$8E00
+
+                DUMMY SCRATCH_PAGE
+                PUT TABLES
+                DEND
 
                 SAV ARSENAL

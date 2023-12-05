@@ -1,10 +1,17 @@
-LINENUM         =   $00
-COUNTER         =   $01
+
+TEMP            =   LOCAL_TEMP+0        ; +1
+
+POINTL          =   LOCAL_TEMP+2
+POINTH          =   LOCAL_TEMP+3
+
+; LINENUM         =   $00
+; COUNTER         =   $01
 FACTOR          =   $02
-SCRATCH         =   $06
+; SCRATCH         =   $06
 BEGLINE         =   $0A
 ENDLINE         =   $0B
 
+ZBLOCK_A0       =   $A0
 WANTED1         =   ZBLOCK_A0+0
 ON1             =   ZBLOCK_A0+1
 ON2             =   ZBLOCK_A0+2
@@ -14,8 +21,9 @@ CURSPNT         =   ZBLOCK_A0+5
 MAXCURS         =   ZBLOCK_A0+6
 CHUNK           =   ZBLOCK_A0+7
 
+ZBLOCK_A8       =   $A8
 WHOPIC          =   ZBLOCK_A8+0
-WHOSPIC         =   ZBLOCK_A8+1
+; WHOSPIC         =   ZBLOCK_A8+1
 LEAVLIN         =   ZBLOCK_A8+2
 DSPLACE         =   LEAVLIN
 CTABCNT         =   ZBLOCK_A8+3
@@ -24,92 +32,68 @@ BRNCURS         =   ZBLOCK_A8+5     ;+6,+7
 CLSCURS         =   BRNCURS+1
 YNOCURS         =   BRNCURS+2
 
+ZBLOCK_80       =   $80
 LINUMB          =   ZBLOCK_80+0
 LINECNT         =   ZBLOCK_80+1
-DATPNTL         =   ZBLOCK_80+2
-DATPNTH         =   ZBLOCK_80+3
+; DATPNTL         =   ZBLOCK_80+2
+; DATPNTH         =   ZBLOCK_80+3
 NUMBIN          =   ZBLOCK_80+4
 TABLCNT         =   ZBLOCK_80+5
 DRAWFLG         =   ZBLOCK_80+6
 ELECT           =   ZBLOCK_80+7
 
+ZBLOCK_88       =   $88
 PHYSIC          =   ZBLOCK_88+0     ;+1
 MASK            =   ZBLOCK_80+2
 APOINTER        =   ZBLOCK_80+3
 THELEGL         =   ZBLOCK_80+4
-*
+STATUS          =   ZBLOCK_80+5
 *
 *
 
-                LDA #$9C            ;Must use $9C
-                STA SSTOREH
-                LDX #<charTrack+$0A
-                LDY #>charTrack+$0A
-                LDA #1
-                JSR FLOAD
-                LDX #67
-TOPLOOP         LDA $9C8B,X
-                STA PISTSTK,X
-                DEX
-                BPL TOPLOOP
+; enter with page 1 visible
+
+ARSENAL         JSR UNPACK_STOCK
 
                 BIT UNSTROB
-                LDA #$01
-                STA DISPLAY
                 LDA #$00
                 STA ON1
                 STA ON2
                 STA CURRENT
                 STA SOURCE
-                STA STCKDIF
+                STA STCKDIF             ; *** DIRTY STOCK
                 LDA #$01
                 STA DISPLAY
                 STA WANTED1
-                JSR CLEAR2
-                LDA #$40
-                STA PAGE
-                LDA #GREEN
-                STA COLOR
-                LDY #$00
-                JSR LINER
-                LDA #$02
-                STA YPNT
-                LDA #$42
-                STA SELECT
-                JSR HEADER
-                LDA #$00
-                STA COUNT
-STLOOP          LDY COUNT
-                LDA AYPOINTS,Y
-                STA YPNT
-                TYA
-                JSR STATLIN
-                INC COUNT
-                LDA COUNT
-                CMP GRPNUMB
-                BNE STLOOP
+
+                JSR DRAW_PICT
+                PictSetPage2
+                PictClearPage
+                PictCall DRAW_STATS_BOX
+                PictEnd
                 JSR DRAW_SCREEN
+
                 LDA #$0A
                 STA ON1
 MAIN_LOOP       LDA WANTED1
                 CMP #$05
-                BCC :SKIPA
+                BCC :1
                 CMP #$09
-                BCS :SKIPA
+                BCS :1
                 JSR MARKIT
-:SKIPA          LDA WANTED1
+:1              LDA WANTED1
                 CMP #$02
-                BNE :SKIPB
+                BNE :2
                 JSR RESET_CHRLIST
                 LDA #0
                 STA LEGALS+7
-:SKIPB          LDY DISPLAY
-                DEY
+:2              LDX DISPLAY
+                DEX
                 LDA WANTED1
                 CMP #$02
-                BNE :SKIPC
+                BNE :3
                 LDA #$00
-:SKIPC          STA ON1,Y
+:3              STA ON1,X
                 LDY WANTED1
                 DEY
                 LDA MAXOPTS,Y
@@ -143,18 +127,18 @@ NOMAIN          JSR CURSITA
 ABLINK          LDA #$10
                 JSR WAIT
                 LDA #$F0
-                JSR WAIT2
+                JSR WAIT_KEY
                 BMI AKEYGOT
                 JSR CURSITA
                 LDA #$00
-                JSR WAIT2
+                JSR WAIT_KEY
                 JSR CURSITA
 ARKEY           BIT KEYBRD
                 BPL ABLINK
 AKEYGOT         LDA KEYBRD
                 BIT UNSTROB
-                CMP #$9B
-                BEQ GETOUT
+                JSR CHECK_CANCEL
+                BEQ GETOUT              ;*** just back instead
                 JSR CHECK_UP
                 BEQ GOUP1
                 JSR CHECK_DOWN
@@ -163,7 +147,9 @@ AKEYGOT         LDA KEYBRD
                 BEQ ENTERIT
                 BIT UNSTROB
                 JMP ARKEY
+
 GETOUT          JMP ARSOUT
+
 GOUP1           JSR CURSITA
 GOUP1A          LDA CURSOR
                 BNE NOTATOP
@@ -183,6 +169,7 @@ UPCOM           LDA CURRENT
 NOTHER          JSR CURSITA
                 BIT UNSTROB
                 JMP ARKEY
+
 GODOWN1         JSR CURSITA
 GODWN1B         INC CURSOR
                 LDA CURSOR
@@ -217,25 +204,8 @@ NOTA22          CMP #$04
                 BCS USUAL
                 LDY CURSOR
                 CMP #$02
-                BNE NOTWHO
-                STY WHOPIC
-                BEQ USUAL           ;Always
-NOTWHO          CMP #$03
                 BNE USUAL
-                STY WHOSPIC
-                CPY #$07
-                BEQ USETOTL
-                TYA
-                JSR POINTIT
-                LDY #credits+3
-                LDX #3
-:LOOP1          LDA (CHARDL),Y
-                STA TOTAL_CREDITS,X
-                DEY
-                DEX
-                BPL :LOOP1
-                BMI USUAL           ;Always
-USETOTL         JSR POOL_TO_TOTAL
+                STY WHOPIC
 USUAL           LDY CURRENT
                 DEY
                 LDA DESTOFF,Y
@@ -243,32 +213,31 @@ USUAL           LDY CURRENT
                 ADC CURSOR
                 TAX
                 LDA DESTDAT,X
+                BEQ :LEAVE
                 CMP #$FE
-                BNE NOTODD1
+                BNE :1
                 LDA #$05
                 LDX SOURCE
-                BEQ NOTODD1
+                BEQ :1
                 LDA #$04
-NOTODD1         STA WANTED1
+:1              STA WANTED1
                 JSR DRAW_SCREEN
                 LDA WANTED1
                 CMP #$0F
-                BCS :SKIPA
+                BCS :2
                 CMP #$0A
-                BCC :SKIPC
+                BCC :4
                 CMP #$0D
-                BCS :SKIPB
-:SKIPA          JMP BUY_EQUIPMNT
-:SKIPB          JMP BUY_ARMHELM
-:SKIPC          JMP MAIN_LOOP
+                BCS :3
+:2              JMP BUY_EQUIPMENT
+:3              JMP BUY_ARMHELM
+:4              JMP MAIN_LOOP
+:LEAVE          JMP LEAVE_ARSENAL
 
-MARKIT          LDA #$06
-                STA XPNT
-                LDY WHOPIC
-                LDA AYPOINTS,Y
-                STA YPNT
-                LDA #4
-                JMP SPCHARS
+MARKIT          LDX WHOPIC
+                LDY AYPOINTS,X
+                LDX #6
+                JMP DRAW_MARKER
 
 DESTOFF         DB  0,DEST2-DESTDAT,DEST3-DESTDAT
                 DB  DEST4-DESTDAT,DEST5-DESTDAT,DEST6-DESTDAT
@@ -276,12 +245,10 @@ DESTOFF         DB  0,DEST2-DESTDAT,DEST3-DESTDAT
 
 DESTDAT         DB  $02,$02,$02
                 DB  $02,$00
-DEST2           DB  $03,$03,$03
-                DB  $03,$03,$03
-                DB  $03,$01
-DEST3           DB  $FE,$FE,$FE
+DEST2           DB  $FE,$FE,$FE
                 DB  $FE,$FE,$FE
-                DB  $FE,$FE,$01
+                DB  $FE,$01
+DEST3
 DEST4           DB  $09,$09,$09
                 DB  $09,$09,$09
                 DB  $09,$01
@@ -293,3 +260,116 @@ DEST7           DB  $0D,$0F,$0E
                 DB  $10,$11,$05
 DEST8           DB  $12,$13,$14
                 DB  $05
+
+;-----------------------------------------------------------
+
+; $0: out of stock but visible
+; $1-$D: count in stock
+; $E: unlimited in stock
+; $F: not visible
+;
+; If first two common items are not in stock
+;   fill stock with defaults.
+;
+UNPACK_STOCK    LDA EQUIP_STOCK+0
+                BNE :1
+                LDA #$FF
+                STA DIRTY_STATE
+                LDX #0
+:0              LDA DEFAULT_STOCK,X
+                STA EQUIP_STOCK,X
+                INX
+                CPX #36
+                BNE :0
+:1              LDX #0
+                LDY #0
+:2              LDA EQUIP_STOCK,X
+                PHA
+                LSR
+                LSR
+                LSR
+                LSR
+                JSR :WRITE
+                PLA
+                AND #$0F
+                JSR :WRITE
+                INX
+                CPX #36
+                BNE :2
+                RTS
+
+:WRITE          CMP #$0F
+                BNE :3
+                LDA #-1
+                BNE :4                  ; always
+:3              CMP #$0E
+                BNE :4
+                LDA #$7F
+:4              STA USTOCK_BUFFER,Y
+                INY
+                RTS
+
+PACK_STOCK      LDY #0
+                LDX #0
+:1              JSR :READ
+                LSR
+                LSR
+                LSR
+                LSR
+                STA TEMP
+                JSR :READ
+                ORA TEMP
+                STA EQUIP_STOCK,X
+                INX
+                CPX #36
+                BNE :1
+                RTS
+
+:READ           LDA USTOCK_BUFFER,Y
+                BPL :2
+                LDA #$0F
+                BNE :4                  ; always
+:2              CMP #$7F
+                BNE :3
+                LDA #$0E
+                BNE :4                  ; always
+:3              CMP #$0E                ;*** ALLOW 14 TO TURN INTO INFINITE? ***
+                BCC :4
+                LDA #$0D
+:4              INY
+                RTS
+
+DEFAULT_STOCK
+            DO 1 ; debug defaults
+                DB  $EE,$14,$1F         ; PISTOL_STOCK
+                DB  $E8,$1E             ; RIFLE_STOCK
+                DB  $0E                 ; CANNON_STOCK
+                DB  $EE,$81,$EE,$EF     ; BEAM_STOCK
+                DB  $EE,$21,$EE         ; MWEAPON_STOCK
+                DB  $83,$EE,$EF         ; ATTACH_STOCK
+                DB  $5E,$E6             ; MARMOR_STOCK
+                DB  $EE,$71,$E1,$E1     ; MEDIC_STOCK
+                DB  $8E,$EE,$EE
+                DB  $E1,$EE,$EE         ; SCANNER_STOCK
+                DB  $EE,$EF             ; MISC_STOCK
+                DB  $E8,$61,$EE,$EE     ; SHIELD_STOCK
+                DB  $EE,$EE
+            ELSE ; real defaults
+                DB  $EE,$0F,$FF             ; PISTOL_STOCK
+                DB  $E8,$0F                 ; RIFLE_STOCK
+                DB  $FF                     ; CANNON_STOCK
+                DB  $EE,$80,$FF,$FF         ; BEAM_STOCK
+                DB  $FF,$FF,$29             ; MWEAPON_STOCK   ;9 means ??
+                DB  $83,$FF,$FF             ; ATTACH_STOCK
+                DB  $62,$FF                 ; MARMOR_STOCK
+                DB  $EE,$7F,$0F,$F0         ; MEDICAL_STOCK   ;9 means ??
+                DB  $89,$99,$9F
+                DB  $E0,$FF,$FF             ; SCANNER_STOCK
+                DB  $EF,$FF                 ; MISC_STOCK
+                DB  $E8,$61,$FF,$FF,$FF,$FF ; SHIELD_STOCK
+            FIN
+
+;-----------------------------------------------------------
+
+DIRTY_STATE     DB  $00
+DIRTY_CHARS     DS  maxGroupSize,$00

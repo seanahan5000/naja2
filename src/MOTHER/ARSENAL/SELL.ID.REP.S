@@ -1,36 +1,52 @@
-*-------------------------------
-
 SELL_ID_REP     LDX #$0A
                 LDA #$FF
-:LOOP1          STA VISIBLE,X
+:1              STA VISIBLE,X
                 DEX
-                BPL :LOOP1
-                JSR CLRBOTM
+                BPL :1
+
+                JSR DRAW_PICT
+                PictClear 0;69;40;192
+                PictEnd
+
                 LDA WHOPIC
-                JSR POINTIT
-                LDA #$59
-                STA LINECNT
+                JSR SET_CHAR
                 LDY #profrace
                 LDA (CHARDL),Y
                 BMI IROBOT
                 AND #%00001111
                 CMP #deneb
                 BEQ ISDENEB
-                LDY #$27
-                LDA #$69
-                BNE RDNCOMN         ;Always
-ISDENEB         LDY #$28
-                LDA #$79
-                BNE RDNCOMN         ;Always
-IROBOT          LDY #$29
-                LDA #$79
+
+                JSR DRAW_PICT
+                PictTextAt 8;89;" L:"
+                PictTextAt 8;97;" R:"
+                PictEnd
+                LDA #105
+                BNE RDNCOMN             ; always
+
+ISDENEB         JSR DRAW_PICT
+                PictTextAt 8;89;"UL:"
+                PictTextAt 8;97;"UR:"
+                PictTextAt 8;105;"LL:"
+                PictTextAt 8;113;"LR:"
+                PictEnd
+                LDA #121
+                BNE RDNCOMN             ; always
+
+IROBOT          JSR DRAW_PICT
+                PictTextAt 8;89;" L:"
+                PictTextAt 8;97;"  :"
+                PictTextAt 8;105;" R:"
+                PictTextAt 8;113;"  :"
+                PictEnd
+                LDA #121
 RDNCOMN         STA LINECNT
-                JSR TEXTER
+
                 LDA #$00
                 STA VISIBLE
                 STA VISIBLE+1
                 LDX LINECNT
-                CPX #$69
+                CPX #105
                 BEQ ONLY2
                 STA VISIBLE+2
                 STA VISIBLE+3
@@ -39,9 +55,9 @@ BACLOOP         LDA BACLETS,X
                 STA TEXTBUF,X
                 DEX
                 BPL BACLOOP
-HELOOP1         LDA #$08
+HELOOP1         LDX #$08
                 LDY LINECNT
-                JSR LINE
+                JSR DRAW_TEXTBUF_XY
                 LDA TEXTBUF+1
                 CLC
                 ADC #$03
@@ -72,33 +88,46 @@ HELOOP3         LDA VISIBLE,X
 VISKIP1         INX
                 CPX #$0B
                 BNE HELOOP3
+
                 LDA LINTABL+10
                 CLC
-                ADC #$02
+                ADC #2
                 STA LINTABL+10
-                STA LEAVMOD
-                ADC #$0A
-                STA ORGMOD1+2
-                STA ORGMOD2+2
-                LDA #RED
-                STA COLOR
-                LDY #$0E
-                JSR LINER
+                ; STA LEAVMOD
+                ADC #10
+                STA :MOD2+1
 
-                LDA #BLUE
-                JSR PICK_OF_3
+                JSR DRAW_PICT
+                PictSetOrange
+                PictMoveTo $03;$4B
+                PictLineTo $B9;$4B
+:MOD2           PictVLineTo $FF
+                PictHLineTo $03
+                PictVLineTo $4B
+                PictTextAt 56;79;"EQUIPMENT"
+                PictEnd
 
-                LDY #$26
-                JSR TEXTER
+                JSR DRAW_PICK_ITEM
+
+; TEXT26          PictTextAt 56;79;"EQUIPMENT"
+; LEAVMOD         =   *+2
+;                 PictTextAt 35;171;"LEAVE"
+
                 LDA #$00
                 STA ON1
                 STA ON1+1
+
                 LDY #$34
                 LDX SOURCE
                 DEX
                 BEQ :SKIPA
                 DEY
-:SKIPA          JSR TEXTER
+:SKIPA          ; JSR TEXTER
+
+; TEXT33          PictTextAt 144;79;"COST"
+
+; TEXT34          PictTextAt 141;79;"VALUE"
+
                 JSR ISHERE
                 JSR MARKIT
                 LDY SOURCE
@@ -113,41 +142,76 @@ VISKIP1         INX
                 STA BOX_PRESENT
                 JMP ZDOWN2
 
-*-------------------------------
+MASKTAB         DB  $C0,$40,$C0
+LEGLTAB         DB  $40,$00,$C0
+FACTABL         DB  $88,$25,$13     ;SIR
+BACLETS         TXT "B1:"
 
-PICK_OF_3       STA COLOR
-                LDY #$0F
-                JSR LINER
-                LDY #$2A
+;-----------------------------------------------------------
+
+DRAW_PICK_ITEM  LDA #OpColorBlue
+                BNE PICK_ITEM_CMN       ; always
+ERASE_PICK_ITEM LDA #OpColorBlack1
+PICK_ITEM_CMN   JSR SET_COLOR
+                JSR DRAW_PICT
+                PictRect $C4;$4B;$114;$6B
+                PictEnd
+
                 LDX SOURCE
                 DEX
-                BEQ HEDCOMS
-                INY
-                JSR TEXTER
-                LDY #$2D
+                BNE :1
+                JSR DRAW_PICT
+                PictTextAt 219;79;"SELECT"
+                PictTextAt 210;88;"EQUIPMENT"
+                PictTextAt 207;97;"TO BE SOLD"
+                PictEnd
+                RTS
+
+:1              JSR DRAW_PICT
+                PictTextAt 204;79;"SELECT ITEM"
+                PictTextAt 222;88;"TO BE"
+                PictEnd
+
                 LDA SOURCE
-                CMP #$02
-                BEQ HEDCOMS
-                DEY
-HEDCOMS         JMP TEXTER
+                CMP #2
+                BNE :2
+                JSR DRAW_PICT
+                PictTextAt 207;97;"IDENTIFIED"
+                PictEnd
+                RTS
 
-*-------------------------------
+:2              JSR DRAW_PICT
+                PictTextAt 213;97;"REPAIRED"
+                PictEnd
+                RTS
 
-CONFIRMER       STA COLOR
-                LDY #$12
-                JSR LINER
-                LDY #$32
-                JSR TEXTER
-                LDA SOURCE
-                CLC
-                ADC #$37
-                TAY
-                JMP TEXTER
+;-----------------------------------------------------------
 
-*-------------------------------
+DRAW_CONFIRM    LDA #OpColorGreen
+                BNE CONFIRM_CMN         ; always
+ERASE_CONFIRM   LDA #OpColorBlack1
+CONFIRM_CMN     JSR SET_COLOR
+                JSR DRAW_PICT
+                PictRect 193;75;277;115
+                PictTextAt 197;78;"PRESS <SPACE>"
+                PictTextAt 206;86;"TO CONFIRM"
+                PictTextAt 215;106;"C>ANCEL"
+                PictSwitch SOURCE
+:0              PictCase :1
+:1              PictCase :2
+                PictTextAt 212;95;">>SALE<<"
+:2              PictCase :3
+                PictTextAt 200;95;">>IDENTIFY<<"
+:3              PictCase :END
+                PictTextAt 206;95;">>REPAIR<<"
+:END            PictSwitchEnd
+                PictEnd
+                RTS
+
+;-----------------------------------------------------------
 
 LEGLSUB         LDA WHOPIC
-                JSR POINTIT
+                JSR SET_CHAR
                 LDX #$0A
 LELOOP1         LDA VISIBLE,X
                 STA LEGALS,X
@@ -203,30 +267,24 @@ ISAOF2          LDA (CHARDL),Y
                 BNE NOOK1           ;Always
 OKAY            LDY APOINTER
                 JSR OKAYSUB
-                JSR EQUIP1
+                JSR ETABLE_TO_TEXT
                 LDX COUNT
-                LDA LINTABL,X
-                TAY
-                LDA #$23
-HALT1           JSR LINE
+                LDY LINTABL,X
+                LDX #$23
+HALT1           JSR DRAW_TEXTBUF_XY
                 LDX COUNT
                 LDA LEGALS,X
                 CMP #$FF
                 BEQ NOVALUR
                 CMP #$FE
                 BNE BCCAN
-
                 JSR STAT_WORD
                 JMP NOVALUR
 
 BCCAN           LDX COUNT
-                LDA LINTABL,X
-                STA YPNT
-                LDA #$7A
-                STA XPNT
-                LDX #<THE_PRICE
-                LDY #>THE_PRICE
-HALT2           JSR CREDIT_OUT
+                LDY LINTABL,X
+                LDX #122
+HALT2           JSR DRAW_PRICE_AT
 NOVALUR         LDY APOINTER
 LELSKIP         LDA COUNT
                 INC COUNT
@@ -243,15 +301,13 @@ LELOUT          LDA #$0A
                 STA CURSOR
                 RTS
 
-*-------------------------------
+;-----------------------------------------------------------
 
 STAT_WORD       LDX COUNT
-STAT_WORD2      LDA LINTABL,X
-                STA TEXT2F+2        ;??????
-                STA TEXT30+2        ;BROKEN
-                STA TEXT31+2        ;KNOWN
-                STA TEXT37+2        ;OKAY
-                LDY #$2F
+                LDY LINTABL,X
+                LDX #138
+                JSR MOVE_TO
+                LDY #0
                 BIT ETABLE
                 BVC :SKIPA
                 PHP
@@ -259,24 +315,33 @@ STAT_WORD2      LDA LINTABL,X
                 PLP
                 BMI :SKIPA
                 INY
-:SKIPA          CPY #$31
-                BNE HALT3
+:SKIPA          CPY #2
+                BNE :2
                 LDA SOURCE
                 CMP #$03
-                BNE HALT3
-                LDY #$37
-HALT3           JSR TEXTER
+                BNE :2
+                LDY #3
+:2              TYA
+                LDX #<STAT_WORDS
+                LDY #>STAT_WORDS
+                JSR GET_IND_STRING
+HALT3           JSR DRAW_TEXTBUF        ; must be JSR for mod
                 RTS
 
-*-------------------------------
+STAT_WORDS      TXI "??????"
+                TXI "BROKEN"
+                TXI " KNOWN"
+                TXI " OKAY"
+
+;-----------------------------------------------------------
 
 OKAYSUB         LDX #$00
-LELOOP3         LDA (CHARDL),Y
+:1              LDA (CHARDL),Y
                 STA ETABLE,X
                 INY
                 INX
                 CPX #$04
-                BNE LELOOP3
+                BNE :1
                 RTS
 
 *-------------------------------
@@ -284,11 +349,11 @@ LELOOP3         LDA (CHARDL),Y
 ZBLINK          LDA #$10
                 JSR WAIT
                 LDA #$F0
-                JSR WAIT2
+                JSR WAIT_KEY
                 BMI ZKEYGOT
                 JSR ZCURSIT
                 LDA #$00
-                JSR WAIT2
+                JSR WAIT_KEY
                 JSR ZCURSIT
 ZGETKEY         LDA KEYBRD
                 BPL ZBLINK
@@ -331,13 +396,15 @@ ZENTER          LDA CURSOR
                 BNE NOZLEAV
                 JSR ZCURSIT
 ZLEAVE          JSR MARKIT
-                LDY DISPLAY
-                DEY
-                BNE :SKIPA
-                JSR MOVETO2
-                JMP :SKIPB
-:SKIPA          JSR MOVETO1
-:SKIPB          LDA #$01
+
+;                 LDY DISPLAY
+;                 DEY
+;                 BNE :SKIPA
+;                 JSR MOVETO2
+;                 JMP :SKIPB
+; :SKIPA          JSR MOVETO1
+; :SKIPB
+                LDA #$01
                 STA WANTED1
                 JSR DRAW_SCREEN
                 JMP MAIN_LOOP
@@ -346,23 +413,21 @@ NOZLEAV         LDA #$01
                 STA COUNT
 :LOOP1          LDY BOX_PRESENT
                 BEQ :SKIPA
-                JSR TEXTER
+                ; JSR TEXTER
                 LDA #$00
-                JSR WAIT2
+                JSR WAIT_KEY
                 LDY BOX_PRESENT
-                JSR TEXTER
+                ; JSR TEXTER
                 LDA #$00
-                JSR WAIT2
+                JSR WAIT_KEY
                 BMI :SKIPB
                 DEC COUNT
                 BPL :LOOP1
 :SKIPB          JMP ZGETKEY
 :SKIPA          JSR NOISE
-                LDA #BLACK1
-                JSR PICK_OF_3
+                JSR ERASE_PICK_ITEM
                 BIT UNSTROB
-                LDA #GREEN
-                JSR CONFIRMER
+                JSR DRAW_CONFIRM
 :KEYLOOP        LDA KEYBRD
                 BPL :KEYLOOP
                 BIT UNSTROB
@@ -370,13 +435,11 @@ NOZLEAV         LDA #$01
                 BEQ :SKIPC
                 CMP #"C"
                 BNE :KEYLOOP
-                LDA #BLACK1
-                JSR CONFIRMER
-                LDA #BLUE
-                JSR PICK_OF_3
+                JSR ERASE_CONFIRM
+                JSR DRAW_PICK_ITEM
                 JMP ZGETKEY
 :SKIPC          LDA WHOPIC
-                JSR POINTIT
+                JSR SET_CHAR
                 JSR ZCURSIT
                 LDY CURSOR
                 LDA CORESP,Y
@@ -390,7 +453,7 @@ NOZLEAV         LDA #$01
                 JMP ASELLER
 :SKIPE          JSR TAKE_PRICE
                 LDA WHOPIC
-                JSR POINTIT
+                JSR SET_CHAR
                 LDA SOURCE
                 CMP #$03
                 BEQ :SKIPD
@@ -412,8 +475,7 @@ IRCOMN          STA (CHARDL),Y
                 CMP #$03
                 BEQ :SKIPA
                 JSR EDRASUB
-:SKIPA          LDX CURSOR
-                JSR STAT_WORD2
+:SKIPA          JSR STAT_WORD
                 JSR NOISE
                 JMP ZESKIP2
 
@@ -455,25 +517,46 @@ UPDATE_BOX      LDX CURSOR
                 BEQ :EXIT
                 LDA BOX_PRESENT
                 BNE :SKIPC
-                LDA #RED
-                STA COLOR
+                ; LDA #RED
+                ; STA COLOR
                 STY BOX_PRESENT
-                JSR TEXTER
-                LDY #$11
-                JMP LINER
+                ; JSR TEXTER
+
+                ; LDY #$11
+                ; JMP LINER
+                RTS
+
+; TEXT35          PictTextAt 228;118;"TOO"
+;                 PictTextAt 210;126;"EXPENSIVE"
+
+; TEXT36          PictTextAt 207;118;"UNSELLABLE"
+;                 PictTextAt 225;126;"ITEM"
+
+; RED_BOX         LINEAT  199;114
+;                 LINEAT  199;136
+;                 LINEAT  273;136
+;                 LINEAT  273;114
+;                 DB  $FE
+;                 LINEAT  201;136
+;                 LINEAT  201;114
+;                 LINEAT  271;114
+;                 LINEAT  271;136
+;                 DB  $FF
+
 :SKIPC          STY BOX_PRESENT
                 CPY #$00
                 BNE :SKIPD
                 TAY
-                JSR TEXTER
-                LDA #BLACK1
+                ; JSR TEXTER
+                ; LDA #BLACK1
                 STA COLOR
-                LDY #$11
-                JMP LINER
+                ; LDY #$11
+                ; JMP LINER
+                RTS
 :SKIPD          TAY
-                JSR TEXTER
+                ; JSR TEXTER
                 LDY BOX_PRESENT
-                JMP TEXTER
+                ; JMP TEXTER
 :EXIT           RTS
 
 *-------------------------------
@@ -487,41 +570,28 @@ CORESP          DB  $3D,$41,$45
 
 *-------------------------------
 
-EDRASUB         JSR EQUIP1
-                LDY CURSOR
-                LDA LINTABL,Y
-                STA YPNT
-                TAY
-                LDA #$23
-                JMP LINE
+EDRASUB         JSR ETABLE_TO_TEXT
+                LDX CURSOR
+                LDY LINTABL,X
+                LDX #35
+                JMP DRAW_TEXTBUF_XY
 
-PDRASUB         LDX #<THE_PRICE
-                LDY #>THE_PRICE
-                LDA #$7A
-                STA XPNT
-                JMP CREDIT_OUT
+PDRASUB         LDX #122
+                LDY YCOORD
+                JMP DRAW_PRICE_AT
 
 *-------------------------------
 
-ZCURSIT         LDY CURSOR
-                LDA LINTABL,Y
-                STA YPNT
-                LDA #$1B
-                STA XPNT
-                LDA #2
-                JSR SPCHARS
+ZCURSIT         LDX CURSOR
+                LDY LINTABL,X
+                LDX #27
+                JSR DRAW_TRIANGLE
                 LDA CURSOR
                 CMP #$0A
-                BEQ :EXIT
-                LDA #$AE
-                STA XPNT
-                LDA #3
-                JMP SPCHARS
-:EXIT           RTS
-
-MASKTAB         DB  $C0,$40,$C0
-LEGLTAB         DB  $40,$00,$C0
-FACTABL         DB  $88,$25,$13     ;SIR
-BACLETS         USR (B1:)
+                BEQ :1
+                LDX #174
+                JSR HMOVE_TO
+                JMP DRAW_BACK_ARROW
+:1              RTS
 
 *-------------------------------

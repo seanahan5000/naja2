@@ -2,7 +2,7 @@
                 EXP OFF
 
 SAME_PAGE_AS    MAC
-                ERR >(*-1!]1)
+                ERR *!]1/256
                 EOM
 
 Text0           =   0
@@ -96,7 +96,7 @@ AND_MASK_L      =   AND_MASK
 AND_MASK_R      =   $5B
 LEFT_MASK       =   $5C
 RIGHT_MASK      =   $5D
-MAX_DIV7        =   $5F             ; TEXT-only
+SWITCH_INDEX    =   $5F
 
 ; TODO: conflict here?
 
@@ -250,10 +250,14 @@ OpCopyToPage    =   44
 OpCopyToPage1   =   45
 OpCopyToPage2   =   46
 OpCall          =   47
-OpHook0         =   48
-OpHook1         =   49
 
-OpEnd           =   50
+OpSwitch        =   48
+OpCase          =   49
+
+OpHook0         =   50
+OpHook1         =   51
+
+OpEnd           =   52
 
 OpColorBlack1   =   0
 OpColorGreen    =   1
@@ -584,6 +588,21 @@ PictCopyToPage2 MAC
 PictCall        MAC
                 DB  OpCall
                 DW  ]1
+                EOM
+
+; switch between sets of ops using given ZPAGE (cannot be nested)
+PictSwitch      MAC
+                DB  OpSwitch
+                DB  ]1
+                EOM
+
+PictCase        MAC
+                DB  OpCase
+                DB  ]1-*-2
+                EOM
+
+PictSwitchEnd   MAC
+                ; no code here
                 EOM
 
 ; End the picture

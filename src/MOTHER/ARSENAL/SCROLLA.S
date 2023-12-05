@@ -1,5 +1,4 @@
 TALKER          BIT UNSTROB
-                ;*** JSR DRIVE_OFF
 
                 JSR DRAW_PICT
                 PictSetPage2
@@ -17,8 +16,7 @@ KEYOUT          BIT UNSTROB
                 PLA
                 JMP GOBACK
 
-:1              ;*** JSR DRIVE_ON
-                PLA
+:1              PLA
                 PLA
                 JMP SMAINER
 

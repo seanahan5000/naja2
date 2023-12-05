@@ -87,14 +87,14 @@ NOT_NORMAL		CMP	#dead
 
 				JSR DRAW_PICT
 				PictSetTextBox 146;11;278;44
-				PictCall WRAP_TRIMMED_NAME
+				PictCall WRAP_CNAME
 				PictTextIn " IS DEAD AND BEYOND HELP HERE."
 				PictEnd
 				JMP	HEAL_OUT
 
 NOT_DEAD		JSR DRAW_PICT
 				PictSetTextBox 146;11;278;44
-				PictCall WRAP_TRIMMED_NAME
+				PictCall WRAP_CNAME
 				PictTextIn " NEEDS "
 				PictEnd
 				LDA	#$41			;Medical equipment
@@ -137,7 +137,7 @@ NOT_DEAD		JSR DRAW_PICT
 
 				JSR DRAW_PICT
 				PictSetTextBox 146;39;278;64
-				PictCall WRAP_TRIMMED_NAME
+				PictCall WRAP_CNAME
 				PictTextIn " DOES NOT HAVE "
 				PictEnd
 
@@ -211,7 +211,7 @@ GENERAL_HEAL	ADC #0
 
 				JSR DRAW_PICT
 				PictSetTextBox 146;3;278;44
-				PictCall WRAP_TRIMMED_NAME
+				PictCall WRAP_CNAME
 				PictTextIn " IS IN PERFECT HEALTH. NO TREATMENT IS NEEDED."
 				PictEnd
 				JMP	HEAL_OUT
@@ -223,14 +223,14 @@ GENERAL_HEAL	ADC #0
 
 				JSR DRAW_PICT
 				PictSetTextBox 146;3;278;44
-				PictCall WRAP_TRIMMED_NAME
+				PictCall WRAP_CNAME
 				PictTextIn " IS IN CRITICAL CONDITION AND DESPARATELY"
 				PictEnd
 				JMP :SKIPD
 
 :SKIPC			JSR DRAW_PICT
 				PictSetTextBox 146;19;278;44
-				PictCall WRAP_TRIMMED_NAME
+				PictCall WRAP_CNAME
 				PictEnd
 
 :ALSO_ONLY_MOD	LDA #$FF
@@ -279,7 +279,7 @@ SPACE_TEXT		JSR DRAW_PICT
 				PictEnd
 				RTS
 
-ROBOT_NAME		JSR WRAP_TRIMMED_NAME
+ROBOT_NAME		JSR WRAP_CNAME
 				LDA ITARGET_CHAR
 				JMP SET_CHAR
 
@@ -287,7 +287,7 @@ SHOW_DEATH		JSR	MULTI_WAIT
 				JSR DRAW_PICT
 				PictSetTextBox 146;11;278;44
 				PictTextIn "THERE IS NOTHING THAT CAN BE DONE TO SAVE "
-				PictCall WRAP_TRIMMED_NAME
+				PictCall WRAP_CNAME
 				PictTextIn " NOW."
 				PictEnd
 
@@ -302,7 +302,7 @@ SHOW_DEATH		JSR	MULTI_WAIT
 
 				JSR DRAW_PICT
 				PictSetTextBox 146;11;278;44
-				PictCall WRAP_TRIMMED_NAME
+				PictCall WRAP_CNAME
 				PictTextIn " HAS DIED."
 				PictEnd
 
@@ -317,14 +317,14 @@ SHOW_DEATH		JSR	MULTI_WAIT
 				JSR DRAW_PICT
 				PictSetTextBox 146;11;278;44
 				PictTextIn "BECAUSE OF THE DEATH OF "
-				PictCall WRAP_TRIMMED_NAME
+				PictCall WRAP_CNAME
 				PictTextIn ", THE ROBOT, "
 				PictEnd
 
 				PLA
 				JSR SET_CHAR
 				JSR DRAW_PICT
-				PictCall WRAP_TRIMMED_NAME
+				PictCall WRAP_CNAME
 				PictTextIn ", IS NOW USELESS."
 				PictEnd
 

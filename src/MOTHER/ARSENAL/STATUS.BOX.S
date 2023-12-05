@@ -1,27 +1,44 @@
 STATUP          JSR GET_STAT
 STATUPA         LDA COUNT
                 CMP STATUS
-                BEQ SAME1
-                LDA #BLACK1
-                STA COLOR
-                JSR DRASTAT
-                LDA #RED
-                STA COLOR
+                BEQ :1
+                JSR ERASE_STAT
                 LDA COUNT
                 STA STATUS
-DRASTAT         LDA STATUS
-                BEQ SAME1
-                LDY #$10
-                JSR LINER
+                JMP DRAW_STAT
+:1              RTS
+
+DRAW_STAT       LDA #OpColorOrange
+                BNE STAT_CMN            ; always
+ERASE_STAT      LDA #OpColorBlack1
+STAT_CMN        JSR SET_COLOR
                 LDA STATUS
-                CLC
-                ADC #$04
-                TAY
-                JSR TEXTER
+                BEQ SAME1
+                JSR DRAW_PICT
+                PictMoveTo $B1;$B9
+                PictLineTo $F9;$B9
+                PictMoveTo $B9;$BB
+                PictLineTo $F1;$BB
+                PictSwitch STATUS
+:0              PictCase :1
+:1              PictCase :2
+                PictTextAt 177;169;"INCOMPATIBLE"
+                PictTextAt 183;177;"PROFESSION"
+:2              PictCase :3
+                PictTextAt 204;169;"TOO"
+                PictTextAt 186;177;"EXPENSIVE"
+:3              PictCase :4
+                PictTextAt 195;169;"OUT OF"
+                PictTextAt 198;177;"STOCK"
+:4              PictCase :END
+                PictTextAt 192;169;"FULL OF"
+                PictTextAt 186;177;"EQUIPMENT"
+:END            PictSwitchEnd
+                PictEnd
 SAME1           RTS
 
 GET_STAT        LDA WHOPIC
-                JSR POINTIT
+                JSR SET_CHAR
                 JSR RESET_EQLIST
                 JSR ESCAN_PUTABLE
                 LDA #$FF            ;IS THIS NEEDED ??
@@ -38,9 +55,9 @@ GET_STAT        LDA WHOPIC
                 BEQ :SKIPA
 
                 JSR OFF_CALC
-                LDA STCKOFF,X
+                LDA STOCK_PTRS,X
                 STA TEMP
-                LDA STCKOFF+1,X
+                LDA STOCK_PTRS+1,X
                 STA TEMP+1
                 LDA (TEMP),Y
                 BEQ :EXIT

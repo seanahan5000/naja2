@@ -30,7 +30,7 @@ DOOR_SIGN       JSR CLEAR_PAGE
 
 :GOT_ANDROID    JSR DRAW_PICT
                 PictTextAt $40;$7E;(DO_YOU_WANT_)
-                PictCall DRAW_TRIMMED_NAME
+                PictCall DRAW_CNAME
                 PictText (_TO)
                 PictTextAt $40;$86;(TRANSLATE_THE_WRITING?_)
                 PictEnd

@@ -113,6 +113,10 @@ OP_TABLE        DW  OP_SET_COLOR
                 DW  COPY_TO_PAGE1
                 DW  COPY_TO_PAGE2
                 DW  OP_CALL
+
+                DW  OP_SWITCH
+                DW  OP_CASE
+
 OP_HOOKS        DW  $FFFF               ; OP_HOOK0
                 DW  $FFFF               ; OP_HOOK1
 
@@ -137,6 +141,25 @@ OP_CALL_PROC    STX :CALL_MOD+1
                 STA OP_PTR_H
                 PLA
                 STA OP_PTR
+                RTS
+
+OP_SWITCH       LDA (OP_PTR),Y
+                STA :MOD+1
+:MOD            LDA $FF
+                STA SWITCH_INDEX
+                INY
+                STY OP_INDEX
+                RTS
+
+OP_CASE         LDA SWITCH_INDEX
+                BEQ :1
+                TYA
+                CLC
+                ADC (OP_PTR),Y
+                TAY
+:1              INY
+                STY OP_INDEX
+                DEC SWITCH_INDEX
                 RTS
 
 ;-------------------------------------------------------------------------------

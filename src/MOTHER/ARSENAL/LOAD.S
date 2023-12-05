@@ -69,19 +69,15 @@ LOAD_ARSENAL    JSR DRAW_PICT
                 CMP #$9B                ; escape
                 BEQ GOBACK
 
-SMAINER         LDA #IS_SPINNING+KEEP_SPINNING
-                ; JSR SET_NEXT_ON_OFF
-                ; LDA #$7F
-                ; PHA
-                ; LDA #$FF
-                ; PHA
-                ; LDA #fileArsenal_Control
-                ; LDY #$80
-                ; JMP LOAD_FILE
+SMAINER         LDA #$7F
+                PHA
+                LDA #$FF
+                PHA
+                LDA #fileArsenal_Control
+                LDY #$80
+                JMP LOAD_FILE
 
-GOBACK
-                ;*** JSR DRIVE_OFF
-                JSR DRAW_PICT
+GOBACK          JSR DRAW_PICT
                 PictSetPage2
                 PictClearPage
                 PictCall DRAW_HALL

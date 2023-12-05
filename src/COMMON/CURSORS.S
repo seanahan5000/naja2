@@ -42,21 +42,6 @@ DRAW_MARKER_TILE ENT
                 DB  %00011111
                 DB  %00000000
 
-DRAW_MARKER_TIP ENT
-                JSR MOVE_TO
-DRAW_MARKER_TIP_TILE ENT
-                LDX #<:MARKER_TIP
-                LDY #>:MARKER_TIP
-                JMP DRAW_TILE
-
-:MARKER_TIP     DB  %00000000
-                DB  %00000000
-                DB  %00000011
-                DB  %00001111
-                DB  %00000011
-                DB  %00000000
-                DB  %00000000
-
 DRAW_TRIANGLE   ENT
                 JSR MOVE_TO
                 LDX #<:TRIANGLE

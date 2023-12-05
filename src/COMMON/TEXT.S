@@ -309,6 +309,10 @@ HMOVE_6         ENT
                 STA XSHIFT
                 RTS                     ; always BNE
 
+; TODO: consider putting pointer on the stack
+PTR             =   LOCAL_TEMP+0
+PTR_H           =   LOCAL_TEMP+1
+
 ;-------------------------------------------------------------------------------
 ; Find a high-bit-terminated string in a list by index
 ;
@@ -321,10 +325,6 @@ HMOVE_6         ENT
 ;   TEXT_BUFFER: holding indexed string
 ;   X: index of TextLineEnd
 ;
-PTR             =   LOCAL_TEMP+0
-PTR_H           =   LOCAL_TEMP+1
-
-; TODO: consider putting pointer on the stack
 GET_IND_STRING  ENT
                 STX PTR
                 STY PTR_H

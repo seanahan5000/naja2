@@ -96,7 +96,8 @@ MULTIPLY_13		ENT
 * Handles up to 99 * 9,999,999
 *----------------------------------------
 
-MULTIPLY_14		SEC
+MULTIPLY_14		ENT
+                SEC
 DO_MULT1		STA	MULTIPLIER
 				STX	TEMP
 				STY	TEMP+1

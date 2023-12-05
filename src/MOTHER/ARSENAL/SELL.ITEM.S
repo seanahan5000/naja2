@@ -1,16 +1,17 @@
 *-------------------------------
 
-ASELLER         LDA WHOSPIC
-                CMP #7
-                BNE :SKIPA
-                JSR RESET_CHLIST
-                TXA
-:SKIPA          JSR POINTIT
-                LDX #<THE_PRICE
-                LDY #>THE_PRICE
-                JSR CHAR_EARN
+ASELLER
+;                 LDA WHOSPIC
+;                 CMP #7
+;                 BNE :SKIPA
+;                 JSR RESET_CHLIST
+;                 TXA
+; :SKIPA          JSR SET_CHAR
+;                 LDX #<THE_PRICE
+;                 LDY #>THE_PRICE
+;                 JSR CHAR_EARN
                 LDA WHOPIC
-                JSR POINTIT
+                JSR SET_CHAR
                 JSR EDRASUB
                 JSR PDRASUB
                 PLA
@@ -24,10 +25,11 @@ ZELOOP4         STA (CHARDL),Y
                 LDX CHUNK
                 CPX #$16
                 BCS ZESKIP1
-                LDA STCKOFF,X
+                LDA STOCK_PTRS,X
                 STA TEMP
-                LDA STCKOFF+1,X
+                LDA STOCK_PTRS+1,X
                 STA TEMP+1
+
                 LDY DSPLACE
                 LDA (TEMP),Y
                 CMP #$7F
@@ -36,13 +38,14 @@ ZELOOP4         STA (CHARDL),Y
                 BNE ZESKIP0
                 LDA #$00
 ZESKIP0         CLC
-                SED
+                SED                     ;*** switch to hex, CLAMP ***
                 ADC #$01
                 CLD
                 STA (TEMP),Y
                 LDA #$FF
-                STA STCKDIF
-ZESKIP1         LDA CURSOR
+                STA STCKDIF             ;*** DIRTY STOCK
+ZESKIP1
+                LDA CURSOR
                 CMP #$04
                 BCC NOSCROL
                 SBC #$03
@@ -57,7 +60,8 @@ ZESKIP1         LDA CURSOR
                 ADC #$04
                 CMP CURSOR
                 BEQ NOSCROL
-                BNE CSCROLL         ;Always
+                BNE CSCROLL             ; always
+
 NOSCROL         JSR NOISE
                 JMP ZESKIP2
 BSCROLL         LDA (CHARDL),Y
@@ -81,13 +85,13 @@ SCLOOP1         LDX LINENUM
                 LDA LOBYTES,X
                 STA SCREENL
                 LDA HIBYTES,X
-                ORA PAGE
+                ; ORA PAGE
                 STA SCREENH
                 DEX
                 LDA LOBYTES,X
                 STA DESTINL
                 LDA HIBYTES,X
-                ORA PAGE
+                ; ORA PAGE
                 STA DESTINH
                 LDY #$05
 SCLOOP2         LDA (SCREENL),Y
@@ -144,10 +148,8 @@ ZESKIP2         LDA #$AD
                 STA HALT1
                 STA HALT2
                 STA HALT3
-                LDA #BLACK1
-                JSR CONFIRMER
-                LDA #BLUE
-                JSR PICK_OF_3
+                JSR ERASE_CONFIRM
+                JSR DRAW_PICK_ITEM
                 JMP ZDOWN2
 
 *-------------------------------

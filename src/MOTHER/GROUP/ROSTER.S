@@ -509,7 +509,7 @@ RENAME_LOOP     LDX CURSOR
                 JSR DRAW_PICT
                 PictClear 0;184;40;191
                 PictTextAt 8;184;"CHANGE FROM '"
-                PictCall DRAW_TRIMMED_NAME
+                PictCall DRAW_CNAME
                 PictText "' TO WHAT? "
                 PictEnd
 
@@ -526,7 +526,7 @@ NO_DUPES        JSR DUPE_NAME_CHECK
                 JSR DRAW_PICT
                 PictClear 0;184;40;191
                 PictTextAt 8;184;"'"
-                PictCall DRAW_TRIMMED_NAME
+                PictCall DRAW_CNAME
                 PictText "' IS USED - TRY ANOTHER"
                 PictEnd
                 JMP BAD_NAME

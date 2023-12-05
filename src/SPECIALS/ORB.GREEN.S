@@ -83,7 +83,7 @@ KEY_PEDESTAL    JSR DRAW_PICT
                 JSR DRAW_PICT
                 PictClear $01;$1D;$17;$38
                 PictMoveTo $0A;$27
-                PictCall DRAW_TRIMMED_NAME
+                PictCall DRAW_CNAME
                 PictText (_TAKES_THE_ORB.)
                 PictEnd
 

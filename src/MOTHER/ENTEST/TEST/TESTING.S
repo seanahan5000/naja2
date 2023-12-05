@@ -118,7 +118,7 @@ FAILS_TEST      JSR DRAW_PICT
                 PictSetBlue
                 PictRect $1E;$00;$100;$51
                 PictTextAt 45;6;"UPON REVIEWING "
-                PictCall DRAW_TRIMMED_NAME
+                PictCall DRAW_CNAME
                 PictText "'S TEST"
                 PictTextAt 45;15;"PERFORMANCE, I HAVE DETERMINED"
                 PictTextAt 45;24;"THAT THEY HAVE NOT MET THE"
@@ -174,7 +174,7 @@ PASSES_TEST     JSR DRAW_PICT
                 BNE NO_EMED
 
 NOW_EMED        JSR DRAW_PICT
-                PictCall DRAW_TRIMMED_NAME
+                PictCall DRAW_CNAME
                 PictText " IS"
                 PictTextAt 45;15;"NOW QUALIFIED TO BE A LEVEL "
                 PictCall LEVEL_OUT
@@ -201,7 +201,7 @@ PROFFER         JSR CPROF_TO_TEXT
                 JMP DRAW_TEXTBUF_XY
 
 NO_EMED         JSR DRAW_PICT
-                PictCall DRAW_TRIMMED_NAME
+                PictCall DRAW_CNAME
                 PictText " HAS"
                 PictTextAt 45;15;"MET THE MINIMUM REQUIREMENTS"
                 PictTextAt 45;24;"FOR A LEVEL "

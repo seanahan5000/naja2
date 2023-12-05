@@ -1,37 +1,39 @@
-BUY_EQUIPMNT    LDA #$00
+BUY_EQUIPMENT   LDA #$00
                 STA LINECNT
                 JSR CURSOR3
                 LDA #$00
                 STA STATUS
                 JSR STATUP
-                LDY DISPLAY
-                DEY
+                LDX DISPLAY
+                DEX
                 LDA WANTED1
-                STA ON1,Y
+                STA ON1,X
                 BIT UNSTROB
 BLINK3          LDA #$10
                 JSR WAIT
                 LDA #$F0
-                JSR WAIT2
+                JSR WAIT_KEY
                 BMI KEYGOT3
                 JSR CURSOR3
                 LDA #$00
-                JSR WAIT2
+                JSR WAIT_KEY
                 JSR CURSOR3
 GETAKEY         BIT KEYBRD
                 BPL BLINK3
 KEYGOT3         LDA KEYBRD
                 BIT UNSTROB
-                CMP #$9B
-                BEQ GETOUT2
+                ; CMP #$9B
+                ; BEQ GETOUT2
                 JSR CHECK_UP
                 BEQ GO_UP2
                 JSR CHECK_DOWN
                 BEQ GO_DOWN2
                 JSR CHECK_ENTER
                 BEQ ENTER2
+                JSR CHECK_CANCEL
+                BEQ GETOUT2
                 JMP GETAKEY
-GETOUT2         JMP ARSOUT
+GETOUT2         JMP ARSOUT              ; *** RETURN PROBLEMS ***
 
 GO_UP2          JSR CURSOR3
                 DEC LINECNT
@@ -68,9 +70,7 @@ ENTER2          LDA LINECNT
                 LDA WANTS,Y
                 STA WANTED1
                 JSR CURSOR3
-                LDA #BLACK1
-                STA COLOR
-                JSR DRASTAT
+                JSR ERASE_STAT
                 LDA #$00
                 STA STATUS
                 JSR DRAW_SCREEN
@@ -87,18 +87,22 @@ NOLEAVN         LDA STATUS
                 JSR BLINKEM
                 JMP GETAKEY
 :SKIPA          LDA WHOPIC
-                JSR POINTIT
+                JSR SET_CHAR
                 BIT UNSTROB
                 JSR NOISE
-                JSR BLANKER
-                LDY #$09
-                JSR TEXTER
-SPACANC         LDA KEYBRD          ;MAKE THIS A SUBROUTINE
+
+                JSR DRAW_PICT
+                PictClear 4;164;36;191
+                PictTextAt 46;168;"PRESS <SPACE> TO VERIFY PURCHASE"
+                PictTextAt 124;180;"C>ANCEL"
+                PictEnd
+
+SPACANC         LDA KEYBRD
                 BPL SPACANC
                 BIT UNSTROB
                 JSR CHECK_ENTER
                 BEQ BUYIT
-                CMP #"C"
+                JSR CHECK_CANCEL
                 BNE SPACANC
 SPACOMN         JSR GOSCOMN
                 JMP GETAKEY
@@ -114,7 +118,7 @@ BUYIT           JSR OFF_CALC
                 TAX
                 LDA #$03
                 STA COUNT
-TOPOSS          TXA
+:1              TXA
                 TAY
                 LDA (DATPNTL),Y
                 LDY OPEN_SLOT
@@ -122,94 +126,84 @@ TOPOSS          TXA
                 INX
                 INC OPEN_SLOT
                 DEC COUNT
-                BPL TOPOSS
-                LDX #$67
-                LDY TEXT2A+2
+                BPL :1
+                LDX LEAVLIN
+                LDY LINTABL,X
+                LDX #103
                 JSR UPDATE_CREDIT
                 JSR OFF_CALC
-                LDA STCKOFF,X
+                LDA STOCK_PTRS,X
                 STA DATPNTL
-                LDA STCKOFF+1,X
+                LDA STOCK_PTRS+1,X
                 STA DATPNTH
+
                 TYA
-                JSR STOCKER
+                PHA
+                JSR GET_STOCK
                 STY SCRATCH
+                PLA
+                PHA
                 TAY
                 LDA (DATPNTL),Y
+
                 CMP #$7F
-                BEQ GOGETA
-                SED
+                BEQ :2
+                SED                     ;*** switch to hex, CLAMP ***
                 SEC
                 SBC #$01
                 CLD
+
                 STA (DATPNTL),Y
                 LDA #$FF
-                STA STCKDIF
-                TYA
-                JSR STOCKER
+                STA STCKDIF             ;*** DIRTY STOCK
+                PLA
+                JSR GET_STOCK
                 CPY SCRATCH
-                BEQ GOGETA
+                BEQ :2
                 TYA
                 PHA
                 LDY SCRATCH
-                JSR TEXTER
+                JSR DRAW_STOCK
                 PLA
                 TAY
-                JSR TEXTER
-GOGETA          JSR NOISE
+                JSR DRAW_STOCK
+:2              JSR NOISE
                 JMP SPACOMN
 
-GOSCOMN         JSR BLANKER
+GOSCOMN         JSR DRAW_PICT
+                PictClear 4;164;36;191
+                PictEnd
+                JSR DRAW_NPE
                 LDA #$00
                 STA STATUS
-                LDY #$01
-                JSR TEXTER
-                JSR DONPE
                 JMP STATUP
-
-BLANKER         LDX #$A4
-:LOOP1          LDA LOBYTES,X
-                STA SCREENL
-                LDA HIBYTES,X
-                ORA PAGE
-                STA SCREENH
-                LDY #$23
-                LDA #$00
-:LOOP2          STA (SCREENL),Y
-                DEY
-                CPY #$03
-                BNE :LOOP2
-                INX
-                CPX #$BF
-                BNE :LOOP1
-                RTS
 
 *-------------------------------
 
-CURSOR3         LDY LINECNT
-                LDA LINTABL,Y
-                STA YPNT
-                LDA #$05
-                STA XPNT
-                LDA #2
-                JSR SPCHARS
+CURSOR3         LDX LINECNT
+                LDY LINTABL,X
+                LDX #5
+                JSR DRAW_TRIANGLE
                 LDA LINECNT
                 CMP LEAVLIN
-                BEQ :EXIT
-                LDA #$9B
-                STA XPNT
-                LDA #3
-                JSR SPCHARS
-                LDA #$26
-                STA XCOORD
-                LDA #$03
-                STA SHIFT
-                LDX #6
-:LOOP1          LDA CURSOR_DATA+21,X
-                STA CHARTAB,X
-                DEX
-                BPL :LOOP1
-                JSR CHAROUT
-:EXIT           RTS
+                BNE :1
+                RTS
+
+:1              LDX #155
+                JSR HMOVE_TO
+                JSR DRAW_BACK_ARROW
+                LDX #<269
+                JSR HMOVE_TO_H
+DRAW_BACK_ARROW LDX #<:BACK_ARROW
+                LDY #>:BACK_ARROW
+                JMP DRAW_TILE
+
+:BACK_ARROW     DB  %01100000
+                DB  %01110000
+                DB  %01111000
+                DB  %01111110
+                DB  %01111000
+                DB  %01110000
+                DB  %01100000
 
 *-------------------------------

@@ -14,7 +14,7 @@ COMPRESS		CLC
 
 				JSR DRAW_PICT
 				PictMoveTo 171;60
-				PictCall DRAW_TRIMMED_NAME
+				PictCall DRAW_CNAME
 				; NOTE: not enough space for period at end
 				PictText "_HAS_NO"
 				PictTextAt 171;68;"ROOM TO CARRY A"

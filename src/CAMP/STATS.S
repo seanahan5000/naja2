@@ -187,38 +187,37 @@ PROFNAME_TO_TEXT LDY #profrace
                 INX
                 BNE NTT_CMN         ; always
         fin
-
+;
+; copy character name to text buffer,
+;   trimmed of trailing spaces
+;
+; On exit:
+;   X: offset of TextLineEnd
+;
 CNAME_TO_TEXT   ENT
                 LDX #0
 NTT_CMN         LDY #name
-:2              LDA (CHARDL),Y
+:1              LDA (CHARDL),Y
                 STA TEXT_BUFFER,X
                 INX
                 INY
                 CPY #name+10
-                BNE :2
-                LDA #TextLineEnd
-                STA TEXT_BUFFER,X
-                RTS
-
-
-TRIM_NAME       ENT
-                JSR CNAME_TO_TEXT
-:1              LDA TEXT_BUFFER-1,X
+                BNE :1
+:2              LDA TEXT_BUFFER-1,X
                 CMP #TextSpace
-                BNE :2
+                BNE :3
                 DEX
-                BPL :1
-:2              LDA #TextLineEnd
+                BPL :2
+:3              LDA #TextLineEnd
                 STA TEXT_BUFFER,X
                 RTS
 
-DRAW_TRIMMED_NAME ENT
-                JSR TRIM_NAME
+DRAW_CNAME      ENT
+                JSR CNAME_TO_TEXT
                 JMP DRAW_TEXTBUF
 
-WRAP_TRIMMED_NAME ENT
-                JSR TRIM_NAME
+WRAP_CNAME      ENT
+                JSR CNAME_TO_TEXT
                 JMP WRAP_TEXTBUF
 
 CPROF_TO_TEXT   ENT
@@ -354,7 +353,8 @@ HTT_CMN         STA :FILL_MOD+1
 ;                 LDY #healthmax
 ;                 BNE CMN_TO_TEXT_L2  ; always
 
-ENERGY_TO_TEXT_L LDX #0
+ENERGY_TO_TEXT_L ENT
+                LDX #0
                 LDY #energylev
                 LDA #3
                 JSR CHAR_DIGITS_L
