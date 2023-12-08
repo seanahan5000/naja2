@@ -221,7 +221,8 @@ fileRuuik             = $52
 
 fileKeyDoor           = $60
 
-fileTesserport        = $6F
+fileTesserport        = $6E
+fileGuard             = $6F
 fileDeleteChar        = $70
 fileInfoSeller        = $71
 fileEnroll_Load       = $72

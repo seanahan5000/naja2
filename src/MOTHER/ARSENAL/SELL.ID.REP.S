@@ -93,7 +93,6 @@ VISKIP1         INX
                 CLC
                 ADC #2
                 STA LINTABL+10
-                ; STA LEAVMOD
                 ADC #10
                 STA :MOD2+1
 
@@ -109,25 +108,29 @@ VISKIP1         INX
 
                 JSR DRAW_PICK_ITEM
 
-; TEXT26          PictTextAt 56;79;"EQUIPMENT"
-; LEAVMOD         =   *+2
-;                 PictTextAt 35;171;"LEAVE"
+                LDY LINTABL+10
+                LDX #35
+                JSR MOVE_TO
+                JSR DRAW_PICT
+                PictText "LEAVE"
+                PictEnd
 
                 LDA #$00
                 STA ON1
                 STA ON1+1
 
-                LDY #$34
                 LDX SOURCE
                 DEX
-                BEQ :SKIPA
-                DEY
-:SKIPA          ; JSR TEXTER
+                BEQ :1
+                JSR DRAW_PICT
+                PictTextAt 144;79;"COST"
+                PictEnd
+                BNE :2                  ; always
 
-; TEXT33          PictTextAt 144;79;"COST"
-
-; TEXT34          PictTextAt 141;79;"VALUE"
-
+:1              JSR DRAW_PICT
+                PictTextAt 141;79;"VALUE"
+                PictEnd
+:2
                 JSR ISHERE
                 JSR MARKIT
                 LDY SOURCE
@@ -325,7 +328,7 @@ STAT_WORD       LDX COUNT
                 LDX #<STAT_WORDS
                 LDY #>STAT_WORDS
                 JSR GET_IND_STRING
-HALT3           JSR DRAW_TEXTBUF        ; must be JSR for mod
+HALT3           JSR DRAW_TEXTBUF        ; must be JSR for HALT3 mod
                 RTS
 
 STAT_WORDS      TXI "??????"
@@ -364,9 +367,10 @@ ZKEYGOT         BIT UNSTROB
                 BEQ ZDOWN1
                 JSR CHECK_ENTER
                 BEQ ZENTER
-                CMP #$9B
-                BNE ZGETKEY
-                JMP ARSOUT
+                JSR CHECK_CANCEL
+                BEQ ZLEAVE
+                BNE ZGETKEY             ; always
+
 ZUP1            JSR ZCURSIT
 ZUP2            DEC CURSOR
                 BPL ZUP3
@@ -378,6 +382,7 @@ ZUP3            LDY CURSOR
                 JSR ZCURSIT
                 JSR UPDATE_BOX
                 JMP ZGETKEY
+
 ZDOWN1          JSR ZCURSIT
 ZDOWN2          INC CURSOR
                 LDA CURSOR
@@ -391,19 +396,16 @@ ZDOWN3          TAY
                 JSR ZCURSIT
                 JSR UPDATE_BOX
                 JMP ZGETKEY
+
 ZENTER          LDA CURSOR
                 CMP #$0A
                 BNE NOZLEAV
                 JSR ZCURSIT
 ZLEAVE          JSR MARKIT
 
-;                 LDY DISPLAY
-;                 DEY
-;                 BNE :SKIPA
-;                 JSR MOVETO2
-;                 JMP :SKIPB
-; :SKIPA          JSR MOVETO1
-; :SKIPB
+                JSR DRAW_PICT
+                PictCopyTo 0;0;40;69
+                PictEnd
                 LDA #$01
                 STA WANTED1
                 JSR DRAW_SCREEN
@@ -413,11 +415,10 @@ NOZLEAV         LDA #$01
                 STA COUNT
 :LOOP1          LDY BOX_PRESENT
                 BEQ :SKIPA
-                ; JSR TEXTER
+                JSR ERASE_BOX
                 LDA #$00
                 JSR WAIT_KEY
-                LDY BOX_PRESENT
-                ; JSR TEXTER
+                JSR DRAW_BOX
                 LDA #$00
                 JSR WAIT_KEY
                 BMI :SKIPB
@@ -433,7 +434,7 @@ NOZLEAV         LDA #$01
                 BIT UNSTROB
                 JSR CHECK_ENTER
                 BEQ :SKIPC
-                CMP #"C"
+                JSR CHECK_CANCEL
                 BNE :KEYLOOP
                 JSR ERASE_CONFIRM
                 JSR DRAW_PICK_ITEM
@@ -484,80 +485,85 @@ IRCOMN          STA (CHARDL),Y
 UPDATE_BOX      LDX CURSOR
                 LDY #$00
                 CPX #$0A
-                BEQ :SKIPB
+                BEQ :4
                 LDY CORESP,X
                 JSR OKAYSUB
                 JSR CALC_VALUE
                 LDX SOURCE
                 DEX
-                BEQ :SKIPA
+                BEQ :2
                 LDX #$03
                 SEC
-:LOOP1          LDA TOTAL_CREDITS,X
+:1              LDA GROUP_CREDITS,X
                 SED
                 SBC THE_PRICE,X
                 STA REMAINS,X
                 CLD
                 DEX
-                BPL :LOOP1
-                LDY #$00
-                BCS :SKIPB
-                LDY #$35
-                BNE :SKIPB          ;Always
-:SKIPA          LDX #$03
+                BPL :1
+                LDY #0                  ; no box
+                BCS :4
+                LDY #1                  ; too expensive
+                BNE :4                  ; always
+:2              LDX #$03
                 LDA #$00
-:LOOP2          ORA REMAINS,X
+:3              ORA THE_PRICE,X
                 DEX
-                BPL :LOOP2
-                LDY #$00
+                BPL :3
+                LDY #0                  ; no box
                 TAX
-                BNE :SKIPB
-                LDY #$36
-:SKIPB          CPY BOX_PRESENT
-                BEQ :EXIT
+                BNE :4
+                LDY #2                  ; unsellable
+:4              CPY BOX_PRESENT
+                BEQ :EXIT               ; no change
                 LDA BOX_PRESENT
-                BNE :SKIPC
-                ; LDA #RED
-                ; STA COLOR
-                STY BOX_PRESENT
-                ; JSR TEXTER
+                BNE :5
+                STY BOX_PRESENT         ; nothing -> box
+                JMP DRAW_BOX
 
-                ; LDY #$11
-                ; JMP LINER
+:5              CPY #0
+                BNE :6
+                JSR ERASE_BOX           ; box -> nothing
+                LDA #0
+                STA BOX_PRESENT
                 RTS
 
-; TEXT35          PictTextAt 228;118;"TOO"
-;                 PictTextAt 210;126;"EXPENSIVE"
+:6              TYA                     ; box -> box
+                PHA
+                JSR ERASE_BOX
+                PLA
+                STA BOX_PRESENT
+                JMP DRAW_BOX
 
-; TEXT36          PictTextAt 207;118;"UNSELLABLE"
-;                 PictTextAt 225;126;"ITEM"
-
-; RED_BOX         LINEAT  199;114
-;                 LINEAT  199;136
-;                 LINEAT  273;136
-;                 LINEAT  273;114
-;                 DB  $FE
-;                 LINEAT  201;136
-;                 LINEAT  201;114
-;                 LINEAT  271;114
-;                 LINEAT  271;136
-;                 DB  $FF
-
-:SKIPC          STY BOX_PRESENT
-                CPY #$00
-                BNE :SKIPD
-                TAY
-                ; JSR TEXTER
-                ; LDA #BLACK1
-                STA COLOR
-                ; LDY #$11
-                ; JMP LINER
-                RTS
-:SKIPD          TAY
-                ; JSR TEXTER
-                LDY BOX_PRESENT
-                ; JMP TEXTER
 :EXIT           RTS
+
+DRAW_BOX        LDA #OpColorOrange
+                BNE BOX_CMN             ; always
+ERASE_BOX       LDA #OpColorBlack1
+BOX_CMN         JSR SET_COLOR
+                JSR DRAW_PICT
+                PictMoveTo 199;114
+                PictLineTo 199;136
+                PictLineTo 273;136
+                PictLineTo 273;114
+                PictMoveTo 201;136
+                PictLineTo 201;114
+                PictLineTo 271;114
+                PictLineTo 271;136
+                PictEnd
+                LDX BOX_PRESENT
+                BEQ :3
+                BNE :2
+                JSR DRAW_PICT
+                PictTextAt 228;118;"TOO"
+                PictTextAt 210;126;"EXPENSIVE"
+                PictEnd
+                BNE :3                  ; always
+:2              JSR DRAW_PICT
+                PictTextAt 207;118;"UNSELLABLE"
+                PictTextAt 225;126;"ITEM"
+                PictEnd
+:3              RTS
 
 *-------------------------------
 

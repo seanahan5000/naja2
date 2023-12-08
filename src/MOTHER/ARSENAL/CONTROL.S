@@ -61,7 +61,6 @@ ARSENAL         JSR UNPACK_STOCK
                 STA ON2
                 STA CURRENT
                 STA SOURCE
-                STA STCKDIF             ; *** DIRTY STOCK
                 LDA #$01
                 STA DISPLAY
                 STA WANTED1
@@ -138,7 +137,7 @@ ARKEY           BIT KEYBRD
 AKEYGOT         LDA KEYBRD
                 BIT UNSTROB
                 JSR CHECK_CANCEL
-                BEQ GETOUT              ;*** just back instead
+                BEQ GETOUT
                 JSR CHECK_UP
                 BEQ GOUP1
                 JSR CHECK_DOWN
@@ -148,7 +147,10 @@ AKEYGOT         LDA KEYBRD
                 BIT UNSTROB
                 JMP ARKEY
 
-GETOUT          JMP ARSOUT
+GETOUT          LDA #$01
+                STA WANTED1
+                JSR DRAW_SCREEN
+                JMP MAIN_LOOP
 
 GOUP1           JSR CURSITA
 GOUP1A          LDA CURSOR
@@ -263,6 +265,19 @@ DEST8           DB  $12,$13,$14
 
 ;-----------------------------------------------------------
 
+
+TEST_SPEND      LDX #<THE_PRICE
+                LDY #>THE_PRICE
+                CLC
+                JMP GROUP_SPEND
+
+DO_SPEND        LDX #<THE_PRICE
+                LDY #>THE_PRICE
+                SEC
+                JMP GROUP_SPEND
+
+;-----------------------------------------------------------
+
 ; $0: out of stock but visible
 ; $1-$D: count in stock
 ; $E: unlimited in stock
@@ -273,7 +288,7 @@ DEST8           DB  $12,$13,$14
 ;
 UNPACK_STOCK    LDA EQUIP_STOCK+0
                 BNE :1
-                LDA #$FF
+                LDA #-1
                 STA DIRTY_STATE
                 LDX #0
 :0              LDA DEFAULT_STOCK,X
@@ -371,5 +386,15 @@ DEFAULT_STOCK
 
 ;-----------------------------------------------------------
 
-DIRTY_STATE     DB  $00
-DIRTY_CHARS     DS  maxGroupSize,$00
+LEAVE_ARSENAL   LDA PAGE
+                CMP #$40
+                BEQ :1
+                JSR DRAW_PICT
+                PictSetPage2
+                PictCopyToPage
+                PictShowPage
+                PictSetPage1
+                PictEnd
+:1              JMP PACK_STOCK
+
+;-----------------------------------------------------------

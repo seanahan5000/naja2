@@ -18,18 +18,30 @@ FLAG12			=	$C1
 TDELAY          =   $C2                 ; only used by guard scanner
 BDELAY          =   $C3                 ; only used by guard scanner
 
+                ORG $7000
+CONTROL_FILE    DB  fileControlMS
                 PUT CONTROL
                 PUT /LEVELS/DISPATCH
                 PUT LEVEL
                 PUT FILES0
+                PUT CREDITS
                 PUT WRITER
-
                 PUT TRANSPORT
                 PUT DOORS
-                PUT GUARD
-
-                ; ERR *-$B000
+                DS  \,$EE
+                DS  256
+                DS  256
+                DS  256
+                DS  256
+                ERR *-$8000
                 SAV MOTHERSHIP
+
+                ORG $A000
+GUARD_FILE      DB  fileGuard
+                PUT GUARD
+                DS  \,$EE
+                ERR *-$A500
+                SAV GUARD
 
                 ORG $A000
 DELCHAR_FILE    DB  fileDeleteChar

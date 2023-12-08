@@ -22,8 +22,6 @@ GETAKEY         BIT KEYBRD
                 BPL BLINK3
 KEYGOT3         LDA KEYBRD
                 BIT UNSTROB
-                ; CMP #$9B
-                ; BEQ GETOUT2
                 JSR CHECK_UP
                 BEQ GO_UP2
                 JSR CHECK_DOWN
@@ -33,7 +31,11 @@ KEYGOT3         LDA KEYBRD
                 JSR CHECK_CANCEL
                 BEQ GETOUT2
                 JMP GETAKEY
-GETOUT2         JMP ARSOUT              ; *** RETURN PROBLEMS ***
+
+GETOUT2         LDA #$01
+                STA WANTED1
+                JSR DRAW_SCREEN
+                JMP MAIN_LOOP
 
 GO_UP2          JSR CURSOR3
                 DEC LINECNT
@@ -137,37 +139,28 @@ BUYIT           JSR OFF_CALC
                 LDA STOCK_PTRS+1,X
                 STA DATPNTH
 
-                TYA
-                PHA
-                JSR GET_STOCK
-                STY SCRATCH
-                PLA
-                PHA
-                TAY
+STOCK_INDEX1    =   TEMP+0
+STOCK_INDEX2    =   TEMP+1
+
                 LDA (DATPNTL),Y
-
                 CMP #$7F
-                BEQ :2
-                SED                     ;*** switch to hex, CLAMP ***
+                BEQ :3
+                JSR GET_STOCK_INDEX
+                STX STOCK_INDEX1
                 SEC
-                SBC #$01
-                CLD
-
+                SBC #1
                 STA (DATPNTL),Y
-                LDA #$FF
-                STA STCKDIF             ;*** DIRTY STOCK
-                PLA
-                JSR GET_STOCK
-                CPY SCRATCH
+                JSR GET_STOCK_INDEX
+                CPX STOCK_INDEX1
                 BEQ :2
-                TYA
-                PHA
-                LDY SCRATCH
+                STX STOCK_INDEX2
+                LDY STOCK_INDEX1
                 JSR DRAW_STOCK
-                PLA
-                TAY
+                LDY STOCK_INDEX2
                 JSR DRAW_STOCK
-:2              JSR NOISE
+:2              LDX #-1
+                STX DIRTY_STATE
+:3              JSR NOISE
                 JMP SPACOMN
 
 GOSCOMN         JSR DRAW_PICT

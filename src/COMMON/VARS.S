@@ -147,7 +147,8 @@ GAME_STATE_MS   =   $BC00
                 DUMMY GAME_STATE
 
 MAP_VISITED_17  DS  217
-                DS  39
+                ; DS  39
+                DS  3
 MAP_VISITED_15  DS  169
 MAP_VISITED_13  DS  127
 MAP_VISITED_11  DS  91
@@ -164,6 +165,8 @@ KEYS_FOUND      DS  1
 KEY_DOOR_BITS   DS  1           ; a000bbbb - a open status, b order bits
 
                 DS  3
+
+EQUIP_STOCK     DS  36
 GROUP_CREDITS   DS  4
 
 ROSTER_BITS     DS  2           ; bitmap character slots filled in roster
@@ -362,6 +365,11 @@ PictHLineTo     MAC
                 DB  OpHLineTo,<]1
             FIN
 ]X              =   ]1
+                EOM
+
+PictVLineTo     MAC
+                DB  OpVLineTo,]1
+]Y              =   ]1
                 EOM
 
 PictHSave       MAC

@@ -1,22 +1,3 @@
-
-; TODO: share this with INFIRMARY.S -- maybe share in mothership? ***
-
-;-----------------------------------------------------------
-
-TEST_SPEND      LDX #<THE_PRICE
-                LDY #>THE_PRICE
-                CLC
-                JMP GROUP_SPEND
-
-DO_SPEND        LDX #<THE_PRICE
-                LDY #>THE_PRICE
-                SEC
-                JSR GROUP_SPEND
-                BCC :1
-                LDA #-1
-                STA DIRTY_STATE
-:1              RTS
-
 ;-----------------------------------------------------------
 ; On Entry:
 ;           X,Y: Pointing to credits to be taken
@@ -30,9 +11,9 @@ DO_SPEND        LDX #<THE_PRICE
 ;-----------------------------------------------------------
 
 ; TODO: move to camp
-;*** SHOULD THIS DIRTY STATE ON ACTUAL SPEND? ***
 
-GROUP_SPEND     PHP
+GROUP_SPEND     ENT
+                PHP
                 STX TEMP+0
                 STY TEMP+1
                 LDY #3
@@ -52,6 +33,8 @@ GROUP_SPEND     PHP
                 STA GROUP_CREDITS,Y
                 DEY
                 BPL :2
+                LDA #-1
+                STA DIRTY_STATE
 :3              SEC
                 RTS
 :4              PLP
@@ -62,10 +45,11 @@ TEMP_CREDITS    DS  4
 
 ;-----------------------------------------------------------
 
-;*** DON'T USE SEPARATE SPLIT CALL ***
-SPLIT_GCREDITS  LDX #<GROUP_CREDITS
+SPLIT_GCREDITS  ENT                     ; *** demote to internal???
+                LDX #<GROUP_CREDITS
                 LDY #>GROUP_CREDITS
-SPLIT_CREDITS   STX :1+1
+SPLIT_CREDITS   ENT                     ; *** demote to internal???
+                STX :1+1
                 STY :1+2
                 LDY #0
                 LDX #0
@@ -102,8 +86,10 @@ SPLIT_CREDITS   STX :1+1
 ;   X: horizontal draw position
 ;   Y; vertical draw position
 ;
-DRAW_GCREDITS_AT  JSR MOVE_TO
-DRAW_GCREDITS   JSR SPLIT_GCREDITS
+DRAW_GCREDITS_AT  ENT
+                JSR MOVE_TO
+DRAW_GCREDITS   ENT
+                JSR SPLIT_GCREDITS
                 JMP DRAW_TEXTBUF_SPLIT
 ;
 ; On entry:
@@ -111,7 +97,8 @@ DRAW_GCREDITS   JSR SPLIT_GCREDITS
 ;   Y: pointer to credits (high)
 ;   MOVE_TO called for position
 ;
-DRAW_CREDITS    JSR SPLIT_CREDITS
+DRAW_CREDITS    ENT                     ;*** demote to internal???
+                JSR SPLIT_CREDITS
                 ; fall through
 ;
 ; Draw digits with spacing 00 000 000

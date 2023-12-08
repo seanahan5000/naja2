@@ -160,7 +160,17 @@ MAXPER          DB  $05,$04,$02
                 DB  $04,$0E,$06
                 DB  $03,$0C
 
-DRAWEQP         LDX TABLCNT
+STOCK_OFF       =   POINTL              ; *** clean up
+
+;
+; On entry:
+;   Y: stock offset
+;
+; On exit:
+;   Y: unchanged
+;
+DRAWEQP         STY STOCK_OFF
+                LDX TABLCNT
                 LDA TABLE4,X
                 ASL
                 TAX
@@ -168,8 +178,6 @@ DRAWEQP         LDX TABLCNT
                 STA TEMP
                 LDA CODEOFF+1,X
                 STA TEMP+1
-                TYA
-                PHA
                 LDA CTABCNT
                 INC CTABCNT
                 ASL
@@ -177,8 +185,7 @@ DRAWEQP         LDX TABLCNT
                 TXA
                 STA CURTABL,Y
                 INY
-                PLA
-                PHA
+                LDA STOCK_OFF
                 STA CURTABL,Y
                 ASL
                 ASL
@@ -197,9 +204,9 @@ MOVEQP          LDA (TEMP),Y
                 LDX #13
                 JSR DRAW_TEXTBUF_XY
 
-                PLA
-                PHA
-                JSR GET_STOCK
+                LDY STOCK_OFF
+                LDA (DATPNTL),Y
+                JSR GET_STOCK_INDEX
                 JSR DRAW_STOCK
 
                 LDX TABLCNT
@@ -210,12 +217,10 @@ MOVEQP          LDA (TEMP),Y
                 STA TEMP
                 LDA PRICOFF+1,X
                 STA TEMP+1
-                PLA
-                PHA
-                STA POINTL
+                LDA STOCK_OFF
                 ASL
-                CLC
-                ADC POINTL
+;               CLC
+                ADC STOCK_OFF
                 TAY
                 LDX #$01
 TOBUFF          LDA (TEMP),Y
@@ -236,41 +241,40 @@ TOBUFF          LDA (TEMP),Y
                 JSR ENERGY2
                 LDA #TextSpace
                 JSR DRAW_ENERGY_PER
-
-                PLA
-                TAY                     ;*** ANYBODY USE THIS?
+                LDY STOCK_OFF
                 RTS
 ;
-; Draw stock word (many, some, low, out)
+; Get stock word index 0-3 (many, some, low, out)
 ;
 ; On entry:
-;   A: stock offset
-;   YCOORD: vertical draw position
+;   A: stock value
 ;
 ; On exit:
-;   Y: stock word index
+;   A: unchanged
+;   X: stock word index
+;   Y: unchanged
 ;
-GET_STOCK       TAY
-                LDA (DATPNTL),Y
-                LDY #0
+GET_STOCK_INDEX LDX #0
                 CMP #8                  ; many
                 BCS :1
-                INY
+                INX
                 CMP #3                  ; some
                 BCS :1
-                INY
+                INX
                 CMP #1                  ; low
                 BCS :1
-                INY
+                INX
 :1              RTS
 ;
 ; Draw stock word (many, some, low, out)
 ;
 ; On entry:
-;   Y: stock index
+;   X: stock index
 ;   YCOORD: vertical draw position
 ;
-DRAW_STOCK      LDX :XPNTS,Y
+DRAW_STOCK      TXA
+                TAY
+                LDX :XPNTS,Y
                 JSR HMOVE_TO
                 TYA
                 LDX #<:STOCKS

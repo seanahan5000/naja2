@@ -1,5 +1,5 @@
 
-GUARD           JSR DRAW_PICT
+ENROLL_GUARD    JSR DRAW_PICT
                 PictSetPage2
                 PictClearPage
                 PictCall DRAW_HALL

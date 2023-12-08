@@ -11,8 +11,8 @@
 
                 PUT /CAMP/EXT
 
-CONTROL_MODULE  =   $7800
-SET_CONTROL     =   $7801
+CONTROL_MODULE  =   $7000
+SET_CONTROL     =   $7001
 
                 ORG $AF00
 

@@ -122,7 +122,7 @@ AWARDER         JSR DRAW_PICT
                 BNE HAVE_ROOM
                 JSR DRAW_PICT
                 PictMoveTo 13;149
-                PictCall DRAW_TRIMMED_NAME
+                PictCall DRAW_CNAME
                 PictText " HAS SCANNED THROUGH THE REMAINS"
                 PictTextAt 13;158;"BUT HAS NOT FOUND ANY USABLE EQUIPMENT."
                 PictEnd
@@ -174,7 +174,7 @@ HAVE_ROOM       JSR DRAW_PICT
 
 EKDONE          JSR DRAW_PICT
                 PictMoveTo 10;138
-                PictCall DRAW_TRIMMED_NAME
+                PictCall DRAW_CNAME
                 PictText " HAS SCANNED"
                 PictSetTextHeight 8
                 PictTextAt_ 10;146
@@ -279,13 +279,13 @@ ALL_DONE        LDA #0
                 BEQ :4
                 JSR DRAW_PICT
                 PictMoveTo 13;153
-                PictCall DRAW_TRIMMED_NAME
+                PictCall DRAW_CNAME
                 PictText " NEEDS MEDICAL ATTENTION...QUICK!"
                 PictEnd
                 BNE :3                  ; always
 :2              JSR DRAW_PICT
                 PictMoveTo 13;153
-                PictCall DRAW_TRIMMED_NAME
+                PictCall DRAW_CNAME
                 PictText " NEEDS TO BE COMPRESSED."
                 PictEnd
                 DEC :MOD1+1
@@ -388,8 +388,18 @@ ECURSIT         LDX EPOINT
                 JSR DRAW_MARKER
 ECURS2          LDX EPOINT
                 LDY EYPNTS,X
-                LDX #$A6
-                JMP DRAW_MARKER_TIP
+                LDX #166
+                LDX #<:MARKER_TIP
+                LDY #>:MARKER_TIP
+                JMP DRAW_TILE
+
+:MARKER_TIP     DB  %00000000
+                DB  %00000000
+                DB  %00000011
+                DB  %00001111
+                DB  %00000011
+                DB  %00000000
+                DB  %00000000
 
 EYPNTS          DB  $93,$9B,$A3
                 DB  $AB,$B3

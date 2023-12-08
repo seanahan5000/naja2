@@ -15,8 +15,9 @@
                 PUT SCROLLA
                 DS  \,$EE
                 ERR *-$8E00
+                DS  256
+                DS  256
 
-                ; ORG $7000
                 ORG $8000
                 PUT CONTROL
                 PUT PART2
@@ -29,11 +30,8 @@
                 PUT SELL.ITEM
                 PUT CALC.VALUE
                 PUT WEAPONS
-                PUT EXIT            ;Must be at $8000 or greater
-                PUT CREDITS             ; *** move to mothership? camp? ***
-
                 DS  \,$EE
-                ; ERR *-$8E00
+                ERR *-$9F00
 
                 DUMMY SCRATCH_PAGE
                 PUT TABLES

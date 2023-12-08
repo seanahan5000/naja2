@@ -48,7 +48,7 @@ REPEAT1         JSR DRAW_PICT
                 PictEnd
                 PLP
                 BCS NOLEAVE
-                JMP LEAVE_ENERGY
+LEAVE_ENERGY    RTS
 
 NOLEAVE         LDA CURSOR
                 STA BCURSOR
@@ -142,8 +142,8 @@ ENTER           LDX #3
                 DEX
                 BPL :1
 
-                LDA #$FF
                 LDX BCURSOR
+                LDA #-1
                 STA DIRTY_CHARS,X
                 STA DIRTY_STATE
                 TXA
@@ -423,27 +423,6 @@ ORIGIN          LDA BCURSOR
                 STA CRTEMP,X
                 DEX
                 BPL :2
-                RTS
-
-LEAVE_ENERGY    LDA DIRTY_STATE
-                BEQ :1
-                JSR SAVE_GAMESTATE_MS
-:1              LDX #0
-:2              LDA DIRTY_CHARS,X
-                EOR #$FF
-                STA LEGALS,X
-                INX
-                CPX GRPNUMB
-                BNE :2
-                JSR SAVE_MEMBERS
-
-                JSR DRAW_PICT
-                PictSetPage1
-                PictClearPage
-                PictCall DRAW_HALL
-                PictShowPage
-                PictEnd
-                SEC
                 RTS
 
 SETSUP          LDX #3
@@ -925,6 +904,3 @@ CRDATA5         DB  $00,$00,$00,$00
                 DB  $00,$00,$05,$00
 
 ;-----------------------------------------------------------
-
-DIRTY_STATE     DB  $00
-DIRTY_CHARS     DS  maxGroupSize,$00

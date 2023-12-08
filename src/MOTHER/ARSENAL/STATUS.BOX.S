@@ -113,7 +113,7 @@ GET_STAT        LDA WHOPIC
                 SED
                 LDX #3
                 SEC
-:LOOP2          LDA TOTAL_CREDITS,X
+:LOOP2          LDA GROUP_CREDITS,X
                 SBC THE_PRICE,X
                 STA REMAINS,X
                 DEX

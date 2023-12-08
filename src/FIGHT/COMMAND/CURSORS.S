@@ -326,8 +326,19 @@ CHAR_SQUARE     LDY YPOINTS,X
                 JMP DRAW_MARKER
 
 CHAR_POINT      LDY YPOINTS,X
-                LDX #$0A
-                JMP DRAW_MARKER_TIP
+                LDX #10
+                JSR MOVE_TO
+                LDX #<:MARKER_TIP
+                LDY #>:MARKER_TIP
+                JMP DRAW_TILE
+
+:MARKER_TIP     DB  %00000000
+                DB  %00000000
+                DB  %00000011
+                DB  %00001111
+                DB  %00000011
+                DB  %00000000
+                DB  %00000000
 
 *-------------------------------
 

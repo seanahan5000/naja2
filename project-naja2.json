@@ -8,7 +8,7 @@
 
     { "fileName": "COMMON.LST",    "bins": [{ "fileName": "COMMON",     "loadAt": "0x0800" }]},
     { "fileName": "HALLS.LST",     "bins": [{ "fileName": "HALLS",      "loadAt": "0x6000" }]},
-    { "fileName": "CONTROLMS.LST", "bins": [{ "fileName": "CONTROLMS",  "loadAt": "0x7800", "enabled": true }]},
+    { "fileName": "MOTHERSHIP.LST", "bins": [{ "fileName": "MOTHERSHIP", "loadAt": "0x7000", "enabled": true }]},
     { "fileName": "ENTEST.LST" },
     { "fileName": "GROUP.LST" },
     { "fileName": "INFIRMARY.LST" },

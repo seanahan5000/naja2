@@ -61,15 +61,7 @@ ASSEMBLY_OUT1   JSR DRAW_PICT
                 PictCopyToPage
                 PictShowPage
                 PictEnd
-
-ASSEMBLY_OUT2   JSR DRAW_PICT
-                PictSetPage1
-                PictClearPage
-                PictCall DRAW_HALL
-                PictShowPage
-                PictEnd
-                SEC
-                RTS
+ASSEMBLY_OUT2   RTS
 
 MAIN_LOOP1      JSR DRAW_PICT
                 PictSetPage1

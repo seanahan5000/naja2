@@ -43,8 +43,15 @@ SAVE_CMN        PHA
 ; Write all members of the group to disk
 ;
 SAVE_GROUP      ENT
-                JSR RESET_CHRLIST
-                ; fall through
+                LDX #maxGroupSize
+                LDA #0
+:1              CPX GRPNUMB
+                BNE :2
+                LDA #-1
+:2              DEX
+                BMI SAVE_MEMBERS
+                STA DIRTY_CHARS,X
+                BPL :1                  ; always
 
 ;-----------------------------------------------------------
 ;
@@ -54,8 +61,8 @@ SAVE_MEMBERS    ENT
                 LDA #fileSaveGame
                 JSR SET_FILE
                 JSR FIRST_CHAR
-:1              LDA LEGALS,X
-                BNE :6
+:1              LDA DIRTY_CHARS,X
+                BEQ :6
 
                 LDY #rosterLocation
                 LDA (CHARDL),Y
@@ -68,8 +75,8 @@ SAVE_MEMBERS    ENT
 :2              INX
                 CPX GRPNUMB
                 BEQ :3
-                LDA LEGALS,X
-                BNE :2
+                LDA DIRTY_CHARS,X
+                BEQ :2
                 TXA
                 JSR SET_CHAR
                 PLA
@@ -81,8 +88,8 @@ SAVE_MEMBERS    ENT
                 BNE :2
 
 ; another group member is in the same sector as the character
-                LDA #$FF
-                STA LEGALS,X
+                LDA #0
+                STA DIRTY_CHARS,X
                 JSR CHAR_TO_CBUFF
                 JMP :5
 
@@ -410,3 +417,8 @@ WRITE_SECTOR
                 RTS
 
 ;-----------------------------------------------------------
+
+DIRTY_STATE     ENT
+                DB  $00
+DIRTY_CHARS     ENT
+                DS  maxGroupSize,$00

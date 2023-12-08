@@ -96,12 +96,7 @@ ENROLL_EXIT     JSR DRAW_PICT
                 PictSetPage2
                 PictCopyToPage
                 PictShowPage
-                PictSetPage1
-                PictClearPage
-                PictCall DRAW_HALL
-                PictShowPage
                 PictEnd
-                SEC
                 RTS
 
 CLEAR_BOX       LDX #142

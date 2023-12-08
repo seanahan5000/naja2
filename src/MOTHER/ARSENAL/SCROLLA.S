@@ -12,13 +12,8 @@ TALKER          BIT UNSTROB
 KEYOUT          BIT UNSTROB
                 CMP #$9B                ; escape
                 BNE :1
-                PLA
-                PLA
                 JMP GOBACK
-
-:1              PLA
-                PLA
-                JMP SMAINER
+:1              JMP SMAINER
 
 LOOP2           LDA #$00
                 STA COUNT

@@ -1,15 +1,6 @@
 *-------------------------------
 
-ASELLER
-;                 LDA WHOSPIC
-;                 CMP #7
-;                 BNE :SKIPA
-;                 JSR RESET_CHLIST
-;                 TXA
-; :SKIPA          JSR SET_CHAR
-;                 LDX #<THE_PRICE
-;                 LDY #>THE_PRICE
-;                 JSR CHAR_EARN
+ASELLER         JSR EARN_PRICE
                 LDA WHOPIC
                 JSR SET_CHAR
                 JSR EDRASUB
@@ -24,7 +15,7 @@ ZELOOP4         STA (CHARDL),Y
                 BPL ZELOOP4
                 LDX CHUNK
                 CPX #$16
-                BCS ZESKIP1
+                BCS :3
                 LDA STOCK_PTRS,X
                 STA TEMP
                 LDA STOCK_PTRS+1,X
@@ -32,19 +23,17 @@ ZELOOP4         STA (CHARDL),Y
 
                 LDY DSPLACE
                 LDA (TEMP),Y
-                CMP #$7F
-                BEQ ZESKIP1
-                CMP #$FF
-                BNE ZESKIP0
-                LDA #$00
-ZESKIP0         CLC
-                SED                     ;*** switch to hex, CLAMP ***
-                ADC #$01
-                CLD
+                BMI :1                  ; first seen
+                CMP #$7F                ; infinite supply
+                BEQ :3
+                BNE :2                  ; always
+:1              LDA #0
+:2              CLC
+                ADC #1
                 STA (TEMP),Y
-                LDA #$FF
-                STA STCKDIF             ;*** DIRTY STOCK
-ZESKIP1
+                LDX #-1
+                STX DIRTY_STATE
+:3
                 LDA CURSOR
                 CMP #$04
                 BCC NOSCROL
@@ -85,13 +74,11 @@ SCLOOP1         LDX LINENUM
                 LDA LOBYTES,X
                 STA SCREENL
                 LDA HIBYTES,X
-                ; ORA PAGE
                 STA SCREENH
                 DEX
                 LDA LOBYTES,X
                 STA DESTINL
                 LDA HIBYTES,X
-                ; ORA PAGE
                 STA DESTINH
                 LDY #$05
 SCLOOP2         LDA (SCREENL),Y
@@ -144,12 +131,31 @@ ZESKIP2         LDA #$AD
                 STA HALT2
                 STA HALT3
                 JSR LEGLSUB
-                LDA #$20
+                LDA #$20                ; JSR
                 STA HALT1
                 STA HALT2
                 STA HALT3
                 JSR ERASE_CONFIRM
                 JSR DRAW_PICK_ITEM
                 JMP ZDOWN2
+
+EARN_PRICE      LDX #3
+                CLC
+                SED
+:1              LDA GROUP_CREDITS,X
+                ADC THE_PRICE,X
+                STA GROUP_CREDITS,X
+                DEX
+                BPL :1
+                CLD
+                BCC :3
+                LDA #$99
+:2              INX
+                STA GROUP_CREDITS,X
+                CPX #3
+                BNE :2
+:3              LDX #-1
+                STX DIRTY_STATE
+                RTS
 
 *-------------------------------

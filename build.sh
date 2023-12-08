@@ -85,14 +85,16 @@ $A2NIB_T2 -create -volume 2
 $A2NIB_T3 -create -volume 3
 
 # mothership
-$A2NIB_MS $OBJ/DELETE.CHAR     -t 0E -s 00   # 10 sectors
-$A2NIB_MS $OBJ/TESSERPORT      -t 0E -s 0C   #  4 sectors
+$A2NIB_MS $OBJ/MOTHERSHIP      -t 0D -s 00   # 16 sectors
+$A2NIB_MS $OBJ/DELETE.CHAR     -t 0E -s 00   #  9 sectors
+$A2NIB_MS $OBJ/GUARD           -t 0E -s 0B   #  5 sectors
 $A2NIB_MS $OBJ/INFO.SELLER     -t 0F -s 00   #  7 sectors
+$A2NIB_MS $OBJ/TESSERPORT      -t 0F -s 0C   #  4 sectors
 $A2NIB_MS $OBJ/ENROLL.TEST     -t 13 -s 00   # 64 sectors
 $A2NIB_MS $OBJ/GROUP.ASSEMBLY  -t 11 -s 00   # 32 sectors
 $A2NIB_MS $OBJ/INFIRMARY       -t 17 -s 00   # 24 sectors
 $A2NIB_MS $OBJ/ENERGY.CENTER   -t 18 -s 08   # 24? sectors
-$A2NIB_MS $OBJ/ARSENAL         -t 1B -s 00   # 24? sectors
+$A2NIB_MS $OBJ/ARSENAL         -t 1B -s 00   # 47 sectors
 $A2NIB_MS $OBJ/ROBOT.REPAIR    -t 1F -s 00   # 64 sectors
 
 # shell 17,15

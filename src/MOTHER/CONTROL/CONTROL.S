@@ -1,7 +1,4 @@
 
-                ORG $7800
-
-CONTROL_FILE    DB  fileControlMS
 
 ;---------------------------------------
 
@@ -60,7 +57,24 @@ LOAD_AREA       TAX
                 BNE :1
                 BIT UNSTROB
 :1
-                JMP $8000
+                JSR $8000
+                ; each area exits with page 2 visible
+
+
+                LDA DIRTY_STATE
+                BEQ :2
+                JSR SAVE_GAMESTATE_MS
+                ;*** CLEAR DIRTY_STATE? ***
+:2              JSR SAVE_MEMBERS
+
+                JSR DRAW_PICT
+                PictSetPage1
+                PictClearPage
+                PictCall DRAW_HALL
+                PictShowPage
+                PictEnd
+                SEC
+                RTS
 
 :FILES          DB  fileEnroll_Load
                 DB  fileAssembly_Load
@@ -68,6 +82,17 @@ LOAD_AREA       TAX
                 DB  fileEnergy_Load
                 DB  fileArsenal_Load
                 DB  fileRobotRep_Load
+
+;---------------------------------------
+
+; TODO: consider combining GUARD and DELETE into one module
+
+GUARD           LDA #fileGuard
+                CMP GUARD_FILE
+                BEQ :1
+                LDY #>ENROLL_GUARD
+                JSR LOAD_FILE
+:1              JMP ENROLL_GUARD
 
 ;---------------------------------------
 
@@ -103,5 +128,23 @@ LOST_IN_GROUP   JSR FIRST_CHAR
                 BCC :1
                 CLC
 :2              RTS
+
+;---------------------------------------
+
+; No space for this in COMMONS so put it here,
+;   and duplicate in FIGHT.
+
+DRAW_MARKER_TIP_TILE ENT
+                LDX #<:MARKER_TIP
+                LDY #>:MARKER_TIP
+                JMP DRAW_TILE
+
+:MARKER_TIP     DB  %00000000
+                DB  %00000000
+                DB  %00000011
+                DB  %00001111
+                DB  %00000011
+                DB  %00000000
+                DB  %00000000
 
 ;---------------------------------------
