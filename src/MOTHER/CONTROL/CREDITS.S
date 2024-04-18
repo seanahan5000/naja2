@@ -107,7 +107,7 @@ DRAW_CREDITS    ENT                     ;*** demote to internal???
 ;   TEXT_BUFFER: digit characters to be drawn
 ;   MOVE_TO called for position
 ;
-DRAW_TEXTBUF_SPLIT
+DRAW_TEXTBUF_SPLIT ENT
                 LDX #0
 :1              TXA
                 PHA

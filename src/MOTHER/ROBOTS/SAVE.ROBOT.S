@@ -3,10 +3,10 @@
 *-------------------------------
 
 CREATE_ROBOT    LDA ASSIGN2
-                JSR POINTIT
+                JSR SET_CHAR
 
                 LDY #0
-:LOOP1          LDA OPENBUF,Y
+:LOOP1          ; LDA OPENBUF,Y
                 CMP #$FF
                 BNE :SKIPA
                 INY
@@ -173,7 +173,7 @@ NOOR5
                 ASL
                 AND #%10000000
                 EOR #%10000000
-                ORA RANGE
+                ORA RRANGE
                 ORA (CHARDL),Y
                 STA (CHARDL),Y
 
@@ -278,13 +278,14 @@ BPDAML          DB  $30,$70,$20
 *-------------------------------
 
 SAVE_ROBOT      JSR PACSUB
-                LDA #BLUE
-                STA COLOR
-                LDY #$06
-                JSR LINER
+
+                JSR DRAW_PICT
+                PictSetBlue
+                PictRect $28;$6B;$F6;$BF
+                PictEnd
 
                 LDA ASSIGN2
-                JSR POINTIT
+                JSR SET_CHAR
                 LDY #2
 :LOOP1          LDA (CHARDL),Y
                 STA ROBOT_NAME+6,Y
@@ -292,8 +293,12 @@ SAVE_ROBOT      JSR PACSUB
                 BPL :LOOP1
                 LDA #1
                 STA ROBOT_NAME+9
-                LDY #$1E
-                JSR TEXTER
+
+                ; LDY #$1E
+                ; JSR TEXTER
+TEXT1E          PictTextAt 50;126;"YOUR ROBOT IS BEING REGISTERED"
+                PictTextAt 50;135;"UNDER THE NAME "
+ROBOT_NAME      USR "ROBOT-   1."
 
                 LDX PICK
                 LDA #$1F
@@ -301,7 +306,7 @@ SAVE_ROBOT      JSR PACSUB
                 JSR VIEWER
                 LDA PICK
                 BEQ NOVIEW2
-                JSR MOVETO1
+                ; JSR MOVETO1
                 STA PRIMARY
 NOVIEW2         LDA #$20
                 STA PAGE
@@ -311,21 +316,21 @@ NOVIEW2         LDA #$20
                 STX ON2
 
                 JSR CREATE_ROBOT
-                LDA #>LOADBUF
-                STA SSTOREH
-                JSR DRIVE_ON
+                ; LDA #>LOADBUF
+                ; STA SSTOREH
+                ; JSR DRIVE_ON
 COMPA           LDA #$00
                 STA COUNTER
 CMPLOOP         LDY COUNTER
-                LDA OPENBUF,Y
-                BEQ TWOBAD
+                ; LDA OPENBUF,Y
+                ; BEQ TWOBAD
                 PHA
                 TYA
-                ORA #<charTrack
-                TAX
-                LDY #>charTrack
-                LDA #1
-                JSR FLOADER
+                ; ORA #<charTrack
+                ; TAX
+                ; LDY #>charTrack
+                ; LDA #1
+                ; JSR FLOADER
                 PLA
                 PHA
                 LDY #$09
@@ -361,21 +366,22 @@ UNIQUE_NAME     JSR DRIVE_OFF
                 DEY
                 BPL :LOOP1
 
-                LDX #wNewChar
-                JSR CALL_WRITERS
+                ; LDX #wNewChar
+                ; JSR CALL_WRITERS
 
                 LDA #$0F
                 LDX HALF
                 BMI :SKIPA
                 LDA #$F0
 :SKIPA          LDY SECTOR
-                ORA OPENBUF,Y
-                STA OPENBUF,Y
-                LDX #wOpen
-                JSR CALL_WRITERS
+                ; ORA OPENBUF,Y
+                ; STA OPENBUF,Y
 
-                LDX #wGroup
-                JSR CALL_WRITERS
+                ; LDX #wOpen
+                ; JSR CALL_WRITERS
+
+                ; LDX #wGroup
+                ; JSR CALL_WRITERS
 
                 LDX PICK
                 LDA #$0F
@@ -387,8 +393,16 @@ UNIQUE_NAME     JSR DRIVE_OFF
                 LDA #$EA
                 STA STOPPER
                 JSR PPEOR
-                LDY #$1F
-                JSR TEXTER
+
+                JSR DRAW_PICT
+                PictTextAt 116;126;"IS BEING"
+                PictTextAt 116;126;"HAS BEEN"
+                PictTextAt 50;148;"YOU CAN PICK THE ROBOT UP AT THE"
+                PictTextAt 50;157;"GROUP ASSEMBLY OFFICE AND CHANGE"
+                PictTextAt 50;166;"ITS NAME TO WHAT EVER YOU WISH."
+                PictTextAt 188;179;"<SPACE>"
+                PictEnd
+
                 JSR PPEOR
                 BIT UNSTROB
 WAITER          LDA KEYBRD
@@ -413,11 +427,11 @@ COMPARE         LDX #9
 
 NUMBSUB         LDA ROBOT_NAME+9
                 STA TEXTBUF
-                LDA #$8D
+                LDA #TextLineEnd
                 STA TEXTBUF+1
-                LDA #$C2
+                LDX #$C2
                 LDY #$87
-                JMP LINE
+                JMP DRAW_TEXTBUF_XY
 
 *-------------------------------
 

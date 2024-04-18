@@ -25,7 +25,7 @@ CAT7            DB  $00,$00,$00,$00
 CATT            DB  $00,$00,$00,$00
 
 SLOT            DB  $00
-RANGE           DB  $00
+RRANGE          DB  $00
 SEHEAD          DB  $00
 SPHEAD          DB  $00
 UPREF           DB  $00
@@ -59,7 +59,6 @@ LINTABL         DB  $00,$00,$00
                 DB  $00,$00,$00
                 DB  $00,$00,$00
 
-THE_PRICE       DB  $00,$00,$00,$00
 TOTAL           DB  $00,$00,$00,$00
 TRADEIN         DB  $00,$00,$00,$00
 DUPNTLV         DB  $00,$00,$00,$00

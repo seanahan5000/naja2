@@ -29,15 +29,12 @@ LOAD_ROBOTS     JSR DRAW_PICT
                 PictImage ROBOT2_PIC
                 PictEnd
 
-                SEC                     ;***
-                RTS                     ;***
-
-                LDA #$5F
+                LDA #$7F
                 PHA
                 LDA #$FF
                 PHA
                 LDA #fileRobotRep_Control
-                LDY #$60
+                LDY #$80
                 JMP LOAD_FILE
 
 DRAW_WALL_SEGS  LDX #<POINT_DATA

@@ -1,15 +1,11 @@
-*-------------------------------
-*
-*-------------------------------
 
 REPLACE         LDA #$EE
                 STA PARTALL
-                LDA #$1C
+                LDA #0
                 JSR PICK_A_ROBOT
-                JSR WHOSE_CREDITS
                 JSR PACSUB
                 LDA THE_ROBOT
-                JSR POINTIT
+                JSR SET_CHAR
                 JSR REVERSE
                 JSR TOTALUP
                 JSR ROSTAT2
@@ -17,8 +13,9 @@ REPLACE         LDA #$EE
                 LDA ON1,X
                 ORA #$0F
                 STA ON1,X
-                LDY #$23
-                JSR TEXTER
+                JSR DRAW_PICT
+                PictTextAt 89;94;"REPLACE WHICH PART?"
+                PictEnd
                 LDA #7
                 JSR SET_LEGALS
                 LDX #$FF
@@ -77,7 +74,7 @@ RELOOPB         LDA BODTOT,Y
                 JSR WEPONLY
                 JSR CREATE_PART
                 LDA THE_ROBOT
-                JSR POINTIT
+                JSR SET_CHAR
                 LDY #e5_ROBRGT+3
                 PLA
                 LSR
@@ -99,7 +96,7 @@ NOWEPO          JSR ZOOMUP
 :1              JSR TOSLOT
                 JSR CREATE_PART
                 LDA THE_ROBOT
-                JSR POINTIT
+                JSR SET_CHAR
 
 PARTPRO         LDX SCRPICK
                 CPX #scrnPROGRAM
@@ -206,8 +203,13 @@ PARTOTHER       LDY #e1_HEAD+3
                 STA (CHARDL),Y
 
 PARTOUT         JSR CALC_ALL
-                JSR TAKE_RTOTNUM
+                JSR SPEND_RTOTNUM
                 JMP OPTIONS
+
+SPEND_RTOTNUM   LDX #<RTOTNUM
+                LDY #>RTOTNUM
+                SEC
+                JMP GROUP_SPEND
 
 GTRADE2         LDA #$60
                 STA NOT78
@@ -246,11 +248,7 @@ COLOOP2         LDX POINTER
                 LDA SCRPICK
                 CMP #scrnMOVEMENT
                 BNE COSKIP2
-                LDA #$FF
-                JSR PLUGUP
-                JSR UPMOVE
-                LDA #$14
-                JSR PLUGUP
+                JSR DRAW_MOVEMENT_T
 COSKIP2         LDX POINTER
                 LDA POINTLV,X
 MAXMOD1         CMP #$FF

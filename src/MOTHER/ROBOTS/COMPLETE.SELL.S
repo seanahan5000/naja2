@@ -1,17 +1,14 @@
-*-------------------------------
-*
-*-------------------------------
 
-COMPLETE_SELL   LDA #$21
+COMPLETE_SELL   LDA #1
                 JSR PICK_A_ROBOT
                 LDA THE_ROBOT
-                JSR POINTIT
+                JSR SET_CHAR
                 JSR REVERSE
                 JSR TOTALUP
                 JSR ADDBODS
                 JSR PACSUB
                 JSR ROSTAT2
-                JSR CANCOUT
+                JSR NOTCH_OUT
                 LDY #e2_SLOT
                 LDA (CHARDL),Y
                 LDY #e7_BACK1
@@ -24,11 +21,15 @@ COMPLETE_SELL   LDA #$21
                 LDA RWEAPON
                 CMP #$06
                 BNE ALLGOOD
-BADMENT         LDA #$39
-                JSR NAMER
-                LDY #$27
-                JSR TEXTER
-                JSR SPACEIN
+
+BADMENT         JSR DRAW_PICT
+                PictCall CNAME_TO_TEXT
+                PictTextbufXY 57;89
+                PictTextAt 57;89;" HAS EQUIPMENT THAT"
+                PictTextAt 57;98;"MUST BE SOLD AT THE ARSENAL"
+                PictEnd
+
+                JSR SPACE_IN
                 JSR VIEWER
                 BIT UNSTROB
 :1              LDA KEYBRD
@@ -36,32 +37,37 @@ BADMENT         LDA #$39
                 BIT UNSTROB
                 JSR CHECK_ENTER
                 BNE :1
-                JSR SPACEOUT
+                JSR NOTCH_OUT
                 JMP OPTIONS
 
-ALLGOOD         LDA #$2C
-                JSR NAMER
-                LDX #$03
-VALOOPD         LDA RTOTAL,X
+ALLGOOD         LDX #$03
+:1              LDA RTOTAL,X
                 STA THE_PRICE,X
                 DEX
-                BPL VALOOPD
-                LDA #$60
+                BPL :1
+                LDA #$60                ; RTS
                 STA NOT78
                 LDA #$EE
                 STA PARTALL
                 JSR SEVEN8
-                LDA #$EA
+                LDA #$EA                ; NOP
                 STA NOT78
                 LDX #$03
-VALOOPE         LDA THE_PRICE,X
+:2              LDA THE_PRICE,X
                 STA RTOTAL,X
                 DEX
-                BPL VALOOPE
-                JSR NUMBER_TEXT
-                JSR CANCIN
-                LDY #$20
-                JSR TEXTER
+                BPL :2
+                JSR CANCEL_IN
+
+                JSR DRAW_PICT
+                PictMoveTo 44;89
+                PictCall DRAW_CNAME
+                PictText " IS WORTH "
+                PictCall DRAW_PRICE
+                PictText " CREDITS"
+                PictTextAt 50;98;"PRESS <SPACE> TO SELL IT"
+                PictEnd
+
                 LDA #$EE
                 STA PARTALL
                 JSR OPENUP
@@ -71,27 +77,37 @@ VALOOPE         LDA THE_PRICE,X
                 LDA #$1F
                 STA ON1,X
                 BIT UNSTROB
-YNLOOP          LDA KEYBRD
-                BPL YNLOOP
+:3              LDA KEYBRD
+                BPL :3
                 BIT UNSTROB
                 JSR CHECK_ENTER
                 BEQ YESSER
-                CMP #"C"
-                BNE YNLOOP
+                JSR CHECK_CANCEL
+                BNE :3
                 JMP OPTIONS
 
 YESSER          LDA PICK
                 BEQ NOVIEWB
-                JSR MOVETO1
-                STA PRIMARY
-NOVIEWB         LDA #$20
-                STA PAGE
+
+                ; JSR MOVETO1
+                ; STA PRIMARY
+                JSR DRAW_PICT
+                PictSetPage2
+                PictCopyToPage
+                PictShowPage
+                PictEnd
+
+NOVIEWB
+                ; LDA #$20
+                ; STA PAGE
+                JSR SET_PAGE1
+
                 LDA #$00
                 STA PICK
                 LDA #$FF
                 STA ON2
                 LDA THE_ROBOT
-                JSR POINTIT
+                JSR SET_CHAR
                 LDY #disklocation
                 LDA (CHARDL),Y
                 PHA
@@ -104,16 +120,16 @@ NOVIEWB         LDA #$20
                 BEQ NOTE
                 LDY #$F0
 NOTE            TYA
-                EOR OPENBUF,X
-                STA OPENBUF,X
+                ; EOR OPENBUF,X
+                ; STA OPENBUF,X
                 LDA THE_ROBOT
-                JSR POINTIT
+                JSR SET_CHAR
                 LDY #disklocation
                 LDA (CHARDL),Y
                 STA SCRATCH
                 LDA #$00
                 STA COUNT
-COLOOPA         JSR POINTIT
+COLOOPA         JSR SET_CHAR
                 LDY #robotcyblink
                 LDA (CHARDL),Y
                 CMP SCRATCH
@@ -126,16 +142,16 @@ AMATCH          LDA #$FF
                 STA (CHARDL),Y
                 LDX #<RTOTAL
                 LDY #>RTOTAL
-                JSR CHAR_EARN
+                ; JSR CHAR_EARN
 
                 JSR RESET_CHRLIST
                 LDX THE_ROBOT
                 LDA #$FF
                 STA LEGALS,X
-                LDX #wMembers
-                JSR CALL_WRITERS
-                LDX #wOpen
-                JSR CALL_WRITERS
+                ; LDX #wMembers
+                ; JSR CALL_WRITERS
+                ; LDX #wOpen
+                ; JSR CALL_WRITERS
 
                 LDA THE_ROBOT
                 STA COUNT
@@ -144,14 +160,14 @@ AMATCH          LDA #$FF
                 BEQ NOTDEC
 MOVIT2          LDX COUNT
                 TXA
-                JSR POINTIT
+                JSR SET_CHAR
                 LDA CHARDL
                 STA TEMP
                 LDA CHARDH
                 STA TEMP+1
                 INX
                 TXA
-                JSR POINTIT
+                JSR SET_CHAR
                 LDY #$7F
 MOVEIT          LDA (CHARDL),Y
                 STA (TEMP),Y
@@ -163,65 +179,22 @@ MOVEIT          LDA (CHARDL),Y
                 BNE MOVIT2
 NOTDEC          JMP OPTIONS
 
-NUMBER_TEXT     LDX #4              ;Used by COMPLETE_BUY also
-:LOOP1          LDA THE_PRICE-1,X
-                PHA
-                DEX
-                BNE :LOOP1
-                LDA #4
-                JSR LEFT_DIGITS
-                LDX #7
-:LOOP2          LDA TEXTBUF,X
-                STA TEXCRED,X
-                STA TEXOVER,X
-                DEX
-                BPL :LOOP2
-                RTS
-
-NAMER           PHA
-                LDY #$09
-NALOOP1         LDA (CHARDL),Y
-                STA TEXTBUF,Y
-                DEY
-                BPL NALOOP1
-                LDY #$09
-NALOOP2         LDA TEXTBUF,Y
-                CMP #$0A
-                BNE NASKIP1
-                DEY
-                BPL NALOOP2
-NASKIP1         LDA #$8D
-                STA TEXTBUF+1,Y
-                PLA
-                LDY #$59
-                JSR LINE
-                LDA XCOORD
-                STA TEXT20
-                STA TEXT27
-                LDA SHIFT
-                STA TEXT20+1
-                STA TEXT27+1
-                LDA YCOORD
-                STA TEXT20+2
-                STA TEXT27+2
-                RTS
-
 ADDBODS         LDA #$00
                 LDX #$03
-ADLOOP1         STA RTOTAL,X
+:1              STA RTOTAL,X
                 DEX
-                BPL ADLOOP1
+                BPL :1
                 LDY #$1B
-ADLOOP2         LDX #$03
+:2              LDX #$03
                 CLC
-ADLOOP3         LDA BODTOT,Y
+:3              LDA BODTOT,Y
                 SED
                 ADC RTOTAL,X
                 CLD
                 STA RTOTAL,X
                 DEY
                 DEX
-                BPL ADLOOP3
+                BPL :3
                 TYA
-                BPL ADLOOP2
+                BPL :2
                 RTS

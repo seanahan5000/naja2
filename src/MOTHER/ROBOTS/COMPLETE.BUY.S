@@ -1,6 +1,3 @@
-*-------------------------------
-*
-*-------------------------------
 
 COMPLETE_BUY    LDA #$00
                 STA PARTALL
@@ -12,11 +9,15 @@ COMPLETE_BUY    LDA #$00
                 CMP #1
                 BEQ ONECYB
                 JSR PPEOR
-                JSR ALLICON
+
+                JSR ALL_ICONS
                 JSR DRAW_GROUP
-                JSR CLRMIDL
-                LDY #$03
-                JSR TEXTER
+                JSR DRAW_PICT
+                PictClear 0;87;40;107
+                PictTextAt 59;93;"WHICH CYBERNATE WILL THIS NEW"
+                PictTextAt 83;102;"ROBOT BE ASSIGNED TO?"
+                PictEnd
+
                 JSR VIEWER
                 LDA #$07
                 STA CURSOR
@@ -37,7 +38,8 @@ LTLOOP2         LDA RYPOINTS,Y
                 LDA #$FF
                 STA ON1,X
                 JMP OPTIONS
-ONECYB          JSR WHOSE_CREDITS
+
+ONECYB          ; JSR WHOSE_CREDITS
                 LDA #12
                 STA COUNT
 VALOOP          LDX COUNT
@@ -81,7 +83,7 @@ ALL_DONE        JSR MINISUB
 :1              LDA RTOTNUM,X
                 STA RTOTAL,X
                 SED
-                SBC TOTAL_CREDITS,X
+                SBC GROUP_CREDITS,X
                 CLD
                 STA THE_PRICE,X
                 DEX
@@ -96,13 +98,21 @@ NOVER           LDA #$D0
                 STA PARTALL
                 JSR PPEOR
                 JSR BTRANS
-                LDY #$1D
-                JSR TEXTER
-                JSR ALLICON
+
+;                 LDY #$1D
+;                 JSR TEXTER
+; TEXT1D          PictTextAt 32;89;"YOU HAVE OVERSPENT BY "
+;                 PictTextAt 56;98;"WHAT AREA DO YOU WANT TO REDO?"
+
+                JSR ALL_ICONS
                 JSR OPENUP
                 JSR VOMAIN
-                LDY #$2E
-                JSR TEXTER
+
+;                 LDY #$2E
+;                 JSR TEXTER
+; TEXT2E          PictTextAt 31;89;"PRESS <SPACE> TO VERIFY ROBOT PURCHASE"
+;                 PictTextAt 61;98;"OR A>DJUST TO CHANGE AN AREA"
+
                 JSR VIEWER
                 BIT UNSTROB
 NOVKEY          LDA #7
@@ -112,7 +122,7 @@ NOVKEY          LDA #7
                 BIT UNSTROB
                 JSR CHECK_ENTER
                 BNE :2
-                JSR TAKE_RTOTNUM
+                JSR SPEND_RTOTNUM
                 JMP SAVE_ROBOT
 :2              CMP #"A"            ;Not CHECK_UP
                 BEQ ADJUST
@@ -120,17 +130,27 @@ NOVKEY          LDA #7
                 BNE :1
                 JMP OPTIONS
 
-PBACK           LDY #$2F
-                JSR TEXTER
-                LDY #$2E
-                JSR TEXTER
+PBACK
+                ; LDY #$2F
+                ; JSR TEXTER
+                ; LDY #$2E
+                ; JSR TEXTER
+; TEXT2F          PictTextAt 57;93;"SELECT AN AREA TO BE ADJUSTED"
+; TEXT2E          PictTextAt 31;89;"PRESS <SPACE> TO VERIFY ROBOT PURCHASE"
+;                 PictTextAt 61;98;"OR A>DJUST TO CHANGE AN AREA"
+
                 BIT UNSTROB
                 JMP NOVKEY
 
-ADJUST          LDY #$2E
-                JSR TEXTER
-                LDY #$2F
-                JSR TEXTER
+ADJUST
+                ; LDY #$2E
+                ; JSR TEXTER
+                ; LDY #$2F
+                ; JSR TEXTER
+; TEXT2E          PictTextAt 31;89;"PRESS <SPACE> TO VERIFY ROBOT PURCHASE"
+;                 PictTextAt 61;98;"OR A>DJUST TO CHANGE AN AREA"
+; TEXT2F          PictTextAt 57;93;"SELECT AN AREA TO BE ADJUSTED"
+
 :1              JSR ADJOVER_SUB
                 JSR PPEOR
                 JSR VIEWER
@@ -139,13 +159,23 @@ ADJUST          LDY #$2E
 ISOVER          JSR PPEOR
                 LDA #$E0
                 STA PARTALL
-                JSR NUMBER_TEXT
                 JSR BTRANS
-                LDY #$1D
-                JSR TEXTER
-                JSR ALLICON
-                LDY #$2A
-                JSR TEXTER
+
+; *** erase?
+;                 LDY #$1D
+;                 JSR TEXTER
+; TEXT1D          PictTextAt 32;89;"YOU HAVE OVERSPENT BY "
+;                 PictTextAt 56;98;"WHAT AREA DO YOU WANT TO REDO?"
+
+                JSR ALL_ICONS
+
+                JSR DRAW_PICT
+                PictTextAt 41;89;"YOU HAVE OVERSPENT BY "
+                PictCall DRAW_PRICE
+                PictText " CREDITS-"
+                PictTextAt 41;98;"SELECT AN AREA TO BE REDONE"
+                PictEnd
+
                 JSR OPENUP
                 JSR VOMAIN
                 JSR VIEWER
@@ -182,8 +212,11 @@ ADJOVER_SUB     LDA #0
                 LDA CURSOR
                 JSR DRAW_SCREEN
                 JSR DELABLE
-                LDY #$25
-                JSR TEXTER
+
+;                 LDY #$25
+;                 JSR TEXTER
+; TEXT25          PictTextAt 100;24;"TOTAL ROBOT PRICE:"
+
                 JSR TOPLEVL
                 LDX PICK
                 LDA #$F4

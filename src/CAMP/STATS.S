@@ -439,9 +439,12 @@ CHAR_DIG_CMN    STA :MOD1+1
 ; On entry:
 ;   A: byte (not digit) count
 ;   X: TEXT_BUFFER position
+;   On stack: bytes to be decoded
 ;
 ; On exit:
 ;   X: updated TEXT_BUFFER position
+;
+; NOTE: This does NOT append TextLineEnd
 ;
 DIGITS_L        ENT
                 LDY #TextEmpty
