@@ -1,5 +1,5 @@
 
-CHAR_3          TXC "RELAYER___"
+                TXC "RELAYER___"
                 DFB healthy
                 HEX 0001            ;Level
                 DFB android*16+xxtys

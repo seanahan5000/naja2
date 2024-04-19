@@ -62,7 +62,8 @@ $ASM LEVELS ASM.13      -lst $OBJ/CONTROL13.LST         || ERR=1
 $ASM LEVELS ASM.11      -lst $OBJ/CONTROL11.LST         || ERR=1
 $ASM LEVELS ASM.9       -lst $OBJ/CONTROL9.LST          || ERR=1
 
-$ASM TEST   GAME.STATE  -lst $OBJ/GAME.STATE.LST        || ERR=1
+$ASM TEST   FAKE.ROSTER                                 || ERR=1
+$ASM TEST   FAKE.GAME                                   || ERR=1
 
 if [ "$ERR" == "1" ]; then
   echo
@@ -107,6 +108,7 @@ $A2NIB_MS $OBJ/INFIRMARY       -t 17 -s 00   # 24 sectors
 $A2NIB_MS $OBJ/ENERGY.CENTER   -t 18 -s 08   # 24? sectors
 $A2NIB_MS $OBJ/ARSENAL         -t 1B -s 00   # 47 sectors
 $A2NIB_MS $OBJ/ROBOT.REPAIR    -t 1F -s 00   # 64 sectors
+$A2NIB_MS $OBJ/FAKE.ROSTER     -t 10 -s 00   # 11 sectors
 
 # shell 17,15
 $A2NIB_T1 $OBJ/ALIEN.PICS.12   -t 00 -s 00   # A900

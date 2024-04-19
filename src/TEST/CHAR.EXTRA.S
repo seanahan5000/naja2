@@ -1,5 +1,5 @@
 
-CHAR_7          TXC "EXTRA_____"
+                TXC "EXTRA_____"
                 DFB healthy         ;healthy
                 HEX 0001            ;Level
                 DFB warrior*16+deneb

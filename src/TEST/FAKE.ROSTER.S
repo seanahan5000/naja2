@@ -22,8 +22,8 @@
                 PUT /TEST/CHAR.RELAYER      ; 9
 
                 DS  128
-                DS  128
-                DS  128
+                PUT /TEST/CHAR.CYBORG2      ; 11
+                PUT /TEST/CHAR.ETRON2       ; 12
                 DS  128
                 DS  128
                 PUT /TEST/CHAR.EXTRA        ; 15

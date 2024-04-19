@@ -1,4 +1,14 @@
 
+; game state loaded at boot (2-3 sectors)
+
+; group characters written when removed (group assembly)
+; group/roster characters written when renamed
+
+; game state written at tesseract in/out of TRACC
+
+; ? group characters written on leaving enroll/energy/arsenal/robot/infirmary
+
+
 ; uninitialized buffer space before game state?
 
 ; *** 68 bytes (or more?) of arsenal equipment stock
@@ -9,8 +19,22 @@
 ; *** currently selected group
 
 
+; game state (3 sectors) at $BA00
+;   arsenal stock data
+;   roster allocation bits (2 bytes)
+;       one bit per character slot
+;       bit set means allocated
+;   ? current tracc run data (GRPNUMB, etc.)
+;
+; character data (8 sectors max, 2 characters per sector)
+
+; group characters (6 max) at $BD00
+
+
+
 MAP_VISITED_17  DS  217 ;,$FF     ;*** ; cleared by default
-                DS  39
+                ; DS  39
+                DS  3
 MAP_VISITED_15  DS  169
 MAP_VISITED_13  DS  127
 MAP_VISITED_11  DS  91
@@ -38,6 +62,7 @@ KEY_DOOR_BITS   DB  0
 
                 DS  3
 
+EQUIP_STOCK     DS  36
 GROUP_CREDITS   HEX 00010000
 
 ROSTER_BITS     DB  %00111001,%10000011 ; see TEST.ROSTER.S for indexes
@@ -50,5 +75,5 @@ TOTAL_CREDITS   DS  4
 TOTAL_EXP       DS  4
 
 LOST_CHARS      DB  0           ; $BCFD
-GRPCONT         DB  6           ; $BCFE ; number of characters, including dead/compressed?
-GRPNUMB         DB  6           ; $BCFF ; number of living characters in group
+GRPCONT         DB  0           ; $BCFE ; number of characters, including dead/compressed?
+GRPNUMB         DB  0           ; $BCFF ; number of living characters in group

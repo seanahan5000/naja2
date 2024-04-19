@@ -1,40 +1,40 @@
 
-                TXC "CYBORG____"
+                TXC "ETRON2____"
                 DFB healthy
-                HEX 0001            ;Level
-                DFB cybernate*16+human
-                HEX 00256666        ;Experience
+                HEX 0040            ;Level
+                DFB robot*16+none
+                HEX 00000000        ;Experience
 
                 HEX EE
 
-                HEX 00002940        ;Credit
+                HEX 00000000        ;Credit
                 HEX 99              ;Strength
                 HEX 99              ;Upper Reflex
                 HEX 99              ;Lower Reflex
                 HEX 99              ;Intelligence
-                HEX 30              ;Electrical shielding
-                HEX 29              ;Physical shielding
-                HEX 03              ;Back slots
-                HEX 31              ;XY
+                HEX 12              ;Electrical shielding
+                HEX 18              ;Physical shielding
+                HEX 01              ;Back slots
+                HEX 34              ;XY
 
                 HEX 0000            ;Damage level
-                HEX 0037            ;Damage maximum
-                HEX 50              ;Composition (organic)
-                HEX 003616          ;Power level
-                HEX 003700          ;Power maximum
+                HEX 0075            ;Damage maximum
+                HEX 01              ;Composition (organic)
+                HEX 002905          ;Power level
+                HEX 003000          ;Power maximum
                 HEX CCCC            ;Power consumption
 
                 HEX EE
 
-                HEX 84              ; roster index (4)
-                HEX 88              ; robot/cybernate link (8 ETRON)
+                HEX 8C              ; roster index (12)
+                HEX 8B              ; robot/cybernate link (11 CYBORG2)
 
                 HEX 0000            ;Power level extra digits
 
-                HEX 0370            ;Base power consumption
-                HEX 0000            ;Base shielding (e/p)
+                HEX 0420            ;Base power consumption
+                HEX 0000            ;Base shielding (e/p)  (WRONG)!!!
 
-                HEX FFFFFFFF        ;e1_HEAD
+                HEX 13000000        ;e1_HEAD
                 HEX FFFFFFFF        ;e2_SLOT
                 HEX FFFFFFFF        ;e3_UPLFT
                 HEX FFFFFFFF        ;e4_UPRGT
@@ -48,15 +48,15 @@
                 HEX FFFFFFFF        ;e12_BACK6
                 HEX FFFFFFFF        ;e13_ARMOR
                 HEX FFFFFFFF        ;e14_FEET
-                HEX FFFFFFFF        ;e15_PROGRAM
+                HEX 5A400020        ;e15_PROGRAM
                 HEX FFFFFFFF        ;e16_UNUSED
 
                 HEX 00000000        ;Illness damager
 
-                HEX 14              ;Base strength
-                HEX 11              ;Base upper reflex
-                HEX 16              ;Base lower reflex
-                HEX 22              ;Base intelligence
+                HEX 25              ;Base strength
+                HEX 25              ;Base upper reflex
+                HEX 20              ;Base lower reflex
+                HEX 00              ;Base intelligence
 
                 HEX EE
                 HEX EE

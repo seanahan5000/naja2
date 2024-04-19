@@ -1,5 +1,5 @@
 
-                TXC "CYBORG____"
+                TXC "CYBORG2___"
                 DFB healthy
                 HEX 0001            ;Level
                 DFB cybernate*16+human
@@ -26,8 +26,8 @@
 
                 HEX EE
 
-                HEX 84              ; roster index (4)
-                HEX 88              ; robot/cybernate link (8 ETRON)
+                HEX 8B              ; roster index (11)
+                HEX 8C              ; robot/cybernate link (12 ETRON2)
 
                 HEX 0000            ;Power level extra digits
 

@@ -1,5 +1,5 @@
 
-CHAR_1          TXC "ETRON_____"
+                TXC "ETRON_____"
                 DFB healthy
                 HEX 0040            ;Level
                 DFB robot*16+none

@@ -47,10 +47,12 @@ INIT_GAME
                 LDY #>GAME_STATE
                 JSR READ_FILE
 
-; TODO: these should come from the game state
-                LDA #$00
-                STA GRPNUMB
-                STA GRPCONT
+; TODO: At this point, GRPNUMB and GRPCONT have been
+;   loaded as part of the game state.
+;   May need to revisit if they move to ZPAGE.
+;               LDA #$00
+;               STA GRPNUMB
+;               STA GRPCONT
 
                 LDA #0
                 STA MAP_FACE

@@ -2,16 +2,16 @@
 CHAR_5          TXC "BLADE_____"
                 DFB healthy
                 HEX 0001            ;Level
-                DFB physician*16+stilicx
-                HEX 00256666        ;Experience
+                DFB electromedic*16+stilicx
+                HEX 00006666        ;Experience
 
                 HEX EE
 
                 HEX 00002766        ;Credit
-                HEX 99              ;Strength
-                HEX 99              ;Upper Reflex
-                HEX 99              ;Lower Reflex
-                HEX 99              ;Intelligence
+                HEX 09              ;Strength
+                HEX 09              ;Upper Reflex
+                HEX 09              ;Lower Reflex
+                HEX 09              ;Intelligence
                 HEX 20              ;Electrical shielding
                 HEX 25              ;Physical shielding
                 HEX 03              ;Back slots

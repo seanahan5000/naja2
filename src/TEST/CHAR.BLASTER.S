@@ -1,5 +1,5 @@
 
-CHAR_0          TXC "BLASTER___"
+                TXC "BLASTER___"
                 DFB healthy         ;healthy
                 HEX 0001            ;Level
                 DFB warrior*16+deneb
