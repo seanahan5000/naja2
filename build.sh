@@ -134,6 +134,7 @@ $A2NIB_T2 $OBJ/ELEVATOR        -t 15 -s 08   #  8 sectors
 $A2NIB_T1 $OBJ/CONTROL17       -t 10 -s 00   # 16 sectors (trim)
 $A2NIB_T1 $OBJ/CONTROL15       -t 11 -s 00   # 12 sectors (trim)
 $A2NIB_T1 $OBJ/FIGHT.LOADER1   -t 13 -s 00   #  5 sectors
+$A2NIB_T1 $OBJ/MAP.8000        -t 13 -s 08   #  8 sectors (trim)
 
 # shell 17
 $A2NIB_T1 $OBJ/VIEWPORT        -t 16 -s 00   #  9 sectors
@@ -149,6 +150,7 @@ $A2NIB_T2 $OBJ/CONTROL11       -t 11 -s 00   # 12 sectors (trim)
 $A2NIB_T2 $OBJ/CONTROL9        -t 12 -s 00   # 12 sectors (trim)
                                              #  4 sectors
 $A2NIB_T2 $OBJ/FIGHT.LOADER1   -t 13 -s 00   #  5 sectors
+$A2NIB_T1 $OBJ/MAP.8000        -t 13 -s 08   #  8 sectors (trim)
 
 # shell 9
 $A2NIB_T2 $OBJ/KEY.DOOR        -t 16 -s 00   # 13 sectors
@@ -158,7 +160,7 @@ $A2NIB_T3 $OBJ/FIGHT.LOADER2   -t 0E -s 00   #  3 sectors
 $A2NIB_T3 $OBJ/FIGHT.SHARED    -t 0F -s 00   # 16 sectors
 $A2NIB_T3 $OBJ/FIGHT.COMMAND   -t 10 -s 00   # 48+ sectors
 $A2NIB_T3 $OBJ/FIGHT.NARRATOR  -t 14 -s 00   # 64 sectors
-$A2NIB_T3 $OBJ/HALLS           -t 1B -s 00   # 16 sectors
+$A2NIB_T3 $OBJ/HALLS.6000      -t 1B -s 00   # 16 sectors
 $A2NIB_T3 $OBJ/AWARDER         -t 1D -s 00   # 13 sectors
 $A2NIB_T3 $OBJ/DEAD.GROUP      -t 1E -s 00   # 13 sectors
 $A2NIB_T3 $OBJ/REFORMAT        -t 20 -s 00   #  7 sectors

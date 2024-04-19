@@ -1,3 +1,18 @@
+Major changes so far:
+
+X Auto-mapping
+X Alien Compendium
+X Group size reduced from 7 down to 6
+X Shared credits across group
+    X Removed individual/pooled credit UI
+X Improved escape/cancel across all UI
+X Fight grid reflects tunnel layout of encounter
+X Complete write of tunnel drawing
+    X Fast/thin line drawing
+    X Improved far left/right wall caps
+X New graphics compression algorithm
+    X Significant size savings across disks
+
 
 * Quick fight mode versus "tactical" mode
 * Consider 5 or 6 instead of 7 group members, for balancing purposes
@@ -109,6 +124,9 @@ X Rework fight grid to show actual hall configuration
     * prevent trading/transferring top equipment to low-level characters
 * In-game text descriptions of equipment
     * Tie into Compendium?
+* Mothership
+    * Consider moving delete area one square left
+        * Make hallway look balanced when arriving in MS from boot
 ? Story: Style, Structure, Substance, and the Principles of Screenwriting by Robert McKee
 
 =================================

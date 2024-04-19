@@ -34,15 +34,15 @@ BOTH_MAPPED_MASKS = %00000011
 NORTH_MASK      =   %00110000
 WEST_MASK       =   %11000000
 
-NORTH_OPEN      =   (OPEN * 16)
-NORTH_FACE      =   (FACE * 16)
-NORTH_DOOR      =   (DOOR * 16)
-NORTH_WALL      =   (WALL * 16)
+NORTH_OPEN      =   OPEN * 16
+NORTH_FACE      =   FACE * 16
+NORTH_DOOR      =   DOOR * 16
+NORTH_WALL      =   WALL * 16
 
-WEST_OPEN       =   (OPEN * 64)
-WEST_FACE       =   (FACE * 64)
-WEST_DOOR       =   (DOOR * 64)
-WEST_WALL       =   (WALL * 64)
+WEST_OPEN       =   OPEN * 64
+WEST_FACE       =   FACE * 64
+WEST_DOOR       =   DOOR * 64
+WEST_WALL       =   WALL * 64
 
 MAP_TOP_PAD     =   6
 MAP_BOTTOM_PAD  =   4

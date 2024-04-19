@@ -17,7 +17,7 @@
 MAPPED_INDEX    =   $16
 MAPPED_BITS     =   $17
 
-                ORG $7800
+                ORG $7000
 
 CONTROL_FILE    DB  fileControl17+SHELLNUM-1
 

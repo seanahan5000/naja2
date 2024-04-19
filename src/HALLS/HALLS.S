@@ -269,40 +269,40 @@ GET_NSEW        ENT
 ; save/restore MAP_FACE through MAP_PTR_H state
 
 PUSH_MAP_STATE  ENT
-                LDX MAP_STATE_PTR
-                LDY #5
-:1              LDA MAP_FACE,Y
-                DEX
-                STA MAP_STATE_STACK,X
+                LDY MAP_STATE_PTR
+                LDX #5
+:1              LDA MAP_FACE,X
                 DEY
+                STA MAP_STATE_STACK,Y
+                DEX
                 BPL :1
-                STX MAP_STATE_PTR
+                STY MAP_STATE_PTR
                 RTS
 
 PULL_MAP_STATE  ENT
-                LDX MAP_STATE_PTR
-                LDY #0
-:1              LDA MAP_STATE_STACK,X
-                INX
-                STA MAP_FACE,Y
+                LDY MAP_STATE_PTR
+                LDX #0
+:1              LDA MAP_STATE_STACK,Y
                 INY
-                CPY #6
+                STA MAP_FACE,X
+                INX
+                CPX #6
                 BNE :1
-                STX MAP_STATE_PTR
+                STY MAP_STATE_PTR
                 RTS
 
 SWAP_MAP_STATE  ENT
-                LDX MAP_STATE_PTR
-                LDY #0
-:1              LDA MAP_STATE_STACK,X
+                LDY MAP_STATE_PTR
+                LDX #0
+:1              LDA MAP_STATE_STACK,Y
                 PHA
-                LDA MAP_FACE,Y
-                STA MAP_STATE_STACK,X
+                LDA MAP_FACE,X
+                STA MAP_STATE_STACK,Y
                 PLA
-                STA MAP_FACE,Y
-                INX
+                STA MAP_FACE,X
                 INY
-                CPY #6
+                INX
+                CPX #6
                 BNE :1
                 RTS
 

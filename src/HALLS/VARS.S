@@ -30,22 +30,22 @@ SIDE_MASK       =   %00001100
 XFRONT_MASK     =   %00110000
 XSIDE_MASK      =   %11000000
 
-FRONT_OPEN      =   (OPEN * 1)
-FRONT_FACE      =   (FACE * 1)
-FRONT_DOOR      =   (DOOR * 1)
-FRONT_WALL      =   (WALL * 1)
+FRONT_OPEN      =   OPEN * 1
+FRONT_FACE      =   FACE * 1
+FRONT_DOOR      =   DOOR * 1
+FRONT_WALL      =   WALL * 1
 
-SIDE_OPEN       =   (OPEN * 4)
-SIDE_FACE       =   (FACE * 4)
-SIDE_DOOR       =   (DOOR * 4)
-SIDE_WALL       =   (WALL * 4)
+SIDE_OPEN       =   OPEN * 4
+SIDE_FACE       =   FACE * 4
+SIDE_DOOR       =   DOOR * 4
+SIDE_WALL       =   WALL * 4
 
-XFRONT_OPEN     =   (OPEN * 16)
-XFRONT_FACE     =   (FACE * 16)
-XFRONT_DOOR     =   (DOOR * 16)
-XFRONT_WALL     =   (WALL * 16)
+XFRONT_OPEN     =   OPEN * 16
+XFRONT_FACE     =   FACE * 16
+XFRONT_DOOR     =   DOOR * 16
+XFRONT_WALL     =   WALL * 16
 
-XSIDE_OPEN      =   (OPEN * 64)
-XSIDE_FACE      =   (FACE * 64)
-XSIDE_DOOR      =   (DOOR * 64)
-XSIDE_WALL      =   (WALL * 64)
+XSIDE_OPEN      =   OPEN * 64
+XSIDE_FACE      =   FACE * 64
+XSIDE_DOOR      =   DOOR * 64
+XSIDE_WALL      =   WALL * 64

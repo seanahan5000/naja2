@@ -10,6 +10,11 @@ LINSORC         =   $0C
 TOCNT           =   $12
 FROMCNT         =   $13
 
+; *** MOVE THESE ***
+CONTROL_MODULE  =   $7000
+; SET_CONTROL     =   $7001
+MAP_MODULE      =   $8000
+
                 JMP TESS_TO_MOTHER
 
 *-------------------------------
@@ -50,40 +55,55 @@ TESSERACT_PORT  JSR LOST_IN_GROUP
 
 TESS_TO_TRACC   JSR DRAW_PICT
                 PictClear 9;17;32;34    ; clear text message
-                PictSetPage1
-                PictCopyToPage
-                PictShowPage
                 PictEnd
 
                 JSR SET_TO_LIMBO    ;Mark chars as "inlimbo"
 *JSR WRITE_GROUP ;Save that status to disk
                 JSR SET_TO_LIMBO    ;Restore real statuses
 
-                ; LDA #side_T1
-                ; STA DISK_SIDE
-                ; LDA #$9D
-                ; STA SSTOREH
-                ; LDX #<$01D0
-                ; LDY #>$01D0
-                ; LDA #2
-                ; JSR SLOADER
-                ; JMP $9D00
+                LDA #side_T1
+                JSR SET_DISK_SIDE
 
-                JSR SPRAY               ;***
+                LDA #fileControl17
+                LDY #>CONTROL_MODULE
+                JSR LOAD_FILE
+
+                LDA #1
+                STA SHELL
+                JSR SET_CONTROL
+
+                ; preload map code
+                LDA #fileMap
+                LDY #>MAP_MODULE
+                JSR LOAD_FILE
+
+; *** PICK A DESTINATION ***
+                LDA #0
+                STA MAP_FACE
+;               LDA #0
+                STA MAP_X
+                LDA #4
+                STA MAP_Y
+                LDA #EAST
+                STA MAP_DIR
+                JSR COMPUTE_MAP_PTR
+
                 JSR DRAW_PICT
-                PictShowPage
                 PictSetPage1
-                PictCopyToPage
+                PictClearPage
+                PictCall GET_NSEW
+                PictCall DRAW_HALL
+                PictSetPage2
+                PictCall SPRAY
+                PictSetPage1
                 PictShowPage
                 PictEnd
                 SEC
-                RTS                     ;***
+                RTS
 
 *-------------------------------
 *
 *-------------------------------
-
-; *** NOTE: loader17 calls this directly using JSR $9003
 
 ; source hall on page 1 (visible)
 ; dest hall on page 2

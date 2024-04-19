@@ -215,9 +215,10 @@ fileFightAwarder      = $45
 fileDeadGroup         = $46
 fileReformat          = $47
 
-fileElevator          = $50
-fileViewport          = $51
-fileRuuik             = $52
+fileMap               = $50
+fileElevator          = $51
+fileViewport          = $52
+fileRuuik             = $53
 
 fileKeyDoor           = $60
 

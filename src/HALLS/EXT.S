@@ -18,5 +18,5 @@ UPDATE_HALL      =   $63A2
 DRAW_HALL        =   $63A9
 SCAN_HALL        =   $63D5
 DRAW_SEGMENTS    =   $6A01
-BLOCK_BUFFER     =   $6EEA
-SHOW_MAP         =   $6F82
+BLOCK_BUFFER     =   $8000
+SHOW_MAP         =   $8098

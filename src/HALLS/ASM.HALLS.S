@@ -11,6 +11,10 @@
                 PUT HALLS.DATA
                 PUT LINES
                 PUT XLINES
-                PUT MAP
-
                 SAV HALLS.6000
+
+; TODO: use constant
+                ORG $8000
+; TODO: add module header byte
+                PUT MAP
+                SAV MAP.8000

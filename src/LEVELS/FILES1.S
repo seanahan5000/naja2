@@ -12,6 +12,7 @@ FILE_TABLE      DB  fileAlienPics12,  $00,$00,$B0
                 DB  fileControl13,    $10,$00,$10   ; (disk side 2)
 
                 DB  fileFightLoader1, $13,$00,$05
+                DB  fileMap,          $13,$08,$08
                 DB  fileDiagnose,     $14,$00,$0E
                 DB  fileAlienId,      $15,$00,$06
                 DB  fileElevator,     $15,$08,$08

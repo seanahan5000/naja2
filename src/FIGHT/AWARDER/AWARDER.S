@@ -15,8 +15,9 @@
 *-------------------------------------------------
 
 ; TODO: put in common file
-CONTROL_MODULE  =   $7800
-SET_CONTROL     =   $7801
+CONTROL_MODULE  =   $7000
+SET_CONTROL     =   $7001
+MAP_MODULE      =   $8000
 
 AWARDER         JSR DRAW_PICT
                 PictSetPage2
@@ -75,6 +76,11 @@ AWARDER         JSR DRAW_PICT
                 LDY #>CONTROL_MODULE
                 JSR LOAD_FILE
                 JSR SET_CONTROL
+
+                ; preload map code
+                LDA #fileMap
+                LDY #>MAP_MODULE
+                JSR LOAD_FILE
 
                 BIT GROUP_STATUS
                 BMI :3
@@ -153,15 +159,15 @@ HAVE_ROOM       JSR DRAW_PICT
                 LDA #0
                 STA :MOD1+1
                 STA YCOUNT
-:1              LDY #0
-:MOD1           LDX #$FF
-:2              LDA FOUND_ITEMS,X
-                STA ETABLE,Y
-                INX
+:1              LDX #0
+:MOD1           LDY #$FF
+:2              LDA FOUND_ITEMS,Y
+                STA ETABLE,X
                 INY
-                CPY #4
+                INX
+                CPX #4
                 BNE :2
-                STX :MOD1+1
+                STY :MOD1+1
                 JSR ETABLE_TO_TEXT
                 JSR DRAW_TEXTBUF_RET
                 INC YCOUNT
