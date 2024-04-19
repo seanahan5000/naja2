@@ -2,9 +2,6 @@
                 PUT /COMMON/VARS
                 PUT /COMMON/EXT
 
-; TODO: this doesn't belong in COMMON
-; TODO: make module handling the basis for caching in RAM
-
 *-------------------------------
 ;
 ; On entry:

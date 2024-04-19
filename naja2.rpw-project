@@ -1,57 +1,340 @@
 {
-  "syntax": "merlin",
-  "upperCase": "true",
-  "tabSize": 4,
-  "tabStops": [0, 16, 20, 40],
+  "settings": {
+    "syntax": "merlin",
+    "upperCase": "true",
+    "tabSize": 4,
+    "tabStops": [0, 16, 20, 40]
+  },
   "srcDir": "src",
   "includes": [
     "/NAJA/VARS/CONSTANTS",
     "/COMMON/VARS",
     "/COMMON/EXT",
-    "/HALLS/VARS",
-    "/HALLS/EXT",
     "/NDOS/VARS",
     "/NDOS/EXT",
+    "/HALLS/VARS",
+    "/HALLS/EXT",
     "/CAMP/EXT",
     "/FIGHT/FIGHT.CONSTS",
     "/FIGHT/FIGHT.MACROS",
     "/FIGHT/FIGHT.ZPAGE"
   ],
+
   "modules": [
-    { "src": "/COMMON/ASM.COMMON"           },
-    { "src": "/BOOT/ASM.TITLE"              },
+    {
+      "src": "/COMMON/ASM.COMMON",
+      "lst": "COMMON.LST"
+    },
+    {
+      "src": "/NDOS/ASM.NDOS",
+      "lst": "NDOS.LST"
+    },
+    {
+      "src": "/BOOT/ASM.BOOT",
+      "lst": "BOOT.LST"
+    },
+    {
+      "src": "/HALLS/ASM.HALLS",
+      "lst": "HALLS.LST"
+    },
+    {
+      "src": "/CAMP/ASM.CAMP",
+      "lst": "CAMP.LST"
+    },
+    {
+      "src": "/MOTHER/CONTROL/ASM.MOTHER",
+      "lst": "MOTHERSHIP.LST"
+    },
+    {
+      "src": "/MOTHER/ENTEST/ASM.ENTEST",
+      "lst": "ENTEST.LST"
+    },
+    {
+      "src": "/MOTHER/GROUP/ASM.GROUP",
+      "lst": "GROUP.LST"
+    },
+    {
+      "src": "/MOTHER/INFIRMARY/ASM.INFIRMARY",
+      "lst": "INFIRMARY.LST"
+    },
+    {
+      "src": "/MOTHER/ENERGY/ASM.ENERGY",
+      "lst": "ENERGY.LST"
+    },
+    {
+      "src": "/MOTHER/ARSENAL/ASM.ARSENAL",
+      "lst": "ARSENAL.LST"
+    },
+    {
+      "src": "/MOTHER/ROBOTS/ASM.ROBOTS",
+      "lst": "ROBOTS.LST"
+    },
 
-    { "src": "/NDOS/NDOS.525"               },
-    { "src": "/HALLS/ASM.HALLS"             },
-    { "src": "/CAMP/ASM.CAMP"               },
+    {
+      "src": "/FIGHT/SHARED/ASM.SHARED",
+      "lst": "SHARED.LST"
+    },
+    {
+      "src": "/FIGHT/LOADER/ASM.LOADER",
+      "lst": "LOADER.LST"
+    },
+    {
+      "src": "/FIGHT/COMMAND/ASM.COMMAND",
+      "lst": "COMMAND.LST"
+    },
+    {
+      "src": "/FIGHT/NARRATOR/ASM.NARRATOR",
+      "lst": "NARRATOR.LST"
+    },
+    {
+      "src": "/FIGHT/REFORMAT/ASM.REFORMAT",
+      "lst": "REFORMAT.LST"
+    },
+    {
+      "src": "/FIGHT/ASM.FIGHT",
+      "lst": "FIGHT.LST"
+    },
+    {
+      "src": "/LEVELS/INIT",
+      "lst": "INIT.LST"
+    },
+    {
+      "src": "/LEVELS/ASM.17",
+      "lst": "CONTROL17.LST"
+    },
+    {
+      "src": "/LEVELS/ASM.15",
+      "lst": "CONTROL15.LST"
+    },
+    {
+      "src": "/LEVELS/ASM.13",
+      "lst": "CONTROL13.LST"
+    },
+    {
+      "src": "/LEVELS/ASM.11",
+      "lst": "CONTROL11.LST"
+    },
+    {
+      "src": "/LEVELS/ASM.9",
+      "lst": "CONTROL9.LST"
+    },
+    { "src": "/ALIENS/ASM.PICS" },
+    { "src": "/ALIENS/ASM.DATA" },
+    { "src": "/ALIENS/ALIEN.DESC.12" },
+    { "src": "/ALIENS/ALIEN.DESC.345" },
+    { "src": "/TEST/FAKE.ROSTER" },
+    { "src": "/TEST/FAKE.GAME" }
+  ],
 
-    { "src": "/MOTHER/CONTROL/ASM.MOTHER"   },
-    { "src": "/MOTHER/ENTEST/ASM.ENTEST"    },
-    { "src": "/MOTHER/GROUP/ASM.GROUP"      },
-    { "src": "/MOTHER/INFIRMARY/ASM.INFIRMARY" },
-    { "src": "/MOTHER/ENERGY/ASM.ENERGY"    },
-    { "src": "/MOTHER/ARSENAL/ASM.ARSENAL"  },
-    { "src": "/MOTHER/ROBOTS/ASM.ROBOTS"    },
+  "images": [
+    { "name": "naja0.nib", "drive": 1, "enabled": true },
+    { "name": "naja1.nib", "drive": 2, "enabled": true },
+    { "name": "naja2.nib", "drive": 2, "enabled": false },
+    { "name": "naja3.nib", "drive": 1, "enabled": false }
+  ],
 
-    { "src": "/ALIENS/ASM.PICS"             },
-    { "src": "/ALIENS/ASM.DATA"             },
-    { "src": "/ALIENS/ALIEN.DESC.12"        },
-    { "src": "/ALIENS/ALIEN.DESC.345"       },
+  "preloads": [
+    {
+      "enabled": true,
+      "bins": [
+        "NDOS.0400",
+        "GRAPHICS.0A00",
+        "CAMP.1C00",
+        "HALLS.6000",
+        "CAMP.D000.1",
+        "CAMP.D000.2",
+        "CAMP.E000"
+      ]
+    },
+    {
+      "enabled": true,
+      "bins": [
+        "INIT.AF00",
+        "FAKE.GAME.BA00"
+      ],
+      "patches": [
+        { "address": "0xAF01", "bank": 1, "data": [ "0x00" ] }
+      ],
+      "entryPoint": "0xAF00",
+      "entryPointX": "0xC600"
+    },
+    { "bins": [ "MOTHERSHIP.7000" ], "enabled": true },
+    { "bins": [ "CONTROL17.7800"  ], "enabled": false },
+    { "bins": [ "CONTROL15.7800"  ], "enabled": false },
+    { "bins": [ "CONTROL13.7800"  ], "enabled": false },
+    { "bins": [ "CONTROL11.7800"  ], "enabled": false },
+    { "bins": [ "CONTROL9.7800"   ], "enabled": false },
+    { "bins": [ "TITLE.PAGE.6000" ], "enabled": false, "entryPoint": "0x6000" }
+  ],
 
-    { "src": "/FIGHT/SHARED/ASM.SHARED"     },
-    { "src": "/FIGHT/LOADER/ASM.LOADER"     },
-    { "src": "/FIGHT/COMMAND/ASM.COMMAND"   },
-    { "src": "/FIGHT/NARRATOR/ASM.NARRATOR" },
-    { "src": "/FIGHT/REFORMAT/ASM.REFORMAT" },
-    { "src": "/FIGHT/ASM.FIGHT"             },
+  "types": [
+    {
+      "name": "Alien",
+      "structure": {
+        "size": 64,
+        "fields": [
+          { "name": "aName",           "offset": "0",
+            "type": { "array": { "count": 16, "typeName": "NajaText" } }
+          },
+          { "name": "aSwings",         "offset": "16" },
+          { "name": "aSwingDamage",    "offset": "17", "typeName": "2-bytes" },
+          { "name": "aBlasts",         "offset": "19" },
+          { "name": "aBlastDamage",    "offset": "20", "typeName": "2-bytes" },
+          { "name": "aSwingSquares",   "offset": "22" },
+          { "name": "aInflicting",     "offset": "23" },
+          { "name": "aStatInflictd",   "offset": "24" },
 
-    { "src": "/LEVELS/INIT"                 },
-    { "src": "/LEVELS/ASM.17"               },
-    { "src": "/LEVELS/ASM.15"               },
-    { "src": "/LEVELS/ASM.13"               },
-    { "src": "/LEVELS/ASM.11"               },
-    { "src": "/LEVELS/ASM.9"                },
+          { "name": "aFightParams",    "offset": "26", "typeName": "5-bytes" },
+          { "name": "aBlastSource",    "offset": "31" },
+          { "name": "aUpperReflex",    "offset": "32" },
+          { "name": "aLowerReflex",    "offset": "33" },
 
-    { "src": "/TEST/GAME.STATE"             }
+          { "name": "aDamage",         "offset": "35", "typeName": "2-bytes" },
+          { "name": "aElShield",       "offset": "37" },
+          { "name": "aPhShield",       "offset": "38" },
+
+          { "name": "aExperience",     "offset": "42", "typeName": "2-bytes" },
+          { "name": "aCredit",         "offset": "44", "typeName": "2-bytes" },
+          { "name": "aFindingOdds",    "offset": "46" },
+          { "name": "aFindingGroup",   "offset": "47" },
+          { "name": "aSurprised",      "offset": "48" },
+          { "name": "aSurprising",     "offset": "49" },
+          { "name": "aIdentified",     "offset": "50" },
+          { "name": "aJammed",         "offset": "51" },
+          { "name": "aImmobilized",    "offset": "52" },
+
+          { "name": "aSuscepts",       "offset": "56", "typeName": "3-bytes" },
+          { "name": "aSwingWords",     "offset": "59", "typeName": "3-bytes" },
+          { "name": "aRetreatOdds",    "offset": "62" },
+          { "name": "aAdvanceOdds",    "offset": "63" }
+        ]
+      }
+    },
+    {
+      "name": "Monster",
+      "structure": {
+        "size": 20,
+        "fields": [
+          { "name": "monUPREF",     "offset":  0 },
+          { "name": "monLOREF",     "offset":  1 },
+          { "name": "monSHOTS",     "offset":  2 },
+          { "name": "monSWINGS",    "offset":  3 },
+          { "name": "monDAMAGE",    "offset":  4, "typeName": "2-bytes" },
+          { "name": "monELSHIELD",  "offset":  6 },
+          { "name": "monPHSHIELD",  "offset":  7 },
+          { "name": "monPOSITION",  "offset":  8 },
+          { "name": "monNUMBER",    "offset":  9 },
+          { "name": "monSTATUS",    "offset": 10 },
+          { "name": "monSTATCOUNT", "offset": 11, "typeName": "2-bytes" },
+          { "name": "monCMDCOUNT",  "offset": 13 },
+          { "name": "monCRNTCMD",   "offset": 14, "typeName": "2-bytes" },
+          { "name": "monLASTCMD",   "offset": 16, "typeName": "2-bytes" },
+          { "name": "monTOPVIEW",   "offset": 18 },
+          { "name": "monFLAGS",     "offset": 19 }
+        ]
+      }
+    },
+    {
+      "name": "Character",
+      "structure": {
+        "size": 128,
+        "fields": [
+          { "name": "name",          "offset":  0,
+            "type": { "array": { "count": 10, "typeName": "NajaText" } }
+          },
+          { "name": "status",        "offset": 10 },
+          { "name": "level",         "offset": 11, "typeName": "2-bytes" },
+          { "name": "profrace",      "offset": 13 },
+          { "name": "experience",    "offset": 14, "typeName": "4-bytes" },
+
+          { "name": "credits",       "offset": 19, "typeName": "4-bytes" },
+          { "name": "strength",      "offset": 23 },
+          { "name": "upreflex",      "offset": 24 },
+          { "name": "lwreflex",      "offset": 25 },
+          { "name": "intelligence",  "offset": 26 },
+          { "name": "Eshielding",    "offset": 27 },
+          { "name": "Pshielding",    "offset": 28 },
+          { "name": "back",          "offset": 29 },
+          { "name": "position",      "offset": 30 },
+          { "name": "damagelev",     "offset": 31, "typeName": "2-bytes" },
+          { "name": "damagemax",     "offset": 33, "typeName": "2-bytes" },
+          { "name": "organic",       "offset": 35 },
+          { "name": "energylev",     "offset": 36, "typeName": "3-bytes" },
+          { "name": "energymax",     "offset": 39, "typeName": "3-bytes" },
+          { "name": "powerconsumpt", "offset": 42, "typeName": "2-bytes" },
+
+          { "name": "rosterLocation","offset": 45 },
+          { "name": "roboCyberLink", "offset": 46 },
+          { "name": "powerfraction", "offset": 47, "typeName": "2-bytes" },
+          { "name": "basepowercons", "offset": 49, "typeName": "2-bytes" },
+          { "name": "baseshielding", "offset": 51, "typeName": "2-bytes" },
+          { "name": "e1_HEAD",       "offset": 53, "typeName": "4-bytes" },
+          { "name": "e2_SLOT",       "offset": 57, "typeName": "4-bytes" },
+          { "name": "e3_UPLFT",      "offset": 61, "typeName": "4-bytes" },
+          { "name": "e4_UPRGT",      "offset": 65, "typeName": "4-bytes" },
+          { "name": "e5_LWLFT",      "offset": 69, "typeName": "4-bytes" },
+          { "name": "e6_LWRGT",      "offset": 73, "typeName": "4-bytes" },
+          { "name": "e7_BACK1",      "offset": 77, "typeName": "4-bytes" },
+          { "name": "e8_BACK2",      "offset": 81, "typeName": "4-bytes" },
+          { "name": "e9_BACK3",      "offset": 85, "typeName": "4-bytes" },
+          { "name": "e10_BACK4",     "offset": 89, "typeName": "4-bytes" },
+          { "name": "e11_BACK5",     "offset": 93, "typeName": "4-bytes" },
+          { "name": "e12_BACK6",     "offset": 97, "typeName": "4-bytes" },
+          { "name": "e13_ARMOR",     "offset": 101, "typeName": "4-bytes" },
+          { "name": "e14_FEET",      "offset": 105, "typeName": "4-bytes" },
+          { "name": "e15_PROGRAM",   "offset": 109, "typeName": "4-bytes" },
+          { "name": "e16_UNUSED",    "offset": 113, "typeName": "4-bytes" },
+          { "name": "inflictcount",  "offset": 117 },
+          { "name": "inflictdelay",  "offset": 118 },
+          { "name": "inflictamount", "offset": 119 },
+          { "name": "inflictnums",   "offset": 120 },
+          { "name": "basestrength",  "offset": 121 },
+          { "name": "baseupreflex",  "offset": 122 },
+          { "name": "baselwreflex",  "offset": 123 },
+          { "name": "baseintellig",  "offset": 124 },
+
+          { "name": "flaglimbo",     "offset": 126 },
+          { "name": "miscflags",     "offset": 127 }
+        ]
+      }
+    },
+    {
+      "name": "Grid5x5",
+      "array": {
+        "count": 25,
+        "width": 5
+      }
+    },
+    {
+      "name": "Grid2x3",
+      "array": {
+        "count": 6,
+        "width": 2
+      }
+    },
+    {
+      "name": "2-bytes",
+      "array": {
+        "count": 2
+      }
+    },
+    {
+      "name": "3-bytes",
+      "array": {
+        "count": 3
+      }
+    },
+    {
+      "name": "4-bytes",
+      "array": {
+        "count": 4
+      }
+    },
+    {
+      "name": "5-bytes",
+      "array": {
+        "count": 5
+      }
+    }
   ]
 }

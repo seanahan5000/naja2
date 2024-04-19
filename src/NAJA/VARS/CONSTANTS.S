@@ -241,3 +241,10 @@ fileRobotRep_Load     = $7E
 fileRobotRep_Control  = $7F
 
 fileSaveGame          = $80
+
+fileGraphics          = $B0
+fileCampE000          = $B1
+fileCampD000_1        = $B2
+fileCampD000_2        = $B3
+fileTitle             = $B4
+fileHalls             = $B5

@@ -10,9 +10,6 @@
 ;
 ;-------------------------------------------------------------------------------
 
-                PUT /COMMON/VARS
-                PUT /COMMON/EXT
-
 GsFade          =   1
 NajaFade        =   1
 
@@ -2009,9 +2006,7 @@ SERIAL_MOD      TXT "000001"
                 BPL :1
                 BIT UNSTROB
                 JSR SHOW_PAGE
-
-:2              JMP :2                  ;***
-;               JMP FINISH_BOOT
+                JMP FINISH_BOOT
 
 DRAW_DOT_STARS  LDX #0
 MORSTAR         STX LINENUM

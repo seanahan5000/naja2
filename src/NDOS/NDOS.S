@@ -2,8 +2,6 @@
 ;*** RENAME AND MOVE TO ZPAGE ***
 SSECTOR         =   SECHOLD
 
-READ_SECTORS    =   READ_SECTORS2
-
 
 ;
 ; On entry:
@@ -20,6 +18,7 @@ SET_FILE_TABLE  ENT
 ;    (IS_SPINNING | NOT_SPINNING)
 ;    (KEEP_SPINNING | STOP_SPINNING)
 ;
+; *** GET RID OF THIS ***
 SET_NEXT_ON_OFF ENT
                 STA ON_OFF_FLAG
                 RTS
@@ -90,14 +89,14 @@ LOAD_FILE       ENT
                 STA SSECTOR
                 LDA FILE_SIZE
                 STA SECOUNT
-                JSR READ_SECTORS
-:1              LDA #%00000000          ; reset on/off flag
-                STA ON_OFF_FLAG
-                RTS
+                JMP READ_SECTORS
+:1              RTS
 ;
 ; On entry:
 ;   A: sector count
 ;   Y: load address (high)
+;
+; NOTE: This does *not* advance the file position after read.
 ;
 READ_FILE       ENT
                 STA SECOUNT
@@ -114,10 +113,7 @@ READ_FILE       ENT
                 AND #$0F
                 INC STRACK
 :1              STA SSECTOR
-                JSR READ_SECTORS
-                LDA #%00000000          ; reset on/off flag
-                STA ON_OFF_FLAG
-                RTS
+                JMP READ_SECTORS
 
 FILE_TRACK      DB  0
 FILE_SECTOR     DB  0

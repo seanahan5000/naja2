@@ -80,3 +80,5 @@ POSITIONS       DB  0,0,4,EAST          ; mothership
                 DB  5,2,4,3             ; shell 13
                 DB  5,2,4,3             ; shell 11
                 DB  5,2,4,3             ; shell 9
+
+                SAV INIT.AF00

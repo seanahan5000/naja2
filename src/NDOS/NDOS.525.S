@@ -3,7 +3,7 @@
 
 ; slightly different name to avoid COMMON/VARS version
 SAME_PAGE_AS_   MAC
-                ERR >(*-1!]1)
+                ERR *!]1/256
                 EOM
 
 *==================================
@@ -12,8 +12,6 @@ SAME_PAGE_AS_   MAC
 *    for 5.25 inch Disk ][ disks
 *
 *==================================
-
-NEW_DOS			=	1				;***
 
 STRACK			=	$B1
 SSTOREH			=	$B2
@@ -33,10 +31,6 @@ DESTH			=	$BE
 
 PTR1			=	MOTCNTL			;and PTR1+1
 
-*NUM_DRIVES = $3C0 ;0 or 1
-*SLOT_X0 = $3C1
-*EXTRA_64K = $3C2
-
 BUFFER1			=	$0200
 BUFFER2			=	$0300
 
@@ -47,30 +41,21 @@ DRIVE1			=	$C08A
 READER			=	$C08C
 LATCHIN			=	$C08E
 
-			do NEW_DOS
 D_HEAD1			=	$D5
 D_HEAD2			=	$AA
 D_HEAD3			=	$AD
-			else
-A_SYNC			=	$AF
-A_HEAD1			=	$DC
-A_HEAD3			=	$CD
-D_HEAD1			=	$CD
-D_HEAD2			=	$FF
-D_HEAD3			=	$DC
-			fin
+
 RECALIBS		=	1
 RETRIES			=	20
 
-                ORG	$0400
+; TODO: get rid of these
 DRIVE_ON        ENT
                 JMP UP_TO_SPEED
 DRIVE_OFF       ENT
                 JMP TURN_OFF
-READ_VECTOR     JMP READ_SECTORS
 
-			do NEW_DOS
-
+; TODO: are these still valid?
+;
 * SIDE_FOUND:
 *    0 = BOOT, 1 = UNUSED
 *    2 = TRACC 17,15,  3 = TRACC 13,11,9
@@ -129,7 +114,7 @@ READ_ADDRESS	LDX	SLOT_X0
 				BNE	:ERROR
 
 				LDX	SECTOR_FOUND
-				LDA	INTERLEAVE,X	; physical to logical
+				LDA	INTERLEAVE_P2L,X
 				EOR	SECTOR
 				BMI	:SUCCESS		; don't care which sector
 				BNE	READ_ADDRESS
@@ -138,74 +123,6 @@ READ_ADDRESS	LDX	SLOT_X0
 
 :ERROR			SEC
 				RTS
-
-			else	; NEW_DOS = 0
-
-*** D_HEAD1,SIDE CODE,D_HEAD2,TRACK (5+5),SECTOR (5+5)
-*** SIDE CODE = 11111AAA where AAA = SIDE+1
-*    0 = BOOT, 1 = UNUSED
-*    2 = TRACC 17,15,  3 = TRACC 13,11,9
-*    4 = FIGHT 17,15,  5 = FIGHT 13,11,9
-
-READ_ADDRESS	LDX	SLOT_X0
-				LDY	#$F0
-				STY	HOLDA
-ERRCHCK			INY
-				BNE	LOOPX0
-				INC	HOLDA
-				BEQ	ERROR
-LOOPX0			LDA	READER,X
-				BPL	LOOPX0
-				CMP	#A_SYNC
-				BNE	ERRCHCK
-LOOPX1			LDA	READER,X
-				BPL	LOOPX1
-				CMP	#A_SYNC
-				BNE	ERRCHCK
-LOOPX2			LDA	READER,X
-				BPL	LOOPX2
-				CMP	#A_SYNC
-				BEQ	LOOPX2
-				BNE	CHECKA
-LOOPA			LDA	READER,X
-				BPL	LOOPA
-CHECKA			CMP	#A_HEAD1
-				BNE	ERRCHCK
-				NOP
-LOOPB			LDA	READER,X
-				BPL	LOOPB
-				STA	SIDE_FOUND
-				NOP
-				NOP
-				NOP
-LOOPC			LDA	READER,X
-				BPL	LOOPC
-				CMP	#A_HEAD3
-				BNE	CHECKA
-:LOOP1			LDA	READER,X
-				BPL	:LOOP1
-				STA	HOLDA
-				NOP
-:LOOP2			LDA	READER,X
-				BPL	:LOOP2
-				ROL					;Carry set
-				AND	HOLDA
-				STA	TRACK_FOUND
-LOOPD			LDA	READER,X
-				BPL	LOOPD
-				ROL					;Carry set
-				STA	HOLDA
-LOOPE			LDA	READER,X
-				BPL	LOOPE
-				AND	HOLDA
-				EOR	SECTOR
-				BMI	:SKIPA
-				BNE	READ_ADDRESS
-:SKIPA			CLC
-				RTS
-ERROR			SEC
-				RTS
-			fin	; NEW_DOS = 0
 
 READ_DATA		LDX	SLOT_X0
 				LDY	#$20
@@ -252,10 +169,7 @@ ERROR2			SEC
 				RTS
 
 
-DENIBLR
-				LDX	BANK
-*** HIT BANK SWITCH HERE IF NEEDED
-				LDY	#$00
+DENIBLR         LDY	#$00
 :LOOP1			LDX	#$56
 :LOOP2			DEX
 				BMI	:LOOP1
@@ -269,10 +183,10 @@ DENIBLR
 				CPY	HOLDA
 				BNE	:LOOP2
 				SAME_PAGE_AS_ :LOOP1
-				LDX	BANK
-*** HIT BANK SWITCH HERE IF NEEDED
 				RTS
 
+
+                DS  17                  ;*** FREE SPACE
 
 ********************************
 * A = NUMBER OF SECTORS TO READ
@@ -282,18 +196,7 @@ DENIBLR
 * SSTOREL = DESTINATION ADDRESS (LOW)
 * SSTOREH = DESTINATION ADDRESS (HIGH)
 
-READ_SECTORSx	TXA
-				AND	#$0F
-				STA	SECHOLD
-				STX	STRACK
-				TYA
-				LDX	#4
-:LOOP0			LSR
-				ROR	STRACK
-				DEX
-				BNE	:LOOP0
-
-READ_SECTORS2						;*** RENAME?
+READ_SECTORS
 *SEI
 				NOP					;Remove when SEI put in
 
@@ -396,7 +299,7 @@ GET_SLOW_SIDE	LDX	#0
 				JSR	ASK_FOR_SIDE
 				JMP	GET_SLOW_SIDE
 
-				NOP					;FREE SPACE
+				NOP					; *** FREE SPACE
 
 SLOW_SIDE		STX	DRIVENUM
 				TXA
@@ -416,7 +319,6 @@ GOT_THE_SIDE	LDA	TRACK_FOUND
 				LDA	STRACK
 				ASL
 				JMP	ARMOVE
-
 
 FIND_SIDE		LDA	#RECALIBS
 				STA	ECOUNT1
@@ -438,12 +340,6 @@ FIND_SIDE		LDA	#RECALIBS
 :ERROR			LDA	#$FF
 				RTS
 :SKIPA			LDA	SIDE_FOUND
-			do NEW_DOS
-			else
-				AND	#$07
-				SEC
-				SBC	#$01
-			fin
 				RTS
 
 UP_TO_SPEED		LDX	SLOT_X0
@@ -473,10 +369,12 @@ DELSPED			DEY
 				INC	MOTCNTH
 				BNE	DEL12
 AT_SPEED		RTS
-HOLDC			DB	$00
 
+HOLDC			DB	$00                          ;*** move this
+
+; TODO: CODETAB access always incurs a page crossing
+;   cycle penalty.  Is this timing issue being depended on?
 CODETAB			=	*-$96
-			do NEW_DOS
 				DB	$00,$01,$98
 				DB	$99,$02,$03
 				DB	$9C,$04,$05
@@ -513,47 +411,11 @@ CODETAB			=	*-$96
 				DB	$39,$3A,$3B
 				DB	$3C,$3D,$3E
 				DB	$3F
+;               SAME_PAGE_AS_ CODETAB
 
-INTERLEAVE		DB	$00,$08,$01,$09,$02,$0A,$03,$0B
+; physical to logical
+INTERLEAVE_P2L  DB	$00,$08,$01,$09,$02,$0A,$03,$0B
 				DB	$04,$0C,$05,$0D,$06,$0E,$07,$0F
-			else
-				DB	$3F,$3E,$98
-				DB	$99,$3D,$3C
-				DB	$9C,$3B,$3A
-				DB	$39,$A0,$A1
-				DB	$A2,$A3,$A4
-				DB	$A5,$14,$13
-				DB	$A8,$A9,$12
-				DB	$11,$10,$0F
-				DB	$0E,$0D,$B0
-				DB	$B1,$38,$37
-				DB	$36,$35,$34
-				DB	$33,$B8,$32
-				DB	$31,$30,$2F
-				DB	$2E,$2D,$2C
-				DB	$C0,$C1,$C2
-				DB	$C3,$C4,$C5
-				DB	$C6,$C7,$C8
-				DB	$C9,$CA,$17
-				DB	$CC,$CD,$16
-				DB	$15,$D0,$D1
-				DB	$D2,$2B,$D4
-				DB	$2A,$29,$28
-				DB	$D8,$27,$26
-				DB	$25,$DC,$24
-				DB	$23,$22,$E0
-				DB	$E1,$E2,$E3
-				DB	$E4,$21,$20
-				DB	$1F,$E8,$1E
-				DB	$1D,$1C,$1B
-				DB	$1A,$19,$18
-				DB	$F0,$F1,$0C
-				DB	$0B,$0A,$09
-				DB	$08,$07,$F8
-				DB	$06,$05,$04
-				DB	$03,$02,$01
-				DB	$00
-			fin
 
 ARMOVE			LDX	SLOT_X0
 				STA	HOLDD
@@ -620,11 +482,13 @@ DELAYS2			DB	$70,$2C,$26
 				DB	$22,$1F,$1E
 				DB	$1D,$1C,$1C
 				DB	$1C,$1C,$1C
+                SAME_PAGE_AS_ DELAYS2
 
 DELAYS			DB	$01,$30,$28
 				DB	$24,$20,$1E
 				DB	$1D,$1C,$1C
 				DB	$1C,$1C,$1C
+                SAME_PAGE_AS_ DELAYS
 ;
 ; On entry:
 ;	X: file hook address low
@@ -653,78 +517,23 @@ SET_DISK_SIDE	ENT
 				RTS
 ;
 ; On entry:
-;	X: file table address low
-;	Y: file table address high
+;   A: disk controller slot number * 16
 ;
-; SET_FILE_TABLE	ENT
-; 				STX FILES
-; 				STY FILESH
-; 				RTS
-;
-; On entry:
-;	X: file index
-;
-; LOAD_FILE       ENT
-; 				LDA #%00000000      ; was SLOAD_FILE
-;                 BEQ LOAD_FILE_CMN   ; always
-; _LOAD_FILE      ENT
-; 				LDA #%10000000      ; was FLOAD_FILE
-;                 BNE LOAD_FILE_CMN   ; always
-; LOAD_FILE_      ENT
-; 				LDA #%01000000      ; was SLOADER_FILE
-;                 BNE LOAD_FILE_CMN   ; always
-; _LOAD_FILE_     ENT
-; 				LDA #%11000000      ; was FLOADER_FILE
-; LOAD_FILE_CMN	STA ON_OFF_FLAG
-; 				TXA
-; 				ASL
-; 				ASL
-; 				TAY
-; 				LDA (FILES),Y
-; 				STA STRACK
-; 				INY
-; 				LDA (FILES),Y
-; 				STA SECHOLD
-; 				INY
-; 				LDA (FILES),Y
-; 				STA SECOUNT
-; 				INY
-; 				LDA (FILES),Y
-; 				STA SSTOREH
-; 				JMP READ_SECTORS2
-
-; SET_LOAD_ADDR	ENT
-; 				STY SSTOREH
-; 				STA SECOUNT
-; 				RTS
-
-; LOAD_DATA       ENT
-; 				LDA #%00000000      ; was SLOAD
-;                 BEQ LOAD_DATA_CMN   ; always
-; _LOAD_DATA      ENT
-; 				LDA #%10000000      ; was FLOAD
-;                 BNE LOAD_DATA_CMN   ; always
-; LOAD_DATA_      ENT
-; 				LDA #%01000000      ; was SLOADER
-;                 BNE LOAD_DATA_CMN   ; always
-; _LOAD_DATA_     ENT
-; 				LDA #%11000000      ; was FLOADER
-; LOAD_DATA_CMN	JMP READ_SECTORS
+SET_SLOT_X0     ENT
+                STA SLOT_X0
+                RTS
 
 TRACK			DS	1
 SECTOR			DS	1
 SECHOLD			DS	1
 SECOUNT			DS	1
 DRIVENUM		DS	1
-			do NEW_DOS
+
 CHECKSUM_FOUND	DS	1				; order dependent
 SECTOR_FOUND	DS	1				;
 TRACK_FOUND		DS	1				;
 SIDE_FOUND		DS	1				;
-			else
-SIDE_FOUND		DS	1
-TRACK_FOUND		DS	1
-			fin
+
 ECOUNT1			DS	1
 ECOUNT2			DS	1
 
@@ -733,21 +542,9 @@ IN_DRIVE2		DB	$FF				;  in this order
 
 NUM_DRIVES		DB	$01				;TEMP***
 SLOT_X0			DB	$60				;TEMP***
-EXTRA_64K		DB	$00				;TEMP***
 
-				DS	$800-4-*
+				DS	$800-3-*
 
 ON_OFF_FLAG		DB	$00
 LAST1			DB	$00
 SSTOREL			DB	$00
-BANK			DB	$00				;0 OR 1 ???
-
-				SAV	NDOS.525
-
-				PUT	NDOS.525W
-				SAV	NDOS.525W
-
-				ORG	$1E00
-				PUT	NDOS
-				PUT FILES
-				SAV	NDOS.1E00

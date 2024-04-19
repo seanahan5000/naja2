@@ -177,7 +177,14 @@ SET_WHITE1      ENT
 OP_SET_COLOR    LDA (OP_PTR),Y
                 INY
                 STY OP_INDEX
-SET_COLOR       ENT                     ; X,Y must be unchanged
+;
+; On entry:
+;   A: new OpColor
+;
+; On exit:
+;   X,Y: unchanged
+;
+SET_COLOR       ENT
                 STA OP_COLOR            ; TODO: does this really need a zpage?
                 RTS
 

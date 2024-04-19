@@ -1,5 +1,0 @@
-{
-    "working_dir": "$project_path",
-    "shell_cmd": "$project_path/build.sh",
-    "file_regex": "^ERROR file \"([\\S.\/]*)\", line (\\d+)():"
-}

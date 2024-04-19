@@ -28,8 +28,9 @@ fi
 
 ERR=0
 $ASM COMMON ASM.COMMON  -lst $OBJ/COMMON.LST   -ent $SRC/COMMON/EXT.S || ERR=1
-$ASM BOOT   ASM.TITLE   -lst $OBJ/TITLE.LST                           || ERR=1
-$ASM NDOS   NDOS.525    -lst $OBJ/NDOS.LST     -ent $SRC/NDOS/EXT.S   || ERR=1
+# COMMON must be built before NDOS so EXT file is available
+$ASM NDOS   ASM.NDOS    -lst $OBJ/NDOS.LST     -ent $SRC/NDOS/EXT.S   || ERR=1
+$ASM BOOT   ASM.BOOT    -lst $OBJ/BOOT.LST                            || ERR=1
 $ASM HALLS  ASM.HALLS   -lst $OBJ/HALLS.LST    -ent $SRC/HALLS/EXT.S  || ERR=1
 $ASM CAMP   ASM.CAMP    -lst $OBJ/CAMP.LST     -ent $SRC/CAMP/EXT.S   || ERR=1
 
@@ -85,7 +86,17 @@ $A2NIB_T2 -create -volume 2
 $A2NIB_T3 -create -volume 3
 
 # mothership
-$A2NIB_MS $OBJ/MOTHERSHIP      -t 0D -s 00   # 16 sectors
+$A2NIB_MS $OBJ/BOOT            -t 00 -s 00   #  2 sectors
+$A2NIB_MS $OBJ/NDOS.0400       -t 00 -s 02   #  6 sectors
+$A2NIB_MS $OBJ/GRAPHICS.0A00   -t 00 -s 08   # 16 sectors
+$A2NIB_MS $OBJ/CAMP.1C00       -t 01 -s 0A   #  2 sectors
+$A2NIB_MS $OBJ/CAMP.E000       -t 02 -s 00   # 32 sectors
+$A2NIB_MS $OBJ/CAMP.D000.1     -t 04 -s 00   # 16 sectors
+$A2NIB_MS $OBJ/CAMP.D000.2     -t 05 -s 00   # 16 sectors
+$A2NIB_MS $OBJ/TITLE.PAGE      -t 06 -s 00   # 43 sectors
+$A2NIB_MS $OBJ/HALLS.6000      -t 09 -s 00   # 16 sectors
+$A2NIB_MS $OBJ/MOTHERSHIP.7000 -t 0A -s 00   # 16 sectors
+
 $A2NIB_MS $OBJ/DELETE.CHAR     -t 0E -s 00   #  9 sectors
 $A2NIB_MS $OBJ/GUARD           -t 0E -s 0B   #  5 sectors
 $A2NIB_MS $OBJ/INFO.SELLER     -t 0F -s 00   #  7 sectors
@@ -171,9 +182,9 @@ if ! [[ -d "$PROJ/data" ]]; then
   mkdir "$PROJ/data"
 fi
 
-cp project-naja2.json $PROJ
-cp $OBJ/*           $PROJ
-cp $DSK/naja*.nib   $PROJ
-cp $DATA/*.json     $PROJ/data
+cp naja2.rpw-project $PROJ
+cp $OBJ/*            $PROJ
+cp $DSK/naja*.nib    $PROJ
+cp $DATA/*.json      $PROJ/data
 
 #---------------------------------------

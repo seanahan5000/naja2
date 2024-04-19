@@ -1,0 +1,43 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "files.exclude": {
+      "**/obj": true,
+      "**/data": true,
+      "**/dsk": true,
+      ".gitignore": true,
+      "*.sublime*": true
+    },
+    "rpw65.columns.enable": true,
+    "rpw65.syntax": "merlin"
+  },
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Build Naja",
+        "type": "shell",
+        "command": "./build.sh",
+        "problemMatcher": [{
+          "owner": "rpw65",
+          "fileLocation": "absolute",
+          "pattern": {
+            "regexp": "^(WARNING|ERROR) file \"(.*)\", line (\\d+):\\s+(.*)$",
+            "severity": 1,
+            "file": 2,
+            "line": 3,
+            "message": 4
+          }
+        }],
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        }
+      }
+    ]
+  }
+}

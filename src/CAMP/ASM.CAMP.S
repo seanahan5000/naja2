@@ -87,7 +87,7 @@ BANK_2          LDA $C083
                 PUT C.TRADE         ; calls EQUIPMENT directly
                 PUT EQUIPMENT
                 PUT STATS2
-                SAV CAMP.D000.M1
+                SAV CAMP.D000.1
 
                 ORG $D000           ; bank 2
                 PUT I.MOVE
@@ -95,14 +95,14 @@ BANK_2          LDA $C083
                 PUT I.EXAMINE       ; must be in same bank as I.MOVE
                 PUT I.COMPRESS
                 PUT C.ISTATS.DATA
-                SAV CAMP.D000.M2
+                SAV CAMP.D000.2
 
-                ORG $1A00
+                ORG $1C00
                 PUT CHARACTERS
                 PUT STATS
                 DS  \,$EE
-                ERR $1E00-*
-                SAV CAMP.1A00
+                ERR $2000-*
+                SAV CAMP.1C00
 
                 ORG $A000
 DIAGNOSE_FILE   DB  fileDiagnose

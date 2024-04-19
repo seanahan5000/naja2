@@ -3,7 +3,7 @@
 
                 PUT /NAJA/VARS/CONSTANTS
 
-                ORG $0800
+                ORG $0A00
 
                 PUT VARS
 
@@ -19,6 +19,6 @@
                 PUT CURSORS
 
                 DS  \,$EE
-                ERR $1A00-*
+                ERR $1C00-*
 
-                SAV COMMON
+                SAV GRAPHICS.0A00
