@@ -74,6 +74,8 @@ TOTAL_KILLS     DS  4
 TOTAL_CREDITS   DS  4
 TOTAL_EXP       DS  4
 
+; *** should this be zpage? ***
 LOST_CHARS      DB  0           ; $BCFD
-GRPCONT         DB  0           ; $BCFE ; number of characters, including dead/compressed?
-GRPNUMB         DB  0           ; $BCFF ; number of living characters in group
+
+DELAY_MODE      DB  0           ; $BCFE - was GRPNUMB
+DELAY_TIME      DB  0           ; $BCFF - was GRPCONT

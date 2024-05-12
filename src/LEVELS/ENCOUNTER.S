@@ -36,9 +36,7 @@ TRY_DIRECTION   JSR GET_NSEW
 ;*** TODO: move this or use symbol directly
 FIGHT_LOADER1   =   $8800
 
-LOAD_FIGHT      LDA #NOT_SPINNING+KEEP_SPINNING
-                JSR SET_NEXT_ON_OFF
-                LDA #fileFightLoader1
+LOAD_FIGHT      LDA #fileFightLoader1
                 LDY #>FIGHT_LOADER1
                 JSR LOAD_FILE
                 JMP FIGHT_LOADER1

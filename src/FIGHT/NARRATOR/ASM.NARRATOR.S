@@ -1,15 +1,12 @@
 
                 EXP OFF
 
+                PUT /NAJA/VARS/CONSTANTS
+                PUT /NDOS/EXT
                 PUT /COMMON/VARS
                 PUT /COMMON/EXT
 
                 PUT /CAMP/EXT
-
-                PUT /NDOS/VARS
-                PUT /NDOS/EXT
-
-                PUT /NAJA/VARS/CONSTANTS
                 PUT /FIGHT/FIGHT.MACROS
                 PUT /FIGHT/FIGHT.CONSTS
                 PUT /FIGHT/FIGHT.ZPAGE
@@ -97,7 +94,3 @@ END5
                 PUT TEXT/TEXT.ROUTINES
                 PUT TEXT/WORD.LIST
                 PUT F.DTABLES
-
-; TODO: these were zpage, should be saved in settings, shared with COMMAND
-DELAY_TIME      DB  $25
-DELAY_MODE      DB  $01

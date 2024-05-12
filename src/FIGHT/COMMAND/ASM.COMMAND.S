@@ -1,16 +1,13 @@
 
                 EXP OFF
 
+                PUT /NDOS/EXT
                 PUT /COMMON/VARS
                 PUT /COMMON/EXT
 
                 PUT /HALLS/VARS
                 PUT /HALLS/EXT
-
                 PUT /CAMP/EXT
-
-                PUT /NDOS/VARS
-                PUT /NDOS/EXT
 
                 PUT /NAJA/VARS/CONSTANTS
                 PUT /FIGHT/FIGHT.CONSTS
@@ -305,7 +302,3 @@
                 PUT ENERGY.SUBS
                 PUT MISC.SUBS
                 PUT STATS
-
-; TODO: these were zpage, should be saved in settings, shared with NARRATOR
-DELAY_TIME      DB  $25
-DELAY_MODE      DB  $01

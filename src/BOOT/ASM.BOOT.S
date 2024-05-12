@@ -1,8 +1,8 @@
 
                 PUT /NAJA/VARS/CONSTANTS
+                PUT /NDOS/EXT
                 PUT /COMMON/VARS
                 PUT /COMMON/EXT
-                PUT /NDOS/EXT
 
                 ORG $0800
                 PUT BOOT1

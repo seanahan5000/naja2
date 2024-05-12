@@ -14,14 +14,20 @@ SET_CONTROL     LDX #<FILE_HOOK
                 LDY #>DISPATCH
                 JSR SET_HALL_FILTER
 
-                ; LDX #<:KEY_FILTER
-                ; LDY #>:KEY_FILTER
-                ; JSR SET_KEY_FILTER
-                ; *** ENABLE CAMP ***
+                LDX #<:KEY_FILTER
+                LDY #>:KEY_FILTER
+                JSR SET_KEY_FILTER
 
                 LDX #<MAP_DATA
                 LDY #>MAP_DATA
                 JMP SET_MAP_DATA
+
+; NOTE: Must set a key filter, even if it's a nop
+;   in order to overwrite previous filters.
+:KEY_FILTER
+                ; TODO: enable camp
+                CLC
+                RTS
 
 ;---------------------------------------
 
@@ -40,12 +46,10 @@ LOAD_AREA       TAX
 
                 JSR TURN_AROUND
                 JSR MOVE_FORWARD
-                JSR GET_NSEW
 
                 LDA #$FF
                 STA DELCHAR_FILE        ; clear module header
 
-                ; TODO: different load address?
                 PLA
                 LDY #$80
                 JSR LOAD_FILE
@@ -70,6 +74,7 @@ LOAD_AREA       TAX
                 JSR DRAW_PICT
                 PictSetPage1
                 PictClearPage
+                PictCall GET_NSEW
                 PictCall DRAW_HALL
                 PictShowPage
                 PictEnd

@@ -21,4 +21,7 @@ FILE_TABLE      DB  fileAlienPics12,  $00,$00,$B0
                 DB  fileViewport,     $16,$00,$09
                 DB  fileRuuik,        $17,$00,$0D
 
+                DB  fileControlMS,    $0A,$00,$10   ; (disk side 0)
+                DB  fileTesserport,   $0F,$0C,$04   ; (disk side 0)
+
                 DB  fileReformat,     $20,$00,$07   ; (disk side 3)

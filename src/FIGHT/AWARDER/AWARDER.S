@@ -59,8 +59,6 @@ AWARDER         JSR DRAW_PICT
                 ; must finish before fight shared overwritten
                 JSR TOTALS_OUT
 
-                LDA #IS_SPINNING+KEEP_SPINNING
-                JSR SET_NEXT_ON_OFF
                 LDA #fileFightHalls
                 LDY #$60
                 JSR LOAD_FILE
@@ -70,8 +68,6 @@ AWARDER         JSR DRAW_PICT
                 PHA
                 LDA DISK_SIDES,X
                 JSR SET_DISK_SIDE
-                LDA #IS_SPINNING+STOP_SPINNING
-                JSR SET_NEXT_ON_OFF
                 PLA
                 LDY #>CONTROL_MODULE
                 JSR LOAD_FILE

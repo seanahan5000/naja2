@@ -1,4 +1,5 @@
 
+                PUT /NDOS/EXT
                 PUT /COMMON/VARS
                 PUT /COMMON/EXT
 
@@ -8,14 +9,14 @@
                 ; PUT /CAMP/VARS
                 PUT /CAMP/EXT
 
-                PUT /NDOS/VARS
-                PUT /NDOS/EXT
-
                 PUT /NAJA/VARS/CONSTANTS
 
 ; TODO: assign these to temps
 MAPPED_INDEX    =   $16
 MAPPED_BITS     =   $17
+
+TESS_MODULE     =   $A000
+TESS_TO_MOTHER  =   $A001
 
                 ORG $7000
 
@@ -47,17 +48,17 @@ SET_CONTROL     LDX #<FILE_HOOK
                 BEQ :GO_CAMP
                 CMP #"M"
                 BEQ :GO_MAP
+                CMP #"T"
+                BEQ :GO_TESS
                 CMP #"X"
                 BEQ :GO_FIGHT
-                CLC
+:1              CLC
                 RTS
 
 :GO_FIGHT       JSR CAN_ENCOUNTER
                 BCC :1
                 JSR SAVE_MAPPED
                 JMP LOAD_FIGHT
-:1              CLC
-                RTS
 
 ; TODO: Needs to have checked DISPATCH first for any specials
 :GO_MAP         JSR SHOW_MAP
@@ -68,6 +69,23 @@ SET_CONTROL     LDX #<FILE_HOOK
 :GO_CAMP        JSR ENTER_CAMP
                 SEC
                 RTS
+
+:GO_TESS        LDA SHELL
+                CMP #1
+                BNE :1
+; TODO: limit to correct face
+                LDA #side_MS
+                JSR SET_DISK_SIDE
+                LDA #fileTesserport
+                LDY #>TESS_MODULE
+                JSR LOAD_FILE
+                LDA #>TESS_TO_MOTHER-1
+                PHA
+                LDA #<TESS_TO_MOTHER-1
+                PHA
+                LDA #fileControlMS
+                LDY #>CONTROL_FILE
+                JMP LOAD_FILE
 ;
 ; Extract all mapped bits from map data into a
 ;   contiguous buffer of just those bits.

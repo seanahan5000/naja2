@@ -1,6 +1,0 @@
-
-; *** get rid of these ***
-IS_SPINNING     =   %10000000
-NOT_SPINNING    =   %00000000
-KEEP_SPINNING   =   %01000000
-STOP_SPINNING   =   %00000000

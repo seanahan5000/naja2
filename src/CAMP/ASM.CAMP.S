@@ -1,14 +1,12 @@
                 EXP OFF
 
                 PUT /NAJA/VARS/CONSTANTS
-
+                PUT /NDOS/EXT
                 PUT /COMMON/VARS
                 PUT /COMMON/EXT
 
                 PUT /HALLS/VARS
                 PUT /HALLS/EXT
-
-                PUT /NDOS/EXT
 
                 ORG $E000
                 PUT T.CAMP

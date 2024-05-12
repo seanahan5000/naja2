@@ -146,7 +146,7 @@ COPY_MESSAGE    LDX #181
                 LDA HIBYTES,X
                 STA SCREENH
                 EOR #$60
-                STA DESTINL
+                STA DESTINH
                 LDY #26
 :7              LDA (SCREENL),Y
                 STA (DESTINL),Y
@@ -158,8 +158,11 @@ COPY_MESSAGE    LDX #181
                 BNE :6
                 RTS
 
-SIDE_LETTERS    TXC "MTTF"
-                TXC "S123"
+; TODO: Should these just be numbers (S1-S4)?
+SIDE_LETTERS
+;               TXC "MFTT"
+                TXC "NNNN"
+                TXC "0123"
 
 MESSAGES        TXT "INSERT_SIDE_XX_"
                 TXT "WRITE_PROTECTED"

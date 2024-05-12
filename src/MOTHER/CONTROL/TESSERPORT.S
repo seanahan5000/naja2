@@ -286,9 +286,9 @@ LINMOVE         LDY	#$27
 
 *============================================
 * On Entry:
-*   Assume that the drive is still spinning,
-*    and the primary page is displayed.
-*
+;   Assume the primary page is displayed,
+;   Mothership control has been loaded but not set.
+;
 * Character statuses signify the following:
 *       Lost means lost
 *    InTracc means in tracc but compressed
@@ -300,34 +300,6 @@ LINMOVE         LDY	#$27
 
 TESS_TO_MOTHER  LDA #0
                 STA SHELL
-
-            do 0
-                LDA #$A0            ;Load in mothership
-                STA SSTOREH         ;   hall controller
-                LDX #<$00E0
-                LDY #>$00E0
-                LDA #$10
-                JSR FLOADER
-
-                LDX MOMFILES_ADR    ;Set mothership file table
-                LDY MOMFILES_ADR+1
-                JSR SET_FILE_TABL
-
-                LDX #mHallsPicts
-                JSR FLOADER_FILE
-
-                LDA #$9F            ;Load in OPENBUF data
-                STA SSTOREH
-                LDX #<charTrack+$0A
-                LDY #>charTrack+$0A
-                LDA #1
-                JSR FLOAD
-                LDX #10
-:LOOP1          LDA $9F80,X
-                STA OPENBUF,X
-                DEX
-                BPL :LOOP1
-            fin
 
 ; Update lost character count and remove
 ;   orbs, etc. from lost characters

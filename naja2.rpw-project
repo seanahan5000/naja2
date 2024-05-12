@@ -154,7 +154,8 @@
       ],
       "patches": [
         { "address": "0xAF01", "bank": 1, "data": [ "0x00" ] },
-        { "address": "0xBCFE", "bank": 1, "data": [ "0x06", "0x06" ] }
+        { "address": "0x00B0", "bank": 1, "data": [ "0x60" ] },
+        { "address": "0x00FB", "bank": 1, "data": [ "0x06", "0x06" ] }
       ],
       "entryPoint": "0xAF00",
       "entryPointX": "0xC600"

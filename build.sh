@@ -77,14 +77,15 @@ fi
 #---------------------------------------
 
 A2NIB_MS="a2nib -disk $DSK/naja0.nib"
-A2NIB_T1="a2nib -disk $DSK/naja1.nib"
-A2NIB_T2="a2nib -disk $DSK/naja2.nib"
-A2NIB_T3="a2nib -disk $DSK/naja3.nib"
+A2NIB_FI="a2nib -disk $DSK/naja1.nib"
+A2NIB_T1="a2nib -disk $DSK/naja2.nib"
+A2NIB_T2="a2nib -disk $DSK/naja3.nib"
 
-$A2NIB_MS -create -volume 0
-$A2NIB_T1 -create -volume 1
-$A2NIB_T2 -create -volume 2
-$A2NIB_T3 -create -volume 3
+# NOTE: volume numbers are hex values
+$A2NIB_MS -create -volume 40
+$A2NIB_FI -create -volume 41
+$A2NIB_T1 -create -volume 42
+$A2NIB_T2 -create -volume 43
 
 # mothership
 $A2NIB_MS $OBJ/BOOT            -t 00 -s 00   #  2 sectors
@@ -96,7 +97,8 @@ $A2NIB_MS $OBJ/CAMP.D000.1     -t 04 -s 00   # 16 sectors
 $A2NIB_MS $OBJ/CAMP.D000.2     -t 05 -s 00   # 16 sectors
 $A2NIB_MS $OBJ/TITLE.PAGE      -t 06 -s 00   # 43 sectors
 $A2NIB_MS $OBJ/HALLS.6000      -t 09 -s 00   # 16 sectors
-$A2NIB_MS $OBJ/MOTHERSHIP.7000 -t 0A -s 00   # 16 sectors
+$A2NIB_MS $OBJ/MOTHERSHIP.7000 -t 0A -s 00   # 15 sectors
+$A2NIB_MS $OBJ/NDOS.7F00       -t 0A -s 0F   #  1 sector
 
 $A2NIB_MS $OBJ/DELETE.CHAR     -t 0E -s 00   #  9 sectors
 $A2NIB_MS $OBJ/GUARD           -t 0E -s 0B   #  5 sectors
@@ -156,14 +158,14 @@ $A2NIB_T1 $OBJ/MAP.8000        -t 13 -s 08   #  8 sectors (trim)
 $A2NIB_T2 $OBJ/KEY.DOOR        -t 16 -s 00   # 13 sectors
                                              #  3 sectors
 
-$A2NIB_T3 $OBJ/FIGHT.LOADER2   -t 0E -s 00   #  3 sectors
-$A2NIB_T3 $OBJ/FIGHT.SHARED    -t 0F -s 00   # 16 sectors
-$A2NIB_T3 $OBJ/FIGHT.COMMAND   -t 10 -s 00   # 48+ sectors
-$A2NIB_T3 $OBJ/FIGHT.NARRATOR  -t 14 -s 00   # 64 sectors
-$A2NIB_T3 $OBJ/HALLS.6000      -t 1B -s 00   # 16 sectors
-$A2NIB_T3 $OBJ/AWARDER         -t 1D -s 00   # 13 sectors
-$A2NIB_T3 $OBJ/DEAD.GROUP      -t 1E -s 00   # 13 sectors
-$A2NIB_T3 $OBJ/REFORMAT        -t 20 -s 00   #  7 sectors
+$A2NIB_FI $OBJ/FIGHT.LOADER2   -t 0E -s 00   #  3 sectors
+$A2NIB_FI $OBJ/FIGHT.SHARED    -t 0F -s 00   # 16 sectors
+$A2NIB_FI $OBJ/FIGHT.COMMAND   -t 10 -s 00   # 48+ sectors
+$A2NIB_FI $OBJ/FIGHT.NARRATOR  -t 14 -s 00   # 64 sectors
+$A2NIB_FI $OBJ/HALLS.6000      -t 1B -s 00   # 16 sectors
+$A2NIB_FI $OBJ/AWARDER         -t 1D -s 00   # 13 sectors
+$A2NIB_FI $OBJ/DEAD.GROUP      -t 1E -s 00   # 13 sectors
+$A2NIB_FI $OBJ/REFORMAT        -t 20 -s 00   #  7 sectors
                                              #  9 sectors
 
 #---------------------------------------

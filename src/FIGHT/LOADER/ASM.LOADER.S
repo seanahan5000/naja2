@@ -1,15 +1,12 @@
 
                 EXP OFF
 
+                PUT /NDOS/EXT
                 PUT /COMMON/VARS
                 PUT /COMMON/EXT
 
                 PUT /HALLS/VARS
                 PUT /HALLS/EXT
-
-                PUT /NDOS/VARS
-                PUT /NDOS/EXT
-
                 PUT /CAMP/EXT
 
                 PUT /NAJA/VARS/CONSTANTS

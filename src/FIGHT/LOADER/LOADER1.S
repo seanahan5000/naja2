@@ -53,9 +53,6 @@ SPECIAL_LOAD    STX OPTIONS1        ;Calling routine must clear
                 LDY #>FILE_TABLE_3
                 JSR SET_FILE_TABLE
 
-                LDA #NOT_SPINNING+KEEP_SPINNING
-                JSR SET_NEXT_ON_OFF
-
                 LDA #$5F
                 PHA
                 LDA #$FF
@@ -278,8 +275,6 @@ PICKOUT         RTS
 LOAD_TABLE      LDY SHELL
                 LDA :DATA_OFFSETS-1,Y
                 JSR SEEK_FILE
-                LDA #IS_SPINNING+KEEP_SPINNING
-                JSR SET_NEXT_ON_OFF
                 LDY SHELL
                 LDA :DATA_LENGTHS-1,Y
                 LDY #>DATA_BUFR
@@ -389,14 +384,10 @@ DRAW_PICTURE    JSR DRAW_PICT
                 LDX SHELL
                 LDA :PIC_FILES-1,X
                 JSR SET_FILE
-                LDA #IS_SPINNING+KEEP_SPINNING
-                JSR SET_NEXT_ON_OFF
                 LDA #1
                 LDY #>PICT_BUFR
                 JSR READ_FILE
 
-                LDA #IS_SPINNING+KEEP_SPINNING
-                JSR SET_NEXT_ON_OFF
                 PLA
                 ASL
                 TAY
@@ -470,8 +461,6 @@ DATA_LOADER     LDA DATA_BUFR+1         ; data offset low
                 LDY #1                  ; (sector offset)
                 LDA (SRC_PTR),Y
                 JSR SEEK_FILE
-                LDA #IS_SPINNING+KEEP_SPINNING
-                JSR SET_NEXT_ON_OFF
                 LDA #3
                 LDY #>ALIEN_BUFR
                 JSR READ_FILE

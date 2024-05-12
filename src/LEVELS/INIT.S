@@ -1,13 +1,11 @@
 
                 PUT /NAJA/VARS/CONSTANTS
-
+                PUT /NDOS/EXT
                 PUT /COMMON/VARS
                 PUT /COMMON/EXT
 
                 PUT /HALLS/VARS
                 PUT /HALLS/EXT
-
-                PUT /NDOS/EXT
 
                 PUT /CAMP/EXT
 

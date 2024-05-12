@@ -6,9 +6,6 @@ FIGHT_LOADER2   LDA #0
                 STA ATOTAL2
                 STA ATOTAL3
 
-                LDA #IS_SPINNING+KEEP_SPINNING
-                JSR SET_NEXT_ON_OFF
-
                 LDA #fileFightShared
                 LDY #$A0                ;*** use constant
                 JSR LOAD_FILE
@@ -19,9 +16,6 @@ FIGHT_LOADER2   LDA #0
                 JSR MAKE_ALIENS
                 JSR FIGHT_SCREEN
                 ; JSR SURPRISE_SUB
-
-                LDA #IS_SPINNING+KEEP_SPINNING
-                JSR SET_NEXT_ON_OFF
 
                 LDA #$5F
                 PHA

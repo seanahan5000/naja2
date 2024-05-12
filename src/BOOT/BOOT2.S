@@ -47,12 +47,9 @@ INIT_GAME
                 LDY #>GAME_STATE
                 JSR READ_FILE
 
-; TODO: At this point, GRPNUMB and GRPCONT have been
-;   loaded as part of the game state.
-;   May need to revisit if they move to ZPAGE.
-;               LDA #$00
-;               STA GRPNUMB
-;               STA GRPCONT
+                LDA #0
+                STA GRPNUMB
+                STA GRPCONT
 
                 LDA #0
                 STA MAP_FACE
@@ -79,12 +76,6 @@ INIT_GAME
 *LDA #$40
 *STA LENGTH
 *JSR SOUND
-
-                ; *** these are fight narration settings ***
-                ; LDA #$25
-                ; STA DELAY_TIME
-                ; LDA #$01
-                ; STA DELAY_MODE
 
                 JMP HALL_KEYS
 

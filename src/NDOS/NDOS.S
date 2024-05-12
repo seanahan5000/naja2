@@ -1,27 +1,49 @@
+;
+; On entry:
+;    X: file hook address low
+;    Y: file hook address high
+;
+SET_FILE_HOOK   ENT
+                STX TO_FILE_HOOK+1
+                STY TO_FILE_HOOK+2
+                RTS
 
-;*** RENAME AND MOVE TO ZPAGE ***
-SSECTOR         =   SECHOLD
-
-
+UN_WRITE_PRO    SEC
+                BCS TO_FILE_HOOK        ; always
+ASK_FOR_SIDE    CLC
+TO_FILE_HOOK    JMP DEFAULT_HOOK        ; modified
+DEFAULT_HOOK    RTS
+;
+; On entry:
+;    A: new disk side
+;
+; On exit:
+;    X: unchanged
+;    Y: unchanged
+;
+SET_DISK_SIDE   ENT
+                STA DISK_SIDE
+                RTS
+;
+; On entry:
+;   A: disk controller slot number * 16
+;
+SET_SLOT_X0     ENT
+                STA SLOT_X0
+                RTS
 ;
 ; On entry:
 ;   X: table address (low)
 ;   Y: table address (high)
 ;
 SET_FILE_TABLE  ENT
-                STX FILES
-                STY FILESH
+                STX SET_FILE_MOD1+1
+                STY SET_FILE_MOD2+1
                 RTS
-;
-; On entry:
-;   A: on/off flag
-;    (IS_SPINNING | NOT_SPINNING)
-;    (KEEP_SPINNING | STOP_SPINNING)
-;
-; *** GET RID OF THIS ***
-SET_NEXT_ON_OFF ENT
-                STA ON_OFF_FLAG
-                RTS
+
+FILES           =   ZTEMP0
+FILESH          =   ZTEMP1
+
 ;
 ; On entry:
 ;   A: file ID
@@ -30,6 +52,10 @@ SET_NEXT_ON_OFF ENT
 ;   C: 0=success, 1=failure
 ;
 SET_FILE        ENT
+SET_FILE_MOD1   LDY #$FF
+                STY FILES
+SET_FILE_MOD2   LDY #$FF
+                STY FILESH
                 LDY #0
 :1              CMP (FILES),Y
                 BEQ :2
@@ -83,12 +109,9 @@ LOAD_FILE       ENT
                 STY SSTOREH
                 JSR SET_FILE
                 BCS :1
-                LDA FILE_TRACK
-                STA STRACK
-                LDA FILE_SECTOR
-                STA SSECTOR
+                LDX FILE_TRACK
+                LDY FILE_SECTOR
                 LDA FILE_SIZE
-                STA SECOUNT
                 JMP READ_SECTORS
 :1              RTS
 ;
@@ -99,21 +122,30 @@ LOAD_FILE       ENT
 ; NOTE: This does *not* advance the file position after read.
 ;
 READ_FILE       ENT
-                STA SECOUNT
+                CLC
+                BCC RW_FILE             ; always
+WRITE_FILE      ENT
+                SEC
+RW_FILE         PHP
+                PHA
                 STY SSTOREH
                 LDA FILE_TRACK
                 CLC
                 ADC FILE_OFFSET+1
-                STA STRACK
+                TAX
                 LDA FILE_SECTOR
                 CLC
                 ADC FILE_OFFSET+0
                 CMP #$10
                 BCC :1
                 AND #$0F
-                INC STRACK
-:1              STA SSECTOR
+                INX
+:1              TAY
+                PLA
+                PLP
+                BCS :2
                 JMP READ_SECTORS
+:2              JMP WRITE_SECTORS
 
 FILE_TRACK      DB  0
 FILE_SECTOR     DB  0

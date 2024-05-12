@@ -133,6 +133,10 @@ PAGE            =   $E6
 ; HALLS use $F0-$F8
 ; TODO: move contents of HALLS/VARS.S here
 
+GRPNUMB         =   $FB                 ; number of living characters in group
+GRPCONT         =   $FC                 ; number of characters, including dead/compressed?
+GROUP_SIZE      =   GRPNUMB             ; TODO: use this in more places
+
 SCRATCH_PAGE    =   $B900       ; TODO: place somewhere else
 
 maxGroupSize    =   6
@@ -179,8 +183,8 @@ TOTAL_CREDITS   DS  4
 TOTAL_EXP       DS  4
 
 LOST_CHARS      DS  1           ; $BCFD ; NOTE: not correctly being tracked anymore
-GRPCONT         DS  1           ; $BCFE ; number of characters, including dead/compressed
-GRPNUMB         DS  1           ; $BCFF ; number of living characters in group
+DELAY_MODE      DS  1           ; $BCFE - was GRPCONT
+DELAY_TIME      DS  1           ; $BCFF - WAS GRPNUMB
 
                 ERR $BD00-*
 CHAR_0          DS  $80
@@ -191,7 +195,6 @@ CHAR_4          DS  $80
 CHAR_5          DS  $80
                 DEND
 
-GROUP_SIZE      =   GRPNUMB
 ; TODO: move these character-only vars
 
 KEYBRD          =   $C000

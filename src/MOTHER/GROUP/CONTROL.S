@@ -12,7 +12,6 @@ GROUP_ASSEMBLY  LDA KEYBRD
                 JSR CHECK_CANCEL
                 BNE :1
                 BIT UNSTROB
-                JSR DRIVE_OFF
                 JMP ASSEMBLY_OUT1
 
 :1              JSR DRAW_PICT
@@ -34,8 +33,7 @@ GROUP_ASSEMBLY  LDA KEYBRD
                 BEQ :2
                 JMP ASSEMBLY_IN
 
-:2              JSR DRIVE_OFF
-                JSR DRAW_PICT
+:2              JSR DRAW_PICT
                 PictTextAt 14;7;"SINCE NO ONE IS ENROLLED RIGHT NOW, YOU'RE"
                 PictTextAt 14;16;"PROBABLY LOOKING FOR THE ENROLLMENT OFFICE."
                 PictTextAt 14;25;"IT'S THE FIRST HALL ON THE RIGHT."
@@ -70,7 +68,7 @@ MAIN_LOOP1      JSR DRAW_PICT
                 PictSetViolet
                 PictRect $24;$65;$F2;$87
                 PictTextAt 53;105;"SEE CANDIDATE ROSTER"
-                PictTextAt 53;115;"SUSPEND COMMISSION <LEAVE GAME>"
+                PictTextAt 53;115;"SUSPEND COMMISSION <EXIT GAME>"
                 PictTextAt 53;125;"LEAVE MY OFFICE"
                 PictShowPage
                 PictEnd

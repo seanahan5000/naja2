@@ -22,4 +22,4 @@ FILE_TABLE      DB  fileDeleteChar,        $0E,$00,$09
 
                 DB  fileSaveGame,          $10,$00,$10  ;*** shorter
 
-                DB  fileControl17,         $10,$00,$10  ; disk side 1
+                DB  fileControl17,         $10,$00,$10  ; (disk side 1)

@@ -1,11 +1,19 @@
 
+                EXP OFF
+
+; slightly different name to avoid COMMON/VARS version
+SAME_PAGE_AS_   MAC
+                ERR *!]1/256
+                EOM
+
                 ORG $0400
-                PUT NDOS.525
-                DS  \,$EE
+                PUT READ
                 PUT NDOS
                 PUT HOOKS
                 SAV NDOS.0400
 
-                ORG $9E00
-                PUT NDOS.525W
-                SAV NDOS.525W
+; TODO: try to put this back into main NDOS block
+;   (will require moving GRAPHICS and/or CAMP.1C00)
+                ORG $7F00
+                PUT WRITE
+                SAV NDOS.7F00

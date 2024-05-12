@@ -6,7 +6,9 @@ DELAY           JSR CLEAR_WTIME
                 PictEnd
 
                 LDA DELAY_TIME
-                JSR DIGIT_DRAW
+                BNE :1
+                LDA #defaultDelayTime
+:1              JSR DIGIT_DRAW
                 JSR DRAW_TEXTBUF
 
                 JSR DRAW_PICT
@@ -15,9 +17,9 @@ DELAY           JSR CLEAR_WTIME
 
                 LDA #$99
                 JSR INPUT_SUB
-                BCC :1
+                BCC :2
                 STA DELAY_TIME
-:1              JSR CLEAR_WTIME
+:2              JSR CLEAR_WTIME
                 JSR OPTIONS
                 JMP GETOP2
 

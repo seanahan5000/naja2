@@ -105,6 +105,7 @@ X Rework fight grid to show actual hall configuration
 * Shorten max alien name length?
     * Adds space in fight screens and alien info
 * Put Tesseract/port in camp entry menu
+* Beacon item that allows Tesseract/port from any location
 * Use "home world" or "planet" instead of race?
     * Earth instead of human?
 * Character format

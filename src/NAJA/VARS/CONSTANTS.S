@@ -170,10 +170,10 @@ eq_stateffect	=	%00000100
 eq_faulty		=	%00000010
 eq_hands12		=	%00000001
 
-side_MS			=	0
-side_T1         =   1
-side_T2         =   2
-side_F1			=	3
+side_MS         =   0
+side_F1         =   1
+side_T1         =   2
+side_T2         =   3
 
 ; charTrack		=	$0100		;Track/Sector for character data
 
@@ -182,6 +182,9 @@ statsXY         =   %10000000           ; TODO: get rid of this
 statsShielding  =   %01000000
 statsDamage     =   %00000010
 statsStatus     =   %00000001
+
+; fight narration delay time
+defaultDelayTime      = $25
 
 ; TODO: move these into separate file
 

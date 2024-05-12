@@ -10,7 +10,7 @@ CHAR_BUFFER     =   $AF00
 ;
 SAVE_GAMESTATE_MS ENT
                 LDA #stateSectors-1
-                BNE SAVE_CMN            ; always
+                BPL SAVE_CMN            ; always
 
 ;-----------------------------------------------------------
 ;
@@ -30,7 +30,8 @@ SAVE_CMN        PHA
                 CLC
                 ADC #>GAME_STATE
                 TAY
-                JSR WRITE_SECTOR
+                LDA #1
+                JSR WRITE_FILE
                 PLA
                 CLC
                 ADC #1
@@ -148,7 +149,8 @@ WRITE_CSECT     JSR SEEK_CSECT
 
 WRITE_SECT      JSR SEEK_SECT
 WRITE_CMN       LDY #>CHAR_BUFFER
-                JMP WRITE_SECTOR
+                LDA #1
+                JMP WRITE_FILE
 
 READ_SECT       JSR SEEK_SECT
                 LDA #1
@@ -403,18 +405,6 @@ NAJA_NAME       TXC "NAJA"
 
 NAME_BUFFER     ENT
                 DS  charNameLength
-
-;-----------------------------------------------------------
-
-;
-; On entry:
-;   SET_FILE and SEEK_FILE called
-;   Y: pointer to data (high)
-;
-WRITE_SECTOR
-                ;*** CHECK WRITE PROTECT
-                ;*** SPIN DRIVE UP/DOWN
-                RTS
 
 ;-----------------------------------------------------------
 

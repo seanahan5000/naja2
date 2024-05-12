@@ -148,11 +148,13 @@ OVAL_4          DB  $11,$53
                 DB  %10000000
 
 DELAYER         LDA DELAY_MODE
-                BNE SPCWAIT
+                BEQ SPCWAIT
                 BIT KEYBRD
                 BMI KEYAHIT
                 LDA DELAY_TIME
-                STA SCREENH
+                BNE :1
+                LDA #defaultDelayTime
+:1              STA SCREENH
                 LDA #$00
                 STA SCREENL
 DELOOP          LDA SCREENH
@@ -175,7 +177,7 @@ KEYAHIT         LDA KEYBRD
                 CMP #" "
                 BNE DELOOP
 
-SPACING         LDA #$01
+SPACING         LDA #$00
                 STA DELAY_MODE
                 JSR CLEAR_MODE_MSG
                 JSR DRAW_MODE_MSG
@@ -191,7 +193,7 @@ SPCWAIT         LDA KEYBRD
                 CMP #$8D
                 BNE SPCWAIT
 
-                LDA #$00
+                LDA #$01
                 STA DELAY_MODE
                 JSR CLEAR_MODE_MSG
                 JMP DRAW_MODE_MSG
