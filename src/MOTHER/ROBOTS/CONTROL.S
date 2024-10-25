@@ -148,15 +148,29 @@ OPTCOM          JSR COUNT_ROBOTS
                 JSR COUNT_CYBS
                 LDA #4
                 JSR SET_LEGALS
+;
+; must have a robot in the group in order to
+;   replace parts or sell it
+;
                 LDA ROBOT_COUNT
-                BNE AREROBS
+                BNE :1
                 LDA #$FF
                 STA LEGALS
                 STA LEGALS+2
-AREROBS         LDA CYB_COUNT
-                BNE STOPPER
-                LDA #$FF
+;
+; must have a cybernate in the group without a robot
+;   and space in the group and roster in order to buy one
+;
+:1              LDA CYB_COUNT
+                BEQ :2
+                LDA GRPNUMB
+                CMP #maxGroupSize
+                BCS :2
+                JSR IS_ROSTER_FULL
+                BCC :3
+:2              LDA #$FF
                 STA LEGALS+1
+:3
 STOPPER         NOP
                 JSR VIEWER
                 BIT UNSTROB

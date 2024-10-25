@@ -22,6 +22,7 @@ COMPLETE_SELL   LDA #1
                 CMP #$06
                 BNE ALLGOOD
 
+;*** TEST THIS ***
 BADMENT         JSR DRAW_PICT
                 PictCall CNAME_TO_TEXT
                 PictTextbufXY 57;89
@@ -89,6 +90,8 @@ ALLGOOD         LDX #$03
 YESSER          LDA PICK
                 BEQ NOVIEWB
 
+;*** redraw problems? ***
+
                 ; JSR MOVETO1
                 ; STA PRIMARY
                 JSR DRAW_PICT
@@ -106,53 +109,49 @@ NOVIEWB
                 STA PICK
                 LDA #$FF
                 STA ON2
+;
+; remove robot from roster
+;
                 LDA THE_ROBOT
                 JSR SET_CHAR
-                LDY #disklocation
+                LDY #rosterLocation
                 LDA (CHARDL),Y
-                PHA
-                AND #$7F
-                TAX
-                PLA
-                AND #$80
-                LDY #$0F
-                CMP #$80
-                BEQ NOTE
-                LDY #$F0
-NOTE            TYA
-                ; EOR OPENBUF,X
-                ; STA OPENBUF,X
-                LDA THE_ROBOT
-                JSR SET_CHAR
-                LDY #disklocation
+                AND #$0F
+                STA :MOD+1
+                JSR CLEAR_ROSTER_LOC
+;
+; clear robot link in cybernate
+;
+                JSR FIRST_CHAR
+:1              LDY #roboCyberLink
                 LDA (CHARDL),Y
-                STA SCRATCH
+:MOD            EOR #$FF
+                AND #$0F
+                BNE :2
                 LDA #$00
-                STA COUNT
-COLOOPA         JSR SET_CHAR
-                LDY #robotcyblink
-                LDA (CHARDL),Y
-                CMP SCRATCH
-                BEQ AMATCH
-                INC COUNT
-                LDA COUNT
-                CMP GRPNUMB
-                BNE COLOOPA
-AMATCH          LDA #$FF
                 STA (CHARDL),Y
+                ; LDA #-1
+                ; STA DIRTY_CHARS,X
+                BNE :3
+:2              JSR NEXT_CHAR
+                BCC :1
+:3
+;
+; give group money for robot
+;
                 LDX #<RTOTAL
                 LDY #>RTOTAL
-                ; JSR CHAR_EARN
-
-                JSR RESET_CHRLIST
-                LDX THE_ROBOT
-                LDA #$FF
-                STA LEGALS,X
-                ; LDX #wMembers
-                ; JSR CALL_WRITERS
-                ; LDX #wOpen
-                ; JSR CALL_WRITERS
-
+                JSR GROUP_EARN
+;
+; flush group and roster state to disk
+;
+                ; JSR SAVE_GAMESTATE_MS
+                ; JSR SAVE_MEMBERS
+;
+; remove robot from group
+;
+; TODO: use shared code from DELETE.S?
+;
                 LDA THE_ROBOT
                 STA COUNT
                 DEC GRPNUMB
@@ -177,7 +176,8 @@ MOVEIT          LDA (CHARDL),Y
                 LDA COUNT
                 CMP GRPNUMB
                 BNE MOVIT2
-NOTDEC          JMP OPTIONS
+NOTDEC
+                JMP OPTIONS
 
 ADDBODS         LDA #$00
                 LDX #$03
