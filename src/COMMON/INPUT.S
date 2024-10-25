@@ -49,7 +49,7 @@ GET_INPUT       ENT
 ;
 ; On exit:
 ;   X: length of string
-;   TEXT_BUFFER: string in Naja format
+;   TEXT_BUFFER: string in Naja format, including $8D
 ;
 GET_INPUT_LIMIT ENT
                 LDY #$FF
@@ -68,14 +68,17 @@ IN_KEYLOOP      JSR ANIMATE_CURSOR
                 BIT UNSTROB
                 CMP #$8D
                 BEQ IN_RETURN
-                CMP #$88            ; back arrow key
+                CMP #$88                ; back arrow key
                 BEQ IN_BACKSPACE
-                CMP #$FF            ; delete key
+                CMP #$FF                ; delete key
                 BEQ IN_BACKSPACE
 
                 LDX INPUT_INDEX
                 CPX MAX_TEXT
                 BEQ IN_ATLIMIT
+
+                CMP #$9B
+                BEQ IN_ESCAPE
 
                 JSR FROM_ASCII
                 BCC IN_KEYLOOP
@@ -115,6 +118,8 @@ IN_ATLIMIT      CPX #0
                 PLA
                 RTS
 
+IN_ESCAPE       LDA #0
+                STA INPUT_INDEX
 IN_RETURN       JSR DRAW_CURSOR     ; erase cursor
                 LDX INPUT_INDEX
                 LDA #TextLineEnd

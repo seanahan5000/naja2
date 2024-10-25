@@ -215,6 +215,10 @@ MOVE_TO         ENT
                 STY YCOORD
                 RTS
 
+OP_MOVE_TO_H    LDA (OP_PTR),Y
+                INY
+                TAX
+                JSR HMOVE_TO_H
 OP_VMOVE_TO     LDA (OP_PTR),Y
                 INY
                 STY OP_INDEX
@@ -231,15 +235,6 @@ VMOVE_TO        ENT                     ; X must be unchanged
                 STY YCOORD
                 RTS
 
-OP_MOVE_TO_H    LDA (OP_PTR),Y
-                INY
-                TAX
-                LDA DIV7HI,X
-                STA XCOORD
-                LDA MOD7HI,X
-                STA XSHIFT
-                BPL OP_VMOVE_TO         ; always
-
 OP_HMOVE_TO     LDA (OP_PTR),Y
                 INY
                 STY OP_INDEX
@@ -255,7 +250,7 @@ OP_HMOVE_TO_H   LDA (OP_PTR),Y
                 INY
                 STY OP_INDEX
                 TAX
-HMOVE_TO_H      ENT
+HMOVE_TO_H      ENT                     ; Y must be unchanged
                 LDA DIV7HI,X
                 STA XCOORD
                 LDA MOD7HI,X

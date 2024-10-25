@@ -149,8 +149,8 @@ DRAW_MNAME      TYA
 
 :3              LDY #monNUMBER
                 LDA (MONS_PTR),Y
-                TAY
-                LDA ALTYPE1,Y
+                TAX
+                LDA ALTYPE1,X
                 AND #%11000000
                 CMP #%11000000
                 BNE :31

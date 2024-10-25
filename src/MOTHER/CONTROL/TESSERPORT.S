@@ -57,9 +57,9 @@ TESS_TO_TRACC   JSR DRAW_PICT
                 PictClear 9;17;32;34    ; clear text message
                 PictEnd
 
-                JSR SET_TO_LIMBO    ;Mark chars as "inlimbo"
-*JSR WRITE_GROUP ;Save that status to disk
-                JSR SET_TO_LIMBO    ;Restore real statuses
+                JSR SET_TO_LIMBO        ;Mark chars as "inlimbo"
+                JSR SAVE_GAME
+                JSR SET_TO_LIMBO        ;Restore real statuses
 
                 LDA #side_T1
                 JSR SET_DISK_SIDE
@@ -333,8 +333,7 @@ TESS_TO_MOTHER  LDA #0
 ;
 GROUP_DEAD      LDA GRPCONT
                 STA GRPNUMB
-*JSR WRITE_OPEN ;To write orb data
-*JSR WRITE_GROUP ;Save the group to disk
+                JSR SAVE_GAME
                 LDA #0
                 STA GRPNUMB
 
@@ -394,13 +393,11 @@ GROUP_ALIVE     JSR FIRST_CHAR
                 JSR NEXT_CHAR
                 BCC :1
 
-*JSR WRITE_OPEN ;To write orb data
-
                 LDA GRPNUMB
                 PHA
                 LDA GRPCONT
                 STA GRPNUMB
-*JSR WRITE_GROUP ;Save the group to disk
+                JSR SAVE_GAME
                 PLA
                 STA GRPNUMB
 

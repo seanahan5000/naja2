@@ -1,69 +1,27 @@
 
+; *** rename this file CHAR.WRITER.S ? ***
+
 ; one sector buffer for reading/writing/combining character data
 ; NOTE: must be page aligned
+; *** move this to header file ***
 CHAR_BUFFER     =   $AF00
 
-;-----------------------------------------------------------
-;
-; Save just the Mothership-specific part of the game state
-;   (includes roster bits and arsenal inventory)
-;
-SAVE_GAMESTATE_MS ENT
-                LDA #stateSectors-1
-                BPL SAVE_CMN            ; always
+SAVE_GAME       ENT
 
-;-----------------------------------------------------------
-;
-; Save all sectors of the game state
-;   (includes Mothership and TRACC/general state)
-;
-SAVE_GAMESTATE  ENT
-                LDA #0
-SAVE_CMN        PHA
+; write game state sectors
                 LDA #fileSaveGame
                 JSR SET_FILE
-                PLA
-:1              PHA
-                JSR SEEK_FILE
-                PLA
-                PHA
-                CLC
-                ADC #>GAME_STATE
-                TAY
-                LDA #1
+                LDA #stateSectors
+                LDY #>GAME_STATE
                 JSR WRITE_FILE
-                PLA
-                CLC
-                ADC #1
-                CMP #stateSectors
-                BNE :1
-                RTS
 
-;-----------------------------------------------------------
-;
-; Write all members of the group to disk
-;
-SAVE_GROUP      ENT
-                LDX #maxGroupSize
+; write all members of the group to disk
                 LDA #0
-:1              CPX GRPNUMB
-                BNE :2
-                LDA #-1
-:2              DEX
-                BMI SAVE_MEMBERS
-                STA DIRTY_CHARS,X
-                BPL :1                  ; always
-
-;-----------------------------------------------------------
-;
-; Save selected members of the group to disk, based on LEGALS
-;
-SAVE_MEMBERS    ENT
-                LDA #fileSaveGame
-                JSR SET_FILE
+                STA WAS_SAVED
                 JSR FIRST_CHAR
-:1              LDA DIRTY_CHARS,X
-                BEQ :6
+:1              LDA WAS_SAVED
+                AND BIT_TABLE,X
+                BNE :6
 
                 LDY #rosterLocation
                 LDA (CHARDL),Y
@@ -76,8 +34,6 @@ SAVE_MEMBERS    ENT
 :2              INX
                 CPX GRPNUMB
                 BEQ :3
-                LDA DIRTY_CHARS,X
-                BEQ :2
                 TXA
                 JSR SET_CHAR
                 PLA
@@ -89,8 +45,9 @@ SAVE_MEMBERS    ENT
                 BNE :2
 
 ; another group member is in the same sector as the character
-                LDA #0
-                STA DIRTY_CHARS,X
+                LDA WAS_SAVED
+                ORA BIT_TABLE,X
+                STA WAS_SAVED
                 JSR CHAR_TO_CBUFF
                 JMP :5
 
@@ -111,6 +68,8 @@ SAVE_MEMBERS    ENT
 :6              JSR NEXT_CHAR
                 BCC :1
                 RTS
+
+WAS_SAVED       DB  0
 
 ;-----------------------------------------------------------
 
@@ -164,37 +123,28 @@ READ_SECT       JSR SEEK_SECT
 ;   CS: new slot found
 ;   CHARDL,H: pointer to new character memory, cleared to zero
 ;   rosterLocation set to location
+;   DIRTY_STATE and slot bit set
 ;
 ALLOC_CHAR      ENT
                 LDA #fileSaveGame
                 JSR SET_FILE
-                LDA #0
-:1              PHA
-                JSR TEST_ROSTER_LOC
-                BNE :2
-                PLA
-                CLC
-                ADC #1
-                CMP #maxRosterSize
-                BNE :1
-                CLC
-                RTS
-
-:2              LDX #0
+                JSR GET_ROSTER_LOC
+                BCC :3
+                LDX #0
                 TXA
-:3              STA CHAR_BUFFER,X
+:1              STA CHAR_BUFFER,X
                 INX
-                BNE :3
+                BNE :1
                 PLA
                 PHA
                 EOR #$01
                 JSR TEST_ROSTER_LOC
-                BEQ :4
+                BEQ :2
                 PLA
                 PHA
                 LSR
                 JSR READ_SECT
-:4              PLA
+:2              PLA
                 LSR
                 LDA #0
                 ROL
@@ -206,7 +156,7 @@ ALLOC_CHAR      ENT
                 LDY #rosterLocation
                 STA (CHARDL),Y
                 SEC
-                RTS
+:3              RTS
 
 ;-----------------------------------------------------------
 ;
@@ -225,8 +175,7 @@ SAVE_CHAR       ENT
                 LSR
                 JSR WRITE_SECT
                 PLA
-                JSR SET_ROSTER_LOC
-                JMP SAVE_GAMESTATE_MS
+                JMP SET_ROSTER_LOC
 
 ;-----------------------------------------------------------
 ;
@@ -295,6 +244,31 @@ IS_ROSTER_FULL  ENT
                 CMP #$FF
                 RTS
 ;
+; On exit:
+;   CC: no slots available
+;   CS: new slot found
+;   A: roster slot index
+;   DIRTY_STATE and slot bit set
+;
+GET_ROSTER_LOC  ENT
+                LDA #0
+:1              PHA
+                JSR TEST_ROSTER_LOC
+                BEQ :2
+                PLA
+                CLC
+                ADC #1
+                CMP #maxRosterSize
+                BNE :1
+                CLC
+                RTS
+:2              PLA
+                PHA
+                JSR SET_ROSTER_LOC
+                PLA
+                SEC
+                RTS
+;
 ; On entry:
 ;   A: roster character index (0-15)
 ;
@@ -311,7 +285,7 @@ SET_ROSTER_LOC  JSR DIV_MOD8
                 STA ROSTER_BITS,X
                 RTS
 
-CLEAR_ROSTER_LOC
+CLEAR_ROSTER_LOC ENT                    ; TODO: make internal again (see complete robot sale)
                 JSR DIV_MOD8
                 AND MASK_TABLE,Y
                 STA ROSTER_BITS,X
@@ -346,34 +320,29 @@ DIV_MOD8        AND #$0F                ; make sure no high bits
 ASK_CHAR_NAME   ENT
                 LDA #charNameLength
                 JSR GET_INPUT_LIMIT
-:1
-                ; *** CANCEL WITH ESCAPE??? ***
                 TXA
-                BNE :2
-                JSR REGET_INPUT
-                JMP :1
-
-:2              LDX #0
-:3              LDA TEXT_BUFFER,X
+                BEQ :2
+                LDX #0
+:1              LDA TEXT_BUFFER,X
                 CMP #TextSpace
-                BNE :4
+                BNE :3
                 INX
                 CPX #charNameLength
-                BNE :3
-                CLC
+                BNE :1
+:2              CLC
                 RTS
 
-:4              LDY #0
-:5              LDA TEXT_BUFFER,X
+:3              LDY #0
+:4              LDA TEXT_BUFFER,X
                 CMP #TextLineEnd
-                BNE :6
+                BNE :5
                 LDA #TextSpace
                 DEX
-:6              STA NAME_BUFFER,Y
+:5              STA NAME_BUFFER,Y
                 INX
                 INY
                 CPY #charNameLength
-                BNE :5
+                BNE :4
                 SEC
                 RTS
 
@@ -407,8 +376,3 @@ NAME_BUFFER     ENT
                 DS  charNameLength
 
 ;-----------------------------------------------------------
-
-DIRTY_STATE     ENT
-                DB  $00
-DIRTY_CHARS     ENT
-                DS  maxGroupSize,$00

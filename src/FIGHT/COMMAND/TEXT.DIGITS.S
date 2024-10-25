@@ -104,17 +104,17 @@ TEXT_UPDATE     JSR POINTERS
 POINTERS        ASL
                 ASL
                 ASL
-                TAX
-                LDY #0
-:LOOP1          LDA ADR_TABLE,X
-                STA VALPTR,Y
-                INX
+                TAY
+                LDX #0
+:1              LDA ADR_TABLE,Y
+                STA VALPTR,X
                 INY
-                CPY #6
-                BNE :LOOP1
-                LDA ADR_TABLE,X
+                INX
+                CPX #6
+                BNE :1
+                LDA ADR_TABLE,Y
                 STA TEXT_XHOLD
-                LDA ADR_TABLE+1,X
+                LDA ADR_TABLE+1,Y
                 STA TEXT_YPNT
                 RTS
 

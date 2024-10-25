@@ -142,11 +142,7 @@ ENTER           LDX #3
                 DEX
                 BPL :1
 
-                LDX BCURSOR
-                LDA #-1
-                STA DIRTY_CHARS,X
-                STA DIRTY_STATE
-                TXA
+                LDA BCURSOR
                 JSR SET_CHAR
 
                 LDY #energylev+2

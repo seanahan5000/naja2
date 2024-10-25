@@ -30,7 +30,7 @@ WEAPON_CABINET
                 CLC
                 RTS
 
-                SAV CONTROL13
+                SAV CONTROL13.7000
 
                 ORG $A000
 ELEVATOR_FILE   DB  fileElevator

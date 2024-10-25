@@ -27,6 +27,8 @@ SET_CHAR        ENT
 ;   Y: unchanged
 ;   CHAR_INDEX: 0
 ;   Other ZPAGE unchanged
+;   C=0: more characters remain
+;   C=1: list complete/empty
 ;
 FIRST_CHAR      ENT
                 LDA #>CHAR_0
@@ -34,6 +36,7 @@ FIRST_CHAR      ENT
                 LDX #0
                 STX CHARDL
                 STX CHAR_INDEX
+                CPX GROUP_SIZE
                 RTS
 ;
 ; On exit:

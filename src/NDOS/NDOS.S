@@ -112,7 +112,8 @@ LOAD_FILE       ENT
                 LDX FILE_TRACK
                 LDY FILE_SECTOR
                 LDA FILE_SIZE
-                JMP READ_SECTORS
+                CLC
+                JMP RW_SECTORS
 :1              RTS
 ;
 ; On entry:
@@ -143,9 +144,7 @@ RW_FILE         PHP
 :1              TAY
                 PLA
                 PLP
-                BCS :2
-                JMP READ_SECTORS
-:2              JMP WRITE_SECTORS
+                JMP RW_SECTORS
 
 FILE_TRACK      DB  0
 FILE_SECTOR     DB  0

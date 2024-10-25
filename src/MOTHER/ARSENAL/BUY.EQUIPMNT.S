@@ -144,7 +144,7 @@ STOCK_INDEX2    =   TEMP+1
 
                 LDA (DATPNTL),Y
                 CMP #$7F
-                BEQ :3
+                BEQ :2
                 JSR GET_STOCK_INDEX
                 STX STOCK_INDEX1
                 SEC
@@ -158,9 +158,7 @@ STOCK_INDEX2    =   TEMP+1
                 JSR DRAW_STOCK
                 LDY STOCK_INDEX2
                 JSR DRAW_STOCK
-:2              LDX #-1
-                STX DIRTY_STATE
-:3              JSR NOISE
+:2              JSR NOISE
                 JMP SPACOMN
 
 GOSCOMN         JSR DRAW_PICT

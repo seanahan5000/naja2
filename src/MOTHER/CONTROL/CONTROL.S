@@ -64,13 +64,6 @@ LOAD_AREA       TAX
                 JSR $8000
                 ; each area exits with page 2 visible
 
-
-                LDA DIRTY_STATE
-                BEQ :2
-                JSR SAVE_GAMESTATE_MS
-                ;*** CLEAR DIRTY_STATE? ***
-:2              JSR SAVE_MEMBERS
-
                 JSR DRAW_PICT
                 PictSetPage1
                 PictClearPage

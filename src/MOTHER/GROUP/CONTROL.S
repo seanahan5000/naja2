@@ -2,6 +2,7 @@
 ; count of characters in roster list
 ROSTER_COUNT    =   $C0
 CHARPTR         =   $C1                 ;+1
+RTEMP           =   $C3
 
 ROSTER_BUFFER   =   $9000               ; must be page aligned
 
@@ -231,13 +232,15 @@ RESIGN          LDX #1
 YES_OR_NO       BIT UNSTROB
                 JSR GET_INPUT_KEY
 :1              CMP #"Y"
-                BEQ :2
+                BEQ :3
                 CMP #"N"
-                CLC
+                BEQ :2
+                CMP #$9B                ; escape
                 BEQ :2
                 JSR REGET_INPUT
                 JMP :1
-:2              RTS
+:2              CLC
+:3              RTS
 
 NAJA_LOGO       DB  $09,$3E,$16,$44
                 HEX E870306040981838785818FDB978827F840103067C928601

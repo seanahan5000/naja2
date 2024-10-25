@@ -386,11 +386,12 @@ SPACE_AND_CLEAR JSR GET_SPACE_ENTER
 
 ECURSIT         LDX EPOINT
                 LDY EYPNTS,X
-                LDX #$A1
+                LDX #161
                 JSR DRAW_MARKER
 ECURS2          LDX EPOINT
                 LDY EYPNTS,X
                 LDX #166
+                JSR MOVE_TO
                 LDX #<:MARKER_TIP
                 LDY #>:MARKER_TIP
                 JMP DRAW_TILE

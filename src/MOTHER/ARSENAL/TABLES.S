@@ -42,6 +42,5 @@ SCANNER_STOCK   DS  6
 MISC_STOCK      DS  4
 SHIELD_STOCK    DS  12
 
-THE_PRICE       DS  4
 REMAINS         DS  4
 OPEN_SLOT       DS  1               ;Destination of bought equipment

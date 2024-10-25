@@ -10,17 +10,22 @@
 ;
 ;-----------------------------------------------------------
 
-; TODO: move to camp
-
-GROUP_SPEND     ENT
+TEST_SPEND      ENT
+                CLC
+                BCC SPEND_CMN         ; always
+SPEND_PRICE     ENT
+                SEC
+SPEND_CMN       LDX #<THE_PRICE
+                LDY #>THE_PRICE
+GROUP_SPEND     ENT                     ; *** demote to internal???
                 PHP
-                STX TEMP+0
-                STY TEMP+1
+                STX :MOD+1
+                STY :MOD+2
                 LDY #3
                 SEC
                 SED
 :1              LDA GROUP_CREDITS,Y
-                SBC (TEMP),Y
+:MOD            SBC $FFFF,Y
                 STA TEMP_CREDITS,Y
                 DEY
                 BPL :1
@@ -33,15 +38,40 @@ GROUP_SPEND     ENT
                 STA GROUP_CREDITS,Y
                 DEY
                 BPL :2
-                LDA #-1
-                STA DIRTY_STATE
 :3              SEC
                 RTS
 :4              PLP
                 CLC
                 RTS
 
-TEMP_CREDITS    DS  4
+THE_PRICE       ENT
+                DB  $00,$00,$00,$00
+TEMP_CREDITS    DB  $00,$00,$00,$00
+
+;-----------------------------------------------------------
+
+EARN_PRICE      ENT
+                LDX #<THE_PRICE
+                LDY #>THE_PRICE
+GROUP_EARN      ENT
+                STX :MOD+1
+                STY :MOD+2
+                LDX #3
+                CLC
+                SED
+:1              LDA GROUP_CREDITS,X
+:MOD            ADC $FFFF,X
+                STA GROUP_CREDITS,X
+                DEX
+                BPL :1
+                CLD
+                BCC :3
+                LDA #$99
+:2              INX
+                STA GROUP_CREDITS,X
+                CPX #3
+                BNE :2
+:3              RTS
 
 ;-----------------------------------------------------------
 

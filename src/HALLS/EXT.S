@@ -19,4 +19,4 @@ DRAW_HALL        =   $63A9
 SCAN_HALL        =   $63D5
 DRAW_SEGMENTS    =   $6A01
 BLOCK_BUFFER     =   $8000
-SHOW_MAP         =   $8098
+SHOW_MAP         =   $8060

@@ -207,7 +207,7 @@ DRAW_WHOBOX     JSR DRAW_PICT
 UPDATE_CREDIT   JSR MOVE_TO
                 JSR HSAVE
                 JSR DRAW_GCREDITS_AT
-                JSR TAKE_PRICE
+                JSR SPEND_PRICE
                 JSR HRESTORE
                 JMP DRAW_GCREDITS
 
@@ -217,13 +217,6 @@ DRAW_PRICE_AT   JSR MOVE_TO
                 LDX #<THE_PRICE
                 LDY #>THE_PRICE
                 JMP DRAW_CREDITS
-
-TAKE_PRICE      LDX #<THE_PRICE
-                LDY #>THE_PRICE
-                SEC
-                JSR GROUP_SPEND
-                ; *** MARK STATE_MS DIRTY ***
-                RTS
 
 *-------------------------------
 

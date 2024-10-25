@@ -21,7 +21,7 @@ BEGLINE         =   $07
 
 *-------------------------------
 
-                DUMMY SCRATCH_PAGE
+                DUM SCRATCH_PAGE
 LVISIBL         DS  11
 RVISIBL         DS  11
 TLINTABL        DS  11
@@ -292,7 +292,7 @@ SWAPS           LDY COUNT
                 INC COUNTER
                 DEX
                 BPL SWAPS
-                LDA #$0E    
+                LDA #$0E
                 STA COUNTER
 SCLOOPD         LDY tSEMENT
                 LDA TLINTABL,Y
@@ -307,7 +307,7 @@ SCLOOPC         LDX tLLINE
                 JSR SET_SOURCE_LINE
                 LDX tRLINE
                 JSR SET_DEST_LINE
-                LDY #$26    
+                LDY #$26
                 LDA (DESTINL),Y
                 PHA
                 DEY
@@ -316,19 +316,19 @@ SCLOOPA         LDA (DESTINL),Y
                 STA (DESTINL),Y
                 DEY
                 DEY
-                CPY #$18    
+                CPY #$18
                 BNE SCLOOPA
-                LDY #$12    
+                LDY #$12
                 LDA (SCREENL),Y
-                LDY #$19    
+                LDY #$19
                 STA (DESTINL),Y
-                LDY #$11    
+                LDY #$11
 SCLOOPB         LDA (SCREENL),Y
                 INY
                 STA (SCREENL),Y
                 DEY
                 DEY
-                CPY #$04    
+                CPY #$04
                 BNE SCLOOPB
                 INY
                 PLA
@@ -349,7 +349,7 @@ SCLOOPB         LDA (SCREENL),Y
                 LDX #$00
                 JSR SETPNTS
                 JSR CRUNCH
-                LDA #$19    
+                LDA #$19
                 STA XPNT
                 LDA tDMAN
                 JSR SET_CHAR
@@ -359,9 +359,9 @@ SCLOOPB         LDA (SCREENL),Y
                 JSR SETPNTS
 CRUNCH          LDA CURSOR
                 CMP #$04
-                BCC GOCRUT  
+                BCC GOCRUT
                 CMP #$09
-                BNE NOCRUT  
+                BNE NOCRUT
 GOCRUT          JMP CRUOUT
 NOCRUT          LDY #profrace
                 LDA (CHARDL),Y
@@ -372,12 +372,12 @@ NOCRUT          LDY #profrace
 NOCRUT2         LDA CURSOR
                 JSR ECALC
                 LDA (CHARDL),Y
-                CMP #$FF    
+                CMP #$FF
                 BNE GOCRUT
-                LDY CURSOR  
+                LDY CURSOR
                 LDA (tLPNTL),Y
-                STA BEGLINE 
-                INC BEGLINE 
+                STA BEGLINE
+                INC BEGLINE
                 LDY #$0A
                 LDA (tLPNTL),Y
                 STA ENDLINE
@@ -423,10 +423,10 @@ TSNEAKY         INY
                 INY
                 CPY ENDLINE
                 BNE TSLIDES
-                DEY 
-                DEY 
-                DEY 
-                DEY 
+                DEY
+                DEY
+                DEY
+                DEY
                 LDX #$04
                 LDA #$FF
 TERASEM         STA (CHARDL),Y
@@ -489,8 +489,8 @@ NORMDST         LDA tSMAN
                 BEQ ISOR
                 CMP #$02
                 BNE TOSKIP
-ISOR            LDX #$09    
-ISOLOOP         LDA LEGALS,X    
+ISOR            LDX #$09
+ISOLOOP         LDA LEGALS,X
                 BNE ISOKAY
                 TXA
                 JSR ECALC
@@ -527,7 +527,7 @@ ROB_EQUIP       CMP #$FF
                 CMP #$59
                 BEQ OKAY
                 CMP #$5C
-OKAY            RTS 
+OKAY            RTS
 
 ROBMOST         LDX #0
                 LDY #e3_ROBLFT
@@ -537,7 +537,7 @@ ROBMOST         LDX #0
 :SUBA           LDA (CHARDL),Y
                 CMP #$FF
                 BEQ NOB
-                CMP #$59    
+                CMP #$59
                 BNE NOB
                 INY
                 INY
@@ -559,7 +559,7 @@ SOMER           JSR NOA
                 BEQ SOMOUT
 NOB             INX
 NOA             LDA #$FF
-                STA LEGALS,X    
+                STA LEGALS,X
 SOMOUT          RTS
 
 VISISUB         JSR SETPNTS
@@ -580,7 +580,7 @@ VISKIP          LDY #$04
                 STA (tVPNTL),Y
                 BNE NOBACKS         ;Always
 TROBSKIP        LDA #$00
-                TAY 
+                TAY
                 STA (tVPNTL),Y
                 INY
                 STA (tVPNTL),Y
@@ -606,11 +606,11 @@ VBLOOP          STA (tVPNTL),Y
                 INY
                 CPY SCRATCH
                 BNE VBLOOP
-NOBACKS         LDY #$0A    
+NOBACKS         LDY #$0A
                 STA (tVPNTL),Y
                 RTS
 
-FILLINS         LDA #$62    
+FILLINS         LDA #$62
                 STA TLINTABL
                 STA LINTABR
                 LDA #$6A
@@ -646,7 +646,7 @@ CANLIN          LDA COUNT
                 BNE LNTLOOP
 LEACANC         LDA COUNT
                 CLC
-                ADC #$02    
+                ADC #$02
                 STA TLINTABL+10
                 STA LINTABR+10
                 RTS
@@ -713,8 +713,8 @@ VSLOOPA         LDY COUNT
                 LDX XPNT
                 JSR DRAW_TEXTBUF_XY
 ROSKIP1         INC COUNT
-                INC TEXTBUF+1   
-                LDA TEXTBUF+1   
+                INC TEXTBUF+1
+                LDA TEXTBUF+1
                 CMP #$07
                 BNE VSLOOPA
 VISDOUT         RTS
@@ -728,7 +728,7 @@ WRITSUB         TAY
                 LDX XPNT
                 JSR DRAW_TEXTBUF_XY
                 LDA #$1C
-                STA TEXTBUF+1   
+                STA TEXTBUF+1
                 PLA
                 TAY
                 INY
@@ -743,7 +743,7 @@ LINTS           DW  TLINTABL
                 DW  LINTABR
 
 EMENTER         STA XPNT
-                JSR SETPNTS 
+                JSR SETPNTS
                 LDA #$00
                 STA COUNT
 EPMLOOP         TAY

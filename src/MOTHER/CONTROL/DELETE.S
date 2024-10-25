@@ -9,7 +9,7 @@ LEFTCOL			=	LOCAL_TEMP
 RITECOL         =   LOCAL_TEMP+1
 CHARPTR         =   LOCAL_TEMP+2        ; +3
 
-                DUMMY SCRATCH_PAGE
+                DUM SCRATCH_PAGE
 DEL_TABLE       DS  maxGroupSize        ; flags above
 LOC_TABLE       DS  maxGroupSize        ; rosterLocation values
                 DEND
@@ -64,11 +64,7 @@ HAS_MEMBERS     JSR BUILD_TABLES
                 PictSetPage1
                 PictClearPage
                 PictCall GROUP_DO
-            do SMALL_GROUP
                 PictTextAt 16;182;"LEAVE"
-            else
-                PictTextAt 16;185;"LEAVE"
-            fin
                 PictSetPage2
                 PictEnd
                 JSR GOSLIDE
@@ -271,18 +267,11 @@ DEL_MARKIT      LDA DEL_TABLE,X
                 JSR MOVE_TO
                 JMP DRAW_MARKER_TILE
 
-            do SMALL_GROUP
 DEL_YPNTS       DB  128,137,146
                 DB  155,164,173
                 DB  182,182
-            else
-DEL_YPNTS       DB  $7F,$87,$8F
-                DB  $97,$9F,$A7
-                DB  $AF,$B9
-            fin
 ;
 ; Clear deleted characters from roster
-; Save roster state to disk
 ; Remove deleted characters from group
 ;
 DELETE_MARKED   LDX #0
@@ -296,8 +285,6 @@ DELETE_MARKED   LDX #0
                 INX
                 CPX GRPNUMB
                 BNE :1
-                JSR SAVE_GAMESTATE_MS
-
 ;               LDX GRPNUMB
                 DEX
 :3              STX COUNT

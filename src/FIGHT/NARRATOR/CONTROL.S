@@ -422,7 +422,7 @@ DRAW_MODE_MSG   JSR DRAW_PICT
                 PictTextAt 213;75;"STEP MODE"
                 PictTextAt 225;85;"PRESS"
                 PictTextAt 219;93;"<SPACE>"
-                PictTextAt 207;109;"<RETRN> FOR"
+                PictTextAt 213;109;"<RET> FOR"
                 PictTextAt 210;117;"DELAY MODE"
                 PictEnd
                 RTS

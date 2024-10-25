@@ -452,7 +452,7 @@ NOZLEAV         LDA #$01
                 CMP #$01
                 BNE :SKIPE
                 JMP ASELLER
-:SKIPE          JSR TAKE_PRICE
+:SKIPE          JSR SPEND_PRICE
                 LDA WHOPIC
                 JSR SET_CHAR
                 LDA SOURCE

@@ -161,8 +161,8 @@ MONS_NAME       LDY #monTOPVIEW
                 BMI MNAME_IDENTIF
                 LDY #monNUMBER
                 LDA (MONS_PTR),Y
-                TAY
-                LDA ALTYPE1,Y
+                TAX
+                LDA ALTYPE1,X
 MNAME_UNIDENT   ROL
                 ROL
                 ROL

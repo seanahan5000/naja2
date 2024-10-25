@@ -31,8 +31,6 @@ ZELOOP4         STA (CHARDL),Y
 :2              CLC
                 ADC #1
                 STA (TEMP),Y
-                LDX #-1
-                STX DIRTY_STATE
 :3
                 LDA CURSOR
                 CMP #$04
@@ -138,24 +136,5 @@ ZESKIP2         LDA #$AD
                 JSR ERASE_CONFIRM
                 JSR DRAW_PICK_ITEM
                 JMP ZDOWN2
-
-EARN_PRICE      LDX #3
-                CLC
-                SED
-:1              LDA GROUP_CREDITS,X
-                ADC THE_PRICE,X
-                STA GROUP_CREDITS,X
-                DEX
-                BPL :1
-                CLD
-                BCC :3
-                LDA #$99
-:2              INX
-                STA GROUP_CREDITS,X
-                CPX #3
-                BNE :2
-:3              LDX #-1
-                STX DIRTY_STATE
-                RTS
 
 *-------------------------------

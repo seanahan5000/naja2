@@ -128,9 +128,9 @@
 
   "images": [
     { "name": "naja0.nib", "drive": 1, "enabled": true },
-    { "name": "naja1.nib", "drive": 2, "enabled": true },
-    { "name": "naja2.nib", "drive": 2, "enabled": false },
-    { "name": "naja3.nib", "drive": 1, "enabled": false }
+    { "name": "naja1.nib", "drive": 1, "enabled": false },
+    { "name": "naja2.nib", "drive": 2, "enabled": true },
+    { "name": "naja3.nib", "drive": 2, "enabled": false }
   ],
 
   "preloads": [
@@ -161,11 +161,12 @@
       "entryPointX": "0xC600"
     },
     { "bins": [ "MOTHERSHIP.7000" ], "enabled": true },
-    { "bins": [ "CONTROL17.7800"  ], "enabled": false },
-    { "bins": [ "CONTROL15.7800"  ], "enabled": false },
-    { "bins": [ "CONTROL13.7800"  ], "enabled": false },
-    { "bins": [ "CONTROL11.7800"  ], "enabled": false },
-    { "bins": [ "CONTROL9.7800"   ], "enabled": false },
+    { "bins": [ "NDOS.7F00"       ], "enabled": true },
+    { "bins": [ "CONTROL17.7000"  ], "enabled": false },
+    { "bins": [ "CONTROL15.7000"  ], "enabled": false },
+    { "bins": [ "CONTROL13.7000"  ], "enabled": false },
+    { "bins": [ "CONTROL11.7000"  ], "enabled": false },
+    { "bins": [ "CONTROL9.7000"   ], "enabled": false },
     { "bins": [ "TITLE.PAGE.6000" ], "enabled": false, "entryPoint": "0x6000" }
   ],
 

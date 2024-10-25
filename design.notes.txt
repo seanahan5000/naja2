@@ -69,7 +69,7 @@ X Scroll through individuals in camp with <- and -> arrows
 * Remove "no encounter" squares and check for them programmatically
 * Tell player when somebody has gone up a level
     * At least show a "+" on level in camp?
-* Show hallway structure in fight grid
+X Show hallway structure in fight grid
     * Maybe make bigger once extra characters are gone
 X Rework fight grid to show actual hall configuration
     X Mimic map display
@@ -117,7 +117,7 @@ X Rework fight grid to show actual hall configuration
         * Split off quest items? (Treat as group items?)
             * List separately in camp?
     * Cap level at 99 instead of 9999
-        * Make credits common to group
+        X Make credits common to group
         * Limit credits and experience to 6 digits instead of 8 (3 bytes)
     * Need for gender at all?
 * Weapons need either an explicit level requirement
@@ -128,6 +128,8 @@ X Rework fight grid to show actual hall configuration
 * Mothership
     * Consider moving delete area one square left
         * Make hallway look balanced when arriving in MS from boot
+    * Group Assembly
+        * Consider going back to Add, Remove, Rename in roster
 ? Story: Style, Structure, Substance, and the Principles of Screenwriting by Robert McKee
 
 =================================

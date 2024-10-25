@@ -146,7 +146,7 @@ rosterSectors   =   8
 maxRosterSize   =   rosterSectors*2
 
 GAME_STATE      =   $BA00
-GAME_STATE_MS   =   $BC00
+GAME_STATE_MS   =   $BC00               ; TODO: no longer needed
 
                 DUMMY GAME_STATE
 
@@ -173,7 +173,7 @@ KEY_DOOR_BITS   DS  1           ; a000bbbb - a open status, b order bits
 EQUIP_STOCK     DS  36
 GROUP_CREDITS   DS  4
 
-ROSTER_BITS     DS  2           ; bitmap character slots filled in roster
+ROSTER_BITS     DS  2           ; bitmap of character slots filled in roster
 
 ; TODO: Since these are only valid while in TRACC,
 ;   consider moving to CAMP and/or ZPAGE.

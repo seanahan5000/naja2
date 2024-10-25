@@ -159,10 +159,8 @@ COPY_MESSAGE    LDX #181
                 RTS
 
 ; TODO: Should these just be numbers (S1-S4)?
-SIDE_LETTERS
-;               TXC "MFTT"
-                TXC "NNNN"
-                TXC "0123"
+SIDE_LETTERS    TXC "MFTT"
+                TXC "SI12"
 
 MESSAGES        TXT "INSERT_SIDE_XX_"
                 TXT "WRITE_PROTECTED"

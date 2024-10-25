@@ -7,8 +7,7 @@ PATIENT         =   ZBLOCK_A0+0
 TREATMENT       =   ZBLOCK_A0+1
 FLAGS           =   ZBLOCK_A0+2
 
-                DUMMY SCRATCH_PAGE
-THE_PRICE       DS  4
+                DUM SCRATCH_PAGE
 PRICE_TABLE     DS  28
                 DEND
 
@@ -253,7 +252,7 @@ TREAT           JSR DRAW_PICT
                 STX PATIENT_MDEF+1
                 JSR MARKIT
                 JSR GIVE_TREATMENT
-                JSR DO_SPEND
+                JSR SPEND_PRICE
                 LDA #$00
                 JSR FDRAW
                 LDY CURSOR
@@ -298,8 +297,6 @@ DRAW_TREATMENT  CPY #4
 ;-----------------------------------------------------------
 
 GIVE_TREATMENT  LDX PATIENT
-                LDA #-1
-                STA DIRTY_CHARS,X
                 LDY IYPOINTS,X
                 JSR VMOVE_TO
 
@@ -851,18 +848,6 @@ DIAG_LEFT       DB  $0D,$03,$02,$0B
 DIAG_RIGHT      DB  $19,$03,$02,$0B
                 HEX 8620280A282086501405018601051450
                 DB  $FF
-
-;-----------------------------------------------------------
-
-TEST_SPEND      LDX #<THE_PRICE
-                LDY #>THE_PRICE
-                CLC
-                JMP GROUP_SPEND
-
-DO_SPEND        LDX #<THE_PRICE
-                LDY #>THE_PRICE
-                SEC
-                JMP GROUP_SPEND
 
 ;-----------------------------------------------------------
 

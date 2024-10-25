@@ -8,7 +8,7 @@ SHELLNUM        =   2
 
                 PUT /SPECIALS/LOAD.ELEVATOR
                 PUT /SPECIALS/GREEN.NET
-                SAV CONTROL15
+                SAV CONTROL15.7000
 
                 ORG $A000
 ELEVATOR_FILE   DB  fileElevator

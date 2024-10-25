@@ -314,6 +314,60 @@ OFF_TABLE       DB  $70,$2C,$26
 ;   X: track
 ;   Y: sector
 ;   A: sector count
+;   C: 0=read, 1=write
+;
+RW_SECTORS      PHP
+                JSR START_RW
+                LDY LSECTOR
+                BPL :2                  ; always
+
+:1              STY LSECTOR
+                JSR RESET_RETRIES
+:2              LDA INTERLEAVE_L2P,Y
+                STA TARGET_PSECTOR
+                PLP
+                PHP
+                BCC :3
+                LDA SSTOREH
+                JSR PRENIBBLIZE         ; prep for write
+:3              JSR READ_ADDRESS
+                PLP
+                PHP
+                BCS :4
+                JSR READ_DATA
+                LDA SSTOREH
+                JSR DENIBBLER
+                BNE :5                  ; always
+
+:4              JSR WRITE_DATA
+:5              INC SSTOREH
+                DEC SECCOUNT
+                BEQ :6
+
+                LDY LSECTOR
+                INY
+                CPY #16
+                BNE :1
+
+                INC TARGET_FTRACK
+                LDA TARGET_FTRACK
+                JSR SEEK
+                LDY #0
+                BEQ :1                  ; always
+
+:6              STA DRIVE_OFF,X
+                PLP
+                LDY CUR_DRIVE           ; commit to disk side being in a drive
+                LDA DISK_SIDE
+                STA CUR_SIDES,Y
+                RTS
+
+;---------------------------------------
+;
+; On entry:
+;   X: track
+;   Y: sector
+;   A: sector count
 ;   DISK_SIDE: disk side to read
 ;   SSTOREH: page to read to
 ;
@@ -344,7 +398,7 @@ START_RW        STX TARGET_FTRACK
                 CPY CUR_DRIVE
                 BNE SELECT_DRIVE
 
-FAST_SPINUP     LDA DRIVE_ON,X           ; turn on motor, regardless
+FAST_SPINUP     LDA DRIVE_ON,X          ; turn on motor, regardless
                 LDA DRIVE_READMODE,X    ; Q7L read mode
                 LDA DRIVE_READ,X        ; Q6L
                 LDY #8
@@ -432,61 +486,7 @@ RETRY_COUNT     DB  0
 DUMMY           DB  0
 
 ;---------------------------------------
-;
-; On entry:
-;   X: track
-;   Y: sector
-;   A: sector count
-;
-READ_SECTORS    CLC
-                BCC RW_SECTORS          ; always
-WRITE_SECTORS   SEC
-RW_SECTORS      PHP
-                JSR START_RW
-                LDY LSECTOR
-                BPL :2                  ; always
 
-:1              STY LSECTOR
-                JSR RESET_RETRIES
-:2              LDA INTERLEAVE_L2P,Y
-                STA TARGET_PSECTOR
-                PLP
-                PHP
-                BCS :3
-                LDA SSTOREH
-                JSR PRENIBBLIZE         ; prep for write
-:3              JSR READ_ADDRESS
-                PLP
-                PHP
-                BCS :4
-                JSR READ_DATA
-                LDA SSTOREH
-                JSR DENIBBLER
-                BNE :5                  ; always
-
-:4              JSR WRITE_DATA
-:5              INC SSTOREH
-                DEC SECCOUNT
-                BEQ :6
-
-                LDY LSECTOR
-                INY
-                CPY #16
-                BNE :1
-
-                INC TARGET_FTRACK
-                LDA TARGET_FTRACK
-                JSR SEEK
-                LDY #0
-                BEQ :1                  ; always
-
-:6              STA DRIVE_OFF,X
-                PLP
-; on success, commit to disk side being in a drive
-                LDY CUR_DRIVE
-                LDA DISK_SIDE
-                STA CUR_SIDES,Y
-                RTS
 ;
 ; On entry:
 ;   A: target page

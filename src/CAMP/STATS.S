@@ -38,6 +38,7 @@ DRAW_STATS      ENT
         fin
                 JSR VMOVE
                 JSR FIRST_CHAR
+                BCS :2
 :1              JSR STATS_LINE
         do SMALL_GROUP
                 LDY #9
@@ -47,7 +48,7 @@ DRAW_STATS      ENT
                 JSR VMOVE
                 JSR NEXT_CHAR
                 BCC :1
-                RTS
+:2              RTS
 
 STATS_HEADER    JSR DRAW_PICT
         do NAME_FIRST
@@ -258,8 +259,6 @@ PROF_OFFS       DB  WARRIOR-PROF_NAMES
                 DB  GENIUS-PROF_NAMES
                 DB  ROBOT-PROF_NAMES
 
-; TODO: Consider moving profession and race strings back into $200,
-;   assuming text insertion is removed.
 PROF_NAMES
 WARRIOR         TXI "WARRIOR"
 ANDROID         TXI "ANDROID"

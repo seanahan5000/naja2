@@ -26,7 +26,7 @@ SCANGENT
                 CLC
                 RTS
 
-                SAV CONTROL11
+                SAV CONTROL11.7000
 
                 ORG $A000
 ELEVATOR_FILE   DB  fileElevator

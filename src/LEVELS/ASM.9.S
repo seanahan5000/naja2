@@ -29,7 +29,7 @@ NOTDOOR
                 CLC
                 RTS
 
-                SAV CONTROL9
+                SAV CONTROL9.7000
 
                 ORG $A000
 ELEVATOR_FILE   DB  fileElevator

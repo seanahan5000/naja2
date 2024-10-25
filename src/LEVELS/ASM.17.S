@@ -29,7 +29,7 @@ KEY_GUARD
                 CLC
                 RTS
 
-                SAV CONTROL17
+                SAV CONTROL17.7000
 
                 ORG $A000
 ELEVATOR_FILE   DB  fileElevator

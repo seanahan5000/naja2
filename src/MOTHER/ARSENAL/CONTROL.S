@@ -265,19 +265,6 @@ DEST8           DB  $12,$13,$14
 
 ;-----------------------------------------------------------
 
-
-TEST_SPEND      LDX #<THE_PRICE
-                LDY #>THE_PRICE
-                CLC
-                JMP GROUP_SPEND
-
-DO_SPEND        LDX #<THE_PRICE
-                LDY #>THE_PRICE
-                SEC
-                JMP GROUP_SPEND
-
-;-----------------------------------------------------------
-
 ; $0: out of stock but visible
 ; $1-$D: count in stock
 ; $E: unlimited in stock
@@ -288,8 +275,6 @@ DO_SPEND        LDX #<THE_PRICE
 ;
 UNPACK_STOCK    LDA EQUIP_STOCK+0
                 BNE :1
-                LDA #-1
-                STA DIRTY_STATE
                 LDX #0
 :0              LDA DEFAULT_STOCK,X
                 STA EQUIP_STOCK,X

@@ -29,6 +29,13 @@ fi
 ERR=0
 $ASM COMMON ASM.COMMON  -lst $OBJ/COMMON.LST   -ent $SRC/COMMON/EXT.S || ERR=1
 # COMMON must be built before NDOS so EXT file is available
+if [ "$ERR" == "1" ]; then
+  echo
+  echo "### Assembly errors ###"
+  echo
+  exit
+fi
+
 $ASM NDOS   ASM.NDOS    -lst $OBJ/NDOS.LST     -ent $SRC/NDOS/EXT.S   || ERR=1
 $ASM BOOT   ASM.BOOT    -lst $OBJ/BOOT.LST                            || ERR=1
 $ASM HALLS  ASM.HALLS   -lst $OBJ/HALLS.LST    -ent $SRC/HALLS/EXT.S  || ERR=1
@@ -82,10 +89,17 @@ A2NIB_T1="a2nib -disk $DSK/naja2.nib"
 A2NIB_T2="a2nib -disk $DSK/naja3.nib"
 
 # NOTE: volume numbers are hex values
-$A2NIB_MS -create -volume 40
-$A2NIB_FI -create -volume 41
-$A2NIB_T1 -create -volume 42
-$A2NIB_T2 -create -volume 43
+$A2NIB_MS -create -volume 40 || ERR=1
+$A2NIB_FI -create -volume 41 || ERR=1
+$A2NIB_T1 -create -volume 42 || ERR=1
+$A2NIB_T2 -create -volume 43 || ERR=1
+
+if [ "$ERR" == "1" ]; then
+  echo
+  echo "### Failed to create volume ###"
+  echo
+  exit
+fi
 
 # mothership
 $A2NIB_MS $OBJ/BOOT            -t 00 -s 00   #  2 sectors
@@ -133,8 +147,8 @@ $A2NIB_T1 $OBJ/ELEVATOR        -t 15 -s 08   #  8 sectors
 $A2NIB_T2 $OBJ/ELEVATOR        -t 15 -s 08   #  8 sectors
 
 # shell 17,15
-$A2NIB_T1 $OBJ/CONTROL17       -t 10 -s 00   # 16 sectors (trim)
-$A2NIB_T1 $OBJ/CONTROL15       -t 11 -s 00   # 12 sectors (trim)
+$A2NIB_T1 $OBJ/CONTROL17.7000  -t 10 -s 00   # 16 sectors (trim)
+$A2NIB_T1 $OBJ/CONTROL15.7000  -t 11 -s 00   # 12 sectors (trim)
 $A2NIB_T1 $OBJ/FIGHT.LOADER1   -t 13 -s 00   #  5 sectors
 $A2NIB_T1 $OBJ/MAP.8000        -t 13 -s 08   #  8 sectors (trim)
 
@@ -145,11 +159,11 @@ $A2NIB_T1 $OBJ/RUUIK           -t 17 -s 00   # 13 sectors
                                              #  3 sectors
 
 # shell 13,11,9
-$A2NIB_T2 $OBJ/CONTROL13       -t 10 -s 00   # 12 sectors (trim)
+$A2NIB_T2 $OBJ/CONTROL13.7000  -t 10 -s 00   # 12 sectors (trim)
                                              #  4 sectors
-$A2NIB_T2 $OBJ/CONTROL11       -t 11 -s 00   # 12 sectors (trim)
+$A2NIB_T2 $OBJ/CONTROL11.7000  -t 11 -s 00   # 12 sectors (trim)
                                              #  4 sectors
-$A2NIB_T2 $OBJ/CONTROL9        -t 12 -s 00   # 12 sectors (trim)
+$A2NIB_T2 $OBJ/CONTROL9.7000   -t 12 -s 00   # 12 sectors (trim)
                                              #  4 sectors
 $A2NIB_T2 $OBJ/FIGHT.LOADER1   -t 13 -s 00   #  5 sectors
 $A2NIB_T1 $OBJ/MAP.8000        -t 13 -s 08   #  8 sectors (trim)
@@ -192,5 +206,8 @@ cp naja2.rpw-project $PROJ
 cp $OBJ/*            $PROJ
 cp $DSK/naja*.nib    $PROJ
 cp $DATA/*.json      $PROJ/data
+
+echo "Build successful"
+echo
 
 #---------------------------------------

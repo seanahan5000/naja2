@@ -1,4 +1,6 @@
 
+(GAME/ROSTER will be accessed on exit from every MS area, so place close)
+
 *TR  0000111122223333444455556666777788889999AAAABBBBCCCCDDDDEEEEFFFF
 
 *00  <-BOOT-><---NDOS---------------><---GRAPHICS--------------------

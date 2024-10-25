@@ -61,7 +61,7 @@ NOT_STARTING    LDY #monFLAGS       ;Round is not just starting so
                 LDA DIRCTN_BYTE     ;  yes, see if they can move backwards
                 AND #dBackward
                 BEQ :1
-                JMP MOVE_BACKWARD   ;  yes, move backwards
+                JMP MOVE_BACK       ;  yes, move backwards
 :1              LDA DIRCTN_BYTE     ;  no, see if left AND right possible
                 AND #dLeftRight
                 CMP #dLeftRight
@@ -168,7 +168,7 @@ RUSH_STARTED    LDY #monSHOTS       ;See if has any shots
                 LDA DIRCTN_BYTE     ;  yes, see if moving forward possible
                 AND #dForward
                 BEQ :1
-                JMP MOVE_FORWARD    ;  yes, then move forward
+                JMP MOVE_FWD        ;  yes, then move forward
 :1              LDA DIRCTN_BYTE     ;  no, check other directions
                 AND #dLeftRight
                 BEQ :3
@@ -255,12 +255,12 @@ RND_LEFTRIGHT   JSR RANDOM
 
 MOVE_RIGHT      LDA #$10
                 BNE MOVE_UR         ;Always
-MOVE_BACKWARD   LDA #$01
+MOVE_BACK       LDA #$01
 MOVE_UR         CLC
                 BCC MOVE_FBLR       ;Always
 MOVE_LEFT       LDA #$10
                 BNE MOVE_LB         ;Always
-MOVE_FORWARD    LDA #$01
+MOVE_FWD        LDA #$01
 MOVE_LB         SEC                 ;Fall through
 
 *-------------------------------

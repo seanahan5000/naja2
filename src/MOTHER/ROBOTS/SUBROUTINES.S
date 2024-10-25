@@ -989,7 +989,7 @@ AUTNUMS         LDA VALUEL
                 LDA (VALUEL),Y
                 AND #$F7
                 TAY
-                DEC YPNT
+                DEC YCOORD
 PROCOMN         LDX #$00
                 TYA
                 AND #$F0
@@ -1332,9 +1332,9 @@ COUNT_CYBS      JSR RESET_CHLIST
 
 CYB_COUNT       DB  0
 
-CCALL_UNASS     LDY #robotcyblink
+CCALL_UNASS     LDY #roboCyberLink
                 LDA (CHARDL),Y
-                CMP #$FF
+;               CMP #$00
                 RTS
 
 *-------------------------------
@@ -1487,25 +1487,22 @@ CURSUB          NOP
                 CMP #$0F
                 BEQ CHOUT
 CARP            TAX
-
-                ; LDA CHYPS,X
-                ; STA YPNT
-                ; LDA #$6E
-                ; STA XPNT
-                ; LDA #$03
-                ; JSR SPCHARS
-                ; LDA #$A3
-                ; STA XPNT
-                ; LDA #$02
-                ; JMP SPCHARS
-
                 LDY CHYPS,X
-                LDX #$63
-                JSR MOVE_TO
-                ; *** DRAW REVERSE TRIANGLE ***
-                LDY YCOORD
-                LDX #$A3
-                JMP DRAW_TRIANGLE
+                LDX #163
+                JSR DRAW_TRIANGLE
+                LDX #110
+                JSR HMOVE_TO
+                LDX #<:BACK_ARROW
+                LDY #>:BACK_ARROW
+                JMP DRAW_TILE
+
+:BACK_ARROW     DB  %01100000
+                DB  %01110000
+                DB  %01111000
+                DB  %01111110
+                DB  %01111000
+                DB  %01110000
+                DB  %01100000
 
 CHURSIT         LDY CURSOR
                 LDA CHUNKS,Y
@@ -1522,7 +1519,7 @@ CHURSIT         LDY CURSOR
 CHOUT           RTS
 CHURP           TAX
                 LDY CHYPS,X
-                LDX #$8A
+                LDX #138
                 JMP DRAW_TRIANGLE
 
 CHUNKS          DB  $10,$F2,$F3,$F4
@@ -1807,7 +1804,10 @@ YES_PIC         DB  $00,$4D,$06,$0F
                 DB  $FF
 
 ;-----------------------------------------------------------
-
+;
+; On entry:
+;   A: category index
+;
 POINTAT         ASL
                 TAY
                 LDA POINTS,Y

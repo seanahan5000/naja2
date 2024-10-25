@@ -12,8 +12,7 @@
       ".gitignore": true,
       "*.sublime*": true
     },
-    "rpw65.columns.enable": true,
-    "rpw65.syntax": "merlin"
+    "rpw65.columns.enable": true
   },
   "tasks": {
     "version": "2.0.0",

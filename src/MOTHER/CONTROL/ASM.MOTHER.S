@@ -31,8 +31,7 @@ CONTROL_FILE    DB  fileControlMS
                 DS  256
                 DS  256
                 DS  256
-                DS  256
-                ERR *-$8000
+                ERR *-$7F00
                 SAV MOTHERSHIP.7000
 
                 ORG $A000

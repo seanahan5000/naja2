@@ -1,56 +1,106 @@
 
-                DUMMY SCRATCH_PAGE
+                DUM SCRATCH_PAGE
 ;
-; list of roster locations
+; list of allocated roster locations
 ;
 ; xy00iiii
 ;   x: 1 if in group
 ;   y: 1 if dirty
 ;   i: roster index
 ;
-ROSTER_LIST     DS  maxRosterSize
+ROSTER_INFO     DS  maxRosterSize
+
+RDIRTY_SECTORS  DS  rosterSectors
                 DEND
+
+inGroup         =   %10000000           ; assumed to be high bit
+isDirty         =   %01000000
+indexMask       =   %00001111
+
+; ROSTER_BITS is a two-byte bitmap of
+;   character slots allocated in roster file,
+;   found in saved game state
 
 ;---------------------------------------
 
-; *** should group be copied to roster and marked dirty? ***
-
 LOAD_ROSTER     LDA #fileSaveGame
                 JSR SET_FILE
-                LDA #stateSectors
-                JSR SEEK_FILE
 
-                ; TODO: minimize read size based on ROSTER_BITS
-                LDA #rosterSectors
-                LDY #>ROSTER_BUFFER
-                JSR READ_FILE
-
-                LDA #0
-                STA ROSTER_COUNT
+                ; build initial ROSTER_INFO list
                 LDX #0
+                STX ROSTER_COUNT
 :1              STX COUNT
                 TXA
                 JSR TEST_ROSTER_BIT
-                BEQ :5
-                JSR FIRST_CHAR
-:2              LDY #rosterLocation
-                LDA (CHARDL),Y
-                AND #%00001111
-                CMP COUNT
-                BEQ :3
-                JSR NEXT_CHAR
-                BCC :2
+                BEQ :2
+                LDX ROSTER_COUNT
                 LDA COUNT
-                BCS :4                  ; always
-:3              ORA #%10000000          ; mark as in group
-:4              LDX ROSTER_COUNT
-                STA ROSTER_LIST,X
+                STA ROSTER_INFO,X
                 INC ROSTER_COUNT
-:5              LDX COUNT
+:2              LDX COUNT
                 INX
                 CPX #maxRosterSize
                 BNE :1
-                RTS
+
+                ; check for empty roster, just in case
+                LDA ROSTER_COUNT
+                BEQ :7
+
+                ; read the minimum range of allocated sectors into roster buffer
+                LDA ROSTER_INFO+0
+                LSR
+                STA RTEMP
+                CLC
+                ADC #stateSectors
+                JSR SEEK_FILE
+                LDA #>ROSTER_BUFFER
+                CLC
+                ADC RTEMP
+                TAY
+                LDX ROSTER_COUNT
+                LDA ROSTER_INFO-1,X
+                LSR
+                SEC
+                SBC RTEMP
+                CLC
+                ADC #1
+                JSR READ_FILE
+
+                ; walk through current group, if any
+                JSR FIRST_CHAR
+                BCS :7
+
+                ; find character in ROSTER_INFO by matching its rosterLocation
+:3              LDY #rosterLocation
+                LDA (CHARDL),Y
+                AND #%00001111
+                STA RTEMP
+                LDY #0
+:4              LDA ROSTER_INFO,Y
+                CMP RTEMP
+                BEQ :5
+                INY
+                CPY ROSTER_COUNT
+                BNE :4
+
+                ; update its inGroup and dirty status in ROSTER_INFO
+:5              LDA #inGroup!isDirty
+                ORA ROSTER_INFO,Y
+                STA ROSTER_INFO,Y
+
+                ; copy char data to roster buffer
+                TYA
+                TAX
+                JSR SET_RCHARPTR
+                LDY #$7F
+:6              LDA (CHARDL),Y
+                STA (CHARPTR),Y
+                DEY
+                BPL :6
+
+                JSR NEXT_CHAR
+                BCC :3
+:7              RTS
 ;
 ; On entry:
 ;   A: roster character index
@@ -72,44 +122,54 @@ TEST_ROSTER_BIT LDX #0
 ;
 ; Write to disk any roster entries marked as dirty.
 ;
-; NOTE: If there are any dependencies between a single character
-;   and the overall game state, force a write of the state too.
-;
-WRITE_ROSTER    LDY #0
-                LDX #0
-:1              LDA ROSTER_BITS,X
-                AND #%01000000
-                BEQ :2
-                INY
-:2              INX
-                CPX ROSTER_COUNT
-                BNE :1
-                TYA
-                BEQ :6
+WRITE_ROSTER    LDA #0
+                LDY #rosterSectors-1
+:1              STA RDIRTY_SECTORS,Y
+                DEY
+                BPL :1
+
+                LDY #0
+:2              LDA ROSTER_INFO,Y
+                TAX
+                AND #isDirty
+                BEQ :3
+                TXA
+                EOR #isDirty
+                STA ROSTER_INFO,Y
+                TXA
+                AND #indexMask
+                LSR
+                TAX
+                INC RDIRTY_SECTORS,X
+:3              INY
+                CPY ROSTER_COUNT
+                BNE :2
+
+                LDA #fileSaveGame
+                JSR SET_FILE
+                LDA #stateSectors
+                LDY #>GAME_STATE
+                JSR WRITE_FILE
+
                 LDA #>ROSTER_BUFFER
                 STA CHARPTR+1
-                LDX #0
-:3              LDA ROSTER_BITS,X
-                AND #%01000000
-                BNE :4
-                LDA ROSTER_BITS+1,X
-                AND #%01000000
+                LDY #0
+:4              STY RTEMP
+                LDA RDIRTY_SECTORS,Y
                 BEQ :5
-:4              TXA
-                PHA
-                LSR
+                TYA
+                CLC
+                ADC #stateSectors
                 JSR SEEK_FILE
                 LDA #1
                 LDY CHARPTR+1
-                ;*** JSR WRITE_FILE
-                PLA
-                TAX
+                JSR WRITE_FILE
 :5              INC CHARPTR+1
-                INX
-                INX
-                CPX ROSTER_COUNT
-                BNE :3
-:6              RTS
+                LDY RTEMP
+                INY
+                CPY #rosterSectors
+                BNE :4
+                RTS
 
 ;---------------------------------------
 
@@ -145,7 +205,8 @@ DRAW_ROSTER
 :1              STX COUNT
                 JSR SET_RCHARDL
                 LDX COUNT
-                LDA ROSTER_LIST,X
+                LDA ROSTER_INFO,X
+;               AND #inGroup
                 BPL :2
                 JSR ROSTER_MARK
 :2              JSR DRAW_PICT
@@ -258,7 +319,8 @@ ADD_REMOVE      JSR DRAW_PICT
                 LDX #0
 :1              STX ADDREM_MDEF+1
                 LDX CURSOR
-                LDA ROSTER_LIST,X
+                LDA ROSTER_INFO,X
+;               AND #inGroup
                 BPL :2
                 JSR REMOVE_RCHAR
                 JMP :3
@@ -276,7 +338,8 @@ ADDREM_MDEF     DB  maxRosterSize       ; modified
 
 ROSTER_CURSOR   LDY ROSTER_YPNTS,X
                 JSR VMOVE_TO
-                LDA ROSTER_LIST,X
+                LDA ROSTER_INFO,X
+;               AND #inGroup
                 BMI :1
                 LDX #3
                 JSR HMOVE_TO
@@ -322,7 +385,8 @@ DRAW_HARROW     LDY CURSOR
 ;
 BUILD_LEGALS    LDX #0
 :1              STX COUNT
-                LDA ROSTER_LIST,X
+                LDA ROSTER_INFO,X
+;               AND #inGroup
                 BPL :ADDS
 ;
 ; prevent remove if this is cybernate and its robot is in the group
@@ -372,16 +436,17 @@ BUILD_LEGALS    LDX #0
 ;
 IN_GROUP        STA :MOD+1
                 LDX #0
-:1              LDA ROSTER_LIST,X
+:1              LDA ROSTER_INFO,X
 :MOD            EOR #$FF
-                AND #$0F
+                AND #indexMask
                 BEQ :2
                 INX
                 CPX ROSTER_COUNT
                 BNE :1
                 BEQ :3                  ; always
 :2              SEC
-                LDA ROSTER_LIST,X
+                LDA ROSTER_INFO,X
+;               AND #inGroup
                 BMI :4
 :3              CLC
 :4              RTS
@@ -391,9 +456,9 @@ IN_GROUP        STA :MOD+1
 ; On entry:
 ;   X: packed roster character index
 ;
-ADD_RCHAR       LDA ROSTER_LIST,X
-                ORA #%10000000
-                STA ROSTER_LIST,X
+ADD_RCHAR       LDA ROSTER_INFO,X
+                ORA #inGroup
+                STA ROSTER_INFO,X
                 JSR SET_RCHARPTR
                 LDA GRPNUMB
                 JSR SET_CHAR
@@ -403,56 +468,49 @@ ADD_RCHAR       LDA ROSTER_LIST,X
                 DEY
                 BPL :1
                 INC GRPNUMB
-                ; TODO: should this be done elsewhere?
-                JSR CALC_ALL
+                ; TODO: should this be done here or elsewhere?
+                ; JSR CALC_ALL
                 RTS
 ;
 ; On entry:
 ;   X: packed roster character index
 ;
-REMOVE_RCHAR    LDA ROSTER_LIST,X
-                EOR #%10000000
-                ORA #%01000000
-                STA ROSTER_LIST,X
-                STA :MOD+1
-                JSR SET_RCHARPTR
+REMOVE_RCHAR    LDA ROSTER_INFO,X
+                AND #inGroup!$FF
+                STA ROSTER_INFO,X
+                STA RTEMP
                 JSR FIRST_CHAR
 :1              LDY #rosterLocation
                 LDA (CHARDL),Y
-:MOD            EOR #$FF
+                EOR RTEMP
                 AND #%00001111
                 BEQ :2
                 JSR NEXT_CHAR
                 BCC :1
-:2              LDY #$7F
-:3              LDA (CHARDL),Y
-                STA (CHARPTR),Y
-                DEY
-                BPL :3
-:4              LDA CHARDL
+:2              LDA CHARDL
                 STA CHARPTR+0
                 LDA CHARDH
                 STA CHARPTR+1
                 JSR NEXT_CHAR
-                BCS :6
+                BCS :4
                 LDY #$7F
-:5              LDA (CHARDL),Y
+:3              LDA (CHARDL),Y
                 STA (CHARPTR),Y
                 DEY
-                BPL :5
-                BMI :4                  ; always
-:6              DEC GRPNUMB
+                BPL :3
+                BMI :2                  ; always
+:4              DEC GRPNUMB
                 RTS
 ;
 ; On entry:
-;   X: roster list index
+;   X: packed roster list index
 ;
 ; On exit:
 ;   X: pointing to character in roster buffer (LOW)
 ;   Y: pointing to character in roster buffer (HIGH)
 ;
-SET_RCHAR       LDA ROSTER_LIST,X
-                AND #$0F
+SET_RCHAR       LDA ROSTER_INFO,X
+                AND #indexMask
                 LSR
                 PHA
                 LDA #$00
@@ -465,7 +523,7 @@ SET_RCHAR       LDA ROSTER_LIST,X
                 RTS
 ;
 ; On entry:
-;   X: roster list index
+;   X: packed roster list index
 ;
 SET_RCHARDL     JSR SET_RCHAR
                 STX CHARDL
@@ -473,7 +531,7 @@ SET_RCHARDL     JSR SET_RCHAR
                 RTS
 ;
 ; On entry:
-;   X: roster list index
+;   X: packed roster list index
 ;
 SET_RCHARPTR    JSR SET_RCHAR
                 STX CHARPTR+0
@@ -521,7 +579,7 @@ RENAME_LOOP     LDX CURSOR
                 JMP ROSTER_LOOP
 
 NO_DUPES        JSR DUPE_NAME_CHECK
-                BCS NO_NAJA
+                BCC NO_NAJA
 
                 JSR DRAW_PICT
                 PictClear 0;184;40;191
@@ -548,15 +606,16 @@ BAD_NAME        JSR DRAW_PICT
                 JMP RENAME_LOOP
 
 GOOD_NAME       LDX CURSOR
-                LDA ROSTER_LIST,X
-                ORA #%01000000
-                STA ROSTER_LIST,X
+                LDA ROSTER_INFO,X
+                ORA #isDirty
+                STA ROSTER_INFO,X
+;               AND #inGroup
                 BPL :3
-                STA :MOD+1
+                STA RTEMP
                 JSR FIRST_CHAR
 :1              LDY #rosterLocation
                 LDA (CHARDL),Y
-:MOD            EOR #$FF
+                EOR RTEMP
                 AND #%00001111
                 BEQ :2
                 JSR NEXT_CHAR
