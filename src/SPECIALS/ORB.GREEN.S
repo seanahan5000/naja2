@@ -38,9 +38,9 @@ KEY_PEDESTAL    JSR DRAW_PICT
                 PictClearPage
                 PictSetGreen
                 PictRect $01;$1C;$A7;$38
-                PictTextAt 10;31;(YOU'VE_DISCOVERED_ONE_OF)
-                PictTextAt 10;39;(THE_LOST_ORB_DOOR_KEYS!)
-                PictTextAt 10;47;(PRESS_<SPACE>_TO_TAKE_IT.)
+                PictTextAt 10;31;"YOU'VE_DISCOVERED_ONE_OF"
+                PictTextAt 10;39;"THE_LOST_ORB_DOOR_KEYS!"
+                PictTextAt 10;47;"PRESS_<SPACE>_TO_TAKE_IT."
                 PictSwap $00;$1B;$18;$3A
                 PictSetPage1
                 PictEnd
@@ -84,7 +84,7 @@ KEY_PEDESTAL    JSR DRAW_PICT
                 PictClear $01;$1D;$17;$38
                 PictMoveTo $0A;$27
                 PictCall DRAW_CNAME
-                PictText (_TAKES_THE_ORB.)
+                PictText "_TAKES_THE_ORB."
                 PictEnd
 
                 LDX #$05
@@ -108,9 +108,9 @@ KEYWAIT         LDA KEYBRD
 
 NOROOM          JSR DRAW_PICT
                 PictClear $01;$1D;$17;$38
-                PictTextAt 10;31;(NO_ONE_IN_THE_GROUP_CAN)
-                PictTextAt 10;39;(CARRY_ANYTHING_ELSE.__YOU)
-                PictTextAt 10;47;(MUST_DROP_SOMETHING_FIRST.)
+                PictTextAt 10;31;"NO_ONE_IN_THE_GROUP_CAN"
+                PictTextAt 10;39;"CARRY_ANYTHING_ELSE.__YOU"
+                PictTextAt 10;47;"MUST_DROP_SOMETHING_FIRST."
                 PictEnd
 
                 LDA #0

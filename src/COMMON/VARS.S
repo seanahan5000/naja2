@@ -175,12 +175,7 @@ GROUP_CREDITS   DS  4
 
 ROSTER_BITS     DS  2           ; bitmap of character slots filled in roster
 
-; TODO: Since these are only valid while in TRACC,
-;   consider moving to CAMP and/or ZPAGE.
-
-TOTAL_KILLS     DS  4           ; expedition totals (assumed sequential)
-TOTAL_CREDITS   DS  4
-TOTAL_EXP       DS  4
+GAME_FLAGS      DS  12
 
 LOST_CHARS      DS  1           ; $BCFD ; NOTE: not correctly being tracked anymore
 DELAY_MODE      DS  1           ; $BCFE - was GRPCONT

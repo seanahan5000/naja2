@@ -191,7 +191,7 @@ PICK_VISITED    LDX SHELL
 
                 PUT DISPATCH
                 PUT ENCOUNTER
-
+                PUT FLAGS
 
                 DO 0
 

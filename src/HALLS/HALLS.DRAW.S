@@ -12,11 +12,7 @@ DRAW_HALL       ENT
                 LDA #0
                 STA CUR_DEPTH
                 STA BLOCK_INDEX
-
-                LDA #<XY_DATA
-                STA XYDATAL
-                LDA #>XY_DATA
-                STA XYDATAH
+                JSR RESET_XY
 
                 LDA #WHITE1
                 STA COLOR
@@ -34,16 +30,11 @@ DRAW_HALL       ENT
                 BCC :1
 :2              RTS
 
-
 SCAN_HALL       ENT
                 LDA #0
                 STA CUR_DEPTH
                 STA BLOCK_INDEX
-
-                LDA #<XY_DATA
-                STA XYDATAL
-                LDA #>XY_DATA
-                STA XYDATAH
+                JSR RESET_XY
 
                 LDA #BLACK1
                 STA COLOR
@@ -92,6 +83,15 @@ SCAN_HALL       ENT
                 SBC #BUFFER_WIDTH
                 STA BLOCK_COUNT
                 RTS
+
+DRAW_BLOCK1     ENT
+
+                LDA #1
+                STA CUR_DEPTH
+                LDA #BUFFER_WIDTH
+                STA BLOCK_INDEX
+                JSR RESET_XY
+                JSR NEXT_XY
 
 DRAW_BLOCK      LDA #$00
                 STA LINE_SIDE

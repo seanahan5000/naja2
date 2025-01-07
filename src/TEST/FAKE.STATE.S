@@ -67,12 +67,7 @@ GROUP_CREDITS   HEX 00010000
 
 ROSTER_BITS     DB  %00111001,%10000011 ; see TEST.ROSTER.S for indexes
 
-; TODO: Since these are only valid while in TRACC,
-;   consider moving to CAMP and/or ZPAGE.
-
-TOTAL_KILLS     DS  4
-TOTAL_CREDITS   DS  4
-TOTAL_EXP       DS  4
+GAME_FLAGS      DS  12
 
 ; *** should this be zpage? ***
 LOST_CHARS      DB  0           ; $BCFD

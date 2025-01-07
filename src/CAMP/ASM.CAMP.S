@@ -79,6 +79,13 @@ BANK_2          LDA $C083
                 LDA $C083
                 RTS
 
+TOTAL_KILLS     ENT
+                DS  4
+TOTAL_CREDITS   ENT
+                DS  4
+TOTAL_EXP       ENT
+                DS  4
+
                 SAV CAMP.E000
 
                 ORG $D000           ; bank 1

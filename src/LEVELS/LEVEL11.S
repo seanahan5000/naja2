@@ -120,9 +120,9 @@ SPECIAL_YX5     DB  $38,$39,$3A
                 DB  $79,$7A
                 DB  $FF
 SPECIAL_DIR
-SPECIAL_DIR0    DB  $04,$01,$01
-                DB  $01,$01,$04
-                DB  $04,$04,$04
+SPECIAL_DIR0    DB  $04,$41,$31
+                DB  $21,$11,$84
+                DB  $74,$64,$54
 SPECIAL_DIR1    DB  $04,$0F
 SPECIAL_DIR2    DB  $01,$01,$01
                 DB  $04,$0F
@@ -134,29 +134,28 @@ SPECIAL_DIR5    DB  $0F,$0F,$0F
                 DB  $0F,$0F
                 DB  $00
 SPECIAL_ID
-SPECIAL_ID0     DB  $02,$03,$09
+SPECIAL_ID0     DB  $02,$03,$03
                 DB  $03,$03,$03
                 DB  $03,$03,$03
-SPECIAL_ID1     DB  $0C,$10
-SPECIAL_ID2     DB  $0D,$00,$01
+SPECIAL_ID1     DB  $0B,$0F
+SPECIAL_ID2     DB  $0C,$00,$01
                 DB  $05,$07
-SPECIAL_ID3     DB  $07,$0B
-SPECIAL_ID4     DB  $0E,$0E
-SPECIAL_ID5     DB  $0A,$0A,$0A
-                DB  $0A,$08,$08
-                DB  $0A,$0A,$0A
-                DB  $0A,$0A
+SPECIAL_ID3     DB  $07,$0A
+SPECIAL_ID4     DB  $0D,$0D
+SPECIAL_ID5     DB  $09,$09,$09
+                DB  $09,$08,$08
+                DB  $09,$09,$09
+                DB  $09,$09
 
 SPECIAL_LIST    DW  ELEVATOR_345
                 DW  ELEVATOR_FAR
-                DW  DOOR_SIGN
-                DW  EMPTY_CELL
+                DW  PRISON_DOOR
+                DW  PRISON_CELL
                 DW  KEY_GUARD
                 DW  GREEN_NET
                 DW  KEY_PEDESTAL
                 DW  NO_ENCOUNTER
                 DW  PRESSURE_SUIT
-                DW  PRISONER
                 DW  SHIP_SOUND
                 DW  SPECDOOR
                 DW  DECONTAM

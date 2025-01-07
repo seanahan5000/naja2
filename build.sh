@@ -168,6 +168,10 @@ $A2NIB_T2 $OBJ/CONTROL9.7000   -t 12 -s 00   # 12 sectors (trim)
 $A2NIB_T2 $OBJ/FIGHT.LOADER1   -t 13 -s 00   #  5 sectors
 $A2NIB_T1 $OBJ/MAP.8000        -t 13 -s 08   #  8 sectors (trim)
 
+# shell 11
+$A2NIB_T2 $OBJ/PRISONER        -t 17 -s 00   #  8 sectors
+                                             #  8 sectors
+
 # shell 9
 $A2NIB_T2 $OBJ/KEY.DOOR        -t 16 -s 00   # 13 sectors
                                              #  3 sectors

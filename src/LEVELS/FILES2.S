@@ -19,6 +19,9 @@ FILE_TABLE      DB  fileAlienPics345, $00,$00,$C0
                 DB  fileAlienId,      $15,$00,$06
                 DB  fileElevator,     $15,$08,$08
 
+                ; shell 11
+                DB  filePrisoner,     $17,$00,$08
+
                 ; shell 9
                 DB  fileKeyDoor,      $16,$00,$0D
 

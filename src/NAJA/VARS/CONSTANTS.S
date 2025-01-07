@@ -222,6 +222,7 @@ fileMap               = $50
 fileElevator          = $51
 fileViewport          = $52
 fileRuuik             = $53
+filePrisoner          = $54
 
 fileKeyDoor           = $60
 

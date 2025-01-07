@@ -1,4 +1,10 @@
 
+RESET_XY        LDA #<XY_DATA
+                STA XYDATAL
+                LDA #>XY_DATA
+                STA XYDATAH
+                RTS
+
 NEXT_XY         LDA XYDATAL
                 CLC
                 ADC #XYDATA_SIZE

@@ -8,6 +8,7 @@ HIBYTES          =   $0B00
 DIV7HI           =   $0BC0
 BIT_TABLE        =   $0BD8
 MASK_TABLE       =   $0BE0
+GET_DIV_MOD_8    =   $0BF6
 DIV7             =   $0C00
 MOD7             =   $0D00
 MOD7HI           =   $0D04

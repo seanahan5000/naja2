@@ -129,8 +129,26 @@ RIGHT_MASKS     DB  %01111110           ; NOTE: right masks are inclusive
                 DB  %01100000
                 DB  %01000000
                 DB  %00000000
+;
+; On entry:
+;   A: value
+;
+; On exit:
+;   X: value div 8
+;   Y: value mod 8
+;
+GET_DIV_MOD_8   ENT
+                TAY
+                LSR
+                LSR
+                LSR
+                TAX
+                TYA
+                AND #7
+                TAY
+                RTS
 
-                DS  \,$EE               ; TODO: use these bytes
+                DS  \,$EE               ; space exactly used
 
 DIV7            ENT
                 HEX 00000000000000

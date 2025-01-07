@@ -57,6 +57,15 @@ TESS_TO_TRACC   JSR DRAW_PICT
                 PictClear 9;17;32;34    ; clear text message
                 PictEnd
 
+                ; clear expedition stats
+                LDA #0
+                LDX #3
+:1              STA TOTAL_KILLS,X
+                STA TOTAL_CREDITS,X
+                STA TOTAL_EXP,X
+                DEX
+                BPL :1
+
                 JSR SET_TO_LIMBO        ;Mark chars as "inlimbo"
                 JSR SAVE_GAME
                 JSR SET_TO_LIMBO        ;Restore real statuses
