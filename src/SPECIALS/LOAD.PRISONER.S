@@ -7,7 +7,7 @@ PRISON_DOOR     JSR UPDATE_HALL
                 PictTextAt 113;51;"DETENTION"
                 PictTextAt 110;61;"CELL BLOCK"
                 PictTextAt 128;71;"1138"
-;               PictTextAt 125;71;"AA-23"
+;               PictTextAt 125;71;"AA-23"   // cell 2187
                 PictEnd
                 JSR LOAD_PRISON
                 SEC

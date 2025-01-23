@@ -6,6 +6,7 @@
     "tabStops": [0, 16, 20, 40]
   },
   "srcDir": "src",
+  "binDir": "obj",
   "includes": [
     "/NAJA/VARS/CONSTANTS",
     "/COMMON/VARS",
@@ -162,6 +163,7 @@
     },
     { "bins": [ "MOTHERSHIP.7000" ], "enabled": true },
     { "bins": [ "NDOS.7F00"       ], "enabled": true },
+    { "bins": [ "MAP.8000"        ], "enabled": false },
     { "bins": [ "CONTROL17.7000"  ], "enabled": false },
     { "bins": [ "CONTROL15.7000"  ], "enabled": false },
     { "bins": [ "CONTROL13.7000"  ], "enabled": false },

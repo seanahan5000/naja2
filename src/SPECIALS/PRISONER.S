@@ -359,7 +359,7 @@ LINE_PTRS
                 --^
 
                 DS  \,$EE
-                DS  256
+                DS  256                 ; TODO: get rid of
                 ERR *-$A800
 
                 DUMMY *
