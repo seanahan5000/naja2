@@ -10,23 +10,34 @@ frameBottom     =   frameTop+frameHeight
 
 FRAME_INDEX     =   $C0
 
-DO_KEY_PEDESTAL
-                ; TODO: check for cystal
+DO_CRYSTAL      LDA #gameKeyCrystalGone
+                JSR TEST_GAME_FLAG
+                BCC HAS_CRYSTAL
 
-:HAS_CRYSTAL    LDA RINGS_EXPANDED
-                BNE :1
-                JSR DRAW_PICT
+NO_CRYSTAL      JSR DRAW_PICT
                 PictSetPage2
-                PictImageFill RINGS
-                PictCall EXPAND_RINGS
+                PictClearPage
+                PictCall DRAW_HALL
+                PictImage PEDESTAL
+                PictShowPage
+                PictSetPage1
+                PictCopyToPage
+                PictShowPage
                 PictEnd
-                INC RINGS_EXPANDED
-:1
-                JSR DRAW_PICT
+:1              BIT UNSTROB
+:2              LDA KEYBRD
+                BPL :2
+                JSR CHECK_TURN
+                BNE :1
+                SEC
+                RTS
+
+HAS_CRYSTAL     JSR DRAW_PICT
                 PictSetPage2
                 PictClearPage
                 PictCall DRAW_HALL
                 PictImage CRYSTAL
+                PictImage PEDESTAL
                 PictEnd
 
                 LDX #0
@@ -39,39 +50,82 @@ DO_KEY_PEDESTAL
                 PictShowPage
                 PictEnd
 
-:2              LDX #1
-:3              STX FRAME_INDEX
+:1              LDX #1
+:2              STX FRAME_INDEX
                 JSR EOR_RING
+
+; Adjust frame delay for frames 5, 6, 15, and 16
+; (this is done in place of creating more frames)
                 LDA #$60
-                JSR WAIT_KEY
-                BPL :4
-                JSR CHECK_LEFT
-                BEQ :5
-                JSR CHECK_RIGHT
-                BEQ :5
-                JSR CHECK_DOWN
-                BEQ :5
-:4              BIT UNSTROB
+                LDX FRAME_INDEX
+                CPX #5
+                BCC :4
+                CPX #7
+                BCC :3
+                CPX #15
+                BCC :4
+                CPX #17
+                BCS :4
+:3              LDA #$80
+:4              JSR WAIT_KEY
+                BPL :5
+                JSR CHECK_TURN
+                BEQ :6
+                ; TODO: temporary
+                CMP #$A0
+                BEQ TAKE_CRYSTAL
+:5              BIT UNSTROB
                 LDX FRAME_INDEX
                 INX
                 CPX #frameCount
-                BNE :3
-                BEQ :2                  ; always
-
-:NO_CRYSTAL     JSR DRAW_PICT
-                PictCall DRAW_HALL
-                PictImage PEDESTAL
-                PictShowPage
-                PictSetPage1
-                PictCopyToPage
-                PictShowPage
-                PictEnd
-:5              SEC
+                BNE :2
+                BEQ :1                  ; always
+:6              SEC
                 RTS
 
-RINGS_EXPANDED  DB  0
+TAKE_CRYSTAL    SEC
+                JSR REDRAW_CRYSTAL
+                LDA #$00
+                JSR WAIT
+                CLC
+                JSR REDRAW_CRYSTAL
 
-EXPAND_RINGS    JSR :EXPAND0
+                LDA #gameKeyCrystalGone
+                JSR SET_GAME_FLAG
+
+:1              BIT UNSTROB
+:2              LDA KEYBRD
+                BPL :2
+                JSR CHECK_TURN
+                BNE :1
+                SEC
+                RTS
+
+REDRAW_CRYSTAL  PHP
+                JSR DRAW_PICT
+                PictSetPage2
+                PictClear 17;98;23;124
+                PictSetWhite1
+                PictRect 119;116;160;116
+                PictSetGreen
+                PictFillRect 131;120;147;123
+                PictEnd
+                PLP
+                BCC :1
+                JSR DRAW_PICT
+                PictImage CRYSTAL
+                PictEnd
+:1              JSR DRAW_PICT
+                PictSetPage1
+                PictCopyTo 17;98;23;124
+                PictEnd
+                RTS
+
+EXPAND_RINGS    JSR DRAW_PICT
+                PictSetPage2
+                PictImageFill RINGS
+                PictEnd
+                JSR :EXPAND0
                 LDX #<7*frameBytes+RING_BUFFER
                 LDY #>7*frameBytes+RING_BUFFER
                 LDA #6
@@ -168,6 +222,7 @@ FRAME_PTRS      DW  frameBytes*0+RING_BUFFER
 CRYSTAL         DB  $12,$64,$04,$13
                 HEX 9610506040823F8418786889289D220B2F2C077084038D13
                 HEX 1319191D1C1646505124551D98060607017A0182
+                DB  $FF
 
 PEDESTAL        DB  $11,$78,$06,$3E
                 HEX 8A5555EE208D822A2A0820C43F9C8304D0D0D4D4558D8255
@@ -247,6 +302,9 @@ RINGS           DB  $00,$00,$12,$B6
 ; ------------------------------------------------------------------------------
 
                 DO 0
+
+; code to build each frame of the ring animation and
+;   create diffs between them
 
 HIGH_FRAME      =   $C1
 HIGH_DIR        =   $C2
@@ -388,7 +446,6 @@ DRAW_CRYSTAL    LDX #0
                 BNE :1
                 RTS
 
-                ;{"format": "hires","x":119,"y":100,"width":42,"height":24}
 CRYSTAL_BITS    HEX 000018000000
                 HEX 000078000000
                 HEX 000068030000
@@ -414,64 +471,30 @@ CRYSTAL_BITS    HEX 000018000000
                 HEX 0020552A0100
                 HEX 0020552A0100
 
-                ;{"format": "hires","x":119,"y":100,"width":42,"height":24}
-CRYSTAL_MASK
-                ; HEX 7F7F017E7F7F
-                ; HEX 7F7F01787F7F
-                ; HEX 7F7F01707F7F
-                ; HEX 7F7F01707F7F
-                ; HEX 7F7F01707F7F
-                ; HEX 7F7F01407F7F
-                ; HEX 7F7F01007F7F
-                ; HEX 7F7F01007F7F
-                ; HEX 7F7F01007F7F
-                ; HEX 7F7F01007F7F
-                ; HEX 7F4701007F7F
-                ; HEX 7F030000707F
-                ; HEX 7F030000607F
-                ; HEX 7F070000607F
-                ; HEX 7F0F0000607F
-                ; HEX 7F1F0000607F
-                ; HEX 7F3F0000707F
-                ; HEX 7F1F0000787F
-                ; HEX 7F3F00007C7F
-                ; HEX 7F070000787F
-                ; HEX 7F070000787F
-                ; HEX 7F070000787F
-                ; HEX 7F070000787F
-                ; HEX 7F070000787F
-
-                ;{"format": "hires","x":119,"y":155,"width":42,"height":24}
-                hex 7f7f637f7f7f
-                hex 7f7f037f7f7f
-                hex 7f7f03787f7f
-                hex 7f7f03787f7f
-                hex 7f7f03787f7f
-                hex 7f7f03787f7f
-                hex 7f7f03407f7f
-                hex 7f7f03407f7f
-                hex 7f7f03407f7f
-                hex 7f7f03407f7f
-                hex 7f7f03407f7f
-                hex 7f6703407f7f
-                hex 7f070000707f
-                hex 7f0f0000707f
-                hex 7f1f0000707f
-                hex 7f3f00007c7f
-                hex 7f1f0000787f
-                hex 7f7f00007e7f
-                hex 7f7f00007e7f
-                hex 7f0f00007c7f
-                hex 7f0f00007c7f
-                hex 7f0f00007c7f
-                hex 7f0f00007c7f
-                hex 7f0f00007c7f
-
-; high ring
-;{"format": "hires","x":119,"y":98,"width":42,"height":13}
-
-; low ring
-;{"format": "hires","x":119,"y":111,"width":42,"height":13}
+CRYSTAL_MASK    HEX 7F7F637F7F7F
+                HEX 7F7F037F7F7F
+                HEX 7F7F03787F7F
+                HEX 7F7F03787F7F
+                HEX 7F7F03787F7F
+                HEX 7F7F03787F7F
+                HEX 7F7F03407F7F
+                HEX 7F7F03407F7F
+                HEX 7F7F03407F7F
+                HEX 7F7F03407F7F
+                HEX 7F7F03407F7F
+                HEX 7F6703407F7F
+                HEX 7F070000707F
+                HEX 7F0F0000707F
+                HEX 7F1F0000707F
+                HEX 7F3F00007C7F
+                HEX 7F1F0000787F
+                HEX 7F7F00007E7F
+                HEX 7F7F00007E7F
+                HEX 7F0F00007C7F
+                HEX 7F0F00007C7F
+                HEX 7F0F00007C7F
+                HEX 7F0F00007C7F
+                HEX 7F0F00007C7F
 
 DRAW_LOW_RING_TOP
                 TXA
@@ -581,9 +604,7 @@ RING_BOTS       DW  RING0_BOT
                 DW  RING9_BOT
                 DW  RING10_BOT
 
-RING0_TOP
-                ;{"FORMAT": "HIRES","X":231,"Y":13,"WIDTH":42,"HEIGHT":13}
-                HEX 070000000000
+RING0_TOP       HEX 070000000000
                 HEX 380000000000
                 HEX 600300000000
                 HEX 003E00000000
@@ -597,9 +618,7 @@ RING0_TOP
                 HEX 000000000007
                 HEX 000000000038
 
-RING0_BOT
-                ;{"FORMAT": "HIRES","X":175,"Y":13,"WIDTH":42,"HEIGHT":13}
-                HEX 070000000000
+RING0_BOT       HEX 070000000000
                 HEX 380000000000
                 HEX 600300000000
                 HEX 003E00000000
@@ -613,9 +632,7 @@ RING0_BOT
                 HEX 000000000007
                 HEX 000000000038
 
-RING1_TOP
-                ;{"FORMAT": "HIRES","X":231,"Y":27,"WIDTH":42,"HEIGHT":13}
-                HEX 070000000000
+RING1_TOP       HEX 070000000000
                 HEX 7C0000000000
                 HEX 400F00000000
                 HEX 007801000000
@@ -629,9 +646,7 @@ RING1_TOP
                 HEX 00000000000E
                 HEX 000000000038
 
-RING1_BOT
-                ;{"FORMAT": "HIRES","X":175,"Y":27,"WIDTH":42,"HEIGHT":13}
-                HEX 070000000000
+RING1_BOT       HEX 070000000000
                 HEX 1C0000000000
                 HEX 700100000000
                 HEX 000F00000000
@@ -645,9 +660,7 @@ RING1_BOT
                 HEX 00000000400F
                 HEX 000000000038
 
-RING2_TOP
-                ;{"FORMAT": "HIRES","X":231,"Y":41,"WIDTH":42,"HEIGHT":13}
-                HEX 7F0100000000
+RING2_TOP       HEX 7F0100000000
                 HEX 003F00000000
                 HEX 00600F000000
                 HEX 000078000000
@@ -661,9 +674,7 @@ RING2_TOP
                 HEX 000000000030
                 HEX 000000000000
 
-RING2_BOT
-                ;{"FORMAT": "HIRES","X":175,"Y":41,"WIDTH":42,"HEIGHT":13}
-                HEX 000000000000
+RING2_BOT       HEX 000000000000
                 HEX 030000000000
                 HEX 0E0000000000
                 HEX 380000000000
@@ -677,9 +688,7 @@ RING2_BOT
                 HEX 000000003F00
                 HEX 00000000603F
 
-RING3_TOP
-                ;{"FORMAT": "HIRES","X":231,"Y":55,"WIDTH":42,"HEIGHT":13}
-                HEX 7E1F00000000
+RING3_TOP       HEX 7E1F00000000
                 HEX 00700F000000
                 HEX 000078010000
                 HEX 0000001F0000
@@ -693,9 +702,7 @@ RING3_TOP
                 HEX 000000000018
                 HEX 000000000000
 
-RING3_BOT
-                ;{"FORMAT": "HIRES","X":175,"Y":55,"WIDTH":42,"HEIGHT":13}
-                HEX 000000000000
+RING3_BOT       HEX 000000000000
                 HEX 030000000000
                 HEX 030000000000
                 HEX 060000000000
@@ -709,9 +716,7 @@ RING3_BOT
                 HEX 0000007E0100
                 HEX 000000007F0F
 
-RING4_TOP
-                ;{"FORMAT": "HIRES","X":231,"Y":69,"WIDTH":42,"HEIGHT":13}
-                HEX 787F0F000000
+RING4_TOP       HEX 787F0F000000
                 HEX 0E0078030000
                 HEX 0000001E0000
                 HEX 000000700300
@@ -725,9 +730,7 @@ RING4_TOP
                 HEX 000000000000
                 HEX 000000000000
 
-RING4_BOT
-                ;{"FORMAT": "HIRES","X":175,"Y":69,"WIDTH":42,"HEIGHT":13}
-                HEX 000000000000
+RING4_BOT       HEX 000000000000
                 HEX 000000000000
                 HEX 030000000000
                 HEX 030000000000
@@ -741,9 +744,7 @@ RING4_BOT
                 HEX 00007803000F
                 HEX 0000007E7F01
 
-RING5_TOP
-                ;{"FORMAT": "HIRES","X":231,"Y":83,"WIDTH":42,"HEIGHT":13}
-                HEX 00607F7F0100
+RING5_TOP       HEX 00607F7F0100
                 HEX 003F00003F00
                 HEX 700100006003
                 HEX 1C000000000E
@@ -757,9 +758,7 @@ RING5_TOP
                 HEX 000000000000
                 HEX 000000000000
 
-RING5_BOT
-                ;{"FORMAT": "HIRES","X":175,"Y":83,"WIDTH":42,"HEIGHT":13}
-                HEX 000000000000
+RING5_BOT       HEX 000000000000
                 HEX 000000000000
                 HEX 000000000000
                 HEX 000000000000
@@ -773,9 +772,7 @@ RING5_BOT
                 HEX 003F00003F00
                 HEX 00607F7F0100
 
-RING6_TOP
-                ;{"FORMAT": "HIRES","X":231,"Y":97,"WIDTH":42,"HEIGHT":13}
-                HEX 0000007E7F01
+RING6_TOP       HEX 0000007E7F01
                 HEX 00007803000F
                 HEX 00000F000018
                 HEX 007801000000
@@ -789,9 +786,7 @@ RING6_TOP
                 HEX 000000000000
                 HEX 000000000000
 
-RING6_BOT
-                ;{"FORMAT": "HIRES","X":175,"Y":97,"WIDTH":42,"HEIGHT":13}
-                HEX 000000000000
+RING6_BOT       HEX 000000000000
                 HEX 000000000000
                 HEX 000000000000
                 HEX 000000000018
@@ -805,9 +800,7 @@ RING6_BOT
                 HEX 0E0078030000
                 HEX 787F0F000000
 
-RING7_TOP
-                ;{"FORMAT": "HIRES","X":231,"Y":111,"WIDTH":42,"HEIGHT":13}
-                HEX 000000007F0F
+RING7_TOP       HEX 000000007F0F
                 HEX 0000007E0118
                 HEX 000070030000
                 HEX 00001F000000
@@ -821,9 +814,7 @@ RING7_TOP
                 HEX 000000000000
                 HEX 000000000000
 
-RING7_BOT
-                ;{"FORMAT": "HIRES","X":175,"Y":111,"WIDTH":42,"HEIGHT":13}
-                HEX 000000000000
+RING7_BOT       HEX 000000000000
                 HEX 000000000000
                 HEX 000000000018
                 HEX 00000000000C
@@ -837,9 +828,7 @@ RING7_BOT
                 HEX 03700F000000
                 HEX 7E1F00000000
 
-RING8_TOP
-                ;{"FORMAT": "HIRES","X":231,"Y":125,"WIDTH":42,"HEIGHT":13}
-                HEX 00000000603F
+RING8_TOP       HEX 00000000603F
                 HEX 000000003F00
                 HEX 000000780100
                 HEX 0000400F0000
@@ -853,9 +842,7 @@ RING8_TOP
                 HEX 030000000000
                 HEX 000000000000
 
-RING8_BOT
-                ;{"FORMAT": "HIRES","X":175,"Y":125,"WIDTH":42,"HEIGHT":13}
-                HEX 000000000000
+RING8_BOT       HEX 000000000000
                 HEX 000000000030
                 HEX 00000000001C
                 HEX 000000000007
@@ -869,9 +856,7 @@ RING8_BOT
                 HEX 003F00000000
                 HEX 7F0100000000
 
-RING9_TOP
-                ;{"FORMAT": "HIRES","X":231,"Y":139,"WIDTH":42,"HEIGHT":13}
-                HEX 000000000038
+RING9_TOP       HEX 000000000038
                 HEX 00000000400F
                 HEX 000000007C00
                 HEX 000000600700
@@ -885,9 +870,7 @@ RING9_TOP
                 HEX 1C0000000000
                 HEX 070000000000
 
-RING9_BOT
-                ;{"FORMAT": "HIRES","X":175,"Y":139,"WIDTH":42,"HEIGHT":13}
-                HEX 000000000038
+RING9_BOT       HEX 000000000038
                 HEX 00000000000E
                 HEX 000000006003
                 HEX 000000003C00
@@ -901,9 +884,7 @@ RING9_BOT
                 HEX 7C0000000000
                 HEX 070000000000
 
-RING10_TOP
-                ;{"FORMAT": "HIRES","X":231,"Y":153,"WIDTH":42,"HEIGHT":13}
-                HEX 000000000038
+RING10_TOP      HEX 000000000038
                 HEX 000000000007
                 HEX 000000007001
                 HEX 000000001F00
@@ -917,9 +898,7 @@ RING10_TOP
                 HEX 380000000000
                 HEX 070000000000
 
-RING10_BOT
-                ;{"FORMAT": "HIRES","X":175,"Y":153,"WIDTH":42,"HEIGHT":13}
-                HEX 000000000038
+RING10_BOT      HEX 000000000038
                 HEX 000000000007
                 HEX 000000007001
                 HEX 000000001F00
@@ -991,7 +970,7 @@ DIFF_FRAMES     LDA #0
                 STA DESTINL
                 LDA #frameBytes
                 STA SCREENL
-                LDA #>FRAME_BUFFER
+                LDA #>RING_BUFFER
                 STA DESTINH
                 STA SCREENH
                 LDX #1
@@ -1056,7 +1035,7 @@ DRAW_ALL_FRAMES LDX #0
                 BNE :1
                 LDX FRAME_INDEX
                 INX
-                CPX #frameCount         ;*** 21
+                CPX #frameCount
                 BNE :0
                 RTS
 
@@ -1073,9 +1052,12 @@ DRAW_ALL_FRAMES LDX #0
 ; ------------------------------------------------------------------------------
 
                 DS  \,$EE
+                ERR *-$A900
 
                 DUMMY *
                 ; assumed to be page aligned
 RING_BUFFER     DS  frameBytes*frameCount
+                DS  \
+                ; must end before $BA00, where game state is located
+                ERR *-$B600
                 DEND
-

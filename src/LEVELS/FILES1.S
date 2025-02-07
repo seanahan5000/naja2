@@ -20,6 +20,8 @@ FILE_TABLE      DB  fileAlienPics12,  $00,$00,$B0
                 ; shell 17
                 DB  fileViewport,     $16,$00,$09
                 DB  fileRuuik,        $17,$00,$0D
+                DB  fileKeyCrystal,   $18,$00,$10
+                DB  fileKeySand,      $19,$00,$10   ; *** move this
 
                 DB  fileControlMS,    $0A,$00,$10   ; (disk side 0)
                 DB  fileTesserport,   $0F,$0C,$04   ; (disk side 0)

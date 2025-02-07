@@ -127,7 +127,12 @@ baselwreflex	=	$7B
 baseintellig	=	$7C
 *
 flaglimbo		=	$7E
+;  igg000xx
+;   i: implant
+;   g: gender
+;   x: something used in INFIRMARY:power
 miscflags		=	$7F
+
 e3_ROBLFT		=	e3_UPLFT
 e4_ROBLWITH		=	e4_UPRGT
 e5_ROBRGT		=	e5_LWLFT
@@ -223,6 +228,8 @@ fileElevator          = $51
 fileViewport          = $52
 fileRuuik             = $53
 filePrisoner          = $54
+fileKeyCrystal        = $55
+fileKeySand           = $56
 
 fileKeyDoor           = $60
 

@@ -7,12 +7,18 @@ X Shared credits across group
     X Removed individual/pooled credit UI
 X Improved escape/cancel across all UI
 X Fight grid reflects tunnel layout of encounter
-X Complete write of tunnel drawing
+X Complete rewrite of tunnel drawing
     X Fast/thin line drawing
     X Improved far left/right wall caps
 X New graphics compression algorithm
     X Significant size savings across disks
 
+* Door opening animation?
+    * (Must disable if about to land on special)
+
+* Prisoner should be a puzzle
+    * Incorporate colors of door beams, cell numbers, block 1138
+    ? Should door sign require translation?
 
 * Quick fight mode versus "tactical" mode
 * Consider 5 or 6 instead of 7 group members, for balancing purposes
@@ -21,6 +27,8 @@ X New graphics compression algorithm
     * Also shortens combat loop
 * Identifying aliens adds them to Alien Catalog (Compendium? Codex?)
     * May also add aliens by finding data cards, etc.
+    * Could show picture of alien as part of data card
+        * (Or just inform player that alien was added?)
     * Could start with a few common aliens already identified
 X Remove per-character credits and pooling credits UI
     * Keep pooled credits in game state
@@ -54,6 +62,8 @@ X Scroll through individuals in camp with <- and -> arrows
 * More puzzles?
     * Puzzle of unlocking portable airlocks to access area
     X Make ordering of keys in key door a puzzle
+    * Puzzle to release prisoner from cell
+        * Incorporate colors of door beams, cell numbers, block 1138
 * Consider tracking quest items separately from rest of inventory
 * Consider unifying cursor to just simple triangle (get rid of ->, etc.)
     * (Might change original look too much)
@@ -106,7 +116,7 @@ X Rework fight grid to show actual hall configuration
     * Adds space in fight screens and alien info
 * Put Tesseract/port in camp entry menu
 * Beacon item that allows Tesseract/port from any location
-* Use "home world" or "planet" instead of race?
+* Use "home world" or "planet" or "system" instead of race?
     * Earth instead of human?
 * Character format
     * Split data into stored information and in-station state
@@ -120,11 +130,13 @@ X Rework fight grid to show actual hall configuration
         X Make credits common to group
         * Limit credits and experience to 6 digits instead of 8 (3 bytes)
     * Need for gender at all?
-* Weapons need either an explicit level requirement
-    * or implicit limit using energy requirements versus capacity
-    * prevent trading/transferring top equipment to low-level characters
-* In-game text descriptions of equipment
-    * Tie into Compendium?
+* Equipment
+    * Weapons need either an explicit level requirement
+        * or implicit limit using energy requirements versus capacity
+        * prevent trading/transferring top equipment to low-level characters
+    * In-game text descriptions of equipment
+        * Tie into Compendium?
+    * Reconsider need for FAULTY status
 * Mothership
     * Consider moving delete area one square left
         * Make hallway look balanced when arriving in MS from boot

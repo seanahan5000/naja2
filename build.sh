@@ -157,6 +157,8 @@ $A2NIB_T1 $OBJ/VIEWPORT        -t 16 -s 00   #  9 sectors
                                              #  7 sectors
 $A2NIB_T1 $OBJ/RUUIK           -t 17 -s 00   # 13 sectors
                                              #  3 sectors
+$A2NIB_T1 $OBJ/KEY.CRYSTAL     -t 18 -s 00   # 16 sectors (trim)
+$A2NIB_T1 $OBJ/KEY.SAND        -t 19 -s 00   # 16 sectors (trim) *** MOVE
 
 # shell 13,11,9
 $A2NIB_T2 $OBJ/CONTROL13.7000  -t 10 -s 00   # 12 sectors (trim)

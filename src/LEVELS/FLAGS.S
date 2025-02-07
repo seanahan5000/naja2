@@ -2,6 +2,7 @@
 gamePrisonerMet         = 0
 gamePrisonerQuestGiven  = 1
 gamePrisonerGone        = 2
+gameKeyCrystalGone      = 3
 
 ;
 ; On entry:

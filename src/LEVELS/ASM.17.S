@@ -14,8 +14,11 @@ SHELLNUM        =   1
                 PUT /SPECIALS/GREEN.NET
                 ; PUT /SPECIALS/DOOR.SIGN
 
+                PUT /SPECIALS/LOAD.KEY.CRYSTAL
+                PUT /SPECIALS/LOAD.KEY.SAND ; *** MOVE
+
 DOOR_SIGN
-KEY_PEDESTAL
+; KEY_PEDESTAL
 
 SHIP_SOUND
 ROTATE
@@ -46,3 +49,14 @@ VIEWPORT_FILE   DB  fileViewport
 RUUIK_FILE      DB  fileRuuik
                 PUT /SPECIALS/RUUIK
                 SAV RUUIK
+
+                ORG $A000
+KEY_CRYSTAL_FILE DB  fileKeyCrystal
+                PUT /SPECIALS/KEY.CRYSTAL
+                SAV KEY.CRYSTAL
+
+; *** MOVE
+                ORG $A000
+KEY_SAND_FILE   DB  fileKeySand
+                PUT /SPECIALS/KEY.SAND
+                SAV KEY.SAND

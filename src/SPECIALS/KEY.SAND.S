@@ -1,4 +1,188 @@
 
+BEAM_INDEX      =   $C0
+BEAM_DIR        =   $C1
+BEAM_PTR        =   $C2
+BEAM_PTR_H      =   $C3
+
+; 12 bytes wide x 94 lines
+;   1128 bytes (0x468)
+;       * 6 frames == 0x1A70
+;   22 line repeat -- over crystals
+;   13 line repeat -- above table
+;   29 line repeat -- table base
+; 12 bytes width x 33 unique lines
+;   396 bytes (0x18C)
+;       * 6 frames == 0x948
+
+; left:   100
+;   4 spots (0-3)
+; center: 108
+;   4 spots (4-7)
+; right:  116
+; width:   17 (8 spots)
+
+; left:   100
+;   20? spots
+; center: 140
+;   20? spots
+; right:  180
+; width:   81 (40 spots)
+
+
+; full width
+; X1: 100
+; X2: 180
+; W: 81
+
+; center
+; X1: 140
+; X2: 142
+; W: 3
+
+; ring top (inside)
+; Y: 172 (-4)
+; ring center
+; Y: 176
+; ring bottom
+; Y: 181 (+5)
+
+; full size of beams
+; PictClear 14;88;26;182
+; 12 bytes * 94 lines = 1128 bytes
+                ; lda (screenl),y         ; 5+
+                ; ora $ffff,x             ; 4+
+                ; sta (screenl),y         ; 6
+                ; inx                     ; 2
+                ; iny                     ; 2
+                                        ; 19 * 1128 bytes = 21432 cycles
+                                        ;   ~ 46fps
+
+DO_SAND         JSR DRAW_PICT
+                PictSetPage2
+                PictClearPage
+                PictCall DRAW_HALL
+                PictImage PEDESTAL_TOP
+                PictImage PEDESTAL_BASE
+                PictImage SAND_BAG
+                PictEnd
+
+                JSR DRAW_PICT
+                PictShowPage
+                PictSetPage1
+                PictCopyToPage
+                PictShowPage
+                PictEnd
+
+                LDA #1
+                STA BEAM_DIR
+                LDX #0
+:1              STX BEAM_INDEX
+                JSR DRAW_BEAMS
+                LDA #$80
+                JSR WAIT
+                LDX BEAM_INDEX
+                LDA BEAM_DIR
+                BEQ :2
+                INX
+                CPX #4
+                BNE :1
+                LDX #2
+                DEC BEAM_DIR
+                BEQ :1                  ; always
+
+:2              DEX
+                BPL :1
+                LDX #1
+                INC BEAM_DIR
+                BNE :1                  ; always
+
+                SEC
+                RTS
+
+beamLeftCol     =   14
+beamRightCol    =   26
+
+DRAW_BEAMS      TXA
+                ASL
+                TAX
+                LDA BEAM_PTRS+0,X
+                STA BEAM_PTR
+                LDA BEAM_PTRS+1,X
+                STA BEAM_PTR_H
+                LDX #88                 ;*** constant
+:1              LDA LOBYTES,X
+                STA DESTINL
+                STA SCREENL
+                LDA HIBYTES,X
+                STA DESTINH
+                EOR #$60
+                STA SCREENH
+                LDY #beamLeftCol
+:2              LDA (BEAM_PTR),Y
+                ORA (SCREENL),Y
+                STA (DESTINL),Y
+                INY
+                CPY #beamRightCol
+                BNE :2
+                INX
+                CPX #177                ;*** constant
+                BNE :1
+
+                TXA
+                TAY
+                LDX #0
+:3              STY LINENUM
+                LDA LOBYTES,Y
+                STA DESTINL
+                STA SCREENL
+                LDA HIBYTES,Y
+                STA DESTINH
+                EOR #$60
+                STA SCREENH
+                LDY #beamLeftCol
+:4              LDA (BEAM_PTR),Y
+                AND BEAM_FRONT_MASKS,X
+                ORA (SCREENL),Y
+                STA (DESTINL),Y
+                INX
+                INY
+                CPY #beamRightCol
+                BNE :4
+                LDY LINENUM
+                INY
+                CPY #182                ;*** constant
+                BNE :3
+                RTS
+
+BEAM_PTRS       DW  BEAM_DATA+0-beamLeftCol
+                DW  BEAM_DATA+12-beamLeftCol
+                DW  BEAM_DATA+24-beamLeftCol
+                DW  BEAM_DATA+36-beamLeftCol
+
+BEAM_DATA       HEX D4A2D0A0C18AD4A0858A94A8
+                HEX D48A94A8D08295A8C18285AA
+                HEX D482858AD4A085AAD0A0C1AA
+                HEX D4A0C18295A8C18A94A890AA
+
+BEAM_BACK_MASKS
+                HEX FFFFFFFFFF8FC0FFFFFFFFFF    ; 168
+
+                HEX FFFFFFFF9F8080F8FFFFFFFF    ; 169
+                HEX FFFFFF808080808080FEFFFF    ; 170
+                HEX FFBF8080808080808080FCFF    ; 171
+                HEX FF838080808080808080C0FF    ; 172
+                HEX 9F80808080808080808080F8    ; 173
+                ; HEX 8780808080808080808080E0    ; *** NOT NEEDED
+
+BEAM_FRONT_MASKS
+                ; HEX FCFFFFFFFFFFFFFFFFFFFFBF    ; *** NOT NEEDED
+                ; HEX F8FFFFFFFFFFFFFFFFFFFF9F    ; *** NOT NEEDED
+
+                HEX E0FFFFFFFFFFFFFFFFFFFF87    ; 177
+                HEX 00FCFFFFFFFFFFFFFFFFBF00    ; 178
+                HEX 00C0FFFFFFFFFFFFFFFF8000    ; 179
+                HEX 000080FFFFFFFFFFFF810000    ; 180
+                HEX 00000000E0FFFF8700000000    ; 181
 
 PEDESTAL_TOP    DB  $0B,$14,$12,$62
                 HEX F8802095C0F24054558D11448B10BCF0282A910822084250
