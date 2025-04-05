@@ -153,14 +153,14 @@ RIGHT_DOWN_A	JSR ARROW
 
 GRID_CURSOR_A	LDX SOURCE_INDEX
 				LDY LIST25,X
-                LDX MOD5,Y
-                LDA DIV5,Y
+                LDX _MOD5,Y
+                LDA _DIV5,Y
                 TAY
-				JMP DRAW_GRID_CURSOR_XY
+				JMP _DRAW_GRID_CURSOR_XY
 
 GRID_CURSOR_B	LDX CURSOR_X
 				LDY CURSOR_Y
-				JMP DRAW_GRID_CURSOR_XY
+				JMP _DRAW_GRID_CURSOR_XY
 
 ARROW			LDX	SOURCE_INDEX
 				LDY	YPOINTS,X
@@ -179,9 +179,9 @@ SPACE_HIT_A		JSR	ARROW			; erase source arrow
 				; turn source cursor into CURSOR_X and CURSOR_Y
 				LDX SOURCE_INDEX
 				LDY LIST25,X
-				LDA DIV5,Y
+				LDA _DIV5,Y
 				STA CURSOR_Y
-				LDX MOD5,Y
+				LDX _MOD5,Y
 				INX
 				CPX #5
 				BNE :1
@@ -307,10 +307,10 @@ SPACE_HIT_B		JSR	MARKER
 				; erase source topview
 				LDA SOURCE_INDEX
 				JSR SET_CHAR
-				JSR DRAW_CHAR_TOPVIEW
+				JSR _DRAW_CHAR_TOPVIEW
 
 				LDY CURSOR_Y
-				LDA MUL5,Y
+				LDA _MUL5,Y
 				CLC
 				ADC CURSOR_X
 				TAX
@@ -326,13 +326,13 @@ SPACE_HIT_B		JSR	MARKER
 
 				; erase swap target
 				JSR SET_CHAR
-				JSR DRAW_CHAR_TOPVIEW
+				JSR _DRAW_CHAR_TOPVIEW
 
 				; set swap target position and redraw
 				PLA
 				LDY #position
 				STA (CHARDL),Y
-				JSR DRAW_CHAR_TOPVIEW
+				JSR _DRAW_CHAR_TOPVIEW
 
 				LDA SOURCE_INDEX
 				JSR SET_CHAR
@@ -344,7 +344,7 @@ SPACE_HIT_B		JSR	MARKER
 				ORA :POSY_TABLE,Y
 				LDY #position
 				STA (CHARDL),Y
-				JSR DRAW_CHAR_TOPVIEW
+				JSR _DRAW_CHAR_TOPVIEW
 
 				JSR BUILD_GRID25
 				JSR SCROLL_STATS
@@ -501,7 +501,7 @@ BUILD_GRID25	LDX #24
 				JSR FIRST_CHAR
 :2				LDY #position
 				LDA (CHARDL),Y
-:3				JSR POS_TO_I25
+:3				JSR _POS_TO_I25
 				LDA GRID25,Y
 				BMI :4
 
@@ -625,7 +625,7 @@ DRAW_GRID_OLD   JSR DRAW_PICT
                 BNE :1
 
                 JSR FIRST_CHAR
-:4              JSR DRAW_CHAR_TOPVIEW
+:4              JSR _DRAW_CHAR_TOPVIEW
                 JSR NEXT_CHAR
                 BCC :4
                 RTS

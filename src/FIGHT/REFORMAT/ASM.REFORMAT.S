@@ -17,5 +17,5 @@
                 ORG $A000
 REFORMAT_FILE   DB  fileReformat
                 PUT C.REFORMAT
-                PUT /FIGHT/SHARED/TOPVIEWS
+                PUT C.TOPVIEWS
                 SAV REFORMAT

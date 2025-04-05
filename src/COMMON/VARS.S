@@ -438,7 +438,7 @@ PictTextAt_     MAC
                 EOM
 
 PictTextAt      MAC
-                PictTextAt_
+                PictTextAt_ ]1;]2
                 TXT ]3
                 EOM
 
@@ -603,8 +603,9 @@ PictSwitch      MAC
                 EOM
 
 PictCase        MAC
+]PC             =   *
                 DB  OpCase
-                DB  ]1-*-2
+                DB  ]1-]PC-2
                 EOM
 
 PictSwitchEnd   MAC

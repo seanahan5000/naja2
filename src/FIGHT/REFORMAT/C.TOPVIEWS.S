@@ -1,8 +1,10 @@
 
-; NOTE: Any changes here need to be replicated in REFORMAT/C.TOPVIEWS.S
+; NOTE: This is a complete duplicate of FIGHT/SHARED/TOPVIEWS.S,
+;   needed because of conflicts between shared/exported names
+;   and the same names included again in another module.
 
 ; FROM11                           ; legacy name
-CPOS_TO_XY      ENT
+_CPOS_TO_XY      ;ENT
                 LDY #position
                 LDA (CHARDL),Y
 ;
@@ -14,7 +16,7 @@ CPOS_TO_XY      ENT
 ;   Y: grid Y position 0 to 4
 ;
 ; FROM11B                          ; legacy name
-POS_TO_XY       ENT
+_POS_TO_XY       ;ENT
                 STA :MOD+1
                 LSR
                 LSR
@@ -35,21 +37,21 @@ POS_TO_XY       ENT
 ; On exit:
 ;   Y: grid index 0 to 24
 ;
-APOS_TO_I25     ENT
+_APOS_TO_I25     ;ENT
                 SEC
                 SBC #$05
-POS_TO_I25      ENT
-                JSR POS_TO_XY
+_POS_TO_I25      ;ENT
+                JSR _POS_TO_XY
                 TXA
                 CLC
-                ADC MUL5,Y
+                ADC _MUL5,Y
                 TAY
                 RTS
 
-MUL5            ENT
+_MUL5            ;ENT
                 DB  0,5,10,15,20
 
-DIV5            ENT
+_DIV5            ;ENT
                 DB  0,0,0,0,0
                 DB  1,1,1,1,1
                 DB  2,2,2,2,2
@@ -57,7 +59,7 @@ DIV5            ENT
                 DB  4,4,4,4,4
                 DB  5
 
-MOD5            ENT
+_MOD5            ;ENT
                 DB  0,1,2,3,4
                 DB  0,1,2,3,4
                 DB  0,1,2,3,4
@@ -69,17 +71,17 @@ MOD5            ENT
 ;   X: grid X position
 ;   Y: character grid Y position
 ;
-CGRID_MOVETO    ENT
-                LDA GRID_XPNTS,X
+_CGRID_MOVETO    ;ENT
+                LDA _GRID_XPNTS,X
                 TAX
-                LDA CGRID_YPNTS,Y
+                LDA _CGRID_YPNTS,Y
                 TAY
                 JMP MOVE_TO
 
-DRAW_CHAR_TOPVIEW ENT
-                JSR CPOS_TO_XY
-                JSR CGRID_MOVETO
-DRAW_PROF_TOPVIEW ENT
+_DRAW_CHAR_TOPVIEW ;ENT
+                JSR _CPOS_TO_XY
+                JSR _CGRID_MOVETO
+_DRAW_PROF_TOPVIEW ;ENT
                 LDY #profrace
                 LDA (CHARDL),Y
                 LSR
@@ -100,7 +102,7 @@ DRAW_PROF_TOPVIEW ENT
 
                 ; pixel positions in top view grid
 
-GRID_XPNTS      ENT
+_GRID_XPNTS      ;ENT
                 DB  cellWidth*0+6
                 DB  cellWidth*1+6
                 DB  cellWidth*2+6
@@ -109,13 +111,13 @@ GRID_XPNTS      ENT
 ;
 ; NOTE: assumed to be sequential and contiguous
 ;
-AGRID_YPNTS     ENT
+_AGRID_YPNTS     ;ENT
                 DB  cellHeight*0+73
                 DB  cellHeight*1+73
                 DB  cellHeight*2+73
                 DB  cellHeight*3+73
                 DB  cellHeight*4+73
-CGRID_YPNTS     ENT
+_CGRID_YPNTS     ;ENT
                 DB  cellHeight*0+128
                 DB  cellHeight*1+128
                 DB  cellHeight*2+128
@@ -190,17 +192,17 @@ TCHAR_ROB       DB  $38,$78,$08,$6F,$69,$69,$6F     ; robot
 ;   A: grid 11 position
 ;
 DRAW_GRID_CURSOR
-                JSR POS_TO_XY
+                JSR _POS_TO_XY
                 ; fall through
 ;
 ; On entry:
 ;   X: grid 25 x position
 ;   Y: grid 25 y position
 ;
-DRAW_GRID_CURSOR_XY ENT
-                LDA CGRID_YPNTS,Y
+_DRAW_GRID_CURSOR_XY ;ENT
+                LDA _CGRID_YPNTS,Y
                 TAY
-                LDA GRID_XPNTS,X
+                LDA _GRID_XPNTS,X
                 TAX
                 DEX
                 JSR MOVE_TO
