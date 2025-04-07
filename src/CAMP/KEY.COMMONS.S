@@ -1,6 +1,6 @@
 
 ; TODO: should this be used here?
-TEMP			=	LOCAL_TEMP
+; TEMP			=	LOCAL_TEMP
 
 *--------------------------------------------------------
 * On entry:

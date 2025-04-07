@@ -1,8 +1,9 @@
 
-TEMP            =   LOCAL_TEMP+0        ; +1
 
-POINTL          =   LOCAL_TEMP+2
-POINTH          =   LOCAL_TEMP+3
+; TEMP            =   LOCAL_TEMP+0        ; +1
+
+; POINTL          =   LOCAL_TEMP+2
+; POINTH          =   LOCAL_TEMP+3
 
 ; LINENUM         =   $00
 ; COUNTER         =   $01

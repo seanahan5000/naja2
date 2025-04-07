@@ -1,5 +1,5 @@
 
-CHAR_5          TXC "BLADE_____"
+                TXC "BLADE_____"
                 DFB healthy
                 HEX 0001            ;Level
                 DFB electromedic*16+stilicx

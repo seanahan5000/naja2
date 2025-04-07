@@ -5,8 +5,8 @@
 ; 3 - enrollment (blue)
 ; 4 - arsenal2   (implicit)
 
-; *** rename WHICHT ***
-TEMP			=	LOCAL_TEMP                     ; ,+1 TODO: clean this up
+; *** rename WHICHT ****
+; TEMP			=	LOCAL_TEMP                     ; ,+1 TODO: clean this up
 
 ;
 ; On entry:

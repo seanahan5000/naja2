@@ -6,7 +6,7 @@ scrnENERGY      =   4
 scrnMOVEMENT    =   5
 scrnPROGRAM     =   6
 
-TEMP            =   LOCAL_TEMP+0        ; +1
+; TEMP            =   LOCAL_TEMP+0        ; +1
 
 ZBLOCK_80       =   $80
 ZBLOCK_88       =   $88

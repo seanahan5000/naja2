@@ -10,12 +10,8 @@
   "includes": [
     "/NAJA/VARS/CONSTANTS",
     "/COMMON/VARS",
-    "/COMMON/EXT",
     "/NDOS/VARS",
-    "/NDOS/EXT",
     "/HALLS/VARS",
-    "/HALLS/EXT",
-    "/CAMP/EXT",
     "/FIGHT/FIGHT.CONSTS",
     "/FIGHT/FIGHT.MACROS",
     "/FIGHT/FIGHT.ZPAGE"

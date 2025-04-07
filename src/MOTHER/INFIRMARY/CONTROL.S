@@ -1,6 +1,6 @@
 ; enter showing and drawing to page 1
 
-TEMP            =   LOCAL_TEMP+0        ; +1
+; TEMP            =   LOCAL_TEMP+0        ; +1
 
 ZBLOCK_A0       =   $A0
 PATIENT         =   ZBLOCK_A0+0

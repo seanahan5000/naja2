@@ -32,45 +32,46 @@
 
 
 
-MAP_VISITED_17  DS  217 ;,$FF     ;*** ; cleared by default
+MAP_VISITED_17_ DS  217,$FF     ;*** ; cleared by default
                 ; DS  39
                 DS  3
-MAP_VISITED_15  DS  169
-MAP_VISITED_13  DS  127
-MAP_VISITED_11  DS  91
-MAP_VISITED_9   DS  61
+MAP_VISITED_15_ DS  169
+MAP_VISITED_13_ DS  127
+MAP_VISITED_11_ DS  91
+MAP_VISITED_9_  DS  61                  ;,$FF              ;***
 
-KNOWN_ALIENS_12 HEX FFFFFF      ; 72 bits
+KNOWN_ALIENS_12_
+                HEX FFFFFF      ; 72 bits
                 HEX FFFFFF
                 HEX FFFFFF
 
-KNOWN_ALIENS_345                ; 65 of 72 bits
+KNOWN_ALIENS_345_               ; 65 of 72 bits
                 HEX FFFFFF
                 HEX FFFFFF
                 HEX FFFF80
 
-ENCOUNTER_SPAWNS
+ENCOUNTER_SPAWNS_
                 HEX 00000000    ; 32 bits per shell, for now
                 HEX 00000000
                 HEX 00000000
                 HEX 00000000
                 HEX 00000000
 
-ORBS_FOUND                      ; TODO: get rid of this
-KEYS_FOUND      DB  0
-KEY_DOOR_BITS   DB  0
+ORBS_FOUND_                     ; TODO: get rid of this
+KEYS_FOUND_     DB  0
+KEY_DOOR_BITS_  DB  0
 
                 DS  3
 
-EQUIP_STOCK     DS  36
-GROUP_CREDITS   HEX 00010000
+EQUIP_STOCK_    DS  36
+GROUP_CREDITS_  HEX 00010000
 
-ROSTER_BITS     DB  %00111001,%10000011 ; see TEST.ROSTER.S for indexes
+ROSTER_BITS_    DB  %00111001,%10000011 ; see TEST.ROSTER.S for indexes
 
-GAME_FLAGS      DS  12
+GAME_FLAGS_     DS  12
 
 ; *** should this be zpage? ***
-LOST_CHARS      DB  0           ; $BCFD
+LOST_CHARS_     DB  0           ; $BCFD
 
-DELAY_MODE      DB  0           ; $BCFE - was GRPNUMB
-DELAY_TIME      DB  0           ; $BCFF - was GRPCONT
+DELAY_MODE_     DB  0           ; $BCFE - was GRPNUMB
+DELAY_TIME_     DB  0           ; $BCFF - was GRPCONT

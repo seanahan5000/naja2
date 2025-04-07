@@ -58,6 +58,8 @@ SCREENL         =   $26
 SCREENH         =   $27
 DESTINL         =   $28
 DESTINH         =   $29
+POINTL          =   $2A
+POINTH          =   $2B
 
 ; UNPACK.S uses $30-$3F
 ; TEXT.S uses $31-$33
@@ -109,6 +111,8 @@ LINENUM         =   $74
 COLUMN          =   $75
 COUNTER         =   $76
 SCRATCH         =   $77
+; TODO: convert users of this to LOCAL_TEMP
+TEMP            =   $78         ; ,$79
 
 ; TODO: move these character-only vars
 SELECT          =   $90         ; only used in STATS.S -- get rid of

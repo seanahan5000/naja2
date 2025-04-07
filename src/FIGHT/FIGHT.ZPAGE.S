@@ -6,11 +6,6 @@ ZBLOCK_D        =   $D0                 ; ($40) Fight common
 ZBLOCK_E        =   $D8                 ; ($48) All fight
 ZBLOCK_F        =   $60                 ; ($80) Narrate
 
-TEMP            =   $00                 ; ,$01
-
-POINTL          =   $12
-POINTH          =   $13
-
 ; MONS_PTR points to individual monster instance
 ; ALIEN_PTR points to alien class information
 
