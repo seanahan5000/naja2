@@ -398,8 +398,9 @@ START_RW        STX TARGET_FTRACK
                 CPY CUR_DRIVE
                 BNE SELECT_DRIVE
 
-FAST_SPINUP     LDA DRIVE_ON,X          ; turn on motor, regardless
-                LDA DRIVE_READMODE,X    ; Q7L read mode
+; NOTE: Don't turn on motor until after spinning detection
+;   to better mimic DOS 3.3 behavior.
+FAST_SPINUP     LDA DRIVE_READMODE,X    ; Q7L read mode
                 LDA DRIVE_READ,X        ; Q6L
                 LDY #8
 :1              LDA DRIVE_READ,X        ; Q6L
@@ -414,7 +415,8 @@ FAST_SPINUP     LDA DRIVE_ON,X          ; turn on motor, regardless
                 BNE :1
                 BEQ SLOW_SPINUP         ; always
 
-:2              LDA TARGET_FTRACK
+:2              LDA DRIVE_ON,X          ; turn on motor, regardless
+                LDA TARGET_FTRACK
                 JSR SEEK
                 JMP RESET_RETRIES
 
@@ -425,9 +427,10 @@ SELECT_DRIVE    STY CUR_DRIVE
                 LDA DRIVE_ENABLE1,X
                 BCC :2                  ; always
 :1              LDA DRIVE_ENABLE2,X
-:2              LDA DRIVE_ON,X          ; turn on motor
+:2
 
-SLOW_SPINUP     LDA #<MOTOR_ON_DELAY
+SLOW_SPINUP     LDA DRIVE_ON,X          ; turn on motor
+                LDA #<MOTOR_ON_DELAY
                 STA MONCNTL
                 LDA #>MOTOR_ON_DELAY
                 STA MONCNTH
