@@ -269,7 +269,7 @@ TEXT1D          PictTextAt 32;89;"YOU HAVE OVERSPENT BY "
 
 TEXT1E          PictTextAt 50;126;"YOUR ROBOT IS BEING REGISTERED"
                 PictTextAt 50;135;"UNDER THE NAME "
-ROBOT_NAME      USR (ROBOT-   1.)
+ROBOT_NAME      TXT "ROBOT-   1."
 
 TEXT1F          PictTextAt 116;126;"IS BEING"
                 PictTextAt 116;126;"HAS BEEN"
@@ -279,7 +279,7 @@ TEXT1F          PictTextAt 116;126;"IS BEING"
                 PictTextAt 188;179;"<SPACE>"
 
 TEXT20          PictTextAt 44;89;" IS WORTH "
-TEXCRED         USR (00000000 CREDITS)
+TEXCRED         TXT "00000000 CREDITS"
                 PictTextAt 50;98;"PRESS <SPACE> TO SELL IT"
 
 TEXT21          PictTextAt 50;98;"WHICH ROBOT DO YOU WANT TO SELL?"
@@ -299,7 +299,7 @@ TEXT27          PictTextAt 57;89;" HAS EQUIPMENT THAT"
                 PictTextAt 57;98;"MUST BE SOLD AT THE ARSENAL"
 
 TEXT2A          PictTextAt 41;89;"YOU HAVE OVERSPENT BY "
-TEXOVER         USR (00000000 CREDITS-)
+TEXOVER         TXT "00000000 CREDITS-"
                 PictTextAt 41;98;"SELECT AN AREA TO BE REDONE"
 
 TEXT2E          PictTextAt 31;89;"PRESS <SPACE> TO VERIFY ROBOT PURCHASE"

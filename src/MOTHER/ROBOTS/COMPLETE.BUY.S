@@ -36,7 +36,7 @@ PICK_CYB        JSR PPEOR
                 LDX PICK
                 LDA #$FF
                 STA ON1,X
-                JMP OPTIONS
+                JMP POP_TO_OPTIONS
 
 GOT_CYB         LDA #12
                 STA COUNT
@@ -120,7 +120,7 @@ NOVKEY          LDA #7
                 BEQ ADJUST
                 JSR CHECK_CANCEL
                 BNE :1
-                JMP OPTIONS
+                JMP POP_TO_OPTIONS
 
 PBACK           JSR DRAW_CONFIRM
                 BIT UNSTROB

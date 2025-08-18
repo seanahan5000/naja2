@@ -39,7 +39,7 @@ BADMENT         JSR DRAW_PICT
                 JSR CHECK_ENTER
                 BNE :1
                 JSR NOTCH_OUT
-                JMP OPTIONS
+                JMP POP_TO_OPTIONS
 
 ALLGOOD         LDX #$03
 :1              LDA RTOTAL,X
@@ -85,29 +85,18 @@ ALLGOOD         LDX #$03
                 BEQ YESSER
                 JSR CHECK_CANCEL
                 BNE :3
-                JMP OPTIONS
+                JMP POP_TO_OPTIONS
 
-YESSER          LDA PICK
-                BEQ NOVIEWB
-
-;*** redraw problems? ***
-
-                ; JSR MOVETO1
-                ; STA PRIMARY
+YESSER          JSR SET_PAGE1
+                LDA PICK
+                BEQ :1
                 JSR DRAW_PICT
-                PictSetPage2
                 PictCopyToPage
                 PictShowPage
                 PictEnd
-
-NOVIEWB
-                ; LDA #$20
-                ; STA PAGE
-                JSR SET_PAGE1
-
                 LDA #$00
                 STA PICK
-                LDA #$FF
+:1              LDA #$FF
                 STA ON2
 ;
 ; remove robot from roster
@@ -123,19 +112,19 @@ NOVIEWB
 ; clear robot link in cybernate
 ;
                 JSR FIRST_CHAR
-:1              LDY #roboCyberLink
+:2              LDY #roboCyberLink
                 LDA (CHARDL),Y
 :MOD            EOR #$FF
                 AND #$0F
-                BNE :2
+                BNE :3
                 LDA #$00
                 STA (CHARDL),Y
                 ; LDA #-1
                 ; STA DIRTY_CHARS,X
-                BNE :3
-:2              JSR NEXT_CHAR
-                BCC :1
-:3
+                BNE :4
+:3              JSR NEXT_CHAR
+                BCC :2
+:4
 ;
 ; give group money for robot
 ;
@@ -176,8 +165,7 @@ MOVEIT          LDA (CHARDL),Y
                 LDA COUNT
                 CMP GRPNUMB
                 BNE MOVIT2
-NOTDEC
-                JMP OPTIONS
+NOTDEC          JMP POP_TO_OPTIONS
 
 ADDBODS         LDA #$00
                 LDX #$03

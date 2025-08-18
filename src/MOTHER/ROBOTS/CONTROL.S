@@ -87,7 +87,10 @@ ISRET           LDA #$FF
                 STA ON2
                 LDA #$01
                 STA PICK
+                BNE OPTIONS             ; always
 
+POP_TO_OPTIONS  PLA
+                PLA
 OPTIONS         JSR PPEOR
                 LDX PICK
                 LDA ON1,X

@@ -41,7 +41,7 @@ PICK_A_ROBOT    STA THE_ROBOT           ; briefly hold message index
                 LDA CURSOR
                 CMP #$07
                 BNE :GOT_ONE
-                JMP OPTIONS
+                JMP POP_TO_OPTIONS
 
 :GOT_ONE        LDA CURSOR
                 STA THE_ROBOT
@@ -439,8 +439,10 @@ GKEYIN          LDA KEYBRD
 GOOPTS          LDA PARTALL
                 CMP #$D0
                 BEQ GOPBACK
-                JMP OPTIONS
-GOPBACK         JMP PBACK
+                JMP POP_TO_OPTIONS
+GOPBACK         PLA
+                PLA
+                JMP PBACK
 
 GENTER          JSR ERASE_CBOX
                 JMP CURSUB              ; undo cursor draw
@@ -554,7 +556,7 @@ VKEYIN          LDA KEYBRD
                 BEQ VRIGHT
                 JSR CHECK_ENTER
                 BEQ GOVENT
-                CMP #$C3
+                JSR CHECK_CANCEL
                 BNE VKEYIN
 VCANC           LDA PARTALL
                 CMP #$E0
@@ -565,7 +567,7 @@ VCANC           LDA PARTALL
 NOPGO           LDX PICK
                 LDA #$FF
                 STA ON1,X
-                JMP OPTIONS
+                JMP POP_TO_OPTIONS
 GOVUP           JMP VUP
 GOVDOWN         JMP VDOWN
 GOVENT          JMP VENTER
@@ -945,8 +947,8 @@ NYLOOP          LDA YNWORD,X
                 LDX #$92
                 JMP DRAW_TEXTBUF_X
 
-YNWORD          USR (YES)
-                USR (NO)
+YNWORD          TXT "YES"
+                TXT "NO"
 
 SRANUMS         PLA
                 AND #$0F

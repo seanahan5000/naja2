@@ -92,7 +92,7 @@ NOWEPO          JSR ZOOMUP
                 JSR BOXCURS
                 LDA SAMFLAG
                 BEQ :1
-                JMP OPTIONS
+                JMP POP_TO_OPTIONS
 :1              JSR TOSLOT
                 JSR CREATE_PART
                 LDA THE_ROBOT
@@ -204,7 +204,7 @@ PARTOTHER       LDY #e1_HEAD+3
 
 PARTOUT         JSR CALC_ALL
                 JSR SPEND_RTOTNUM
-                JMP OPTIONS
+                JMP POP_TO_OPTIONS
 
 SPEND_RTOTNUM   LDX #<RTOTNUM
                 LDY #>RTOTNUM

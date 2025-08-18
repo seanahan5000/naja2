@@ -9,8 +9,6 @@
                 PUT /CAMP/EXT
                 PUT /MOTHER/EXT
 
-                DSK ROBOT.REPAIR
-
                 ORG $8000
                 PUT LOAD
                 DS  \,$EE
@@ -24,7 +22,8 @@
                 PUT SUBROUTINES
                 PUT SAVE.ROBOT
                 DS  \,$EE
-                ERR *-$A800             ;***
+
+                SAV ROBOT.REPAIR
 
                 ;*** MOVE TO SCRATCH_PAGE? ***
                 DUMMY   *
