@@ -50,6 +50,49 @@ aRetreatOdds    DS  1
 aAdvanceOdds    DS  1
                 DEND
 
+Alien           DUMMY   0
+Name            DS  16                  ;{"type":"text"}
+
+Swings          DS  1
+SwingDamage     DS  2
+Blasts          DS  1
+BlastDamage     DS  2
+SwingSquares    DS  1
+Inflicting      DS  1
+StatInflictd    DS  1
+                DS  1
+FightParams     DS  5
+BlastSource     DS  1
+
+UpperReflex     DS  1
+LowerReflex     DS  1               ;aUpperReflex+1
+                DS  1
+Damage          DS  2
+ElShield        DS  1
+PhShield        DS  1               ;aElShield+1
+                DS  1
+                DS  1
+                DS  1
+Experience      DS  2
+Credit          DS  2               ;aExperience+3
+FindingOdds     DS  1               ;aCredit+3
+FindingGroup    DS  1               ;aFindingOdds+1
+
+Suprised        DS  1
+Suprising       DS  1
+Identified      DS  1
+Jammed          DS  1
+Immobilized     DS  1
+                DS  1
+                DS  1
+                DS  1
+Susepts         DS  3
+SwingWords      DS  3
+RetreatOdds     DS  1
+AdvanceOdds     DS  1
+                ERR *-64
+                DEND
+
 *-------------------------------
 
                 DUMMY   0
@@ -73,6 +116,30 @@ monTOPVIEW      DS  1                   ;   I000.0VVV
                                         ;     V: topview index
 monFLAGS        DS  1                   ;   A0000000
                                         ;     A: set if running
+                DEND                    ;   20 bytes
+
+Mons            DUMMY   0
+UpRef           DS  1
+LoRef           DS  1
+Shots           DS  1
+Swings          DS  1
+Damage          DS  2
+ElShield        DS  1
+PhShield        DS  1
+Position        DS  1
+Number          DS  1                   ;   0000.00CC
+                                        ;     C: alien class index (0-2)
+Status          DS  1
+StatCount       DS  2
+CmdCount        DS  1                   ; |
+CrntCmd         DS  2                   ; |
+LastCmd         DS  2                   ; |
+Topview         DS  1                   ;   I000.0VVV
+                                        ;     I: set if identified
+                                        ;     V: topview index
+Flags           DS  1                   ;   A0000000
+                                        ;     A: set if running
+                ERR *-20
                 DEND                    ;   20 bytes
 
 *-------------------------------

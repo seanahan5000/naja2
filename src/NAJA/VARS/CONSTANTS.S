@@ -260,3 +260,61 @@ fileCampD000_1        = $B2
 fileCampD000_2        = $B3
 fileTitle             = $B4
 fileHalls             = $B5
+
+Char            DUMMY 0
+Name            DS  charNameLength      ;{"type":"text"}
+Status          DS  1
+Level           DS  2
+ProfRace        DS  1
+Experience      DS  4
+                DS  1                   ; unused
+Credits         DS  4
+Strength        DS  1
+UpReflex        DS  1
+LwReflex        DS  1
+Intelligence	DS  1
+EShielding      DS  1
+PShielding      DS  1
+Back            DS  1
+Position        DS  1
+DamageLev       DS  2
+DamageMax       DS  2
+Organic         DS  1
+EnergyLev       DS  3
+EnergyMax       DS  3
+PowerConsumpt   DS  2
+                DS  1                   ; unused
+RosterLocation  DS  1
+RoboCyberLink   DS  1
+PowerFraction   DS  2
+BasePowerCons   DS  2
+BaseShielding	DS  2
+E1_HEAD         DS  4
+E2_SLOT         DS  4
+E3_UPLFT        DS  4
+E4_UPRGT        DS  4
+E5_LWLFT        DS  4
+E6_LWRGT        DS  4
+E7_BACK1        DS  4
+E8_BACK2        DS  4
+E9_BACK3        DS  4
+E10_BACK4       DS  4
+E11_BACK5       DS  4
+E12_BACK6       DS  4
+E13_ARMOR       DS  4
+E14_FEET        DS  4
+E15_PROGRAM     DS  4
+E16_UNUSED      DS  4
+InflictCount    DS  1
+InflictDelay    DS  1
+InflictAmount   DS  1
+InflictNums     DS  1
+BaseStrength    DS  1
+BaseUpReflex    DS  1
+BaseLwReflex    DS  1
+BaseIntellig    DS  1
+                DS  1                   ; unused
+FlagLimbo       DS  1
+MiscFlags       DS  1
+                ERR *-$80
+                DEND
