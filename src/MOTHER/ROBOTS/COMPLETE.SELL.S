@@ -1,7 +1,9 @@
 
 COMPLETE_SELL   LDA #1
                 JSR PICK_A_ROBOT
-                LDA THE_ROBOT
+                BCS :1
+                JMP OPTIONS
+:1              LDA THE_ROBOT
                 JSR SET_CHAR
                 JSR REVERSE
                 JSR TOTALUP
@@ -9,62 +11,48 @@ COMPLETE_SELL   LDA #1
                 JSR PACSUB
                 JSR ROSTAT2
                 JSR NOTCH_OUT
+
                 LDY #e2_SLOT
                 LDA (CHARDL),Y
                 LDY #e7_BACK1
                 AND (CHARDL),Y
                 CMP #$FF
-                BNE BADMENT
+                BNE CANNOT_SELL
                 LDA LWEAPON
-                CMP #$06
-                BEQ BADMENT
+                CMP #$06                ; HAND_ATTACHMENT
+                BEQ CANNOT_SELL
                 LDA RWEAPON
-                CMP #$06
-                BNE ALLGOOD
+                CMP #$06                ; HAND_ATTACHMENT
+                BNE CAN_SELL
 
-;*** TEST THIS ***
-BADMENT         JSR DRAW_PICT
+CANNOT_SELL     JSR DRAW_PICT
                 PictCall CNAME_TO_TEXT
                 PictTextbufXY 57;89
-                PictTextAt 57;89;" HAS EQUIPMENT THAT"
+                PictText " HAS EQUIPMENT THAT"
                 PictTextAt 57;98;"MUST BE SOLD AT THE ARSENAL"
                 PictEnd
-
                 JSR SPACE_IN
-                JSR VIEWER
-                BIT UNSTROB
-:1              LDA KEYBRD
-                BPL :1
-                BIT UNSTROB
-                JSR CHECK_ENTER
-                BNE :1
-                JSR NOTCH_OUT
-                JMP POP_TO_OPTIONS
+                JSR SHOW_SCREEN
+                JSR ANY_KEY
+                JMP OPTIONS
 
-ALLGOOD         LDX #$03
-:1              LDA RTOTAL,X
+CAN_SELL        LDA #TradeInPercent
+                LDX #<RTOTAL
+                LDY #>RTOTAL
+                JSR MULTIPLY_14
+                LDX #3
+:1              LDA PRODUCT_5,X
                 STA THE_PRICE,X
-                DEX
-                BPL :1
-                LDA #$60                ; RTS
-                STA NOT78
-                LDA #$EE
-                STA PARTALL
-                JSR SEVEN8
-                LDA #$EA                ; NOP
-                STA NOT78
-                LDX #$03
-:2              LDA THE_PRICE,X
                 STA RTOTAL,X
                 DEX
-                BPL :2
-                JSR CANCEL_IN
+                BPL :1
 
+                JSR CANCEL_IN
                 JSR DRAW_PICT
                 PictMoveTo 44;89
                 PictCall DRAW_CNAME
                 PictText " IS WORTH "
-                PictCall DRAW_PRICE
+                PictCall DRAW_PRICE_L
                 PictText " CREDITS"
                 PictTextAt 50;98;"PRESS <SPACE> TO SELL IT"
                 PictEnd
@@ -73,21 +61,21 @@ ALLGOOD         LDX #$03
                 STA PARTALL
                 JSR OPENUP
                 JSR VOMAIN
-                JSR VIEWER
+                JSR SHOW_SCREEN
                 LDX PICK
                 LDA #$1F
                 STA ON1,X
                 BIT UNSTROB
-:3              LDA KEYBRD
-                BPL :3
+:2              LDA KEYBRD
+                BPL :2
                 BIT UNSTROB
                 JSR CHECK_ENTER
-                BEQ YESSER
+                BEQ YES_SELL
                 JSR CHECK_CANCEL
-                BNE :3
-                JMP POP_TO_OPTIONS
+                BNE :2
+                JMP OPTIONS
 
-YESSER          JSR SET_PAGE1
+YES_SELL        JSR SET_PAGE1
                 LDA PICK
                 BEQ :1
                 JSR DRAW_PICT
@@ -165,7 +153,7 @@ MOVEIT          LDA (CHARDL),Y
                 LDA COUNT
                 CMP GRPNUMB
                 BNE MOVIT2
-NOTDEC          JMP POP_TO_OPTIONS
+NOTDEC          JMP OPTIONS
 
 ADDBODS         LDA #$00
                 LDX #$03

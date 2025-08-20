@@ -1,21 +1,22 @@
 
 ;-----------------------------------------------------------
 
-PICK_A_ROBOT    STA THE_ROBOT           ; briefly hold message index
+PICK_A_ROBOT    STA SWITCH
                 JSR COUNT_ROBOTS
-                STX CURSOR
                 LDA ROBOT_COUNT
                 CMP #1
                 BNE :PICK_ONE
-                JMP :GOT_ONE
+:GOT_ONE        STX THE_ROBOT
+                SEC
+                RTS
 
-:PICK_ONE       JSR PPEOR
-                JSR ALL_ICONS
+:PICK_ONE       JSR NEXT_SCREEN
+                JSR DRAW_ICONS
                 JSR DRAW_GROUP
 
                 JSR DRAW_PICT
                 PictClear 0;87;40;107
-                PictSwitch THE_ROBOT    ; message index
+                PictSwitch SWITCH
 :0              PictCase :1
                 PictTextAt 59;98;"REPLACE PARTS ON WHICH ROBOT?"
 :1              PictCase :END
@@ -23,33 +24,29 @@ PICK_A_ROBOT    STA THE_ROBOT           ; briefly hold message index
 :END            PictSwitchEnd
                 PictEnd
 
-                JSR VIEWER
-                LDA #$00
-                STA LEGALS+7
-
-                LDY #7
-                STY CURSOR
-:2              LDA RYPOINTS,Y
-                STA LINTABL,Y
-                DEY
-                BPL :2
-
-                LDA #$03
-                STA XHOLD
-                JSR KDOWN2
-                JSR RCURSIT
-                LDA CURSOR
-                CMP #$07
+                JSR SHOW_SCREEN
+                JSR SELECT_CHAR
+                CPX #7
                 BNE :GOT_ONE
-                JMP POP_TO_OPTIONS
-
-:GOT_ONE        LDA CURSOR
-                STA THE_ROBOT
+                CLC
                 RTS
 
-RYPOINTS        DB  128,137,146
+SELECT_CHAR     LDX #<CHAR_DEF
+                LDY #>CHAR_DEF
+                JSR MENU_INIT
+                JMP MENU_SELECT
+
+CHAR_DEF        DB  $08
+                DB  $00
+                DW  :CHAR_CURS
+
+:CHAR_CURS      LDY :YPNTS,X
+                LDX	#$03
+				JMP	DRAW_ARROW
+
+:YPNTS          DB  128,137,146
                 DB  155,164,173
-                DB  0,185
+                DB  0,184
 
 ;-----------------------------------------------------------
 
@@ -59,10 +56,10 @@ VOMAIN          LDX #$03
                 DEX
                 BPL :1
 
+                LDY CHYPS+0
                 LDX #$6B
-                LDY CHYPS
                 JSR MOVE_TO
-                JSR SEVEN8
+                JSR DRAW_TRADEIN
 
                 LDX #$03
 :2              LDA CAT0,X
@@ -83,10 +80,10 @@ VOMAIN          LDX #$03
                 TYA
                 BPL :3
 
-                LDX #$6B
                 LDY CHYPS+1
+                LDX #$6B
                 JSR MOVE_TO
-                JSR SEVEN8
+                JSR DRAW_TRADEIN
 
                 LDX #1
 :6              STX COUNT
@@ -115,10 +112,21 @@ VOSUB           CLC
                 BPL :1
                 ; fall through
 
-SEVEN8          LDA PARTALL
+DRAW_TRADEIN    LDA PARTALL
                 CMP #$EE
-                BNE NOT78
-SEVENX          LDA #$88                ; modified
+                BNE :1
+                JSR CALC_TRADEIN
+:1              LDX #<THE_PRICE
+                LDY #>THE_PRICE
+                JMP DRAW_CREDITS
+;
+; On entry:
+;   THE_PRICE: base price
+;
+; On exit:
+;   THE_PRICE: trade-in price
+;
+CALC_TRADEIN    LDA #TradeInPercent
                 LDX #<THE_PRICE
                 LDY #>THE_PRICE
                 JSR MULTIPLY_14
@@ -127,18 +135,15 @@ SEVENX          LDA #$88                ; modified
                 STA THE_PRICE,X
                 DEX
                 BPL :1
-NOT78           NOP                     ; modified
-                LDX #<THE_PRICE
-                LDY #>THE_PRICE
-                JMP DRAW_CREDITS
+                RTS
 
 ; draw left-justified, without gaps
-DRAW_PRICE      LDX #4
-:1              LDA THE_PRICE-1,X
+DRAW_PRICE_L    LDX #3
+:1              LDA THE_PRICE,X
                 PHA
                 DEX
-                BNE :1
-;               LDX #0
+                BPL :1
+                INX
                 LDA #4
                 JSR DIGITS_L
                 LDA #TextLineEnd
@@ -146,7 +151,9 @@ DRAW_PRICE      LDX #4
                 JMP DRAW_TEXTBUF
 
 *-------------------------------
-
+;
+; make space for price column
+;
 OPENUP          LDX #$6B
 :1              LDA #$05
                 LDY #$23
@@ -172,7 +179,9 @@ OPENUP          LDX #$6B
 :4              INX
                 BNE :1
 :5              RTS
-
+;
+; remove space for price column
+;
 CLOSEUP         LDX #$6B
 :1              LDA #$0E
                 LDY #$18
@@ -233,7 +242,9 @@ OCSUB2          PHA
                 INY
                 STA (SCREENL),Y
                 RTS
-
+;
+; split robot character fields and converted to indexes
+;
 REVERSE         LDY #baseupreflex
                 LDA (CHARDL),Y
                 SED
@@ -402,18 +413,25 @@ TOLOOP4         LDA BODTOT,Y
                 DEC COUNT
                 BPL TOLOOP5
                 RTS
+;
+; On exit:
+;   CS: selection made
+;   CC: cancelled
+;
+GBOXSUB         JSR DRAW_CBOX
+                JMP :GKEYIN
 
-GBLINK          LDA #$10
+:GBLINK         LDA #$10
                 JSR WAIT
                 LDA #$F0
                 JSR WAIT_KEY
-                BMI GKEYIN
+                BMI :GKEYIN
                 JSR CURSUB
                 LDA #$00
                 JSR WAIT_KEY
                 JSR CURSUB
-GKEYIN          LDA KEYBRD
-                BPL GBLINK
+:GKEYIN         LDA KEYBRD
+                BPL :GBLINK
                 BIT UNSTROB
                 JSR CHECK_UP
                 BEQ GLEFT
@@ -426,7 +444,7 @@ GKEYIN          LDA KEYBRD
                 JSR CHECK_ENTER
                 BEQ GENTER
                 JSR CHECK_CANCEL
-                BNE GKEYIN
+                BNE :GKEYIN
                 LDX PICK
                 LDA ON1,X
                 ORA #$0F
@@ -434,18 +452,15 @@ GKEYIN          LDA KEYBRD
                 JSR ERASE_CBOX
                 LDA CURSUB
                 CMP #$EA
-                BEQ GOOPTS
+                BEQ :GOOPTS
                 JSR CURFLIP
-GOOPTS          LDA PARTALL
-                CMP #$D0
-                BEQ GOPBACK
-                JMP POP_TO_OPTIONS
-GOPBACK         PLA
-                PLA
-                JMP PBACK
+:GOOPTS         CLC                     ; flag cancel
+                RTS
 
 GENTER          JSR ERASE_CBOX
-                JMP CURSUB              ; undo cursor draw
+                JSR CURSUB              ; undo cursor draw
+                SEC                     ; flag enter
+                RTS
 
 GLEFT           JSR ERASE_CBOX
 :1              LDY CURSOR
@@ -466,10 +481,7 @@ GRIGHT          JSR ERASE_CBOX
 :2              STY CURSOR
                 LDA LEGALS,Y
                 BNE :1
-                ; fall through
-
-GBOXSUB         JSR DRAW_CBOX
-                JMP GKEYIN
+                JMP GBOXSUB
 
 DRAW_CBOX       LDA #OpColorWhite1
                 JSR CBOX_SUB
@@ -518,8 +530,12 @@ CBOX_SUB        JSR SET_COLOR
 :END            PictSwitchEnd
                 PictEnd
                 RTS
-
-BOXCURS         LDY SCRPICK
+;
+; On exit:
+;   CS: Part complete
+;   CC: Cancelled edit
+;
+EDIT_PART       LDY SCRPICK
                 LDA BEGCATS,Y
                 STA MINIMUM
                 LDA NUMCATS,Y
@@ -558,16 +574,9 @@ VKEYIN          LDA KEYBRD
                 BEQ GOVENT
                 JSR CHECK_CANCEL
                 BNE VKEYIN
-VCANC           LDA PARTALL
-                CMP #$E0
-                BEQ :1
-                CMP #$D0
-                BNE NOPGO
-:1              RTS                 ;Carry assumed set
-NOPGO           LDX PICK
-                LDA #$FF
-                STA ON1,X
-                JMP POP_TO_OPTIONS
+                CLC                     ; cancel
+                RTS
+
 GOVUP           JMP VUP
 GOVDOWN         JMP VDOWN
 GOVENT          JMP VENTER
@@ -654,7 +663,7 @@ TOTOT           LDA EVALNUM,Y
                 INY
                 CPY #$04
                 BNE TOTOT
-                CLC
+                SEC                     ; success
                 RTS
 
 DRAW_EXPENSIVE  JSR DRAW_PICT
@@ -679,7 +688,6 @@ EXGOT           BIT UNSTROB
                 RTS
 
 UPMOVE          LDA #$40                ; threshold
-                STA PUTMOD+1
                 JSR UPDOWN
                 PHA
                 JSR DRAW_MOVEMENTS
@@ -689,7 +697,6 @@ UPMOVE          LDA #$40                ; threshold
                 JMP DRAW_MOVEMENTS
 
 DWNMOVE         LDA #$35                ; threshold
-                STA PUTMOD+1
                 JSR UPDOWN
                 PHA
                 CLC
@@ -698,13 +705,12 @@ DWNMOVE         LDA #$35                ; threshold
                 PLA
                 JMP DRAW_MOVEMENTS
 
-UPDOWN          LDY POINTER
+UPDOWN          STA SCRATCH
+                LDY POINTER
                 LDA POINTLV,Y
                 TAY
                 LDA (VALUEL),Y
                 TAX
-PUTMOD          LDA #$40
-                STA SCRATCH
 
                 LDY #0                  ; TREAD
 UDLOOP          CPX SCRATCH
@@ -1345,19 +1351,21 @@ COUNT_ROBOTS    JSR RESET_CHRLIST
                 LDA #robot*16
                 JSR CSCAN_PROF
                 STA ROBOT_COUNT
+                LDA #0
+                STA LEGALS+7
                 RTS                 ;X valid on exit
 
 ROBOT_COUNT     DB  0
 
 *-------------------------------
 
-PPEOR           JSR SET_PAGEX
+NEXT_SCREEN     JSR SET_PAGEX
                 LDA PICK
                 EOR #$01
                 STA PICK
                 RTS
 
-VIEWER          BIT UNSTROB
+SHOW_SCREEN     BIT UNSTROB
                 LDA PICK
                 BEQ :1
                 STA SCNDARY
@@ -1365,8 +1373,8 @@ VIEWER          BIT UNSTROB
 :1              STA PRIMARY
                 RTS
 
-PACSUB          JSR PPEOR
-                JSR ALL_ICONS
+PACSUB          JSR NEXT_SCREEN
+                JSR DRAW_ICONS
                 JSR DRAW_PICT
                 PictClear 0;87;40;192
                 PictEnd
@@ -1404,63 +1412,6 @@ NOTCH_OUT       JSR DRAW_PICT
                 PictLineTo 246;115
                 PictEnd
                 RTS
-
-KBLINK          LDA #$10
-                JSR WAIT
-                LDA #$F0
-                JSR WAIT_KEY
-                BMI GOTKEY
-                JSR RCURSIT
-                LDA #$00
-                JSR WAIT_KEY
-                JSR RCURSIT
-KEYMOVE         LDA KEYBRD
-                BPL KBLINK
-GOTKEY          BIT UNSTROB
-                JSR CHECK_UP
-                BEQ KUP
-                JSR CHECK_DOWN
-                BEQ KDOWN
-CKEYMOD         CMP #$00
-                BEQ KEYOUT
-                JSR CHECK_ENTER
-                BNE KEYMOVE
-KEYOUT          RTS
-
-KUP             JSR RCURSIT
-                LDA CURSOR
-                STA CURHOLD
-KUP2B           DEC CURSOR
-                BPL KUP3
-                LDA #$08
-                STA CURSOR
-KUP3            LDY CURSOR
-                LDA LEGALS,Y
-                BNE KUP2B
-                JSR RCURSIT
-KUPMOD          DB  $EA,$EA,$EA
-                JMP KEYMOVE
-
-KDOWN           JSR RCURSIT
-KDOWN2          LDA CURSOR
-                STA CURHOLD
-KDOWN2B         INC CURSOR
-                LDA CURSOR
-                CMP #$09
-                BNE KDOWN3
-                LDA #$00
-                STA CURSOR
-KDOWN3          LDY CURSOR
-                LDA LEGALS,Y
-                BNE KDOWN2B
-                JSR RCURSIT
-KDOMOD          DB  $EA,$EA,$EA
-                JMP KEYMOVE
-
-RCURSIT         LDX CURSOR
-                LDY LINTABL,X
-                LDX XHOLD
-                JMP DRAW_ARROW
 
 CURFLIP         LDX #$02
 CURLOOP         LDY CURSUB,X
@@ -1542,9 +1493,6 @@ SET_LEGALS      TAY
                 STA LEGALS,Y
                 BPL :LOOP2          ;Always
 :EXIT           RTS
-
-OPTYPNT         DB  $7C,$87,$90
-                DB  $9B
 
 ;-----------------------------------------------------------
 

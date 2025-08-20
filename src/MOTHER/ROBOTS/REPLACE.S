@@ -3,7 +3,9 @@ REPLACE         LDA #$EE
                 STA PARTALL
                 LDA #0
                 JSR PICK_A_ROBOT
-                JSR PACSUB
+                BCS :1
+                JMP OPTIONS
+:1              JSR PACSUB
                 LDA THE_ROBOT
                 JSR SET_CHAR
                 JSR REVERSE
@@ -22,33 +24,35 @@ REPLACE         LDA #$EE
                 LDY #e2_SLOT
                 LDA (CHARDL),Y
                 CMP #$FF
-                BEQ :1
+                BEQ :2
                 STX LEGALS+scrnHEAD
-:1              LDA LWEAPON
-                CMP #$06
-                BNE :2
-                STX LEGALS+scrnWEAPONL
-:2              LDA RWEAPON
+:2              LDA LWEAPON
                 CMP #$06
                 BNE :3
-                STX LEGALS+scrnWEAPONR
-:3              LDX #-1
-:4              INX
-                LDA LEGALS,X
+                STX LEGALS+scrnWEAPONL
+:3              LDA RWEAPON
+                CMP #$06
                 BNE :4
+                STX LEGALS+scrnWEAPONR
+:4              LDX #-1
+:5              INX
+                LDA LEGALS,X
+                BNE :5
                 STX CURSOR
                 JSR CURFLIP
-                JSR VIEWER
+                JSR SHOW_SCREEN
                 JSR GBOXSUB
-                JSR CURFLIP
-                JSR PPEOR
+                BCS :6
+                JMP OPTIONS             ; cancel back to main menu
+:6              JSR CURFLIP
+                JSR NEXT_SCREEN
                 JSR BTRANS
                 JSR CHURSIT
                 LDA CURSOR
                 ASL
                 ASL
-                LDX #0
                 TAY
+                LDX #0
 RELOOPB         LDA BODTOT,Y
                 STA THE_PRICE,X
                 INY
@@ -58,25 +62,28 @@ RELOOPB         LDA BODTOT,Y
                 JSR GTRADE2
                 LDA CURSOR
                 JSR DRAW_SCREEN
-                JSR DELABLE
+                JSR DELABEL
                 JSR TOPLEVL
                 LDX PICK
                 LDA #$FF
                 STA ON1,X
-                JSR VIEWER
+                JSR SHOW_SCREEN
                 JSR MINISUB
                 LDA CURSOR
                 AND #%11111110
                 CMP #scrnWEAPONL
                 BNE NOWEPO
                 LDA CURSOR
-                PHA
-                JSR WEPONLY
+                STA :MOD+1
+                JSR EDIT_WEAPON
+                BCC :3
+                LDA SAMFLAG
+                BNE :3
                 JSR CREATE_PART
                 LDA THE_ROBOT
                 JSR SET_CHAR
                 LDY #e5_ROBRGT+3
-                PLA
+:MOD            LDA #$FF
                 LSR
                 BCS :1
                 LDY #e3_ROBLFT+3
@@ -87,13 +94,20 @@ RELOOPB         LDA BODTOT,Y
                 DEX
                 BPL :2
                 JMP PARTOUT
+:3              JMP OPTIONS
 
 NOWEPO          JSR ZOOMUP
-                JSR BOXCURS
-                LDA SAMFLAG
-                BEQ :1
-                JMP POP_TO_OPTIONS
-:1              JSR TOSLOT
+                JSR EDIT_PART
+                BCS :1
+                LDX PICK                ; cancelled
+                LDA #$FF
+                STA ON1,X
+                BNE :2                  ; always
+:1              LDA SAMFLAG
+                BEQ :3                  ; selection unchanged
+:2              JMP OPTIONS
+
+:3              JSR TOSLOT
                 JSR CREATE_PART
                 LDA THE_ROBOT
                 JSR SET_CHAR
@@ -138,8 +152,6 @@ PARTDAM         LDY #damagemax+1
                 DEY
                 CPY #damagemax-1
                 BNE :1
-                LDA #$75
-                STA SEVENX+1
                 LDY #damagemax+1
                 SEC
                 LDA (CHARDL),Y
@@ -152,34 +164,30 @@ PARTDAM         LDY #damagemax+1
                 LDY #damagelev
                 SBC (CHARDL),Y
                 CLD
+                LDX #$75                ; percentage
                 BCC :2
                 ORA SCRATCH
                 BEQ :2
-                LDA #$50
-                STA SEVENX+1
-:2              LDX #$01
+                LDX #$50                ; percentage
+:2
+; drop damagelev to 50% or 75% of value
+; TODO: why is this being done?
+                TXA
+                PHA
                 LDY #damagelev+1
-:3              LDA (CHARDL),Y
-                STA THE_PRICE+2,X
-                LDA #$00
-                STA THE_PRICE,X
+                LDA (CHARDL),Y
+                TAX
                 DEY
-                DEX
-                BPL :3
-                LDA #$60
-                STA NOT78
-                JSR SEVENX
-                LDA #$EA
-                STA NOT78
-                LDA #$88
-                STA SEVENX+1
+                LDA (CHARDL),Y
+                TAY
+                PLA
+                JSR MULTIPLY_12
                 LDY #damagelev+1
-                LDX #$01
-:4              LDA THE_PRICE+2,X
+                LDA PRODUCT_3+1
                 STA (CHARDL),Y
                 DEY
-                DEX
-                BPL :4
+                LDA PRODUCT_3+0
+                STA (CHARDL),Y
 
 PARTOTHER       LDY #e1_HEAD+3
 :1              LDA ROBOTBUF,Y
@@ -204,18 +212,14 @@ PARTOTHER       LDY #e1_HEAD+3
 
 PARTOUT         JSR CALC_ALL
                 JSR SPEND_RTOTNUM
-                JMP POP_TO_OPTIONS
+                JMP OPTIONS             ; back to main menu
 
 SPEND_RTOTNUM   LDX #<RTOTNUM
                 LDY #>RTOTNUM
                 SEC
                 JMP GROUP_SPEND
 
-GTRADE2         LDA #$60
-                STA NOT78
-                JSR SEVENX
-                LDA #$EA
-                STA NOT78
+GTRADE2         JSR CALC_TRADEIN
                 LDX #$03
 :1              LDA THE_PRICE,X
                 STA TRADEIN,X

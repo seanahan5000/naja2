@@ -51,9 +51,18 @@ MINUPR          =   ZBLOCK_A8+5
 LIMIT           =   ZBLOCK_A8+6
 EXPFLAG         =   ZBLOCK_A8+7
 
+MOTHER_MODULE   =   $A000               ; TODO: move this
+TradeInPercent  =   $88                 ; TODO: compute somewhere
+
 ; enter with page 1 visible
 
-ROBOT_REPAIR    JSR DRAW_PICT
+ROBOT_REPAIR    LDA #$FF
+                STA ON1
+                STA ON2
+                LDA #$00
+                STA PICK
+
+                JSR DRAW_PICT
                 PictSetPage1
                 PictSetGreen
                 PictRect $21;$00;$C3;$0A
@@ -62,15 +71,10 @@ ROBOT_REPAIR    JSR DRAW_PICT
                 JSR GET_INPUT_KEY
                 JSR CHECK_CANCEL
                 BNE NOESC
-                JSR DRAW_PICT
-                PictSetPage2
-                PictCopyToPage
-                PictShowPage
-                PictEnd
-; TODO: make sure module header byte is reset
-                RTS                     ; return to mother control
+                JMP LEAVE_ROBOTS
 
-NOESC           JSR DRAW_PICT
+NOESC           INC PICK
+                JSR DRAW_PICT
                 PictSetPage2
                 PictRect $49;$34;$CD;$40
                 PictTextAt 80;55;"PLEASE STEP CLOSER "
@@ -78,27 +82,17 @@ NOESC           JSR DRAW_PICT
                 PictEnd
                 JSR GET_INPUT_KEY
                 JSR CHECK_CANCEL
-                BNE ISRET
-; TODO: make sure module header byte is reset
-                RTS                     ; return to mother control
+                BNE OPTIONS
+                JMP LEAVE_ROBOTS
 
-ISRET           LDA #$FF
-                STA ON1
-                STA ON2
-                LDA #$01
-                STA PICK
-                BNE OPTIONS             ; always
-
-POP_TO_OPTIONS  PLA
-                PLA
-OPTIONS         JSR PPEOR
+OPTIONS         JSR NEXT_SCREEN
                 LDX PICK
                 LDA ON1,X
                 CMP #$10
                 BNE :1
                 JMP OPTCOM
 
-:1              JSR ALL_ICONS
+:1              JSR DRAW_ICONS
                 JSR DRAW_PICT
                 PictClear 0;87;40;192
                 PictSetBlue
@@ -106,10 +100,10 @@ OPTIONS         JSR PPEOR
                 PictEnd
 
                 JSR COUNT_CYBS
-                BCC :2
+                BCC :NO_CYBS
                 JMP OPTION2
 
-:2              JSR DRAW_PICT
+:NO_CYBS        JSR DRAW_PICT
                 PictTextRows 48;114;10
                 TXC "AN ABLE-BODIED CYBERNATE MUST BE\n"
                 TXC "PRESENT TO MAKE ANY TRANSACTIONS\n"
@@ -118,7 +112,7 @@ OPTIONS         JSR PPEOR
                 PictTextAt 198;155;"<SPACE>"
                 PictEnd
 
-                JSR VIEWER
+                JSR SHOW_SCREEN
                 BIT UNSTROB
 OPTKEY          LDA KEYBRD
                 BPL OPTKEY
@@ -129,7 +123,6 @@ OPTKEY          LDA KEYBRD
                 BNE OPTKEY
                 ; fall through
 
-; TODO: make sure module header byte is reset
 LEAVE_ROBOTS    LDA PICK
                 BNE :1
                 JSR DRAW_PICT
@@ -137,7 +130,9 @@ LEAVE_ROBOTS    LDA PICK
                 PictCopyToPage
                 PictShowPage
                 PictEnd
-:1              RTS                     ; return to mother control
+:1              LDA #$FF
+                STA MOTHER_MODULE
+                RTS                     ; return to mother control
 
 OPTION2         JSR DRAW_PICT
                 PictTextAt 68;113;"AVAILABLE OPTIONS ARE:"
@@ -175,24 +170,22 @@ OPTCOM          JSR COUNT_ROBOTS
                 STA LEGALS+1
 :3
 STOPPER         NOP
-                JSR VIEWER
+                JSR SHOW_SCREEN
                 BIT UNSTROB
-                LDY #3
-                STY CURSOR
-LTLOOP          LDA OPTYPNT,Y
-                STA LINTABL,Y
-                DEY
-                BPL LTLOOP
-                LDA #$48
-                STA XHOLD
-                JSR KDOWN2
-                JSR RCURSIT
+
+                LDX #<MENU_DEF
+                LDY #>MENU_DEF
+                JSR MENU_INIT
+                JSR MENU_SET_CANCEL
+                JSR MENU_SELECT
+                BCS :1
+                LDX #3
+:1              TXA
+                ASL
+                TAY
                 LDX PICK
                 LDA #$10
                 STA ON1,X
-                LDA CURSOR
-                ASL
-                TAY
                 LDA JUMPS+1,Y
                 PHA
                 LDA JUMPS,Y
@@ -203,6 +196,16 @@ JUMPS           DW  REPLACE-1
                 DW  COMPLETE_BUY-1
                 DW  COMPLETE_SELL-1
                 DW  LEAVE_ROBOTS-1
+
+MENU_DEF        DB  $04
+                DB  $00
+                DW  :MENU_CURS
+
+:MENU_CURS      LDY :YPNTS,X
+                LDX	#$48
+				JMP	DRAW_ARROW
+
+:YPNTS          DB  124,135,144,155
 
 ;-----------------------------------------------------------
 
@@ -220,29 +223,19 @@ DRAW_SCREEN     STA SCRPICK
                 LDA PARTALL
                 CMP #$EE
                 BNE NOTRADN
-
                 JSR DRAW_PICT
                 PictTextAt 118;24;"MINUS TRADE-IN:"
                 PictEnd
-
-NOTRADN         LDA PARTALL
+NOTRADN
+                LDA PARTALL
                 BNE NOROBTM
                 LDX PICK
                 LDA ON1,X
                 ORA #$0F
                 STA ON1,X
                 JSR ROBSTAT
-NOROBTM         LDA SCRPICK
-                AND #%11111110
-                CMP #scrnWEAPONL
-                BNE NOT6C
-
+NOROBTM
                 JSR DRAW_PICT
-                PictSetViolet
-                PictRect $7A;$32;$F2;$66
-                PictEnd
-
-NOT6C           JSR DRAW_PICT
                 PictSetOrange
                 PictRect $5D;$00;$10D;$22
                 PictTextAt 100;4;"AVAILABLE CREDITS:"
@@ -251,12 +244,11 @@ NOT6C           JSR DRAW_PICT
 
                 LDA PARTALL
                 BNE PASKIP1
-
                 JSR DRAW_PICT
                 PictTextAt 100;24;"TOTAL ROBOT PRICE:"
                 PictEnd
-
-PASKIP1         JSR DRAW_PICT
+PASKIP1
+                JSR DRAW_PICT
                 PictSetGreen
                 PictRect 13;0;81;43
                 PictMoveTo 100;14
@@ -299,6 +291,8 @@ PASKIP1         JSR DRAW_PICT
                 PictTextAt 142;77;"ROBO-BLASTER B"
                 PictTextAt 142;85;"ROBO-BLASTER A"
                 PictTextAt 142;93;"NOTHING"
+                PictSetViolet
+                PictRect $7A;$32;$F2;$66
 
 :3              PictCase :4
 
@@ -333,7 +327,7 @@ PASKIP1         JSR DRAW_PICT
 
                 LDY SWITCH
                 JSR DRAW_ICON
-                JSR DELABLE
+                JSR DELABEL
 
                 LDX #214
                 LDY #4
@@ -347,7 +341,8 @@ PASKIP1         JSR DRAW_PICT
                 CMP #2
                 BCS NOSCRT
                 PHA
-                ADC #7              ;Carry assumed clear
+;               CLC
+                ADC #7
                 TAX
                 LDY #5              ;Empty hand slot
                 JSR VALUSUB
@@ -396,7 +391,7 @@ SCROUT          RTS
 
 ;-----------------------------------------------------------
 
-DELABLE         JSR DRAW_PICT
+DELABEL         JSR DRAW_PICT
                 PictSwitch SCRPICK
 :0              PictCase :1
                 PictTextAt 146;111;"2"
@@ -433,13 +428,13 @@ STLOOPA         LDA CATT,X
                 BPL STLOOPA
                 LDX #$03
                 SEC
-STLOOPB         LDA CATT,X
                 SED
+STLOOPB         LDA CATT,X
                 SBC ETRDNUM,X
-                CLD
                 STA EVALNEW,X
                 DEX
                 BPL STLOOPB
+                CLD
                 LDX #$07
                 LDA #$0A
 STLOOPC         STA EVALSCN,X
@@ -473,13 +468,13 @@ TRADSUB         LDA PARTALL
                 BNE TRADOUT
                 LDX #$03
                 SEC
-TRLOOPX         LDA EVALNEW,X
                 SED
+TRLOOPX         LDA EVALNEW,X
                 SBC TRADEIN,X
-                CLD
                 STA RTOTNEW,X
                 DEX
                 BPL TRLOOPX
+                CLD
                 BCS TRADUM
                 JSR TRSUBY
 TRADUM          LDX #$03
@@ -551,10 +546,10 @@ DRAW_GROUP      LDX PICK
 :2              JSR DRAW_PICT
                 PictClear 0;87;40;192
                 PictSetGreen
-                PictRect $01;$73;$115;$B7
+                PictRect $01;$73;$115;$B6
                 PictMoveTo $01;$7D
                 PictLineTo $115;$7D
-                PictTextAt 16;185;"CANCEL"
+                PictTextAt 16;184;"CANCEL"
                 PictVMoveTo 117
                 PictEnd
                 LDA #$42                ; SELECT
@@ -595,7 +590,13 @@ NORHERE         TXA
                 AND #$0F
                 CMP #$04
                 BNE DOROBS2
-                JMP MTBOTM_CLRMID
+                ; fall through
+
+MTBOTM_CLRMID   JSR DRAW_PICT
+                PictClear 0;87;40;107
+                PictCopyTo 0;107;40;192
+                PictEnd
+                RTS
 
 DOROBS2         JSR DRAW_PICT
                 PictClear 0;87;40;192
@@ -610,12 +611,6 @@ DOROBS2         JSR DRAW_PICT
                 PictTextAt 56;180;"PROGRAM CARD:"
                 PictTextAt 50;160;"ENERGY SUPPLY:"
                 PictTextAt 50;169;"MOVEMENT TYPE:"
-                PictEnd
-                RTS
-
-MTBOTM_CLRMID   JSR DRAW_PICT
-                PictClear 0;87;40;107
-                PictCopyTo 0;107;40;192
                 PictEnd
                 RTS
 
@@ -690,7 +685,7 @@ BTRANS          JSR DRAW_PICT
 
 ;-----------------------------------------------------------
 
-ALL_ICONS       LDX PICK
+DRAW_ICONS      LDX PICK
                 LDA ON1,X
                 AND #$F0
                 CMP #$10

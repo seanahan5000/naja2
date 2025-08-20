@@ -1,3 +1,4 @@
+; credit value of each robot part
 BODTOT          DB  $00,$00,$00,$00                 ;head
                 DB  $00,$00,$00,$00                 ;body
 WEAPTOT         DB  $00,$00,$00,$00                 ;weapon <L>
@@ -24,6 +25,7 @@ CAT7            DB  $00,$00,$00,$00
 
 CATT            DB  $00,$00,$00,$00
 
+; robot character fields split and converted to indexes
 SLOT            DB  $00
 RRANGE          DB  $00
 SEHEAD          DB  $00
@@ -38,12 +40,11 @@ LOWREF          DB  $00
 PLEVEL          DB  $00
 AUTO            DB  $00
 
-RTOTAL          DB  $00,$00,$00
-                DB  $00
-RTOTNEW         DB  $FF,$FF,$FF
-                DB  $FF
-RTOTNUM         DB  $00,$00,$00
-                DB  $00
+; total value/cost of robot in credits
+RTOTAL          DB  $00,$00,$00,$00
+RTOTNEW         DB  $FF,$FF,$FF,$FF
+RTOTNUM         DB  $00,$00,$00,$00
+
 RTOTSCN         DB  $0A,$0A,$0A
                 DB  $0A,$0A,$0A
                 DB  $0A,$0A
@@ -55,10 +56,6 @@ EVALSCN         DB  $0A,$0A,$0A
 SCNBUFF         DB  $FF,$FF,$FF
                 DB  $FF,$FF,$FF
                 DB  $FF,$FF
-LINTABL         DB  $00,$00,$00
-                DB  $00,$00,$00
-                DB  $00,$00,$00
 
-TOTAL           DB  $00,$00,$00,$00
 TRADEIN         DB  $00,$00,$00,$00
 DUPNTLV         DB  $00,$00,$00,$00

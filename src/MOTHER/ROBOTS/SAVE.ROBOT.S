@@ -9,7 +9,7 @@ SAVE_ROBOT      JSR PACSUB
                 LDX PICK
                 LDA #$1F
                 STA ON1,X
-                JSR VIEWER
+                JSR SHOW_SCREEN
 ;*** why? ***
 ;                 LDA PICK
 ;                 BEQ NOVIEW2
@@ -67,7 +67,7 @@ NOT_DUPE        JSR CREATE_ROBOT
                 JSR OPTIONS
                 LDA #$EA
                 STA STOPPER
-                JSR PPEOR
+                JSR NEXT_SCREEN
 
                 ; JSR DRAW_PICT
                 ; PictTextAt 116;126;"IS BEING"
@@ -372,7 +372,7 @@ ROBWEPS         DB  $58,$00
                 DB  $5C,$01
                 DB  $5C,$02
                 DB  $FF,$FF
-                DB  $59,$00
+                DB  $59,$00             ; HAND_ATTACHMENT
 
 HEDAMH          DB  $00,$00,$00,$01
 HEDAML          DB  $05,$30,$80,$50
