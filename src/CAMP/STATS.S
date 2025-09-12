@@ -108,8 +108,7 @@ STATS_LINE      JSR CNAME_TO_TEXT
                 LDX #16
                 JSR DRAW_TEXTBUF_X
                 JSR CPROF_TO_TEXT
-                LDA #TextLineEnd
-                STA TEXT_BUFFER+3
+                JSR SHORTEN_PROF
                 LDX #78
         else
 STATS_LINE      JSR PROFNAME_TO_TEXT
@@ -224,17 +223,17 @@ WRAP_CNAME      ENT
 CPROF_TO_TEXT   ENT
                 LDY #profrace
                 LDA (CHARDL),Y
+                LSR
+                LSR
+                LSR
+                LSR
+;
+; On entry:
+;   A: profession shifted down to low nibble
+;
 PROF_TO_TEXT    ENT
-                LSR
-                LSR
-                LSR
-                LSR
                 TAX
                 LDY PROF_OFFS,X
-                ; TODO: how should caller request full name?
-                ; CPX #electromedic
-                ; BNE :1
-                ; LDY #EMEDIC-PROF_NAMES+4
 :1              LDX #0
 :2              LDA PROF_NAMES,Y
                 BMI :3
@@ -247,6 +246,20 @@ PROF_TO_TEXT    ENT
                 INX
                 LDA #TextLineEnd
                 STA TEXT_BUFFER,X
+                RTS
+
+SHORTEN_PROF    ENT
+                LDX #TextLineEnd
+                LDA TEXTBUF+1
+                CMP #TextDash
+                BEQ :1
+                STX TEXTBUF+3
+                RTS
+; "E-MEDIC" -> "EMD"
+:1              LDA #TextEmpty
+                STA TEXTBUF+1
+                STA TEXTBUF+3
+                STX TEXTBUF+5
                 RTS
 
 PROF_OFFS       DB  WARRIOR-PROF_NAMES
@@ -266,7 +279,7 @@ CYBERN          TXI "CYBERNATE"
 JUICER          TXI "JUICER"
 PHYSIC          TXI "PHYSICIAN"
 MUTANT          TXI "MUTANT"
-EMEDIC          TXI "EMD/E-MEDIC"
+EMEDIC          TXI "E-MEDIC"
 GENIUS          TXI "GENIUS"
 ROBOT           TXI "ROBOT"
 

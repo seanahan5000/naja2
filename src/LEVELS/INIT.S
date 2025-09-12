@@ -13,7 +13,6 @@ CONTROL_MODULE  =   $7000
 SET_CONTROL     =   $7001
 
                 ORG $AF00
-
 CONTROL_BOOT    JSR INIT_RANDOM
                 JSR SET_PAGE1
                 JSR CLEAR_PAGE
@@ -27,8 +26,16 @@ CONTROL_BOOT    JSR INIT_RANDOM
                 STA $C002           ;Use main 48K
                 STA $C000           ;Page 2 switches page 1 and 2
 
+                STA $C00D           ;*** enable 80 column text
+
                 STA $C050           ;graphics mode
+
+                STA $C07E           ;*** enable double switch
+                STA $C05E           ;*** enable double graphics
+
                 STA $C057           ;hires mode
+
+                STA $C05F           ;*** disable double graphics
 
                 STA $C08B           ;read/write $D000-$FFFF, BANK 1
                 STA $C08B
@@ -72,11 +79,12 @@ CONTROL_BOOT    JSR INIT_RANDOM
                 JSR DRAW_HALL
                 JMP HALL_KEYS
 
-POSITIONS       DB  0,0,4,EAST          ; mothership
-                DB  5,2,4,3             ; shell 17
+POSITIONS       DB  0,9,9,NORTH         ; mothership
+                ;DB  0,5,4,EAST         ; mothership
+                DB  5,7,15,EAST         ; shell 17
                 DB  5,2,4,3             ; shell 15
                 DB  5,2,4,3             ; shell 13
-                DB  5,2,4,3             ; shell 11
+                DB  0,9,3,EAST          ; shell 11 (prison)
                 DB  5,2,4,3             ; shell 9
 
                 SAV INIT.AF00

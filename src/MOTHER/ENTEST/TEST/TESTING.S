@@ -193,8 +193,8 @@ NOW_EMED        JSR DRAW_PICT
 ; change profession in stats box
 
 PROFFER         JSR CPROF_TO_TEXT
-                LDA #TextLineEnd
-                STA TEXTBUF+3
+                JSR SHORTEN_PROF
+
                 LDX CURSOR
                 LDY TYPOINTS,X
                 LDX #78

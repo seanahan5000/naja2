@@ -51,7 +51,6 @@ MINUPR          =   ZBLOCK_A8+5
 LIMIT           =   ZBLOCK_A8+6
 EXPFLAG         =   ZBLOCK_A8+7
 
-MOTHER_MODULE   =   $A000               ; TODO: move this
 TradeInPercent  =   $88                 ; TODO: compute somewhere
 
 ; enter with page 1 visible

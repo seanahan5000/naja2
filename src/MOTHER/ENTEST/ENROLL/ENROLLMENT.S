@@ -13,8 +13,6 @@ PROFSNT         =   ZBLOCK_A8+3     ;+4
 
 HOLDIT          =   ZBLOCK_A8+5         ; used by DEFINE.CHAR
 
-; *** cancel back on each of these? ***
-
 ENROLL
 
 ASK_NAME        JSR DRAW_PICT
@@ -45,9 +43,8 @@ NOT_NAJA        JSR DUPE_NAME_CHECK
 ASK_RACE        JSR DRAW_PICT
                 PictCall CLEAR_BOX
                 PictTextAt 6;143;"TO WHICH RACE DO YOU BELONG?"
-                ; *** where/WHAT PLANET are you from? ***
                 PictTextRows 204;143;10
-                TXC "HUMAN\n"  ; *** EARTH
+                TXC "HUMAN\n"
                 TXC "ORN\n"
                 TXC "STILICX\n"
                 TXC "XXTYS\n"
@@ -58,7 +55,6 @@ ASK_RACE        JSR DRAW_PICT
                 LDY #>:RACE_CURSOR
                 LDA #5
                 JSR KBLINK_SUB
-                ; *** RETURN VALUE AND SAVE RACE HERE ***
                 BEQ GOT_RACE
                 JMP LEAVE_ENROLL
 
@@ -100,13 +96,9 @@ TAKE_OATH       JSR DRAW_PICT
                 TXT "TACTICAL FORCE MANUAL> "
                 PictEnd
 
-                ; *** TODO: default input to correct text ***
-                ; *** could also use for character rename ***
-
                 LDA #$12
                 JSR GET_INPUT_LIMIT
 :1
-                ; *** escape cancel? don't allow? confirm? ***
                 LDX #0
 :2              LDA OATH,X
                 CMP #TextLineEnd

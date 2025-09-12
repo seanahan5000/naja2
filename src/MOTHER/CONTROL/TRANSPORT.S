@@ -77,7 +77,7 @@ FIRST_DST       LDY #0
                 BNE :1                  ; always
 :3              STY CURSOR
 
-                LDY CURSOR              ;***
+;               LDY CURSOR
                 JSR DRAW_TRECT
                 JMP MOVKEY
 

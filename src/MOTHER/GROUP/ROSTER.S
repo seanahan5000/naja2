@@ -182,29 +182,19 @@ WRITE_ROSTER    LDA #0
 
 rosterNameX     =   8+6
 
-DRAW_ROSTER
-                ; *** SHOW ROSTER UPDATING? ***
-                ; *** CHECK FOR IT CURRENTLY BEING VALID? ***
-
-                JSR DRAW_PICT
-                ; *** set page ***
+DRAW_ROSTER     JSR DRAW_PICT
+                PictSetPage2
                 PictClearPage
-
-                ; *** redo all this spacing ***
-
-                ; *** add/use PictTextAtX ***
                 PictTextAt 8+6;2;"NAME"
                 PictTextAt 71+6;2;"PROFESSION"
                 PictTextAt 140+6;2;"RACE"
                 PictTextAt 188+6;2;"LEVEL"
                 PictTextAt 227+6;2;"STATUS"
-
                 PictSetGreen
                 PictMoveTo $00;$0B
                 PictLineTo $117;$0B
                 PictMoveTo $00;$B5
                 PictLineTo $117;$B5
-                PictShowPage            ;***
                 PictVMoveTo 14
                 PictEnd
 
@@ -233,14 +223,11 @@ DRAW_ROSTER
                 INX
                 CPX ROSTER_COUNT
                 BNE :1
-                RTS
+                JMP SHOW_PAGE
 
 ;---------------------------------------
 
-USE_ROSTER      JSR DRAW_PICT
-                PictSetPage2            ;***
-                PictCall DRAW_ROSTER
-                PictEnd
+USE_ROSTER      JSR DRAW_ROSTER
 
                 LDA #0
                 STA ADDREM_MDEF+1

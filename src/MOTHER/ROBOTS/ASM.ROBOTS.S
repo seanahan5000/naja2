@@ -7,6 +7,7 @@
                 PUT /HALLS/VARS
                 PUT /HALLS/EXT
                 PUT /CAMP/EXT
+                PUT /MOTHER/VARS
                 PUT /MOTHER/EXT
 
                 ORG $8000

@@ -7,10 +7,12 @@
                 PUT /HALLS/VARS
                 PUT /HALLS/EXT
                 PUT /CAMP/EXT
+                PUT /MOTHER/VARS
 
 BIG_MAP         =   0
 SHELLNUM        =   0
 
+; TODO: move into COMMON/VARS.S?
 CONTROL_MODULE  =   $7000
 MAP_MODULE      =   $8000
 
@@ -30,28 +32,28 @@ CONTROL_FILE    DB  fileControlMS
                 ERR *-$7F00
                 SAV MOTHERSHIP.7000
 
-                ORG $A000
+                ORG MOTHER_MODULE
 GUARD_FILE      DB  fileGuard
                 PUT GUARD
                 DS  \,$EE
                 ERR *-$A500
                 SAV GUARD
 
-                ORG $A000
+                ORG MOTHER_MODULE
 DELCHAR_FILE    DB  fileDeleteChar
                 PUT DELETE
                 DS  \,$EE
                 ERR *-$A900
                 SAV DELETE.CHAR
 
-                ORG $A000
+                ORG MOTHER_MODULE
 TESSER_FILE     DB  fileTesserport
                 PUT TESSERPORT
                 DS  \,$EE
                 ERR *-$A400
                 SAV TESSERPORT
 
-                ORG $A000
+                ORG MOTHER_MODULE
 INFO_FILE       DB  fileInfoSeller
                 PUT INFO.SELLER
                 DS  \,$EE

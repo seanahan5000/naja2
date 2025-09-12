@@ -350,7 +350,7 @@ PACK_STOCK      LDY #0
                 BNE :3
                 LDA #$0E
                 BNE :4                  ; always
-:3              CMP #$0E                ;*** ALLOW 14 TO TURN INTO INFINITE? ***
+:3              CMP #$0E
                 BCC :4
                 LDA #$0D
 :4              INY

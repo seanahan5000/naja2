@@ -404,9 +404,7 @@ DRAW_GROUP      LDY IYPOINTS+0
 :1              JSR CNAME_TO_TEXT
                 LDX #16
                 JSR DRAW_TEXTBUF_X
-                JSR CPROF_TO_TEXT
-                LDA #TextLineEnd
-                STA TEXT_BUFFER+3
+                JSR SHORTEN_PROF
                 LDX #78
                 JSR DRAW_TEXTBUF_X
                 LDY #profrace

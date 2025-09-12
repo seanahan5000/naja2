@@ -94,7 +94,7 @@ GO_ENROLL       LDA #fileEntest_Enroll
 :1              JMP ENROLL
 
 ENROLL_EXIT     JSR DRAW_PICT
-                ; PictCall CLEAR_BOX
+                PictCall CLEAR_BOX
                 PictSetPage2
                 PictCopyToPage
                 PictShowPage

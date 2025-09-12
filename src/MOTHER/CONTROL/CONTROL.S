@@ -1,5 +1,3 @@
-
-
 ;---------------------------------------
 
 SET_CONTROL     LDX #<FILE_HOOK
@@ -20,7 +18,11 @@ SET_CONTROL     LDX #<FILE_HOOK
 
                 LDX #<MAP_DATA
                 LDY #>MAP_DATA
-                JMP SET_MAP_DATA
+                JSR SET_MAP_DATA
+
+                LDA #$FF
+                STA MOTHER_MODULE       ; clear module header
+                RTS
 
 ; NOTE: Must set a key filter, even if it's a nop
 ;   in order to overwrite previous filters.
@@ -46,9 +48,6 @@ LOAD_AREA       TAX
 
                 JSR TURN_AROUND
                 JSR MOVE_FORWARD
-
-                LDA #$FF
-                STA DELCHAR_FILE        ; clear module header
 
                 PLA
                 LDY #$80

@@ -38,6 +38,8 @@ X Change DAMAGE to HEALTH in stats (easier for player)
 * Make death/compressed characters mechanism optional
     * Let player decide to be strict/not about death
 * Always allow escape key to cancel/leave a screen
+    - Remove "C>ANCEL" and "L>EAVE"
+    - Put in instructions
 * Work total credits into some camp screen
 * Stats box rework
     X Center status when flipping w/damage in stats box

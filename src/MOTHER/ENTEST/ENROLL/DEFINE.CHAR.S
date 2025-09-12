@@ -1155,9 +1155,10 @@ SPLICE          TXA
                 BNE NOPHYSN
                 LDA #TextN              ; abbreviate to "PHYSICN"
                 STA TEXTBUF+6
-                DEX
-NOPHYSN         LDA #TextLineEnd        ;*** needed?
-                STA TEXTBUF,X
+                LDA #TextEmpty
+                STA TEXTBUF+7
+NOPHYSN         LDA #TextLineEnd        ; truncate CYBERNATE, too
+                STA TEXTBUF+8
                 PLA
                 TAX
                 LDY PROFSEL_YPNTS,X
