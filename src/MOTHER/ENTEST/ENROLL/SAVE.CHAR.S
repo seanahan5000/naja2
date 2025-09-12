@@ -214,8 +214,7 @@ BUILD_CHAR      JSR ALLOC_CHAR
                 STA (CHARDL),Y      ;FLAG LIMBO
                 INY
 
-                LDX GENDER
-                LDA GENDERS-1,X
+                LDA #0
                 STA (CHARDL),Y      ;MISC FLAGS
 
                 JSR CALC_ALL
@@ -268,7 +267,3 @@ ESHIELD         DB  $00,$00,$03
                 DB  $00,$00
 PSHIELD         DB  $00,$01,$00
                 DB  $00,$02
-
-GENDERS         DB  %00000000
-                DB  %01000000
-                DB  %00100000

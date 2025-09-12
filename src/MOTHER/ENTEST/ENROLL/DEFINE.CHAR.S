@@ -125,7 +125,7 @@ MORGRPH         STX WHICH
                 JSR CALLA
                 LDX WHICH
                 INX
-                CPX #4
+                CPX #5
                 BNE MORGRPH
 
                 LDA PRSNST+5
@@ -356,7 +356,7 @@ GOADAPT         SED
                 CLD
                 JSR CHNGST
                 LDX BOXNUM
-                CPX #$00
+;               CPX #$00
                 BEQ UCONN
                 CPX #$04
                 BNE UNOT40
@@ -1186,7 +1186,7 @@ MINMUM          DB  $07,$11,$10,$11,$00,$25,$20,$28     ; 0-human
                 DB  $16,$06,$10,$10,$00,$20,$40,$31     ; 3-xxtys
                 DB  $03,$05,$14,$14,$00,$40,$15,$30     ; 4-deneb
 
-; randomiing limit by race
+; randomizing limit by race
 ADRANGE         DB  $05,$02,$09,$02,$05
 
 ; vertical bar graph info by stat #

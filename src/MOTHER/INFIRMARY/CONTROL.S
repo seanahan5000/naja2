@@ -126,9 +126,8 @@ PICK_TREATMENT  STA PATIENT
 
                 PictTextAt 92;97;"SELECT TREATMENT"
 
-                PictCall SPLIT_GCREDITS
                 PictMoveTo $A3;$49
-                PictCall DRAW_CREDITS
+                PictCall DRAW_GCREDITS
                 PictEnd
 
                 JSR CALC_COST
@@ -734,13 +733,9 @@ DRAW_COST       LDA CURSOR
                 INX
                 CPX #4
                 BNE :1
-                LDX #<THE_PRICE
-                LDY #>THE_PRICE
-                JSR SPLIT_CREDITS
                 LDX #$A3
                 LDY #$41
-                JSR MOVE_TO
-                JMP DRAW_CREDITS
+                JMP DRAW_PRICE_AT
 :2              RTS
 
 ;-----------------------------------------------------------

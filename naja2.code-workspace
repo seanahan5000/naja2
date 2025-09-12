@@ -12,11 +12,23 @@
       ".gitignore": true,
       "*.sublime*": true
     },
-    "rpw65.columns.enable": true
+    "workbench.colorCustomizations": {
+      "editor.background": "#000000"
+    },
+    "rpw65.columns.enable": true,
+    "rpw65.showCodeBytes": true,
+    "[rpw65]": {
+      "editor.lineHeight": 17
+    }
   },
   "tasks": {
     "version": "2.0.0",
     "tasks": [
+      {
+        "label": "stop-debug",
+        "command": "${command:workbench.action.debug.stop}",
+        "type": "shell"
+      },
       {
         "label": "Build Naja",
         "type": "shell",
@@ -35,7 +47,8 @@
         "group": {
           "kind": "build",
           "isDefault": true
-        }
+        },
+        "dependsOn": "stop-debug"
       }
     ]
   }

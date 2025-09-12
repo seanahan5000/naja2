@@ -17,6 +17,8 @@
                 ORG $8000
                 PUT CONTROL
                 DS  \,$EE
+                ; TODO: remove paddding
+                DS  256,$EE
                 ERR *-$8C00
 
                 SAV INFIRMARY

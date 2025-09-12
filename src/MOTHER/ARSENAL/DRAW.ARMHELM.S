@@ -5,13 +5,7 @@ DRAW_ARMHELM    JSR DRAW_PICT
                 PictRect $46;$00;$D4;$1B
                 PictSetGreen
                 PictRect $A1;$29;$F7;$4f
-                PictMoveTo $13;$21
-                PictLineTo $103;$21
-                PictLineTo $103;$95
-                PictLineTo $DB;$95
-                PictLineTo $DB;$9D
-                PictLineTo $13;$9D
-                PictLineTo $13;$21
+                PictRect $13;$21;$103;$9D
                 PictTextAt 90;2;"ENERGY USE:"
                 PictTextAt 120;11;"PRICE:"
                 PictTextAt 78;19;"YOUR CREDITS:"
@@ -21,7 +15,6 @@ DRAW_ARMHELM    JSR DRAW_PICT
                 PictTextAt 48;135;"BRAND"
                 PictTextAt 126;135;"CLASS"
                 PictTextAt 27;146;"<ELECTRICAL>  <PHYSICAL>"
-                PictTextAt 223;151;"L>EAVE"
                 PictImage APICT0
                 PictEnd
 
@@ -81,7 +74,7 @@ AHCOMN          LDA #$02
                 JSR AHPRICE
                 LDX #$9C
                 LDY #$0B
-                JMP DRAW_PRICE_AT
+                JSR DRAW_PRICE_AT
                 JSR CREATE_ITEM
                 JSR DRAW_ENUSE
                 JMP ISHERE

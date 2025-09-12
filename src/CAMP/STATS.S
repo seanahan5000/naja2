@@ -452,12 +452,9 @@ DIGITS_R        ENT
                 LDY #TextSpace
                 STA BYTE_COUNT
 DIGITS_CMN      PLA
-                CLC
-                ADC #1
-                STA :MOD+1
+                STA :MOD1+1
                 PLA
-                ADC #0
-                STA :MOD+2
+                STA :MOD2+1
 :1              PLA
                 DEC BYTE_COUNT
                 BEQ :2
@@ -473,7 +470,11 @@ DIGITS_CMN      PLA
                 AND #%00001111
                 STA TEXT_BUFFER,X
                 INX
-:MOD            JMP $FFFF
+:MOD2           LDA #$FF
+                PHA
+:MOD1           LDA #$FF
+                PHA
+                RTS
 
 TWO_DIGITS      PHA
                 LSR

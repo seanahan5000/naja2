@@ -3,6 +3,7 @@
 ROSTER_COUNT    =   $C0
 CHARPTR         =   $C1                 ;+1
 RTEMP           =   $C3
+ENTRY_SIZE      =   $C4                 ; group size on entry
 
 ROSTER_BUFFER   =   $9000               ; must be page aligned
 
@@ -13,7 +14,7 @@ GROUP_ASSEMBLY  LDA KEYBRD
                 JSR CHECK_CANCEL
                 BNE :1
                 BIT UNSTROB
-                JMP ASSEMBLY_OUT1
+                RTS                     ; exit
 
 :1              JSR DRAW_PICT
                 PictSetPage2
@@ -40,10 +41,11 @@ GROUP_ASSEMBLY  LDA KEYBRD
                 PictTextAt 14;25;"IT'S THE FIRST HALL ON THE RIGHT."
                 PictShowPage
                 PictEnd
-                JSR ANIMATE_BUBBLES
-                JMP ASSEMBLY_OUT2
+                JMP ANIMATE_BUBBLES     ; exit
 
-ASSEMBLY_IN     JSR LOAD_ROSTER
+ASSEMBLY_IN     LDA GROUP_SIZE
+                STA ENTRY_SIZE
+                JSR LOAD_ROSTER
 
                 JSR DRAW_PICT
                 PictTextAt 14;7;"HELLO, MY NAME IS TREPR E. LELVK, HEAD OF"
@@ -53,14 +55,7 @@ ASSEMBLY_IN     JSR LOAD_ROSTER
                 PictEnd
                 JSR ANIMATE_BUBBLES
                 BCC MAIN_LOOP1
-                BCS ASSEMBLY_OUT2       ; always
-
-ASSEMBLY_OUT1   JSR DRAW_PICT
-                PictSetPage2
-                PictCopyToPage
-                PictShowPage
-                PictEnd
-ASSEMBLY_OUT2   RTS
+                RTS                     ; exit
 
 MAIN_LOOP1      JSR DRAW_PICT
                 PictSetPage1
@@ -91,7 +86,12 @@ MAIN_LOOP2      LDX #<MAIN_CDEF
                 JMP MENU_TARGET
 
 LEAVE           JSR WRITE_ROSTER
-                JMP ASSEMBLY_OUT1
+                JSR DRAW_PICT
+                PictSetPage2
+                PictCopyToPage
+                PictShowPage
+                PictEnd
+                RTS                     ; exit
 
 MAIN_CDEF       DB  $83
 MAIN_CCUR       DB  $00
@@ -190,57 +190,46 @@ RESIGN          LDX #1
                 JSR MAIN_MARKER
 
                 JSR DRAW_PICT
-                PictTextAt 29;185;"ARE YOU SURE YOU WANT TO QUIT <Y/N> "
+                PictTextAt 29;184;"ARE YOU SURE YOU WANT TO QUIT <Y/N> "
                 PictEnd
                 JSR YES_OR_NO
                 BCS :YES
 
 :NO             JSR DRAW_PICT
-                PictClear 4;185;34;192
+                PictClear 4;184;34;192
                 PictEnd
                 LDX #1
                 JSR MAIN_MARKER
                 JMP MAIN_LOOP2
 
-:YES
-                ; *** save game and roster ***
-                JSR WRITE_ROSTER
-
-                LDA #0
-                STA GRPNUMB
-
-                JSR DRAW_PICT
+:YES            JSR DRAW_PICT
                 PictSetPage2
                 PictClearPage
                 PictImage NAJA_LOGO
-                PictTextAt 70;185;"PRESS ANY KEY TO RESTART"
                 PictShowPage
                 PictEnd
+
+                JSR WRITE_ROSTER
+
+                JSR DRAW_PICT
+                PictTextAt 70;185;"PRESS ANY KEY TO RESTART"
+                PictEnd
+
+                LDA #0
+                STA GRPNUMB
 
                 BIT UNSTROB
 :1              LDA KEYBRD
                 BPL :1
                 BIT UNSTROB
 
-                ; *** transport w/noise back into mothership ***
-
-                JMP ASSEMBLY_OUT2       ;***
-
-; TODO: make this a common utility?
-; NOTE: also used by info seller, viewport, and others
-
-YES_OR_NO       BIT UNSTROB
-                JSR GET_INPUT_KEY
-:1              CMP #"Y"
-                BEQ :3
-                CMP #"N"
-                BEQ :2
-                CMP #$9B                ; escape
-                BEQ :2
-                JSR REGET_INPUT
-                JMP :1
-:2              CLC
-:3              RTS
+                LDY #3                  ; enrollment
+                JSR SET_TRANS_DEST
+                JSR TRANS_NOISE
+                PLA
+                PLA
+                SEC
+                RTS
 
 NAJA_LOGO       DB  $09,$3E,$16,$44
                 HEX E870306040981838785818FDB978827F840103067C928601

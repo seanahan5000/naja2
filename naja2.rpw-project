@@ -7,6 +7,7 @@
   },
   "srcDir": "src",
   "binDir": "obj",
+  "imgDir": "dsk",
   "includes": [
     "/NAJA/VARS/CONSTANTS",
     "/COMMON/VARS",
@@ -27,10 +28,6 @@
       "lst": "NDOS.LST"
     },
     {
-      "src": "/BOOT/ASM.BOOT",
-      "lst": "BOOT.LST"
-    },
-    {
       "src": "/HALLS/ASM.HALLS",
       "lst": "HALLS.LST"
     },
@@ -41,6 +38,10 @@
     {
       "src": "/MOTHER/CONTROL/ASM.MOTHER",
       "lst": "MOTHERSHIP.LST"
+    },
+    {
+      "src": "/BOOT/ASM.BOOT",
+      "lst": "BOOT.LST"
     },
     {
       "src": "/MOTHER/ENTEST/ASM.ENTEST",

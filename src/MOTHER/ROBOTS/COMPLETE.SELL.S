@@ -107,8 +107,6 @@ YES_SELL        JSR SET_PAGE1
                 BNE :3
                 LDA #$00
                 STA (CHARDL),Y
-                ; LDA #-1
-                ; STA DIRTY_CHARS,X
                 BNE :4
 :3              JSR NEXT_CHAR
                 BCC :2
@@ -122,20 +120,14 @@ YES_SELL        JSR SET_PAGE1
 ;
 ; flush group and roster state to disk
 ;
-                ; JSR SAVE_GAMESTATE_MS
-                ; JSR SAVE_MEMBERS
+                JSR SAVE_GAME
 ;
 ; remove robot from group
 ;
-; TODO: use shared code from DELETE.S?
-;
-                LDA THE_ROBOT
-                STA COUNT
-                DEC GRPNUMB
-                CMP GRPNUMB
-                BEQ NOTDEC
-MOVIT2          LDX COUNT
-                TXA
+REMOVE_BOT      LDX THE_ROBOT
+                DEC GROUP_SIZE
+                BPL :3                  ; always
+:1              TXA
                 JSR SET_CHAR
                 LDA CHARDL
                 STA TEMP
@@ -145,15 +137,13 @@ MOVIT2          LDX COUNT
                 TXA
                 JSR SET_CHAR
                 LDY #$7F
-MOVEIT          LDA (CHARDL),Y
+:2              LDA (CHARDL),Y
                 STA (TEMP),Y
                 DEY
-                BPL MOVEIT
-                INC COUNT
-                LDA COUNT
-                CMP GRPNUMB
-                BNE MOVIT2
-NOTDEC          JMP OPTIONS
+                BPL :2
+:3              CPX GROUP_SIZE
+                BNE :1
+                JMP OPTIONS
 
 ADDBODS         LDA #$00
                 LDX #$03

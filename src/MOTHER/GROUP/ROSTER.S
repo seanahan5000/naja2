@@ -133,6 +133,8 @@ WRITE_ROSTER    LDA #0
                 TAX
                 AND #isDirty
                 BEQ :3
+; if dirty entry found, force ENTRY_SIZE non-zero
+                INC ENTRY_SIZE
                 TXA
                 EOR #isDirty
                 STA ROSTER_INFO,Y
@@ -144,6 +146,11 @@ WRITE_ROSTER    LDA #0
 :3              INY
                 CPY ROSTER_COUNT
                 BNE :2
+
+; if group was empty on entering group assembly and
+;   no roster entries are dirty, skip all writing
+                LDA ENTRY_SIZE
+                BEQ :6
 
                 LDA #fileSaveGame
                 JSR SET_FILE
@@ -169,7 +176,7 @@ WRITE_ROSTER    LDA #0
                 INY
                 CPY #rosterSectors
                 BNE :4
-                RTS
+:6              RTS
 
 ;---------------------------------------
 

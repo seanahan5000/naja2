@@ -22,12 +22,12 @@
                 PUT SUBROUTINES
                 PUT SAVE.ROBOT
                 DS  \,$EE
+                DS  256,$EE
+                ERR *-$A800
 
                 SAV ROBOT.REPAIR
 
-                ;*** MOVE TO SCRATCH_PAGE? ***
-                DUMMY   *
-LOADBUF         DS  256             ;Must be on page boundary
-ROBOTBUF        DS  128             ;Must be on page boundary
+                DUM SCRATCH_PAGE
+ROBOTBUF        DS  128                 ; must be on page boundary
                 PUT TABLES
                 DEND

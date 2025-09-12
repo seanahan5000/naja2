@@ -2,7 +2,6 @@ LINECNT2        =   $01
 ADPNTL          =   $02
 ADPNTH          =   $03
 ENDLINE2        =   $07
-; COLUMN          =   $0A
 POINTER         =   $0B
 LCOUNT1         =   $A0                 ;***ZBLOCK_A0+0
 LCOUNT2         =   $A1                 ;***ZBLOCK_A0+1
@@ -66,8 +65,9 @@ LOAD_ARSENAL    JSR DRAW_PICT
                 JMP TALKER
 
 :1              BIT UNSTROB
-                CMP #$9B                ; escape
-                BEQ GOBACK
+                JSR CHECK_CANCEL
+                BNE SMAINER
+                RTS
 
 SMAINER         LDA #$7F
                 PHA
@@ -76,18 +76,6 @@ SMAINER         LDA #$7F
                 LDA #fileArsenal_Control
                 LDY #$80
                 JMP LOAD_FILE
-
-GOBACK          JSR DRAW_PICT
-                PictSetPage2
-                PictClearPage
-                PictCall DRAW_HALL
-                PictShowPage
-                PictSetPage1
-                PictCopyToPage
-                PictShowPage
-                PictEnd
-                SEC
-                RTS
 
 ARSENAL_PIC     DB  $00,$0E,$28,$66     ; MAIN BACKGROUND
                 HEX 868304FFBCF0C0FEB65491868305FFD5D5FFC0FEB42A9186

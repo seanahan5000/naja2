@@ -5,19 +5,18 @@
 ; 3 - enrollment (blue)
 ; 4 - arsenal2   (implicit)
 
-; *** rename WHICHT ****
 ; TEMP			=	LOCAL_TEMP                     ; ,+1 TODO: clean this up
+
+WHICH_TRANS			=	$C0
 
 ;
 ; On entry:
 ;   A: direction bits (xxxx.dddd)
 ;   X: step type (1=turn, 2=through-door, 3=scan-forward)
 ;
-TRANSPORT       STA WHICHT
-
-                ; LDA COUNTER   ; *** WHAT IS THIS FOR???
-                ; BNE :1
-                LDA GRPNUMB
+TRANSPORT       STA WHICH_TRANS
+                STX TRANS_MOD+1
+                LDA GROUP_SIZE
                 BNE SHOW_TRANS
                 JSR UPDATE_HALL
                 JSR DRAW_PICT
@@ -53,7 +52,7 @@ PICK_DSTS       LDX #-1                 ; (hidden)
                 STA LEGALS+2            ; Arsenal
                 BEQ :2                  ; always
 
-:1              LDA WHICHT
+:1              LDA WHICH_TRANS
                 BNE :3
 :2              STA LEGALS+0            ; TESSERPORT
 :3
@@ -71,7 +70,7 @@ SHOW_DSTS       LDX #0
 FIRST_DST       LDY #0
 :1              LDA LEGALS,Y
                 BNE :2
-                CPY WHICHT
+                CPY WHICH_TRANS
                 BNE :3
 :2              INY
                 CPY #4
@@ -96,11 +95,10 @@ BLINK           LDA #$10
 MOVKEY          LDA KEYBRD
                 BPL BLINK
 GOTAKEY         JSR CHECK_DOWN
-                BNE NOZ
-                SEC
-                RTS
+                BNE :1
+                JMP TLEAVE1
 
-NOZ             BIT UNSTROB
+:1              BIT UNSTROB
                 JSR CHECK_LEFT
                 BEQ MRIGHT
                 JSR CHECK_RIGHT
@@ -135,63 +133,44 @@ MRIGHT          LDY CURSOR
                 JSR DRAW_TRECT
                 JMP MOVKEY
 
-TCOMMON         CPY WHICHT
-                BNE :2
+TCOMMON         CPY WHICH_TRANS
+                BEQ TLEAVE1
+                TYA
+                PHA
+                JSR SET_TRANS_DEST
+                JSR TRANS_NOISE
+                PLA
+                CMP #$02                ; arsenal
+                BNE TLEAVE2
+TRANS_MOD       LDX #$FF                ; modified
+                JMP INFO_SELLER
 
-                JSR DRAW_PICT
+TLEAVE1         JSR DRAW_PICT
                 PictSetPage1
                 PictClearPage
                 PictCall GET_NSEW
                 PictCall DRAW_HALL
                 PictShowPage
                 PictEnd
-                SEC
+TLEAVE2         SEC
                 RTS
 
-:2              TYA
-                PHA
-                JSR SET_TRANS_DEST
-                JSR TRANS_NOISE
-                PLA
-                CMP #$02                ; arsenal
-                BNE TLEAVE
-                ; LDA FLAG12
-                ; CMP #$02
-                ; BNE TLEAVE
-                JSR RANDOM
-                AND #$1F
-                CMP #$13
-                BNE TLEAVE
-                ; JSR RESET_CHRLIST   ;Check for not full chars
-                ; JSR CSCAN_PUTABLE
-                ; BCC TLEAVE          ;No room
-                ; JSR POOL_TO_TOTAL
-                ; LDX #<MIN_PRICE     ;Check for minimum credits
-                ; LDY #>MIN_PRICE
-                ; CLC
-                ; JSR GROUP_SPEND
-                ; BCC TLEAVE          ;Not enough
-
-                LDA #fileInfoSeller
-                CMP INFO_FILE
-                BEQ :3
-                LDY #>INFO_SELLER
-                JSR LOAD_FILE
-:3              JMP INFO_SELLER
-
-TLEAVE          SEC
-                RTS
-
-** FILL THIS IN LATER !!!
-; MIN_PRICE       HEX 00000099        ;Min credits for seller to appear
+; TODO: make this a real value
+MIN_PRICE       HEX 00000099            ; min credits for seller to appear
 
 ;
 ; On entry:
 ;   Y: index of transport destination
+;       0 = tesserport (green)
+;       1 = infirmary  (orange)
+;       2 = arsenal    (violet)
+;       3 = enrollment (blue)
+;       4 = arsenal2   (implicit)
 ;
 ; NOTE: also called by TESSERPORT
 ;
-SET_TRANS_DEST  LDA DESTX,Y
+SET_TRANS_DEST  ENT
+                LDA DESTX,Y
                 STA MAP_X
                 LDA DESTY,Y
                 STA MAP_Y
@@ -245,9 +224,9 @@ ERASE_TRECT     LDA #OpColorBlack1
                 BPL TRECT_CMN           ; always
 
 DRAW_TRECT      LDA TRECT_COLORS,Y
-                CPY WHICHT
+                CPY WHICH_TRANS
                 BNE TRECT_CMN
-                LDA #OpColorWhite1
+                LDA TRECT_WHITE,Y
 TRECT_CMN       JSR SET_COLOR           ; Y is unchanged
                 DEY
                 BPL :1
@@ -280,11 +259,17 @@ TRECT_COLORS    DB  OpColorGreen
                 DB  OpColorViolet
                 DB  OpColorBlue
 
+TRECT_WHITE     DB  OpColorWhite1
+                DB  OpColorWhite2
+                DB  OpColorWhite1
+                DB  OpColorWhite2
+
 *-------------------------------
 
 ; NOTE: assumes page 2 is visible on entry
 
-TRANS_NOISE     LDX #$30
+TRANS_NOISE     ENT
+                LDX #$30
                 LDY #$60
                 JSR :SOUND
 

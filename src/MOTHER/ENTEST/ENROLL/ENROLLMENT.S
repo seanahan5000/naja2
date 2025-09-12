@@ -72,33 +72,6 @@ ASK_RACE        JSR DRAW_PICT
 GOT_RACE        LDA CURSOR
                 STA RACE
 
-ASK_GENDER      JSR DRAW_PICT
-                PictCall CLEAR_BOX
-                PictTextAt 30;153;"OF WHICH GENDER ARE YOU?"
-                ; *** what is your gender ***
-                PictTextRows 204;153;10
-                TXC "MALE\n"
-                TXC "FEMALE\n"
-                TXT "OTHER"
-                PictEnd
-
-                LDX #<:GENDER_CURSOR
-                LDY #>:GENDER_CURSOR
-                LDA #3
-                JSR KBLINK_SUB
-                ; *** RETURN VALUE AND SAVE GENDER HERE ***
-                BEQ GOT_GENDER
-                JMP LEAVE_ENROLL
-
-:GENDER_CURSOR  LDY :GENDER_YPNTS,X
-                LDX #$BE
-                JMP DRAW_ARROW
-
-:GENDER_YPNTS   DB  $99,$A3,$AD
-
-GOT_GENDER      LDA CURSOR
-                STA GENDER
-
                 JSR ANIMATE_ARROWS
                 JSR DRAW_PICT
                 PictTextRows 6;150;9
@@ -109,11 +82,14 @@ GOT_GENDER      LDA CURSOR
                 PictEnd
 
                 JSR SPACE_WAIT
+                PHP
                 JSR CLEAR_BOX
+                PLP
+                BCC :1
 
                 JSR DEFINE_CHAR
                 BCS TAKE_OATH
-                JMP LEAVE_ENROLL         ;*** CANCEL BACK TO ASK_GENDER?
+:1              JMP LEAVE_ENROLL
 
 TAKE_OATH       JSR DRAW_PICT
                 PictTextRows 6;145;9
@@ -145,6 +121,7 @@ TAKE_OATH       JSR DRAW_PICT
 OATH            TXT "UPHOLD AND SUPPORT"
 
 PASSED_OATH     JSR BUILD_CHAR
+                JSR SAVE_GAME
 
                 JSR DRAW_PICT
                 PictCall CLEAR_BOX
@@ -170,7 +147,6 @@ LEAVE_ENROLL    JSR CLEAR_BOX
                 LDA #0
                 JMP ENTEST_BACK
 
-; *** FOLD THIS INTO MAIN ROUTINE ***
 KBLINK_SUB      JSR SET_KBLINK_INFO
                 LDX KCURSOR_MAX
                 DEX

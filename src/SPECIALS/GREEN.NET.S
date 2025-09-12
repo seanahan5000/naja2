@@ -12,8 +12,8 @@ GREEN_NET       BIT OPEN1
                 BVS :1
                 CLC                     ; back to halls
                 RTS
-:1
-                LDA RANGE
+
+:1              LDA RANGE
                 STA SAVE_RANGE
                 LDA #1
                 STA RANGE

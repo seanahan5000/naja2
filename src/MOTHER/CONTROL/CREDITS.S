@@ -75,11 +75,9 @@ GROUP_EARN      ENT
 
 ;-----------------------------------------------------------
 
-SPLIT_GCREDITS  ENT                     ; *** demote to internal???
-                LDX #<GROUP_CREDITS
+SPLIT_GCREDITS  LDX #<GROUP_CREDITS
                 LDY #>GROUP_CREDITS
-SPLIT_CREDITS   ENT                     ; *** demote to internal???
-                STX :1+1
+SPLIT_CREDITS   STX :1+1
                 STY :1+2
                 LDY #0
                 LDX #0
@@ -116,18 +114,23 @@ SPLIT_CREDITS   ENT                     ; *** demote to internal???
 ;   X: horizontal draw position
 ;   Y; vertical draw position
 ;
-DRAW_GCREDITS_AT  ENT
+DRAW_GCREDITS_AT ENT
                 JSR MOVE_TO
 DRAW_GCREDITS   ENT
                 JSR SPLIT_GCREDITS
                 JMP DRAW_TEXTBUF_SPLIT
 ;
-; On entry:
-;   X: pointer to credits (low)
-;   Y: pointer to credits (high)
-;   MOVE_TO called for position
+; Draw THE_PRICE at given location
 ;
-DRAW_CREDITS    ENT                     ;*** demote to internal???
+; On entry:
+;   X: horizontal draw position
+;   Y; vertical draw position
+;
+DRAW_PRICE_AT   ENT
+                JSR MOVE_TO
+DRAW_PRICE      ENT
+                LDX #<THE_PRICE
+                LDY #>THE_PRICE
                 JSR SPLIT_CREDITS
                 ; fall through
 ;

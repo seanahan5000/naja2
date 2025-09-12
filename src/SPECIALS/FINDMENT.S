@@ -72,7 +72,7 @@ ANOKAY          JSR DRAW_PICT
                 ; TODO: fix this awkward wording
                 PictTextAt $3F;$4E;(WHOM_DO_YOU_WANT_TO_GIVE_IT_TO?)
                 PictTextAt $3F;$46;(YOU_HAVE_FOUND_A)-
-NOAMOD          USR (N_)
+NOAMOD          TXT "N_"
                 PictEnd
 
                 JSR ETABLE_TO_TEXT
@@ -136,7 +136,7 @@ FYPOINTS        DB  $0C,$14,$1C
                 DB  $3C,$44
 *-------------------------------
 
-VOWELS          USR (AEIOU)-
+VOWELS          TXC "AEIOU"
 
 POINTL          =   LOCAL_TEMP+0
 POINTH          =   LOCAL_TEMP+1

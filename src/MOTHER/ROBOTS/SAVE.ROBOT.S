@@ -10,38 +10,21 @@ SAVE_ROBOT      JSR PACSUB
                 LDA #$1F
                 STA ON1,X
                 JSR SHOW_SCREEN
-;*** why? ***
-;                 LDA PICK
-;                 BEQ NOVIEW2
-;                 ;*** check this ***
-;                 JSR DRAW_PICT
-;                 PictSetPage1
-;                 PictCopyToPage
-;                 PictShowPage
-;                 PictEnd
-; NOVIEW2
-                LDX #0
-                STX PICK
-                DEX
-                STX ON2
 
 ASK_NAME        JSR DRAW_PICT
-                ; PictCall CLEAR_BOX
+                PictClear 6;108;35;191
                 PictTextAt 50;126;"WHAT NAME WILL YOUR ROBOT"
                 PictTextAt 50;135;"BE REGISTERED UNDER? "
-                ; PictTextAt 50;126;"YOUR ROBOT IS BEING REGISTERED"
-                ; PictTextAt 50;135;"UNDER THE NAME "
                 PictEnd
 
-                JSR ASK_CHAR_NAME
-                BCS GOT_NAME
-                BCS ASK_NAME            ; always
+REASK_NAME      JSR ASK_CHAR_NAME
+                BCC REASK_NAME
 
 GOT_NAME        JSR IS_NAJA_NAME
                 BCC NOT_NAJA
                 JSR DRAW_PICT
-                PictTextAt 50;126;"ONLY ONE PERSON GOES BY THAT NAME"
-                PictTextAt 86;135;"AND YOU ARE NOT HIM!!"
+                PictTextAt 50;153;"ONLY ONE PERSON GOES BY THAT"
+                PictTextAt 50;162;"NAME AND YOUR ROBOT IS NOT HIM!!"
                 PictEnd
                 JSR ANY_KEY
                 JMP ASK_NAME
@@ -49,38 +32,20 @@ GOT_NAME        JSR IS_NAJA_NAME
 NOT_NAJA        JSR DUPE_NAME_CHECK
                 BCC NOT_DUPE
                 JSR DRAW_PICT
-                PictTextAt 50;126;"SOMEONE IS REGISTERED UNDER THAT NAME."
+                PictTextAt 50;153;"SOMEONE IS ALREADY REGISTERED"
+                PictTextAt 50;162;"UNDER THAT NAME."
                 PictEnd
                 JSR ANY_KEY
                 JMP ASK_NAME
 
 NOT_DUPE        JSR CREATE_ROBOT
-                ; JSR SAVE_GAMESTATE_MS
-                ; JSR SAVE_MEMBERS
+                JSR SAVE_GAME
 
                 LDX PICK
                 LDA #$0F
                 ORA ON1,X
                 STA ON1,X
-                LDA #$60
-                STA STOPPER
-                JSR OPTIONS
-                LDA #$EA
-                STA STOPPER
-                JSR NEXT_SCREEN
-
-                ; JSR DRAW_PICT
-                ; PictTextAt 116;126;"IS BEING"
-                ; PictTextAt 116;126;"HAS BEEN"
-                ; PictTextAt 50;148;"YOU CAN PICK THE ROBOT UP AT THE"
-                ; PictTextAt 50;157;"GROUP ASSEMBLY OFFICE AND CHANGE"
-                ; PictTextAt 50;166;"ITS NAME TO WHAT EVER YOU WISH."
-                ; PictTextAt 188;179;"<SPACE>"
-                ; PictEnd
-                ;
-                ; JSR PPEOR
-                ; JSR ANY_KEY
-                JMP STOPPER
+                JMP OPTIONS
 
 ANY_KEY         BIT UNSTROB
 :1              LDA KEYBRD
@@ -138,7 +103,7 @@ CREATE_ROBOT    JSR CREATE_PART
                 STA (CHARDL),Y
                 PHA
 ;
-; put robot location in cybernate and mark dirty
+; put robot location in cybernate
 ;
                 LDA ASSIGN2
                 JSR SET_CHAR
@@ -146,14 +111,6 @@ CREATE_ROBOT    JSR CREATE_PART
                 ORA #$80
                 LDY #roboCyberLink
                 STA (CHARDL),Y
-;
-; dirty both the cybernate and robot
-;
-                ; LDA #-1
-                ; LDX ASSIGN2
-                ; STA DIRTY_CHARS,X
-                ; LDX THE_ROBOT
-                ; STA DIRTY_CHARS,X
                 RTS
 
 ;-----------------------------------------------------------
@@ -331,7 +288,7 @@ ROBOT_DATA      DB  status,healthy
                 DB  organic,1
                 DB  energylev+1,$10
                 DB  flaglimbo,inlimbo
-                DB  miscflags,%00100000                     ;w/o implant, genderless
+                DB  miscflags,%00100000 ; w/o implant
                 DB  basepowercons,$42
                 DB  e15_PROGRAM+0,$5A
                 DB  e15_PROGRAM+2,$20

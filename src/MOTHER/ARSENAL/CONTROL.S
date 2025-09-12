@@ -1,5 +1,3 @@
-
-
 ; TEMP            =   LOCAL_TEMP+0        ; +1
 
 ; POINTL          =   LOCAL_TEMP+2
@@ -24,7 +22,7 @@ CHUNK           =   ZBLOCK_A0+7
 
 ZBLOCK_A8       =   $A8
 WHOPIC          =   ZBLOCK_A8+0
-; WHOSPIC         =   ZBLOCK_A8+1
+*
 LEAVLIN         =   ZBLOCK_A8+2
 DSPLACE         =   LEAVLIN
 CTABCNT         =   ZBLOCK_A8+3
@@ -36,8 +34,8 @@ YNOCURS         =   BRNCURS+2
 ZBLOCK_80       =   $80
 LINUMB          =   ZBLOCK_80+0
 LINECNT         =   ZBLOCK_80+1
-; DATPNTL         =   ZBLOCK_80+2
-; DATPNTH         =   ZBLOCK_80+3
+*
+*
 NUMBIN          =   ZBLOCK_80+4
 TABLCNT         =   ZBLOCK_80+5
 DRAWFLG         =   ZBLOCK_80+6
@@ -50,7 +48,7 @@ APOINTER        =   ZBLOCK_80+3
 THELEGL         =   ZBLOCK_80+4
 STATUS          =   ZBLOCK_80+5
 *
-*
+STOCK_OFF       =   ZBLOCK_80+7
 
 ; enter with page 1 visible
 
@@ -148,10 +146,16 @@ AKEYGOT         LDA KEYBRD
                 BIT UNSTROB
                 JMP ARKEY
 
-GETOUT          LDA #$01
+GETOUT          JSR CURSITA
+                JSR DEMARK
+                LDX WANTED1
+                DEX
+                BEQ :1
+                LDA #$01
                 STA WANTED1
                 JSR DRAW_SCREEN
                 JMP MAIN_LOOP
+:1              JMP LEAVE_ARSENAL
 
 GOUP1           JSR CURSITA
 GOUP1A          LDA CURSOR
@@ -192,13 +196,8 @@ NOTHER1         JSR CURSITA
                 JMP ARKEY
 
 ENTERIT         JSR CURSITA
-                LDA WANTED1
-                CMP #$05
-                BCC NOMARKS
-                CMP #$09
-                BCS NOMARKS
-                JSR MARKIT
-NOMARKS         LDA CURRENT
+                JSR DEMARK
+                LDA CURRENT
                 CMP #$01
                 BNE NOTA22
                 LDX CURSOR
@@ -216,7 +215,7 @@ USUAL           LDY CURRENT
                 ADC CURSOR
                 TAX
                 LDA DESTDAT,X
-                BEQ :LEAVE
+                BEQ LEAVE_ARSENAL
                 CMP #$FE
                 BNE :1
                 LDA #$05
@@ -235,7 +234,24 @@ USUAL           LDY CURRENT
 :2              JMP BUY_EQUIPMENT
 :3              JMP BUY_ARMHELM
 :4              JMP MAIN_LOOP
-:LEAVE          JMP LEAVE_ARSENAL
+
+LEAVE_ARSENAL   LDA PAGE
+                CMP #$40
+                BEQ :1
+                JSR DRAW_PICT
+                PictSetPage2
+                PictCopyToPage
+                PictShowPage
+                PictSetPage1
+                PictEnd
+:1              JMP PACK_STOCK
+
+DEMARK          LDA WANTED1
+                CMP #$05
+                BCC :1
+                CMP #$09
+                BCC MARKIT
+:1              RTS
 
 MARKIT          LDX WHOPIC
                 LDY AYPOINTS,X
@@ -369,18 +385,5 @@ DEFAULT_STOCK
                 DB  $EF,$FF                 ; MISC_STOCK
                 DB  $E8,$61,$FF,$FF,$FF,$FF ; SHIELD_STOCK
             FIN
-
-;-----------------------------------------------------------
-
-LEAVE_ARSENAL   LDA PAGE
-                CMP #$40
-                BEQ :1
-                JSR DRAW_PICT
-                PictSetPage2
-                PictCopyToPage
-                PictShowPage
-                PictSetPage1
-                PictEnd
-:1              JMP PACK_STOCK
 
 ;-----------------------------------------------------------

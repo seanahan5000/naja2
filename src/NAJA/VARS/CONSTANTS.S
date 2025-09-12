@@ -127,9 +127,8 @@ baselwreflex	=	$7B
 baseintellig	=	$7C
 *
 flaglimbo		=	$7E
-;  igg000xx
+;  i00000xx
 ;   i: implant
-;   g: gender
 ;   x: something used in INFIRMARY:power
 miscflags		=	$7F
 

@@ -37,11 +37,14 @@ if [ "$ERR" == "1" ]; then
 fi
 
 $ASM NDOS   ASM.NDOS    -lst $OBJ/NDOS.LST     -ent $SRC/NDOS/EXT.S   || ERR=1
-$ASM BOOT   ASM.BOOT    -lst $OBJ/BOOT.LST                            || ERR=1
 $ASM HALLS  ASM.HALLS   -lst $OBJ/HALLS.LST    -ent $SRC/HALLS/EXT.S  || ERR=1
 $ASM CAMP   ASM.CAMP    -lst $OBJ/CAMP.LST     -ent $SRC/CAMP/EXT.S   || ERR=1
 
 $ASM MOTHER/CONTROL   ASM.MOTHER    -lst $OBJ/MOTHERSHIP.LST    -ent $SRC/MOTHER/EXT.S || ERR=1
+
+# after ASM.MOTHER so MOTHER/EXT available
+$ASM BOOT   ASM.BOOT    -lst $OBJ/BOOT.LST                            || ERR=1
+
 $ASM MOTHER/ENTEST    ASM.ENTEST    -lst $OBJ/ENTEST.LST     || ERR=1
 $ASM MOTHER/GROUP     ASM.GROUP     -lst $OBJ/GROUP.LST      || ERR=1
 $ASM MOTHER/INFIRMARY ASM.INFIRMARY -lst $OBJ/INFIRMARY.LST  || ERR=1
@@ -123,7 +126,7 @@ $A2NIB_MS $OBJ/GROUP.ASSEMBLY  -t 11 -s 00   # 32 sectors
 $A2NIB_MS $OBJ/INFIRMARY       -t 17 -s 00   # 24 sectors
 $A2NIB_MS $OBJ/ENERGY.CENTER   -t 18 -s 08   # 24? sectors
 $A2NIB_MS $OBJ/ARSENAL         -t 1B -s 00   # 47 sectors
-$A2NIB_MS $OBJ/ROBOT.REPAIR    -t 1F -s 00   # 64 sectors
+$A2NIB_MS $OBJ/ROBOT.REPAIR    -t 1F -s 00   # 64 sectors (trim)
 $A2NIB_MS $OBJ/FAKE.ROSTER     -t 10 -s 00   # 11 sectors
 
 # shell 17,15

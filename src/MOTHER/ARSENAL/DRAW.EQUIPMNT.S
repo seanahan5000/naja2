@@ -53,27 +53,36 @@ MULTI           LDA #$00
                 PictText "LEAVE"
                 PictHMoveTo 170
                 PictText "YOUR CREDITS"
+                PictHMoveTo 156
                 PictEnd
 
-                ; *** REVERSE ARROW ***
-                ; LDA #$9C
-                ; STA XPNT
-                ; LDA TEXT2A+2
-                ; STA YPNT
-                ; LDA #1
-                ; JSR SPCHARS
-                ; LDA #$2C
-                ; STA TEXTBUF
-                ; LDA #TextLineEnd
-                ; STA TEXTBUF+1
-                ; LDA #$A3
-                ; LDY YCOORD
-                ; JSR LINE
+                LDX #<:RARROW_HEAD
+                LDY #>:RARROW_HEAD
+                JSR DRAW_TILE
+                LDX #<:RARROW_TAIL
+                LDY #>:RARROW_TAIL
+                JSR DRAW_TILE
 
                 JSR ISHERE
                 LDA #$FF
                 JSR CNTDRAW
                 RTS                 ;TEMP
+
+:RARROW_HEAD    DB  %00000000
+                DB  %00011000
+                DB  %00001100
+				DB  %01111111
+                DB  %00001100
+                DB  %00011000
+                DB  %00000000
+
+:RARROW_TAIL    DB  %00000000
+                DB  %00000000
+                DB  %00000000
+                DB  %00011111
+                DB  %00000000
+                DB  %00000000
+                DB  %00000000
 
 EGROUP_NAMES    TXI "BEAM-WEAPONS"
                 TXI "BLASTING-WEAPONS"
@@ -159,9 +168,6 @@ MAXPER          DB  $05,$04,$02
                 DB  $07,$06,$05
                 DB  $04,$0E,$06
                 DB  $03,$0C
-
-STOCK_OFF       =   POINTL              ; *** clean up
-
 ;
 ; On entry:
 ;   Y: stock offset
@@ -291,14 +297,12 @@ DRAW_STOCK      TXA
 
 ;-----------------------------------------------------------
 
-DOBOXES         LDA #$01
-                STA COUNT
-:1              LDY COUNT
+DOBOXES         LDY #1
+:1              STY COUNT
                 LDX TABLE2,Y
-                LDA LINTABL,X
-                SEC
-                SBC #2
-                TAY
+                LDY LINTABL,X
+                DEY
+                DEY
                 JSR VMOVE_TO
                 JSR DRAW_PICT
                 PictSetGreen
@@ -306,8 +310,8 @@ DOBOXES         LDA #$01
                 PictHLineTo 273
                 PictEnd
                 LDY COUNT
-                INC COUNT
                 LDX TABLE2,Y
+                INY
                 CPX LEAVLIN
                 BNE :1
                 LDA LINTABL,X

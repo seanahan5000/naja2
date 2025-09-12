@@ -6,7 +6,6 @@ XHOLD           =   ZBLOCK_A8+7         ;*** ONLY IN DEFINE.CHAR.S ***
                 DUMMY SCRATCH_PAGE
 PROFRAC         DS  1
 RACE            DS  1
-GENDER          DS  1
 
 ; character creation
 PRSNST          DS  9
@@ -31,10 +30,13 @@ ENROLL_TEST     LDA #$FF
                 PictTextAt 6;163;"IN THEIR PLACE UNTIL A NEW COUNCIL IS FORMED."
                 PictTextAt 21;172;"INFORMATION OF THE DEMISE OF THE COUNCIL"
                 PictTextAt 12;181;"CAN BE FOUND IN YOUR TACTICAL FORCE MANUAL."
-                PictCall SPACE_WAIT
                 PictEnd
 
-                LDA #2
+                JSR SPACE_WAIT
+                BCS :1
+                JMP ENROLL_EXIT
+
+:1              LDA #2
 ENTEST_BACK     STA CURSOR
                 JSR DRAW_PICT
                 PictCall CLEAR_BOX
@@ -215,6 +217,10 @@ DOT             LDX #$C1
 ;
 ; Wait for <space> while animating sweep and specks
 ;
+; On exit:
+;   CS: selection made
+;   CC: cancel
+;
 SPACE_WAIT      JSR DRAW_PICT
                 PictTextAt 101;34;"<SPACE>"
                 PictEnd
@@ -225,10 +231,16 @@ SPACE_WAIT      JSR DRAW_PICT
                 BPL :1
                 BIT UNSTROB
                 JSR CHECK_ENTER
+                SEC
+                BEQ :2
+                JSR CHECK_CANCEL
                 BNE :1
+                CLC
+:2              PHP
                 JSR DRAW_PICT
                 PictClear 14;34;21;41
                 PictEnd
+                PLP
                 RTS
 
 ;---------------------------------------
@@ -264,8 +276,7 @@ LINDONE         LDA LINNUMO
                 CPX #$03
                 BEQ LINDONE
                 CPX #$07
-                BEQ OUT
-                BNE LOOP                ; always???
+                BNE LOOP
 OUT             LDA LINNUMO
                 INX
                 INX

@@ -1,7 +1,7 @@
 
 ; TODO: there is way too much text per panel -- split them up
 
-INFO_SELLER     JSR DRAW_PICT
+SELLER          JSR DRAW_PICT
                 PictSetPage2
                 PictCopyToPage
                 PictImage INFO_PIC
@@ -112,19 +112,6 @@ INFO_OUT        JSR SPACE_IN
                 PictEnd
                 SEC
                 RTS
-
-*-------------------------------
-
-YES_OR_NO       BIT UNSTROB
-                JSR GET_INPUT_KEY
-:1              CMP #"Y"
-                BEQ :2
-                CMP #"N"
-                CLC
-                BEQ :2
-                JSR REGET_INPUT
-                JMP :1
-:2              RTS
 
 *-------------------------------
 

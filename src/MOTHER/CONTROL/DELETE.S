@@ -1,9 +1,4 @@
 
-; - ask yes/no instead of A>CCEPT or R>EDO
-; - hide LEAVE while asking this
-; ? adjust panel size/location when < 6 in group
-
-
 ; TODO: clean up ZPAGE usage
 LEFTCOL			=	LOCAL_TEMP
 RITECOL         =   LOCAL_TEMP+1
@@ -64,7 +59,7 @@ HAS_MEMBERS     JSR BUILD_TABLES
                 PictSetPage1
                 PictClearPage
                 PictCall GROUP_DO
-                PictTextAt 16;182;"LEAVE"
+                PictTextAt 16;184;"LEAVE"
                 PictSetPage2
                 PictEnd
                 JSR GOSLIDE
@@ -122,29 +117,28 @@ DELETE_OUT      LDX #0
                 JMP NO_DELETES
 
 HAS_DELETES     JSR DRAW_PICT
-                PictClear 1;15;18;30
-                PictTextAt 27;15;"ARE YOU SURE?"
-                PictTextAt 21;23;"A>CCEPT   R>EDO"
+                PictClear 1;15;20;30
+                PictTextAt 16;184;"LEAVE"
+                PictTextAt 12;19;"ARE YOU SURE? <Y/N> "
                 PictEnd
-:1              LDA KEYBRD
-                BPL :1
-                BIT UNSTROB
-                CMP #"A"
-                BEQ DID_ACCEPT
-                CMP #"R"
-                BNE :1
+                JSR YES_OR_NO
+                BCS DID_ACCEPT
+                JSR DRAW_PICT
+                PictTextAt 16;184;"LEAVE"
+                PictEnd
                 JSR WHOS_RETURNING
                 JMP RESTART
 
 WHOS_RETURNING  JSR DRAW_PICT
-                PictClear 1;15;18;30
-                PictTextAt 9;15;"WHO IS RETURNING TO"
-                PictTextAt 12;23;"THEIR HOME PLANET?"
+                PictClear 1;15;20;30
+                PictTextAt 20;15;"WHO IS RETURNING TO"
+                PictTextAt 23;23;"THEIR HOME PLANET?"
                 PictEnd
                 RTS
 
 DID_ACCEPT      JSR ASK_OUT
                 JSR DELETE_MARKED
+                JSR SAVE_GAME
                 JMP DELCOM
 
 NO_DELETES      JSR ASK_OUT
@@ -269,7 +263,7 @@ DEL_MARKIT      LDA DEL_TABLE,X
 
 DEL_YPNTS       DB  128,137,146
                 DB  155,164,173
-                DB  182,182
+                DB  184,184
 ;
 ; Clear deleted characters from roster
 ; Remove deleted characters from group
@@ -306,8 +300,8 @@ DELETE_MARKED   LDX #0
                 BPL :5
                 BMI :4                  ; always
 :6              DEC GRPNUMB
-:7              LDX COUNT
-                DEX
+                LDX COUNT
+:7              DEX
                 BPL :3
                 RTS
 
@@ -355,9 +349,9 @@ VARY            LDA #$30                ; modified
 
 GROUP_DO        JSR DRAW_PICT
                 PictSetGreen
-                PictRect $01;$73;$115;$73
-                PictMoveTo $01;$7D
-                PictLineTo $115;$7D
+                PictRect $01;115;$115;182
+                PictMoveTo $01;125
+                PictLineTo $115;125
                 PictVMoveTo $75
                 PictEnd
                 LDA #$42                ; SELECT value
@@ -367,15 +361,15 @@ ASK_IN          JSR DRAW_PICT
                 PictSetPage1
                 PictClear $00;$00;$28;$30
                 PictSetOrange
-                PictRect $05;$0C;$7F;$20
+                PictRect $05;$0C;147;$20
                 PictCall WHOS_RETURNING
                 PictSetPage2
-                PictSwap $00;$0B;$13;$21
+                PictSwap $00;$0B;$16;$21
                 PictEnd
                 RTS
 
 ASK_OUT         JSR DRAW_PICT
-                PictSwap $00;$0B;$13;$21
+                PictSwap $00;$0B;$16;$21
                 PictEnd
                 RTS
 

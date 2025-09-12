@@ -20,10 +20,10 @@ X New graphics compression algorithm
     * Incorporate colors of door beams, cell numbers, block 1138
     ? Should door sign require translation?
 
+X Remove gender -- was not being used anywhere
 * Quick fight mode versus "tactical" mode
-* Consider 5 or 6 instead of 7 group members, for balancing purposes
-    X (Wizardry had 6)
-    * (Might and Magic had 4)
+X Consider 5 or 6 instead of 7 group members, for balancing purposes
+    X (Wizardry had 6, Might and Magic had 4)
     * Also shortens combat loop
 * Identifying aliens adds them to Alien Catalog (Compendium? Codex?)
     * May also add aliens by finding data cards, etc.

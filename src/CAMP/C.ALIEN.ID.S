@@ -73,10 +73,7 @@ IDENTIFIED_ALIENS
                 STA ALIEN_STATE
 
                 JSR LOAD_NAMES
-                ;*** leave drive spinning ***
-
                 JSR LOAD_OFFSETS
-                ;*** leave drive spinning ***
 
                 JSR BUILD_KNOWN_LIST
 

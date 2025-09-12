@@ -77,7 +77,7 @@ RELOOPB         LDA BODTOT,Y
                 STA :MOD+1
                 JSR EDIT_WEAPON
                 BCC :3
-                LDA SAMFLAG
+                LDA SAME_FLAG
                 BNE :3
                 JSR CREATE_PART
                 LDA THE_ROBOT
@@ -103,7 +103,7 @@ NOWEPO          JSR ZOOMUP
                 LDA #$FF
                 STA ON1,X
                 BNE :2                  ; always
-:1              LDA SAMFLAG
+:1              LDA SAME_FLAG
                 BEQ :3                  ; selection unchanged
 :2              JMP OPTIONS
 

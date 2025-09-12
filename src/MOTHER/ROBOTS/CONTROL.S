@@ -27,11 +27,11 @@ CDPNTH          =   ZBLOCK_88+2
 CURHOLD         =   ZBLOCK_88+3
 *
 *
-PARTALL         =   ZBLOCK_88+6     ;00 = First pass after complete buy
-                                    ;D0 = Adjust after complete buy
-                                    ;E0 = Too expensive after complete buy
-                                    ;EE = REPLACEing area
-XHOLD           =   ZBLOCK_88+7
+*
+PARTALL         =   ZBLOCK_88+7         ; 00 = First pass after complete buy
+                                        ; D0 = Adjust after complete buy
+                                        ; E0 = Too expensive after complete buy
+                                        ; EE = REPLACEing area
 
 MINIMUM         =   ZBLOCK_A0+0
 MAXIMUM         =   ZBLOCK_A0+1
@@ -45,7 +45,7 @@ ASSIGN2         =   ZBLOCK_A0+7
 SWITCH          =   ZBLOCK_A8+0         ; used for PictSwitch values
 *
 THE_ROBOT       =   ZBLOCK_A8+2
-SAMFLAG         =   ZBLOCK_A8+3
+SAME_FLAG       =   ZBLOCK_A8+3
 MINLOW          =   ZBLOCK_A8+4
 MINUPR          =   ZBLOCK_A8+5
 LIMIT           =   ZBLOCK_A8+6
@@ -109,19 +109,9 @@ OPTIONS         JSR NEXT_SCREEN
                 TXC "PRESENT TO MAKE ANY TRANSACTIONS\n"
                 TXC "HERE AT THE ROBOT ORDERING AND\n"
                 TXT "REPLACEMENT CENTER."
-                PictTextAt 198;155;"<SPACE>"
                 PictEnd
-
                 JSR SHOW_SCREEN
-                BIT UNSTROB
-OPTKEY          LDA KEYBRD
-                BPL OPTKEY
-                BIT UNSTROB
-                JSR CHECK_ENTER
-                BEQ LEAVE_ROBOTS
-                JSR CHECK_CANCEL
-                BNE OPTKEY
-                ; fall through
+                JSR ANY_KEY
 
 LEAVE_ROBOTS    LDA PICK
                 BNE :1
@@ -169,7 +159,7 @@ OPTCOM          JSR COUNT_ROBOTS
 :2              LDA #$FF
                 STA LEGALS+1
 :3
-STOPPER         NOP
+STOPPER         NOP                     ; TODO: get rid of
                 JSR SHOW_SCREEN
                 BIT UNSTROB
 
@@ -178,34 +168,28 @@ STOPPER         NOP
                 JSR MENU_INIT
                 JSR MENU_SET_CANCEL
                 JSR MENU_SELECT
-                BCS :1
-                LDX #3
-:1              TXA
-                ASL
-                TAY
+                BCC :1
                 LDX PICK
                 LDA #$10
                 STA ON1,X
-                LDA JUMPS+1,Y
-                PHA
-                LDA JUMPS,Y
-                PHA
-                RTS
-
-JUMPS           DW  REPLACE-1
-                DW  COMPLETE_BUY-1
-                DW  COMPLETE_SELL-1
-                DW  LEAVE_ROBOTS-1
+                JMP MENU_TARGET
+:1              JMP LEAVE_ROBOTS
 
 MENU_DEF        DB  $04
                 DB  $00
                 DW  :MENU_CURS
+                DW  :MENU_TARGETS
 
 :MENU_CURS      LDY :YPNTS,X
                 LDX	#$48
 				JMP	DRAW_ARROW
 
 :YPNTS          DB  124,135,144,155
+
+:MENU_TARGETS   DW  REPLACE
+                DW  COMPLETE_BUY
+                DW  COMPLETE_SELL
+                DW  LEAVE_ROBOTS
 
 ;-----------------------------------------------------------
 
@@ -512,7 +496,7 @@ TRLOOPV         LDA POINTLV,X
                 JSR TRSUBY
                 STA EXPFLAG
                 DEY
-TRADO2          STY SAMFLAG
+TRADO2          STY SAME_FLAG
 TRADOUT         RTS
 
 TRSUBY          LDX #$03

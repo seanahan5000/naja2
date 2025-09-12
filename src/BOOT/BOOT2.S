@@ -1,6 +1,7 @@
 
                 PUT /HALLS/VARS
                 PUT /HALLS/EXT
+                PUT /MOTHER/EXT
 
 CONTROL_MODULE  =   $7000
 SET_CONTROL     =   $7001
@@ -51,32 +52,9 @@ INIT_GAME
                 STA GRPNUMB
                 STA GRPCONT
 
-                LDA #0
-                STA MAP_FACE
-;               LDA #0
-                STA MAP_X
-                LDA #4
-                STA MAP_Y
-                LDA #EAST
-                STA MAP_DIR
-                JSR COMPUTE_MAP_PTR
-
-*LDA #$30
-*STA PITCH
-*LDA #$60
-*STA LENGTH
-*JSR SOUND
-                ; *** don't show draw happening ***
-                LDA #$20
-                STA PAGE
-                JSR GET_NSEW
-                JSR DRAW_HALL
-*LDA #$A0
-*STA PITCH
-*LDA #$40
-*STA LENGTH
-*JSR SOUND
-
+                LDY #3                  ; enrollment
+                JSR SET_TRANS_DEST
+                JSR TRANS_NOISE
                 JMP HALL_KEYS
 
 BOOT2_TABLE     DB  fileHalls,      $09,$00,$10

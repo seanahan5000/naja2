@@ -29,14 +29,10 @@ BIGKEY          LDA KEYBRD
                 BEQ BIG_LEFT
                 JSR CHECK_RIGHT
                 BEQ BIG_RIGHT
-                ; CMP #$9B                ;*** CANCEL
-                ; BEQ GOBESC
                 JSR CHECK_ENTER
                 BEQ GOBENTR
                 JSR CHECK_CANCEL
                 BNE BIGKEY
-                ; CMP #$CC                ;***???
-                ; BNE BIGKEY
                 JSR ERASE_STAT
                 LDA #$00
                 STA STATUS
@@ -127,8 +123,6 @@ CONFIRM         LDA KEYBRD
                 BEQ BUY_ARMOR
                 JSR CHECK_CANCEL
                 BNE CONFIRM
-                ; CMP #"C"
-                ; BNE CONFIRM
                 JSR GOSCOMN
                 JMP BIGKEY
 

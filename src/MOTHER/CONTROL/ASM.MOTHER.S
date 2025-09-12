@@ -11,11 +11,8 @@
 BIG_MAP         =   0
 SHELLNUM        =   0
 
-; TODO: pick better range and/or clean these up
-WHICHT			=	$C0
-FLAG12			=	$C1
-TDELAY          =   $C2                 ; only used by guard scanner
-BDELAY          =   $C3                 ; only used by guard scanner
+CONTROL_MODULE  =   $7000
+MAP_MODULE      =   $8000
 
                 ORG $7000
 CONTROL_FILE    DB  fileControlMS
@@ -28,7 +25,6 @@ CONTROL_FILE    DB  fileControlMS
                 PUT TRANSPORT
                 PUT DOORS
                 DS  \,$EE
-                DS  256
                 DS  256
                 DS  256
                 ERR *-$7F00

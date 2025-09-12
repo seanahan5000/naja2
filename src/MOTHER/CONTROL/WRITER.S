@@ -14,26 +14,29 @@ SAVE_GAME       ENT
                 LDA #stateSectors
                 LDY #>GAME_STATE
                 JSR WRITE_FILE
+                LDA GROUP_SIZE
+                BNE :1
+                RTS
 
 ; write all members of the group to disk
-                LDA #0
+:1              LDA #0
                 STA WAS_SAVED
                 JSR FIRST_CHAR
-:1              LDA WAS_SAVED
+:2              LDA WAS_SAVED
                 AND BIT_TABLE,X
-                BNE :6
+                BNE :7
 
                 LDY #rosterLocation
                 LDA (CHARDL),Y
                 AND #$0F
                 PHA
                 JSR TEST_ROSTER_LOC
-                BEQ :4
+                BEQ :5
 
                 LDX CHAR_INDEX
-:2              INX
+:3              INX
                 CPX GRPNUMB
-                BEQ :3
+                BEQ :4
                 TXA
                 JSR SET_CHAR
                 PLA
@@ -42,31 +45,31 @@ SAVE_GAME       ENT
                 EOR (CHARDL),Y
                 AND #$0E
                 LSR
-                BNE :2
+                BNE :3
 
 ; another group member is in the same sector as the character
                 LDA WAS_SAVED
                 ORA BIT_TABLE,X
                 STA WAS_SAVED
                 JSR CHAR_TO_CBUFF
-                JMP :5
+                JMP :6
 
 ; a non-group member is in the same sector as the character
-:3              PLA
+:4              PLA
                 PHA
                 LSR
                 JSR READ_SECT
-                JMP :5
+                JMP :6
 
 ; character is alone in the sector so clear it
-:4              JSR CLEAR_CBUFF
-:5              PLA
+:5              JSR CLEAR_CBUFF
+:6              PLA
                 LDA CHAR_INDEX
                 JSR SET_CHAR
                 JSR CHAR_TO_CBUFF
                 JSR WRITE_CSECT
-:6              JSR NEXT_CHAR
-                BCC :1
+:7              JSR NEXT_CHAR
+                BCC :2
                 RTS
 
 WAS_SAVED       DB  0
@@ -130,6 +133,7 @@ ALLOC_CHAR      ENT
                 JSR SET_FILE
                 JSR GET_ROSTER_LOC
                 BCC :3
+                PHA
                 LDX #0
                 TXA
 :1              STA CHAR_BUFFER,X

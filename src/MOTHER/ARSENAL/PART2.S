@@ -211,13 +211,6 @@ UPDATE_CREDIT   JSR MOVE_TO
                 JSR HRESTORE
                 JMP DRAW_GCREDITS
 
-SHOW_CREDIT     JMP DRAW_GCREDITS_AT
-
-DRAW_PRICE_AT   JSR MOVE_TO
-                LDX #<THE_PRICE
-                LDY #>THE_PRICE
-                JMP DRAW_CREDITS
-
 *-------------------------------
 
 CURSITA         LDY CURRENT

@@ -116,9 +116,7 @@ DRAW_TRADEIN    LDA PARTALL
                 CMP #$EE
                 BNE :1
                 JSR CALC_TRADEIN
-:1              LDX #<THE_PRICE
-                LDY #>THE_PRICE
-                JMP DRAW_CREDITS
+:1              JMP DRAW_PRICE
 ;
 ; On entry:
 ;   THE_PRICE: base price
@@ -838,10 +836,7 @@ UPLB            DEY
 TOUPD2          LDX SCRPICK
                 LDY YSPOTS+7-scrnWEAPONL,X
                 JSR VMOVE_TO
-                JSR WEANUMS
-                LDA #$80
-                STA XHOLD
-                RTS
+                JMP WEANUMS
 
 ETRDNUM         DB  $00,$00,$00
                 DB  $00
@@ -1382,34 +1377,34 @@ PACSUB          JSR NEXT_SCREEN
 
 SPACE_IN        JSR NOTCH_IN
                 JSR DRAW_PICT
-                PictTextAt 205;107;"<SPACE>"
+                PictTextAt 205;184;"<SPACE>"
                 PictEnd
                 RTS
 
 CANCEL_IN       JSR NOTCH_IN
                 JSR DRAW_PICT
-                PictTextAt 205;107;"C>ANCEL"
+                PictTextAt 205;184;"C>ANCEL"
                 PictEnd
                 RTS
 
 NOTCH_IN        JSR DRAW_PICT
                 PictSetBlack1
-                PictMoveTo $C7;$6B
-                PictLineTo $F6;$6B
-                PictLineTo $F6;$73
+                PictMoveTo 201;191
+                PictLineTo 246;191
+                PictLineTo 246;183
                 PictSetBlue
-                PictMoveTo $C8;$6B
-                PictLineTo $C8;$73
-                PictLineTo $F6;$73
+                PictMoveTo 200;191
+                PictLineTo 200;182
+                PictLineTo 246;182
                 PictEnd
                 RTS
 
 NOTCH_OUT       JSR DRAW_PICT
-                PictClear 28;107;36;116
+                PictClear 28;182;36;191
                 PictSetBlue
-                PictMoveTo 196;107
-                PictLineTo 246;107
-                PictLineTo 246;115
+                PictMoveTo 196;191
+                PictLineTo 246;191
+                PictLineTo 246;182
                 PictEnd
                 RTS
 
@@ -1563,10 +1558,9 @@ VBOX_CMN2       CPX #$0A
 
 ;-----------------------------------------------------------
 
-HOLD_VALUE      =   LOCAL_TEMP+0        ;***
+HOLD_VALUE      =   LOCAL_TEMP+0
 HOLD_CAT        =   LOCAL_TEMP+1
 
-;*** move this header code and BXPNTS out of here? ***
 BIGSUB          LDY SCRPICK
                 LDA BEGCATS,Y
                 CLC

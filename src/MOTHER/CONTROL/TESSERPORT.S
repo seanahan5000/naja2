@@ -10,11 +10,6 @@ LINSORC         =   $0C
 TOCNT           =   $12
 FROMCNT         =   $13
 
-; *** MOVE THESE ***
-CONTROL_MODULE  =   $7000
-; SET_CONTROL     =   $7001
-MAP_MODULE      =   $8000
-
                 JMP TESS_TO_MOTHER
 
 *-------------------------------

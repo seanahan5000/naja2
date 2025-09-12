@@ -18,7 +18,7 @@ FILE_TABLE      DB  fileDeleteChar,        $0E,$00,$09
                 DB  fileArsenal_Load,      $1B,$00,$0E
                 DB  fileArsenal_Control,   $1C,$00,$1F
                 DB  fileRobotRep_Load,     $1F,$00,$0A
-                DB  fileRobotRep_Control,  $1F,$0A,$28  ;***
+                DB  fileRobotRep_Control,  $1F,$0A,$28
 
                 DB  fileSaveGame,          $10,$00,$10  ;*** shorter
 

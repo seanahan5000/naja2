@@ -1,0 +1,22 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "rpw65",
+            "request": "launch",
+            "name": "Launch RPW Debugger",
+            "stopOnEntry": false,
+            "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "type": "rpw65",
+            "request": "attach",
+            "name": "Attach RPW Debugger",
+            "stopOnEntry": false,
+            "internalConsoleOptions": "neverOpen"
+        }
+    ]
+}

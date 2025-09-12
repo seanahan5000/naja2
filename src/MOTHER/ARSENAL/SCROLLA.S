@@ -10,10 +10,10 @@ TALKER          BIT UNSTROB
                 LDA KEYBRD
                 BPL LOOP2
 KEYOUT          BIT UNSTROB
-                CMP #$9B                ; escape
-                BNE :1
-                JMP GOBACK
-:1              JMP SMAINER
+                JSR CHECK_CANCEL
+                BEQ :1
+                JMP SMAINER
+:1              RTS
 
 LOOP2           LDA #$00
                 STA COUNT
@@ -171,9 +171,8 @@ SCROLL          TAY
                 LDA KEYBRD
                 BPL :5
                 CMP #$93                ; Control-S to stop/start scrolling
-                ; *** TODO: this doesn't work in dbug emulator
-                ; *** control key treated as unique key press
                 BNE :5
+                BIT UNSTROB
 :4              BIT KEYBRD
                 BPL :4
                 BIT UNSTROB
