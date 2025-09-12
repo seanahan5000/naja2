@@ -151,7 +151,7 @@ ALLOC_CHAR      ENT
 :2              PLA
                 LSR
                 LDA #0
-                ROL
+                ROR
                 STA CHARDL
                 LDA #>CHAR_BUFFER
                 STA CHARDH
@@ -285,12 +285,14 @@ TEST_ROSTER_LOC JSR DIV_MOD8
                 RTS
 
 SET_ROSTER_LOC  JSR DIV_MOD8
-                ORA MASK_TABLE,Y
+                LDA ROSTER_BITS,X
+                ORA BIT_TABLE,Y
                 STA ROSTER_BITS,X
                 RTS
 
 CLEAR_ROSTER_LOC ENT                    ; TODO: make internal again (see complete robot sale)
                 JSR DIV_MOD8
+                LDA ROSTER_BITS,X
                 AND MASK_TABLE,Y
                 STA ROSTER_BITS,X
                 RTS

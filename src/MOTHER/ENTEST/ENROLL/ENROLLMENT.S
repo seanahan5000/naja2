@@ -91,26 +91,10 @@ TAKE_OATH       JSR DRAW_PICT
                 PictTextRows 6;145;9
                 TXC "YOUR ENROLLMENT APPLICATION HAS BEEN\n"
                 TXC "ACCEPTED.  AT THIS TIME PLEASE STATE THE\n"
-                TXC "TACTICAL FORCE LOYALTY OATH.  <IF YOU HAVE\n"
-                TXC "NOT MEMORIZED IT YET, THEN REFER TO YOUR\n"
-                TXT "TACTICAL FORCE MANUAL> "
+                TXT "TACTICAL FORCE LOYALTY OATH."
+                PictTextAt 84;177;"UPHOLD AND SUPPORT"
+                PictCall GET_INPUT_KEY
                 PictEnd
-
-                LDA #$12
-                JSR GET_INPUT_LIMIT
-:1
-                LDX #0
-:2              LDA OATH,X
-                CMP #TextLineEnd
-                BEQ PASSED_OATH
-                CMP TEXT_BUFFER,X
-                BNE :3
-                INX
-                BNE :2                  ; always
-:3              JSR REGET_INPUT
-                JMP :1
-
-OATH            TXT "UPHOLD AND SUPPORT"
 
 PASSED_OATH     JSR BUILD_CHAR
                 JSR SAVE_GAME

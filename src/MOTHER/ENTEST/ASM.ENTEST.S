@@ -26,6 +26,7 @@ ENROLL_FILE     DB  fileEntest_Enroll
                 PUT ENROLL/SAVE.CHAR
                 PUT ENROLL/DATA
                 DS  \,$EE
+                DS  256
                 ERR *-$9B00
 
                 ORG $8400

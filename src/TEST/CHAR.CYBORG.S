@@ -7,7 +7,7 @@
 
                 HEX EE
 
-                HEX 00002940        ;Credit
+                HEX 00000000        ;Credit
                 HEX 99              ;Strength
                 HEX 99              ;Upper Reflex
                 HEX 99              ;Lower Reflex

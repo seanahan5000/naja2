@@ -12,8 +12,7 @@ Enrollment/Testing
     - Room for full profession name
     - Shorter energy usage
     - Room for <SPACE> message
-- Resolve how new character credits get applied to group
 
 Group Assembly
 - Consider adding/removing a robot when its cybernate is added/removed
-- Resolve how new character credits get applied to group
+- Determine how to prevent cheating when character credits get applied to group

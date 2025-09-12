@@ -450,20 +450,43 @@ IN_GROUP        STA :MOD+1
 ; On entry:
 ;   X: packed roster character index
 ;
-ADD_RCHAR       LDA ROSTER_INFO,X
+ADD_RCHAR       STX :MOD+1
+                LDA ROSTER_INFO,X
                 ORA #inGroup
                 STA ROSTER_INFO,X
                 JSR SET_RCHARPTR
-                LDA GRPNUMB
+
+; look for individual credits on a newly created character
+                LDX #0
+                LDY #Char.Credits
+:1              LDA (CHARPTR),Y
+                BEQ :2
+                INX
+:2              STA THE_PRICE-Char.Credits,Y
+                LDA #0
+                STA (CHARPTR),Y
+                INY
+                CPY #Char.Credits+4
+                BNE :1
+
+; if any credits found, apply them to the group total
+;   and mark character as dirty
+                TXA
+                BEQ :3
+                JSR EARN_PRICE
+:MOD            LDX #$FF
+                LDA ROSTER_INFO,X
+                ORA #isDirty
+                STA ROSTER_INFO,X
+:3
+                LDA GROUP_SIZE
+                INC GROUP_SIZE
                 JSR SET_CHAR
                 LDY #$7F
-:1              LDA (CHARPTR),Y
+:4              LDA (CHARPTR),Y
                 STA (CHARDL),Y
                 DEY
-                BPL :1
-                INC GRPNUMB
-                ; TODO: should this be done here or elsewhere?
-                ; JSR CALC_ALL
+                BPL :4
                 RTS
 ;
 ; On entry:

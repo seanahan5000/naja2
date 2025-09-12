@@ -79,8 +79,7 @@ CONTROL_BOOT    JSR INIT_RANDOM
                 JSR DRAW_HALL
                 JMP HALL_KEYS
 
-POSITIONS       DB  0,9,9,NORTH         ; mothership
-                ;DB  0,5,4,EAST         ; mothership
+POSITIONS       DB  0,0,4,EAST          ; mothership
                 DB  5,7,15,EAST         ; shell 17
                 DB  5,2,4,3             ; shell 15
                 DB  5,2,4,3             ; shell 13
