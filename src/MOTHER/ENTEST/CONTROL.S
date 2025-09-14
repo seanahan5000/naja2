@@ -66,6 +66,12 @@ ENTEST_BACK     STA CURSOR
                 JSR KBLINK_START
                 TXA
                 BMI :3
+
+                LDX CURSOR
+                LDY :MAIN_YPNTS,X
+                LDX #$65
+                JSR DRAW_MARKER
+
                 JSR DOT
                 LDX CURSOR
                 BEQ GO_TEST
@@ -161,7 +167,7 @@ GOTKEY          JSR SPECKS
                 BEQ KCANCEL
                 JSR CHECK_ENTER
                 BNE KEYMOVE
-                ; *** ERASE CURSOR?
+                JSR DRAW_KCURSOR
                 LDX #0
                 RTS
 
@@ -188,8 +194,7 @@ KBLINK_START    LDX CURSOR
                 JSR DRAW_KCURSOR
                 JMP KEYMOVE
 
-KCANCEL
-                ; *** ERASE CURSOR?
+KCANCEL         JSR DRAW_KCURSOR
                 LDX #-1
                 RTS
 

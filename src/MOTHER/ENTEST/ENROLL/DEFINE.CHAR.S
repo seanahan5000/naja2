@@ -4,45 +4,38 @@ DEFINE_CHAR     JSR DRAW_PICT
                 PictClearPage
                 PictSetGreen
 
-                ; TODO: group into rects
-                PictMoveTo $01;$1F
-                PictLineTo $01;$00
-                PictLineTo $117;$00
-                PictLineTo $117;$3A
-                PictLineTo $01;$3A
-                PictLineTo $01;$1F
-                PictLineTo $117;$1F
+                PictMoveTo 1;0
+                PictHLineTo 279
+                PictVLineTo 191
+                PictHLineTo 1
+                PictVLineTo 0
 
-                ; TODO: group into rects
-                PictMoveTo $01;$A0
-                PictLineTo $01;$3A
-                PictLineTo $117;$3A
-                PictLineTo $117;$BF
-                PictLineTo $01;$BF
-                PictLineTo $01;$A0
-                PictLineTo $41;$A0
-                PictLineTo $41;$69
-                PictLineTo $01;$69
-                PictLineTo $01;$52
-                PictLineTo $41;$52
-                PictLineTo $41;$3A
-                PictLineTo $41;$BF
+                PictMoveTo 71;1
+                PictVLineTo 132
+                PictMoveTo 1;24
+                PictHLineTo 71
+                PictMoveTo 1;47
+                PictHLineTo 71
+                PictMoveTo 1;102
+                PictHLineTo 71
+                PictMoveTo 1;133
+                PictHLineTo 279
 
-                PictTextAt 34;2;"% INORGANIC"
-                PictTextAt 7;12;"BODY COMPOSITION"
-                PictTextAt 40;22;"% ORGANIC"
-                PictTextAt 16;41;"ENERGY USAGE  ."
-                PictTextAt 10;63;"NAME:"
-                PictTextAt 10;86;"RACE:"
-                PictTextAt 76;176;"IQ"
-                PictTextAt 102;176;"STRNGTH"
-                PictTextAt 156;171;"LOWER  UPPER"
-                PictTextAt 156;181;"REFLEX-SPEED"
-                PictTextAt 239;176;"CREDIT"
+                PictTextAt 7;140;"BODY COMPOSITION"
+                PictTextAt 38;153;"% INORGANIC:"
+                PictTextAt 50;165;"% ORGANIC:"
+                PictTextAt 20;177;"ENERGY USAGE: ."
+                PictTextAt 4;5;"NAME:"
+                PictTextAt 4;28;"RACE:"
+                PictTextAt 82;118;"IQ"
+                PictTextAt 102;118;"STRENGTH"
+                PictTextAt 158;113;"LOWER  UPPER"
+                PictTextAt 158;123;"REFLEX-SPEED"
+                PictTextAt 239;118;"CREDIT"
 
                 PictCall DRAW_ADAPT
                 PictCall DRAW_POSPROF
-                PictCall DRAW_RESTORE
+                PictTextAt 16;92;"C>ANCEL"
                 PictEnd
 
                 LDX #0
@@ -59,18 +52,20 @@ DEFINE_CHAR     JSR DRAW_PICT
 :3              LDA #TextLineEnd
                 STA TEXT_BUFFER+1,X
                 JSR DRAW_PICT
-                PictTextbufXY $04;$48
+                PictTextbufXY 10;14
                 PictEnd
 
                 LDA RACE
                 JSR RACE_TO_TEXT
                 JSR DRAW_PICT
-                PictTextbufXY $04;$5F
+                PictTextbufXY 10;37
                 PictEnd
 
-                LDA #$FF
-                STA PROFSNT
-                STA PROFSNT+1
+                LDX #0
+                STX PROFS_CNT
+                DEX
+                STX PROFS_LIST+0
+                STX PROFS_LIST+1
 
                 LDX RACE
                 LDA MINOFF,X        ;LOAD MINIMUM CHARACTERIST VALUES
@@ -158,24 +153,14 @@ MORHGRP         STX WHICH
                 LDA UNSTROB
                 JMP KEYIN
 
-DRAW_RESTORE    JSR DRAW_PICT
-                PictSetGreen
-                PictTextAt 110;61;"PRESS <SPACE> WHEN FINISHED"
-                PictMoveTo $65;$3B
-                PictLineTo $65;$46
-                PictLineTo $116;$46
-                PictEnd
-                RTS
-
 DRAW_POSPROF    JSR DRAW_PICT
-                PictTextAt 10;109;"POSSIBLE"
-                PictTextAt 4;117;"PROFESSION"
+                PictTextAt 4;51;"PROFESSION:"
                 PictEnd
                 RTS
 
 DRAW_ADAPT      JSR DRAW_PICT
-                PictTextAt 4;164;"ADAPTATION"
-                PictTextAt 16;172;"POINTS"
+                PictTextAt 7;106;"ADAPTATION"
+                PictTextAt 19;114;"POINTS"
                 PictEnd
                 RTS
 
@@ -254,7 +239,6 @@ NOZEROL         LDA BOXNUM
                 STA BOXNUM
 NORFLX2         JSR DRAW_BOX
                 JMP KEYIN
-
 
 GO_RIGHT        LDA BOXNUM
                 CMP #$03
@@ -396,7 +380,6 @@ UNOT42          JSR CHNGST
 UNOT43          JSR UPDATE_PROFS
                 JMP KEYIN
 
-
 GO_DOWN         LDX BOXNUM
                 CPX #$05
                 BNE NOINORG
@@ -510,8 +493,7 @@ DID_ENTER       JSR ERASE_BOX
                 LDA #$00                ; blink adaptation points
                 JSR WBLINK
                 JMP WBCOM
-ADAPOUT         LDA PROFSNT
-                CMP #$FF
+ADAPOUT         LDA PROFS_CNT
                 BNE SELECT_PROF
                 LDA #$01                ; blink possible profession
                 JSR WBLINK
@@ -552,45 +534,34 @@ WBLINK          LDX #1
 
 ;---------------------------------------
 
-SELECT_PROF     JSR DRAW_PICT
-                PictClear 14;59;39;71
-                PictSetBlack1
-                PictMoveTo 273;70
-                PictLineTo 277;70
-                PictClear 1;109;9;116
-                PictTextAt 10;109;"SELECT A"
-                PictEnd
-
-                LDX #0
-                STX LEGALS+0
-                STX LEGALS+1
-                LDA PROFSNT+1
-                CMP #$FF
-                BNE :1
+SELECT_PROF     LDX PROFS_CNT
                 DEX
-:1              STX LEGALS+2
-                JSR :DRAW_CANCEL
+                BEQ :1
+
+                JSR DRAW_PROFCANC
 
                 LDX #<PROFSEL_MDEF
                 LDY #>PROFSEL_MDEF
                 JSR MENU_INIT
                 JSR MENU_SET_CANCEL
                 JSR MENU_SELECT
-                BCC :2
-                BEQ :3
-                LDA PROFSNT+1
-                CMP #$FF
+                BCC :1
+                CPX #2
+                BNE :4
+:1              JSR DRAW_PROFCANC
+                JSR DRAW_SPACE
+                JSR DRAW_BOX
+                ; fix-up reflex-speed box
+                LDA BOXNUM
+                CMP #2
+                BEQ :2
+                CMP #3
                 BNE :3
+:2              LDX #6
+                JSR UPDATE_BOX_N
+:3              JMP KEYIN
 
-:2              JSR DRAW_PICT
-                PictClear 1;109;9;116
-                PictTextAt 10;109;"POSSIBLE"
-                PictEnd
-                JSR :DRAW_CANCEL
-                JSR DRAW_RESTORE
-                JMP KEYIN
-
-:3              LDA PROFSNT,X
+:4              LDA PROFS_LIST,X
                 ASL
                 ASL
                 ASL
@@ -600,20 +571,25 @@ SELECT_PROF     JSR DRAW_PICT
                 SEC
                 JMP LEAVE_CREATE
 
-:DRAW_CANCEL    LDX #1
-                LDA PROFSNT+1
-                CMP #$FF
-                BEQ :4
-                INX
-:4              LDY PROFSEL_YPNTS,X
-                LDX #16
-                JSR MOVE_TO
-                JSR DRAW_PICT
-                PictText "CANCEL"
+DRAW_SPACE      JSR DRAW_PICT
+                PictClear 2;92;9;99
+                PictTextAt 16;92;"<SPACE>"
                 PictEnd
                 RTS
 
-PROFSEL_MDEF    DB  $03
+DRAW_CANCEL     JSR DRAW_PICT
+                PictClear 2;92;9;99
+                PictTextAt 16;92;"C>ANCEL"
+                PictEnd
+                RTS
+
+DRAW_PROFCANC   JSR DRAW_PICT
+                PictClear 2;92;9;99
+                PictTextAt 16;79;"CANCEL"
+                PictEnd
+                RTS
+
+PROFSEL_MDEF    DB  $83
                 DB  $00
                 DW  :CURSOR
 
@@ -621,7 +597,7 @@ PROFSEL_MDEF    DB  $03
                 LDX #3
                 JMP DRAW_ARROW
 
-PROFSEL_YPNTS   DB  127,136,145
+PROFSEL_YPNTS   DB  61,70,79
 
 ;---------------------------------------
 
@@ -695,8 +671,8 @@ NORMST          CPX #$08
                 STY TEXTBUF+3
                 LDA #TextLineEnd
                 STA TEXTBUF+4
-                LDX #$64
-                LDY #$29
+                LDX #104
+                LDY #177
                 JSR DRAW_TEXTBUF_XY
                 LDA TEXTBUF+1
                 ASL
@@ -809,12 +785,12 @@ TOUT            TXA
                 RTS
 
 ;                    IQ  ST  LR  UR  CR  OR  IN  AP  EN
-:STAT_X         DB   76,116,165,207,244,112,112, 28, 98
-:STAT_Y         DB  161,161,161,161,161, 21,  3,181, 40
+:STAT_X         DB   82,119,167,209,242,116,116, 31,110
+:STAT_Y         DB  103,103,103,103,103,165,154,123,177
 
 ;---------------------------------------
 
-GRAPHA          LDA #$9F
+GRAPHA          LDA #98                 ; graph bottoms
                 STA YLEVEL
                 LDA #$00
                 STA PICPNT
@@ -875,7 +851,7 @@ PNT5            CMP #$4B
 PNTB            LDA #$00
                 STA PICPNT
 NORESET         LDA YLEVEL
-                CMP #$3C
+                CMP #1                  ; y-limit top of graph
                 BEQ TOPOUT
                 LDA COUNTR4
                 CMP #$04
@@ -966,11 +942,11 @@ CALL            PHA
                 JSR GRAPH
                 JMP SAMETH
 
-ADJUST          LDA ROWB,X
+ADJUST          LDA COL_BEGIN,X
                 STA PNT2+1
                 STA PNT6+1
                 STA PNT7+1
-                LDA ROWE,X
+                LDA COL_END,X
                 STA PNT4+1
                 STA PNT9+1
                 LDA LIMIT,X
@@ -1093,88 +1069,77 @@ ADJUSTR         LDA BEGLINS,X
                 TAX
                 RTS
 
-UPDATE_PROFS    LDA #$00
-                STA MINPNT
-                STA BCHECKD
-PRFLP           LDY #$00
-                LDX MINPNT
-PRFLOOP         LDA PRSNST,Y
+UPDATE_PROFS    LDX #0
+                STX NEXT_PCNT
+                DEX
+                STX NEXT_PLIST+0
+                STX NEXT_PLIST+1
+
+                LDY #0
+:1              STY PROF_INDEX
+                LDX MIN_OFFSETS,Y
+                LDY #0
+:2              LDA PRSNST,Y
                 CMP PROFMIN,X
-                BCC FAILS
+                BCC :3
                 INX
                 INY
                 CPY #$07
-                BNE PRFLOOP
-                JSR PROF_DRAW
-SKIPLOP         LDA BCHECKD
-                INC BCHECKD
-                CMP #$04
-                BEQ PRFDONE
-                LDA #$07
-                CLC
-                ADC MINPNT
-                STA MINPNT
-                JMP PRFLP
-FAILS           JSR PROF_ERASE
-                JMP SKIPLOP
-PRFDONE         LDA PROFSNT+1
-                TAX
-                CMP #$FF
-                BEQ DONE2
-                LDA PROFSNT
-                CMP #$FF
-                BNE DONE2
-                TXA
-                STA BCHECKD
-                JSR PROF_ERASE
-                JSR PROF_DRAW
-DONE2           RTS
-
-PROF_DRAW       LDX #$01
-:1              LDA PROFSNT,X
-                CMP BCHECKD
-                BEQ :3
-                DEX
-                BPL :1
-                LDX #$00
-:2              LDA PROFSNT,X
-                CMP #$FF
-                BEQ :4
-                INX
-                CPX #$02
                 BNE :2
-:3              RTS
-:4              LDA BCHECKD
-                STA PROFSNT,X
-SPLICE          TXA
-                PHA
-                LDA BCHECKD
+
+                LDX NEXT_PCNT
+                LDA PROF_INDEX
+                STA NEXT_PLIST,X
+                INC NEXT_PCNT
+
+:3              LDY PROF_INDEX
+                INY
+                CPY #5
+                BNE :1
+
+:COMPARE_PROFS  LDX #0
+:4              STX PROF_INDEX
+                LDA PROFS_LIST,X
+                CMP NEXT_PLIST,X
+                BEQ :5
+                JSR DRAW_PROF
+                LDX PROF_INDEX
+                LDA NEXT_PLIST,X
+                STA PROFS_LIST,X
+                JSR DRAW_PROF
+:5              LDX PROF_INDEX
+                INX
+                CPX #2
+                BNE :4
+
+:UPDATE_CANCEL  LDA NEXT_PCNT
+                BNE :6
+                LDX PROFS_CNT
+                BEQ :7
+                STA PROFS_CNT
+                JMP DRAW_CANCEL
+
+:6              LDX PROFS_CNT
+                BNE :7
+                STA PROFS_CNT
+                JMP DRAW_SPACE
+
+:7              STA PROFS_CNT
+                RTS
+
+DRAW_PROF       CMP #$FF
+                BEQ :1
                 JSR PROF_TO_TEXT
-                LDA BCHECKD
-                CMP #physician
-                BNE NOPHYSN
-                LDA #TextN              ; abbreviate to "PHYSICN"
-                STA TEXTBUF+6
-                LDA #TextEmpty
-                STA TEXTBUF+7
-NOPHYSN         LDA #TextLineEnd        ; truncate CYBERNATE, too
-                STA TEXTBUF+8
-                PLA
-                TAX
+                LDX PROF_INDEX
                 LDY PROFSEL_YPNTS,X
                 LDX #16
                 JMP DRAW_TEXTBUF_XY
+:1              RTS
 
-PROF_ERASE      LDX #$01
-:1              LDA PROFSNT,X
-                CMP BCHECKD
-                BEQ :2
-                DEX
-                BPL :1
-                RTS
-:2              LDA #$FF
-                STA PROFSNT,X
-                JMP SPLICE
+NEXT_PCNT       DB  0
+NEXT_PLIST      DB  0,0
+
+MIN_OFFSETS     DB  0,7,14,21,28
 
 ; base/minimum stats by race
 ;                    HU  OR  ST  XX  DE
@@ -1192,12 +1157,12 @@ ADRANGE         DB  $05,$02,$09,$02,$05
 
 ; vertical bar graph info by stat #
 ;                    IQ  ST  LR  UR  CR
-ROWB            DB  $09,$0F,$15,$1B,$22
-ROWE            DB  $0E,$14,$1C,$21,$27
-LIMIT           DB  $4B,$D7,$70,$4E,$41
-ANDNUM          DB  $07,$00,$00,$83,$00
-LWLIMIT         DB  $00,$23,$00,$06,$00
-ECHECK          DB  $FF,$22,$FF,$05,$FF
+COL_BEGIN       DB  $0A,$0F,$16,$1C,$22
+COL_END         DB  $0F,$14,$1B,$21,$27
+LIMIT           DB  $4B,$D7,$50,$41,$41
+ANDNUM          DB  $07,$00,$00,$00,$00
+LWLIMIT         DB  $00,$23,$00,$05,$00
+ECHECK          DB  $FF,$22,$FF,$04,$FF
 
 ; base credits by race
 ;                    HU  OR  ST  XX  DE
@@ -1217,8 +1182,8 @@ DATAS           DW  DNA
 
 ; horizontal bar graph info
 ;                    OR  IN  EN
-BEGLINS         DB  $14,$03,$22
-ENDLINS         DB  $1B,$0A,$36
+BEGLINS         DB  165,154,177
+ENDLINS         DB  172,161,183         ; inclusive
 
 ; minimum required stats, by profession
 ;                    IQ  ST  LR  UR  CR  OR  IN
@@ -1235,57 +1200,38 @@ DRAW_BOX        LDA #OpColorViolet
 ERASE_BOX       LDA #OpColorBlack1
 BOX_CMN         JSR SET_COLOR
                 LDX BOXNUM
-UPDATE_BOX_N    DEX
-                BPL :1
-
-:0              JSR DRAW_PICT
-                PictRect $4A;$AE;$5A;$B8
-                PictEnd
-                RTS
-
-:1              DEX
-                BPL :2
+UPDATE_BOX_N    STX TEMP
                 JSR DRAW_PICT
-                PictRect $62;$AE;$92;$B8
-                PictEnd
-                RTS
+                PictSwitch TEMP
 
-:2              DEX
-                BPL :3
-                JSR DRAW_PICT
-                PictMoveTo $98;$B2
-                PictLineTo $98;$A9
-                PictLineTo $BC;$A9
-                PictLineTo $BC;$B2
-                PictEnd
-                RTS
+:0              PictCase :1
+                PictRect 80;116;96;126
 
-:3              DEX
-                BPL :4
-                JSR DRAW_PICT
-                PictMoveTo $C2;$B2
-                PictLineTo $C2;$A9
-                PictLineTo $E6;$A9
-                PictLineTo $E6;$B2
-                PictEnd
-                RTS
+:1              PictCase :2
+                PictRect 98;116;152;126
 
-:4              DEX
-                BPL :5
-                JSR DRAW_PICT
-                PictRect $EC;$AE;$114;$B8
-                PictEnd
-                RTS
+:2              PictCase :3
+                PictMoveTo 154;120
+                PictVLineTo 111
+                PictHLineTo 190
+                PictVLineTo 120
 
-:5              DEX
-                BPL :6
-                JSR DRAW_PICT
-                PictRect $04;$0A;$68;$14
-                PictEnd
-                RTS
+:3              PictCase :4
+                PictMoveTo 196;120
+                PictVLineTo 111
+                PictHLineTo 232
+                PictVLineTo 120
 
-:6              JSR DRAW_PICT
-                PictRect $98;$B3;$E6;$BD
+:4              PictCase :5
+                PictRect 236;116;276;126
+
+:5              PictCase :6
+                PictRect 4;138;104;148
+
+:6              PictCase :END
+                PictRect 154;121;232;131
+
+:END            PictSwitchEnd
                 PictEnd
                 RTS
 

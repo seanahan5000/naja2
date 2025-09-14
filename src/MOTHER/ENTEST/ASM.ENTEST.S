@@ -26,6 +26,8 @@ ENROLL_FILE     DB  fileEntest_Enroll
                 PUT ENROLL/SAVE.CHAR
                 PUT ENROLL/DATA
                 DS  \,$EE
+                ; TODO: trim this down
+                DS  256
                 DS  256
                 ERR *-$9B00
 

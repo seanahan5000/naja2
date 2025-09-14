@@ -64,7 +64,7 @@ WHICH_CDEF      DB  $08
                 JMP DRAW_ARROW
 
 MARKIT          LDX CURSOR
-                LDY  TYPOINTS,X
+                LDY TYPOINTS,X
                 LDX #8
                 JMP DRAW_MARKER
 

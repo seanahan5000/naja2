@@ -12,6 +12,7 @@ X Complete rewrite of tunnel drawing
     X Improved far left/right wall caps
 X New graphics compression algorithm
     X Significant size savings across disks
+X Redesigned character creation screen
 
 * Door opening animation?
     * (Must disable if about to land on special)
@@ -31,7 +32,7 @@ X Consider 5 or 6 instead of 7 group members, for balancing purposes
         * (Or just inform player that alien was added?)
     * Could start with a few common aliens already identified
 X Remove per-character credits and pooling credits UI
-    * Keep pooled credits in game state
+    X Keep pooled credits in game state
 * Make encounters more likely on never-visited map squares
     * Less common once a square has been mapped
 X Change DAMAGE to HEALTH in stats (easier for player)

@@ -2,16 +2,18 @@ WHICH           =   ZBLOCK_A0+0
 ; DATPNTL         =   ZBLOCK_A0+1
 ; DATPNTH         =   ZBLOCK_A0+2
 PICPNT          =   ZBLOCK_A0+3
-MINPNT          =   ZBLOCK_A0+4
+PROF_INDEX      =   ZBLOCK_A0+4
 YLEVEL          =   ZBLOCK_A0+5
-BCHECKD         =   ZBLOCK_A0+6
+*
 COUNTR4         =   ZBLOCK_A0+7
 DATCNT          =   ZBLOCK_A8+0
 STATNUM         =   ZBLOCK_A8+1
 BOXNUM          =   ZBLOCK_A8+2
-PROFSNT         =   ZBLOCK_A8+3     ;+4
 
-HOLDIT          =   ZBLOCK_A8+5         ; used by DEFINE.CHAR
+PROFS_CNT       =   ZBLOCK_A8+3
+PROFS_LIST      =   ZBLOCK_A8+4     ;+5
+
+HOLDIT          =   ZBLOCK_A8+6         ; used by DEFINE.CHAR
 
 ENROLL
 
