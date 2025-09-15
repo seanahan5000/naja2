@@ -61,11 +61,8 @@ DEFINE_CHAR     JSR DRAW_PICT
                 PictTextbufXY 10;37
                 PictEnd
 
-                LDX #0
-                STX PROFS_CNT
-                DEX
-                STX PROFS_LIST+0
-                STX PROFS_LIST+1
+                LDA #$FF
+                STA PROF_POS
 
                 LDX RACE
                 LDA MINOFF,X        ;LOAD MINIMUM CHARACTERIST VALUES
@@ -493,9 +490,18 @@ DID_ENTER       JSR ERASE_BOX
                 LDA #$00                ; blink adaptation points
                 JSR WBLINK
                 JMP WBCOM
-ADAPOUT         LDA PROFS_CNT
-                BNE SELECT_PROF
-                LDA #$01                ; blink possible profession
+ADAPOUT         LDA PROF_POS
+                BMI NO_PROF
+                ASL
+                ASL
+                ASL
+                ASL
+                ORA RACE
+                STA PROFRAC
+                SEC
+                JMP LEAVE_CREATE
+
+NO_PROF         LDA #$01                ; blink possible profession
                 JSR WBLINK
 WBCOM           JSR DRAW_BOX
                 LDA BOXNUM
@@ -531,73 +537,6 @@ WBLINK          LDX #1
                 BNE :2
                 JMP DRAW_ADAPT
 :2              JMP DRAW_POSPROF
-
-;---------------------------------------
-
-SELECT_PROF     LDX PROFS_CNT
-                DEX
-                BEQ :1
-
-                JSR DRAW_PROFCANC
-
-                LDX #<PROFSEL_MDEF
-                LDY #>PROFSEL_MDEF
-                JSR MENU_INIT
-                JSR MENU_SET_CANCEL
-                JSR MENU_SELECT
-                BCC :1
-                CPX #2
-                BNE :4
-:1              JSR DRAW_PROFCANC
-                JSR DRAW_SPACE
-                JSR DRAW_BOX
-                ; fix-up reflex-speed box
-                LDA BOXNUM
-                CMP #2
-                BEQ :2
-                CMP #3
-                BNE :3
-:2              LDX #6
-                JSR UPDATE_BOX_N
-:3              JMP KEYIN
-
-:4              LDA PROFS_LIST,X
-                ASL
-                ASL
-                ASL
-                ASL
-                ORA RACE
-                STA PROFRAC
-                SEC
-                JMP LEAVE_CREATE
-
-DRAW_SPACE      JSR DRAW_PICT
-                PictClear 2;92;9;99
-                PictTextAt 16;92;"<SPACE>"
-                PictEnd
-                RTS
-
-DRAW_CANCEL     JSR DRAW_PICT
-                PictClear 2;92;9;99
-                PictTextAt 16;92;"C>ANCEL"
-                PictEnd
-                RTS
-
-DRAW_PROFCANC   JSR DRAW_PICT
-                PictClear 2;92;9;99
-                PictTextAt 16;79;"CANCEL"
-                PictEnd
-                RTS
-
-PROFSEL_MDEF    DB  $83
-                DB  $00
-                DW  :CURSOR
-
-:CURSOR         LDY PROFSEL_YPNTS,X
-                LDX #3
-                JMP DRAW_ARROW
-
-PROFSEL_YPNTS   DB  61,70,79
 
 ;---------------------------------------
 
@@ -1069,12 +1008,8 @@ ADJUSTR         LDA BEGLINS,X
                 TAX
                 RTS
 
-UPDATE_PROFS    LDX #0
-                STX NEXT_PCNT
-                DEX
-                STX NEXT_PLIST+0
-                STX NEXT_PLIST+1
-
+UPDATE_PROFS    LDA #$FF
+                STA NEXT_PROF
                 LDY #0
 :1              STY PROF_INDEX
                 LDX MIN_OFFSETS,Y
@@ -1086,58 +1021,51 @@ UPDATE_PROFS    LDX #0
                 INY
                 CPY #$07
                 BNE :2
-
-                LDX NEXT_PCNT
                 LDA PROF_INDEX
-                STA NEXT_PLIST,X
-                INC NEXT_PCNT
-
+                STA NEXT_PROF
+                BPL :6                  ; always
 :3              LDY PROF_INDEX
                 INY
                 CPY #5
                 BNE :1
 
-:COMPARE_PROFS  LDX #0
-:4              STX PROF_INDEX
-                LDA PROFS_LIST,X
-                CMP NEXT_PLIST,X
-                BEQ :5
+:6              LDA PROF_POS
+                CMP NEXT_PROF
+                BEQ :99
                 JSR DRAW_PROF
-                LDX PROF_INDEX
-                LDA NEXT_PLIST,X
-                STA PROFS_LIST,X
+                LDA NEXT_PROF
                 JSR DRAW_PROF
-:5              LDX PROF_INDEX
-                INX
-                CPX #2
-                BNE :4
 
-:UPDATE_CANCEL  LDA NEXT_PCNT
-                BNE :6
-                LDX PROFS_CNT
-                BEQ :7
-                STA PROFS_CNT
-                JMP DRAW_CANCEL
-
-:6              LDX PROFS_CNT
-                BNE :7
-                STA PROFS_CNT
-                JMP DRAW_SPACE
-
-:7              STA PROFS_CNT
+                LDA NEXT_PROF
+                BPL :77
+                LDX PROF_POS
+                BMI :99
+                STA PROF_POS
+                JSR DRAW_PICT
+                PictClear 2;92;9;99
+                PictTextAt 16;92;"C>ANCEL"
+                PictEnd
                 RTS
+
+:77             LDX PROF_POS
+                BPL :88
+                STA PROF_POS
+                JSR DRAW_PICT
+                PictClear 2;92;9;99
+                PictTextAt 16;92;"<SPACE>"
+                PictEnd
+                RTS
+
+:88             STA PROF_POS
+:99             RTS
 
 DRAW_PROF       CMP #$FF
                 BEQ :1
                 JSR PROF_TO_TEXT
-                LDX PROF_INDEX
-                LDY PROFSEL_YPNTS,X
-                LDX #16
+                LDX #10
+                LDY #61
                 JMP DRAW_TEXTBUF_XY
 :1              RTS
-
-NEXT_PCNT       DB  0
-NEXT_PLIST      DB  0,0
 
 MIN_OFFSETS     DB  0,7,14,21,28
 

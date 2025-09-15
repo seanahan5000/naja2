@@ -10,9 +10,9 @@ DATCNT          =   ZBLOCK_A8+0
 STATNUM         =   ZBLOCK_A8+1
 BOXNUM          =   ZBLOCK_A8+2
 
-PROFS_CNT       =   ZBLOCK_A8+3
-PROFS_LIST      =   ZBLOCK_A8+4     ;+5
-
+PROF_POS        =   ZBLOCK_A8+3
+NEXT_PROF       =   ZBLOCK_A8+4
+*
 HOLDIT          =   ZBLOCK_A8+6         ; used by DEFINE.CHAR
 
 ENROLL

@@ -29,6 +29,7 @@ ENROLL_FILE     DB  fileEntest_Enroll
                 ; TODO: trim this down
                 DS  256
                 DS  256
+                DS  256
                 ERR *-$9B00
 
                 ORG $8400
