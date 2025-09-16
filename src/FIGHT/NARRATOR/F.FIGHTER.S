@@ -1,12 +1,11 @@
 dLeft           =   %00100000
 dRight          =   %00010000
-dLeftRight      =   dLeft.dRight
+dLeftRight      =   dLeft+dRight
 dForward        =   %00001000
 dBackward       =   %00000100
 dHLeft          =   %00000010
 dHRight         =   %00000001
-dHLeftRight     =   dHLeft.dHRight
-
+dHLeftRight     =   dHLeft+dHRight
 
 INIT_MCOMMAND   JSR COPY_FBYTES
                 LDY #monFLAGS

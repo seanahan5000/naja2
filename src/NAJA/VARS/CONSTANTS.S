@@ -1,7 +1,7 @@
 
 ORIGINAL		=	1
 DEBUG_KEYS		=	1				; enable debug features tied to alt/option keys
-SMALL_GROUP     =   1
+SMALL_GROUP     =   1                   ; TODO: get rid of this
 NAME_FIRST      =   1
 MINI_CAMP       =   0
 
@@ -65,14 +65,14 @@ wyesno			=	%11000000
 
 charNameLength  =   10
 
-*** For character data tables
 name			=	$00
-status			=	$0A
+status			=	$0A                 ; *** CASE SENSITIVITY PROBLEM ***
 level			=	$0B                 ; TODO: trim to 1 byte
 profrace		=	$0D
 experience		=	$0E                 ; TODO: trim to 3 bytes
 *
-credits			=	$13                 ; TODO: trim to 3 bytes, move to common state
+credits			=	$13                 ; NOTE: used to transfer credits from
+                                        ;   from character creation to group pool
 strength		=	$17
 upreflex		=	$18
 lwreflex		=	$19

@@ -4,7 +4,7 @@ B_LINE          =   $C1
 A_COUNT         =   $C2
 B_COUNT         =   $C3
 BEGLINE         =   $C4
-ENDLINE         =   $C5
+ENDLINE         =   $C5                 ; TODO: fix reference by RUUIK
 
 PICHERE         =   $5FFF
 
