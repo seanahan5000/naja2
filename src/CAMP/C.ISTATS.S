@@ -487,16 +487,16 @@ DRAW_INFO		JSR IS_ROBOT
 DRAW_CHAR_INFO	JSR DRAW_PICT
 				PictTextAt_ 171;4
 				TXC "NAME:\n"
-				TXC "RACE:\n"
 				TXC "PROF:\n"
+				TXC "HOME:\n"
 				TXC "LEVL:\n"
 				TXT "EXPR:"
 				PictMoveTo $CC;4
 				PictCall CNAME_TO_TEXT
 				PictTextbufRet
-				PictCall CRACE_TO_TEXT
-				PictTextbufRet
 				PictCall CPROF_TO_TEXT
+				PictTextbufRet
+				PictCall CRACE_TO_TEXT
 				PictTextbufRet
 				PictCall CLEV_TO_TEXT_L
 				PictTextbufRet

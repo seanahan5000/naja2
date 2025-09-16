@@ -119,8 +119,8 @@ X Rework fight grid to show actual hall configuration
     * Adds space in fight screens and alien info
 * Put Tesseract/port in camp entry menu
 * Beacon item that allows Tesseract/port from any location
-* Use "home world" or "planet" or "system" instead of race?
-    * Earth instead of human?
+X Use "home world" or "planet" or "system" instead of race
+    X Earth instead of human
 * Character format
     * Split data into stored information and in-station state
     * Redo equipment format

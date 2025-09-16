@@ -26,7 +26,7 @@ DEFINE_CHAR     JSR DRAW_PICT
                 PictTextAt 50;165;"% ORGANIC:"
                 PictTextAt 20;177;"ENERGY USAGE: ."
                 PictTextAt 4;5;"NAME:"
-                PictTextAt 4;28;"RACE:"
+                PictTextAt 4;28;"HOME:"
                 PictTextAt 82;118;"IQ"
                 PictTextAt 102;118;"STRENGTH"
                 PictTextAt 158;113;"LOWER  UPPER"

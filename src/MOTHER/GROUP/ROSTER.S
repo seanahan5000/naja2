@@ -187,7 +187,7 @@ DRAW_ROSTER     JSR DRAW_PICT
                 PictClearPage
                 PictTextAt 8+6;2;"NAME"
                 PictTextAt 71+6;2;"PROFESSION"
-                PictTextAt 140+6;2;"RACE"
+                PictTextAt 140+6;2;"HOME"
                 PictTextAt 188+6;2;"LEVEL"
                 PictTextAt 227+6;2;"STATUS"
                 PictSetGreen

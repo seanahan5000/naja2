@@ -435,7 +435,7 @@ SHOW_STATS      JSR DRAW_PICT
                 PictTextAt_ 100;22
                 TXC "NAME:\n"
                 TXC "PROF:\n"
-                TXC "RACE:\n"
+                TXC "HOME:\n"
                 TXC "EXPR:\n"
                 TXT "LEVL:"
                 PictMoveTo 136;22

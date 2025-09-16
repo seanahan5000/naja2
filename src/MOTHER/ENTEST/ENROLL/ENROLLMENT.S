@@ -19,7 +19,7 @@ ENROLL
 
 ASK_NAME        JSR DRAW_PICT
                 PictCall CLEAR_BOX
-                PictTextAt 54;154;"WHAT IS YOUR NAME? "
+                PictTextAt 54;163;"WHAT IS YOUR NAME? "
                 PictEnd
                 JSR ASK_CHAR_NAME
                 BCS GOT_NAME
@@ -44,9 +44,9 @@ NOT_NAJA        JSR DUPE_NAME_CHECK
 
 ASK_RACE        JSR DRAW_PICT
                 PictCall CLEAR_BOX
-                PictTextAt 6;143;"TO WHICH RACE DO YOU BELONG?"
+                PictTextAt 24;163;"WHAT IS YOUR HOME PLANET?"
                 PictTextRows 204;143;10
-                TXC "HUMAN\n"
+                TXC "EARTH\n"
                 TXC "ORN\n"
                 TXC "STILICX\n"
                 TXC "XXTYS\n"

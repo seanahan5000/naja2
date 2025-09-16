@@ -644,7 +644,7 @@ GROUP_KEY		TXI	"WHITE_SAND" 			;*0          Group B
 ;				TXI	"ZINAN" 				;*7
 ;				TXI	"!!!" 					;*8
 ;				TXI	"GILLOITAN" 			;*9
-				TXI "HUMAN" 				;*5
+				TXI "EARTH" 				;*5
 				TXI "ORN" 					;*6
 				TXI "STILICX" 				;*7
 				TXI "XXTYS" 				;*8

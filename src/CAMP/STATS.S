@@ -559,7 +559,7 @@ RACE_TO_TEXT    ENT
                 JMP GET_IND_STRING
 
 RACE_NAMES
-HUMAN           TXI "HUMAN"
+HUMAN           TXI "EARTH"
 ORN             TXI "ORN"
 STILICX         TXI "STILICX"
 XXTYS           TXI "XXTYS"
