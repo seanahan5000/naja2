@@ -66,76 +66,82 @@ All preparation for exploration takes place here.
 
 ### Enrollment and Testing
 
-Add create new characters and check for rank advancement here.
 <img src="docs/images/enroll.png"/>
 
-Apply adapatiation points to tailor a character to a specific profession.
+Add create new characters and check for rank advancement here.
 
 <img src="docs/images/create.png"/>
+
+Apply adapatiation points to tailor a character to a specific profession.
 
 ```
 Minimum required statistics by profession:
 
-            IQ  ST  LR  UR  CR  IN  OR
-Warrior      6  21  19  20   0  20  45
-Android     25  10  16  15   0  60  20
-Cybernate   22  14  11  11   8  30  45
-Juicer      14  18  17  17   0  45  30
-Physician   23  10  14  19   0  15  60
+            IQ  ST  LR  UR   CR  IN  OR
+Warrior      6  21  19  20  250  20  45
+Android     25  10  16  15  250  60  20
+Cybernate   22  14  11  11  425  30  45
+Juicer      14  18  17  17  250  45  30
+Physician   23  10  14  19  250  15  60
 ```
-
-TODO: turn CR values into actual numbers
 
 ### Group Assembly Office
 
-Build your group from a roster of available characters.
 <img src="docs/images/group.png"/>
+
+Build your group from a roster of available characters.
 
 ### Shuttle Loading
 
-Send characters back to their home planet.
-
 <img src="docs/images/shuttle.png"/>
+
+Send characters back to their home planet.
 
 ### Arsenal
 
-Buy, sell, repair, and identify equipment here.
 <img src="docs/images/arsenal.png"/>
 
-Design and purchase custom made armor, for example.
+Buy, sell, repair, and identify equipment here.
 
 <img src="docs/images/armor.png"/>
 
+Design and purchase custom made armor, for example.
+
 ### Energy Distribution Center
 
-Recharge your character's energy supply here.
 <img src="docs/images/energy1.png"/>
 
-Surplus energy call also be sold back.
+Recharge your character's energy supply here.
+
 <img src="docs/images/energy2.png"/>
 
+Surplus energy call also be sold back.
+
 ### Robot Ordering and Replacement Center
-Your cybernate orders their robot here.
 
 <img src="docs/images/robot1.png"/>
 
-Parts of their robot can be upgraded as credits permit.
+Order your new robot here.
 
 <img src="docs/images/robot2.png"/>
 
+Robot parts can be upgraded as credits permit.
+
 ### Infirmary
 
-Heal your characters wounds here.
 <img src="docs/images/infirmary1.png"/>
 
-Various conditions can be treated.
+Heal your characters here.
+
 <img src="docs/images/infirmary2.png"/>
+
+Various conditions can be treated.
 
 ### Tesserport
 
-Tesseract to the TRACC Station to begin your adventure.
-
 <img src="docs/images/tesser.png"/>
+
+Tesseract to the TRACC Station to begin your adventure.
 
 ## TRACC Station
 
