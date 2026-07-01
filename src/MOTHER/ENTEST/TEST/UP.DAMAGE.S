@@ -116,14 +116,10 @@ ORGHOLD         DB  $00
 RANK            DB  $00
 
 
+; TODO: not needed now that level is one byte
 LIMIT_RANK      LDY #level
-                LDX #$99
                 LDA (CHARDL),Y
-                BNE :SKIPA
-                INY
-                LDA (CHARDL),Y
-                TAX
-:SKIPA          STX RANK
+                STA RANK
                 RTS
 
 *-------------------------------

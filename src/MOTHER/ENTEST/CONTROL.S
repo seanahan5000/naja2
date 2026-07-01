@@ -17,7 +17,6 @@ LEVEL           DB  $00,$00,$00,$00,$00
 POINTER         DB  $00,$00,$00,$00,$00
 
 ; character testing
-CONTAB          DS  51
 PLUSTAB         DB  $00,$00,$00,$00
                 DEND
 

@@ -1,7 +1,8 @@
 
                 TXC "EXTRA_____"
                 DFB healthy         ;healthy
-                HEX 0001            ;Level
+                HEX 01              ;Level
+                HEX EE              ;UNUSED
                 DFB warrior*16+deneb
                 HEX 00003999        ;Experience
 

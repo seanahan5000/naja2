@@ -1,11 +1,12 @@
 
+LEVEL_DELTA     =   TEMPV4_A
+
 TESTING         JSR DRAW_PICT
                 PictCall CLEAR_BOX
                 PictSetPage2
                 PictClearPage
                 PictEnd
 
-                JSR DOCOTAB
                 JSR DRAW_SELMEMB
 
                 JSR DRAW_PICT
@@ -109,7 +110,7 @@ NOT_HEALTHY     JSR DRAW_PICT
                 INC WHICH_CDEF+1
                 JMP PFCOMN2
 
-IS_HEALTHY      JSR PASS_FAIL
+IS_HEALTHY      JSR COMPUTE_LEVEL
                 BCC FAILS_TEST
                 JMP PASSES_TEST
 
@@ -134,11 +135,11 @@ FAILS_TEST      JSR DRAW_PICT
                 PictEnd
 
                 LDX #TextS
-                LDA LEVTOTL
-                ORA LEVTOTL+1
-                ORA LEVTOTL+2
+                LDA LEVEL_DELTA
+                ORA LEVEL_DELTA+1
+                ORA LEVEL_DELTA+2
                 BNE :1
-                LDA LEVTOTL+3
+                LDA LEVEL_DELTA+3
                 CMP #$01
                 BNE :1
                 LDX #TextEmpty
@@ -167,10 +168,7 @@ PASSES_TEST     JSR DRAW_PICT
                 BNE NO_EMED
                 LDY #level
                 LDA (CHARDL),Y
-                BNE NO_EMED
-                INY
-                LDA (CHARDL),Y
-                CMP #$14
+                CMP #$14                ; TODO: make this a balance variable
                 BNE NO_EMED
 
 NOW_EMED        JSR DRAW_PICT
@@ -212,10 +210,7 @@ NO_EMED         JSR DRAW_PICT
                 PictEnd
 
 PASS_CMN        LDY #level
-                LDA LEVCNT
-                STA (CHARDL),Y
-                INY
-                LDA LEVCNT+1
+                LDA LEVEL_SAVE
                 STA (CHARDL),Y
 
                 JSR DRAW_PICT
@@ -248,24 +243,21 @@ TSPACE_WAIT     BIT UNSTROB
 
 ;---------------------------------------
 
-LEVEL_OUT       LDY #level+1
+LEVEL_OUT       LDY #level
                 LDA (CHARDL),Y
+                CMP #$99
+                BEQ :1
                 CLC
                 SED
                 ADC #1
-                STA LEVCNT+1
-                PHA
-                DEY
-                LDA (CHARDL),Y
-                ADC #0
-                STA LEVCNT
-                PHA
                 CLD
-                LDA #2
+:1              PHA
+                STA LEVEL_SAVE
+                LDA #1
                 BNE DIGITS_OUT          ; always
 
 MORE_EXP        LDX #3
-:1              LDA LEVTOTL,X
+:1              LDA LEVEL_DELTA,X
                 PHA
                 DEX
                 BPL :1
@@ -277,6 +269,8 @@ DIGITS_OUT      LDX #0
                 LDA #TextLineEnd
                 STA TEXTBUF,X
                 JMP DRAW_TEXTBUF
+
+LEVEL_SAVE      DS  1
 
 ;---------------------------------------
 
@@ -403,6 +397,8 @@ STATYS          DB  $41,$4A,$53,$5C
 
 ; update power value in stats box
 
+POWV4_TEMP      =   TEMPV4_A
+
 UPOWER          JSR DOPOW
                 LDY #organic
                 LDA #$00
@@ -417,7 +413,7 @@ UPOWER          JSR DOPOW
                 ASL
                 ASL
                 ASL
-                STA LEVTOTL+2
+                STA POWV4_TEMP+2
                 TXA
                 LSR
                 LSR
@@ -427,9 +423,9 @@ UPOWER          JSR DOPOW
                 CLC
                 ADC #$30
                 CLD
-                STA LEVTOTL+1
+                STA POWV4_TEMP+1
                 LDA #$00
-                STA LEVTOTL
+                STA POWV4_TEMP
                 LDY #profrace
                 LDA (CHARDL),Y
                 AND #%11110000
@@ -438,9 +434,9 @@ UPOWER          JSR DOPOW
                 LDX #$02
                 CLC
 LEVLOOP         SED
-                LDA LEVTOTL,X
-                ADC LEVTOTL,X
-                STA LEVTOTL,X
+                LDA POWV4_TEMP,X
+                ADC POWV4_TEMP,X
+                STA POWV4_TEMP,X
                 CLD
                 DEX
                 BPL LEVLOOP
@@ -449,7 +445,7 @@ NOJUICR         LDX #$02
                 CLC
 ADDCONS         LDA (CHARDL),Y
                 SED
-                ADC LEVTOTL,X
+                ADC POWV4_TEMP,X
                 CLD
                 STA (CHARDL),Y
                 DEY

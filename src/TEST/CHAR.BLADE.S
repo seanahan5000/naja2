@@ -1,7 +1,8 @@
 
                 TXC "BLADE_____"
                 DFB healthy
-                HEX 0001            ;Level
+                HEX 01              ;Level
+                HEX EE              ;UNUSED
                 DFB electromedic*16+stilicx
                 HEX 00006666        ;Experience
 

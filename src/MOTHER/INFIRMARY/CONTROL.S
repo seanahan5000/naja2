@@ -599,12 +599,11 @@ CALC_COST       LDX #27
                 DEX
                 BPL :1
 
-                LDY #level+1
+                LDY #level
                 LDA (CHARDL),Y
                 TAX
-                DEY
-                LDA (CHARDL),Y
-                TAY
+                LDY #$00
+                ; TODO: needs to be balance variable
                 LDA #$50            ;??? credits/level
                 JSR MULTIPLY_12
                 LDX #2

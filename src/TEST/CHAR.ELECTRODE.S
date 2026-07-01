@@ -1,7 +1,8 @@
 
                 TXC "ELECTRODER"        ; extra "R" to pad out name
                 DFB healthy
-                HEX 0001            ;Level
+                HEX 01              ;Level
+                HEX EE              ;UNUSED
                 DFB juicer*16+orn
                 HEX 00256666        ;Experience
 

@@ -36,8 +36,10 @@ ENROLL_FILE     DB  fileEntest_Enroll
 TEST_FILE       DB  fileEntest_Test
                 PUT TEST/TESTING
                 PUT TEST/UP.DAMAGE
-                PUT TEST/PASS.FAIL
                 DS  \,$EE
+                ; TODO: trim this down
+                DS  256
+                DS  256
                 ERR *-$8E00
 
                 SAV ENROLL.TEST

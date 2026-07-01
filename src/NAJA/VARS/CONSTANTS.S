@@ -5,6 +5,9 @@ SMALL_GROUP     =   1                   ; TODO: get rid of this
 NAME_FIRST      =   1
 MINI_CAMP       =   0
 
+; Experience table based on 500 * L * (L - 1)
+LevelScale      =   $10             ; $500 * 2 / $100 in BCD
+
 human			=	0
 orn				=	1
 stilicx			=	2
@@ -67,7 +70,8 @@ charNameLength  =   10
 
 name			=	$00
 status			=	$0A                 ; *** CASE SENSITIVITY PROBLEM ***
-level			=	$0B                 ; TODO: trim to 1 byte
+level           =	$0B
+*               =   $0C                 ; unused
 profrace		=	$0D
 experience		=	$0E                 ; TODO: trim to 3 bytes
 *

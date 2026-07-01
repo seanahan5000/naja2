@@ -1,7 +1,8 @@
 
                 TXC "ETRON2____"
                 DFB healthy
-                HEX 0040            ;Level
+                HEX 40              ;Level
+                HEX EE              ;UNUSED
                 DFB robot*16+none
                 HEX 00000000        ;Experience
 

@@ -214,7 +214,7 @@ DRAW_ROSTER     JSR DRAW_PICT
                 PictCall CRACE_TO_TEXT
                 PictTextbufX 140+6
                 PictCall CLEV_TO_TEXT_R
-                PictTextbufX 185+6
+                PictTextbufX 199+6
                 PictCall CSTATUS_TO_TEXT_C
                 PictTextbufX 218+6
                 PictVMove 9

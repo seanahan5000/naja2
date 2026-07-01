@@ -498,12 +498,22 @@ DRAW_CHAR_INFO	JSR DRAW_PICT
 				PictTextbufRet
 				PictCall CRACE_TO_TEXT
 				PictTextbufRet
-				PictCall CLEV_TO_TEXT_L
+				PictCall CLEV_TO_TEXT_L_PLUS
 				PictTextbufRet
 				PictCall CEXP_TO_TEXT
 				PictTextbufRet
 				PictEnd
 				RTS
+
+CLEV_TO_TEXT_L_PLUS
+                JSR CLEV_TO_TEXT_L
+				JSR COMPUTE_LEVEL
+                BCC :1
+                LDA #TextPlus
+				STA TEXTBUF+2
+				LDA #TextLineEnd
+				STA TEXTBUF+3
+:1              RTS
 
 DRAW_ROBO_EQUIP	LDX #9
 				LDY	#e1_HEAD
@@ -718,5 +728,82 @@ HIDE_BIG_STATS  JSR DRAW_PICT
                 PictSwap $00;$50;$28;$00
                 PictEnd
                 RTS
+
+;-------------------------------------------------------------------------------
+
+; NOTE: if LEVEL_DELTA location changes, change all callers
+LEVEL_DELTA     =   TEMPV4_A
+LEVEL_TEMP      =   TEMPV4_B
+
+;
+; Experience table based on 500 * L * (L - 1)
+;
+; On exit:
+;   A: max level achieved
+;  CS: new level achieved
+;  CC: no new level achieved
+; LEVEL_DELTA (TEMPV4_A): experience needed to reach next level
+;
+COMPUTE_LEVEL   ENT
+
+                LDA #1
+                STA TEMP
+                LDX #3
+                LDY #experience+3
+:1              LDA (CHARDL),Y
+                STA LEVEL_TEMP,X
+                LDA #0
+                STA LEVEL_DELTA,X
+                DEY
+                DEX
+                BPL :1
+
+                LDA #LevelScale
+                STA LEVEL_DELTA+2
+                SED
+
+:2              SEC
+                LDX #3
+:3              LDA LEVEL_TEMP,X
+                SBC LEVEL_DELTA,X
+                STA LEVEL_TEMP,X
+                DEX
+                BPL :3
+                BCS :5
+
+;               CLC
+                LDX #3
+:4              LDA LEVEL_TEMP,X
+                ADC LEVEL_DELTA,X
+                STA LEVEL_DELTA,X
+                DEX
+                BPL :4
+                BMI :7                  ; always
+
+:5              LDA TEMP
+                CMP #$99
+                BCS :7
+;               CLC
+                ADC #1
+                STA TEMP
+
+                CLC
+                LDX #2
+                LDA #LevelScale
+:6              ADC LEVEL_DELTA,X
+                STA LEVEL_DELTA,X
+                LDA #0
+                DEX
+                BPL :6
+                BMI :2                  ; always
+
+:7              CLD
+                LDA TEMP
+                LDY #level
+                CMP (CHARDL),Y
+                BCC :8
+                BNE :8
+                CLC
+:8              RTS
 
 ;-------------------------------------------------------------------------------

@@ -17,12 +17,10 @@ BUILD_CHAR      JSR ALLOC_CHAR
                 STA (CHARDL),Y      ;STATUS
                 INY
 
-                LDA #$00
+                LDA #$01
                 STA (CHARDL),Y      ;LEVEL
                 INY
-                LDA #$01
-                STA (CHARDL),Y      ;LEVEL+1
-                INY
+                INY                 ;UNUSED BYTE
 
                 LDA PROFRAC
                 STA (CHARDL),Y      ;PROFESSION / RACE

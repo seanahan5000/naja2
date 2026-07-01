@@ -201,7 +201,7 @@ CREATE_PART     LDA #<ROBOTBUF
                 CMP #$0D
                 BNE :4
 
-                LDY #level+1
+                LDY #level
                 LDA PLEVEL
                 STA (CHARDL),Y
 

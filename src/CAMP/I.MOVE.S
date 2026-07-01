@@ -147,13 +147,14 @@ NOBSORC			LDY	MCURSOR
 MODER			LDA	(CHARDL),Y
 				PHA
 				AND	#$7F
-				LDY	#level+1
-				STA	(CHARDL),Y
+				; *** why were these here?
+				; LDY	#level+1
+				; STA	(CHARDL),Y
 				LSR
 				LSR
 				LSR
 				LSR
-				STA	TEXTBUF
+				STA	TEXTBUF+0
 				PLA
 				PHA
 				AND	#$0F

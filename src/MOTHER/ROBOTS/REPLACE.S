@@ -118,8 +118,8 @@ PARTPRO         LDX SCRPICK
                 LDY #e15_PROGRAM+1
                 LDA ROBOTBUF+e15_PROGRAM+1
                 STA (CHARDL),Y
-                LDY #level+1
-                LDA ROBOTBUF+level+1
+                LDY #level
+                LDA ROBOTBUF+level
                 STA (CHARDL),Y
 :1
 

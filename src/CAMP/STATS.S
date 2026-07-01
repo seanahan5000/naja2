@@ -401,15 +401,19 @@ CMN_TO_TEXT_R   JSR CHAR_DIGITS_R
                 STA TEXT_BUFFER,X
                 RTS
 
+; NOTE: only used for Group Assembly roster
 CLEV_TO_TEXT_R  ENT
                 LDY #level
-                LDA #2
                 LDX #0
-                BEQ CMN_TO_TEXT_R       ; always
+                LDA #1
+                BNE CMN_TO_TEXT_R       ; always
 
 CLEV_TO_TEXT_L  ENT
                 LDY #level
                 LDX #0
+                LDA #1
+                BNE CMN_TO_TEXT_L       ; always
+
 CMN_TO_TEXT_L2  LDA #2
 CMN_TO_TEXT_L   JSR CHAR_DIGITS_L
                 LDA #TextLineEnd

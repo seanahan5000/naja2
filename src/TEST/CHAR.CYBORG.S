@@ -1,7 +1,8 @@
 
                 TXC "CYBORG____"
                 DFB healthy
-                HEX 0001            ;Level
+                HEX 01              ;Level
+                HEX EE              ;UNUSED
                 DFB cybernate*16+human
                 HEX 00256666        ;Experience
 

@@ -37,6 +37,7 @@ TextY           =   35
 TextZ           =   36
 TextFirstSymbol =   37              ; first symbol after {0-9 A-Z}
 TextPercent     =   $27
+TextPlus        =   $2A
 TextDash        =   $2C
 TextPeriod      =   $2D
 TextSlash       =   $2E
@@ -113,6 +114,9 @@ COUNTER         =   $76
 SCRATCH         =   $77
 ; TODO: convert users of this to LOCAL_TEMP
 TEMP            =   $78         ; ,$79
+; TODO: add another TEMP4V_* here?
+
+; FIGHT uses $80-$8F
 
 ; TODO: move these character-only vars
 SELECT          =   $90         ; only used in STATS.S -- get rid of
@@ -125,7 +129,9 @@ COUNT           =   $96
 SELECT_FLIP     =   $96         ; only used in T.CAMP.S when flipping stats
 CHAR_INDEX      =   $97
 
-ETABLE          =   $9C         ; $9C,$9D,$9E,$9F
+TEMPV4_A        =   $98         ; $98,$99,$9A,$9B
+TEMPV4_B        =   $9C         ; $9C,$9D,$9E,$9F
+ETABLE          =   TEMPV4_B
 
 ; NDOS.525 uses $B0-$BF
 ; CAMP uses $C0-$CF
