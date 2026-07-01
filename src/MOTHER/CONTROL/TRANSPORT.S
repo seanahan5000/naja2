@@ -5,9 +5,9 @@
 ; 3 - enrollment (blue)
 ; 4 - arsenal2   (implicit)
 
-; TEMP			=	LOCAL_TEMP                     ; ,+1 TODO: clean this up
+; TEMP          =   LOCAL_TEMP                     ; ,+1 TODO: clean this up
 
-WHICH_TRANS			=	$C0
+WHICH_TRANS         =   $C0
 
 ;
 ; On entry:

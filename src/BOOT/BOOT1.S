@@ -24,8 +24,8 @@ BOOT            CMP #$01                ; ACC holds sector read + 1
                 LSR
                 LSR
                 LSR
-				ORA #$C0
-				STA :MOD+2
+                ORA #$C0
+                STA :MOD+2
 :1              LDY $00
                 INY
                 CPY #16

@@ -280,11 +280,11 @@ UD_SUB          LDX FROMCNT
                 LDA FROMCNT
                 RTS
 
-LINMOVE         LDY	#$27
-:1              LDA	(SCREENL),Y
-                STA	(DESTINL),Y
+LINMOVE         LDY #$27
+:1              LDA (SCREENL),Y
+                STA (DESTINL),Y
                 DEY
-                BPL	:1
+                BPL :1
                 RTS
             fin
 

@@ -180,8 +180,8 @@ MENU_DEF        DB  $04
                 DW  :MENU_TARGETS
 
 :MENU_CURS      LDY :YPNTS,X
-                LDX	#$48
-				JMP	DRAW_ARROW
+                LDX #$48
+                JMP DRAW_ARROW
 
 :YPNTS          DB  124,135,144,155
 

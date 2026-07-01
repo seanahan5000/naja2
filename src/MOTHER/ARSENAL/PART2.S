@@ -238,9 +238,9 @@ YTABLE          DB  $75,$7E,$87
 *-------------------------------
 
 AYPOINTS        DB  14,23,32
-                DB	41,50,59
-                DB	68                   ; unused
-                DB	71                   ; cancel
+                DB  41,50,59
+                DB  68                   ; unused
+                DB  71                   ; cancel
                 DB  $4E                 ; unused TODO: why are these tabs uneven?
 
                 DB  $80,$89,$92

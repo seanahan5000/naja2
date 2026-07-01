@@ -1,34 +1,34 @@
-				LST	OFF
+                LST OFF
 
-				USE	EQUATES/ALIEN.MACROS
-				PUT	EQUATES/ALIEN.EQ
-				PUT	EQUATES/ALIEN.EQ.12
-				PUT	EQUATES/ALIEN.EQ.345
+                USE EQUATES/ALIEN.MACROS
+                PUT EQUATES/ALIEN.EQ
+                PUT EQUATES/ALIEN.EQ.12
+                PUT EQUATES/ALIEN.EQ.345
 
-				LST	ON
-				DSK	ALIEN.DATA.12
-				LST	OFF
-				ORG	$0000
+                LST ON
+                DSK ALIEN.DATA.12
+                LST OFF
+                ORG $0000
 
-				PUT	DATA/TABLE.1
-				PUT	DATA/DATA.1A
-				PUT	DATA/DATA.1B
-				DS	\,$EE
-				PUT	DATA/TABLE.2
-				PUT	DATA/DATA.2
-				DS	\,$EE
+                PUT DATA/TABLE.1
+                PUT DATA/DATA.1A
+                PUT DATA/DATA.1B
+                DS  \,$EE
+                PUT DATA/TABLE.2
+                PUT DATA/DATA.2
+                DS  \,$EE
 
-				LST	ON
-				DSK	ALIEN.DATA.345
-				LST	OFF
-				ORG	$0000
+                LST ON
+                DSK ALIEN.DATA.345
+                LST OFF
+                ORG $0000
 
-				PUT	DATA/TABLE.3
-				PUT	DATA/DATA.3
-				DS	\,$EE
-				PUT	DATA/TABLE.4
-				PUT	DATA/DATA.4
-				DS	\,$EE
-				PUT	DATA/TABLE.5
-				PUT	DATA/DATA.5
-				DS	\,$EE
+                PUT DATA/TABLE.3
+                PUT DATA/DATA.3
+                DS  \,$EE
+                PUT DATA/TABLE.4
+                PUT DATA/DATA.4
+                DS  \,$EE
+                PUT DATA/TABLE.5
+                PUT DATA/DATA.5
+                DS  \,$EE

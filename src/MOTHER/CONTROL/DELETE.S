@@ -1,6 +1,6 @@
 
 ; TODO: clean up ZPAGE usage
-LEFTCOL			=	LOCAL_TEMP
+LEFTCOL         =   LOCAL_TEMP
 RITECOL         =   LOCAL_TEMP+1
 CHARPTR         =   LOCAL_TEMP+2        ; +3
 

@@ -1,587 +1,587 @@
 
-				DUMMY SCRATCH_PAGE
-GRID25			DS	25
-LIST25			DS	7				; GRID25 index for each character
-ORDER7			DS	7				; character index list used for scrolling
-				DEND
+                DUMMY SCRATCH_PAGE
+GRID25          DS  25
+LIST25          DS  7               ; GRID25 index for each character
+ORDER7          DS  7               ; character index list used for scrolling
+                DEND
 
-SOURCE_INDEX	=	$C0
-SOURCE_X		=	$C1
-SOURCE_Y		=	$C2
-CURSOR_X		=	$C3
-CURSOR_Y		=	$C4
-SORTED_ANY		=	$C5
-SORTED_PASS		=	$C6
-TOP1			=	SORTED_ANY
-BOTTOM1			=	SORTED_PASS
-TOP2			=	$C7
-BOTTOM2			=	$C8
-CHAR_COUNT		=	$C9				; TODO: reconcile with GROUP_SIZE
+SOURCE_INDEX    =   $C0
+SOURCE_X        =   $C1
+SOURCE_Y        =   $C2
+CURSOR_X        =   $C3
+CURSOR_Y        =   $C4
+SORTED_ANY      =   $C5
+SORTED_PASS     =   $C6
+TOP1            =   SORTED_ANY
+BOTTOM1         =   SORTED_PASS
+TOP2            =   $C7
+BOTTOM2         =   $C8
+CHAR_COUNT      =   $C9             ; TODO: reconcile with GROUP_SIZE
 
 REFORMAT
-				; TODO: remove this once GRPNUMB is moved to ZPAGE
-				LDA GRPNUMB
-				STA CHAR_COUNT
+                ; TODO: remove this once GRPNUMB is moved to ZPAGE
+                LDA GRPNUMB
+                STA CHAR_COUNT
 
-				JSR	DRAW_PICT
-				PictSetPage2
-				PictClearPage
-				PictSetGreen
-				PictRect $59;$47;$115;$BF
-				PictSetViolet
-				PictMoveTo $B6;$70
-				PictLineTo $B6;$84
-				PictMoveTo $AA;$7A
-				PictLineTo $C2;$7A
-				PictTextAt 132;152;"<SPACE> TO ENTER"
-				PictTextAt 125;119;"J OR"
-				PictTextAt 217;119;"OR K"
-				PictTextAt 180;103;"A"
-				PictTextAt 180;135;"Z"
-				PictEnd
+                JSR DRAW_PICT
+                PictSetPage2
+                PictClearPage
+                PictSetGreen
+                PictRect $59;$47;$115;$BF
+                PictSetViolet
+                PictMoveTo $B6;$70
+                PictLineTo $B6;$84
+                PictMoveTo $AA;$7A
+                PictLineTo $C2;$7A
+                PictTextAt 132;152;"<SPACE> TO ENTER"
+                PictTextAt 125;119;"J OR"
+                PictTextAt 217;119;"OR K"
+                PictTextAt 180;103;"A"
+                PictTextAt 180;135;"Z"
+                PictEnd
 
-				JSR DRAW_SEL_MEMB
+                JSR DRAW_SEL_MEMB
 
-				LDX #198
-				LDY #119
-				JSR DRAW_ARROW
+                LDX #198
+                LDY #119
+                JSR DRAW_ARROW
 
-				LDX #155
-				LDY #119
-				JSR DRAW_BACK_ARROW
+                LDX #155
+                LDY #119
+                JSR DRAW_BACK_ARROW
 
-				JSR BUILD_GRID25
-				JSR SORT_GRID25
+                JSR BUILD_GRID25
+                JSR SORT_GRID25
 
-				JSR	DRAW_GRID_OLD
-				JSR DRAW_STATS_BOX
+                JSR DRAW_GRID_OLD
+                JSR DRAW_STATS_BOX
 
-MLOOP			LDX	#$00
-				STX	SOURCE_INDEX
-				JSR	GRID_CURSOR_A
-				JSR	ARROW
+MLOOP           LDX #$00
+                STX SOURCE_INDEX
+                JSR GRID_CURSOR_A
+                JSR ARROW
 
-				BIT	UNSTROB
-				STA	SCNDARY
-				JMP	KEYLOOP_A
+                BIT UNSTROB
+                STA SCNDARY
+                JMP KEYLOOP_A
 
-BLINK_A			LDA	#$10
-				JSR	WAIT
-				LDA	#$F0
-				JSR	WAIT_KEY
-				BMI	KEYHIT_A
+BLINK_A         LDA #$10
+                JSR WAIT
+                LDA #$F0
+                JSR WAIT_KEY
+                BMI KEYHIT_A
 
-				JSR	GRID_CURSOR_A	; blink erase
-				JSR	ARROW
+                JSR GRID_CURSOR_A   ; blink erase
+                JSR ARROW
 
-				LDA	#$00
-				JSR	WAIT_KEY
+                LDA #$00
+                JSR WAIT_KEY
 
-				JSR	GRID_CURSOR_A	; blink draw
-				JSR	ARROW
+                JSR GRID_CURSOR_A   ; blink draw
+                JSR ARROW
 
-KEYLOOP_A		LDA	KEYBRD
-				BPL	BLINK_A
-KEYHIT_A		BIT	UNSTROB
+KEYLOOP_A       LDA KEYBRD
+                BPL BLINK_A
+KEYHIT_A        BIT UNSTROB
 
-:CHECK_UL		JSR	CHECK_UP
-				BEQ	:UP_LEFT
-				JSR	CHECK_LEFT
-				BNE	:CHECK_DR
-:UP_LEFT		JMP	LEFT_UP_A
+:CHECK_UL       JSR CHECK_UP
+                BEQ :UP_LEFT
+                JSR CHECK_LEFT
+                BNE :CHECK_DR
+:UP_LEFT        JMP LEFT_UP_A
 
-:CHECK_DR		JSR	CHECK_RIGHT
-				BEQ	:DOWN_RIGHT
-				JSR	CHECK_DOWN
-				BNE	:CHECK_ENTER
-:DOWN_RIGHT		JMP	RIGHT_DOWN_A
+:CHECK_DR       JSR CHECK_RIGHT
+                BEQ :DOWN_RIGHT
+                JSR CHECK_DOWN
+                BNE :CHECK_ENTER
+:DOWN_RIGHT     JMP RIGHT_DOWN_A
 
-:CHECK_ENTER	JSR	CHECK_ENTER
-				BNE :CHECK_LEAVE
-				JMP	SPACE_HIT_A
+:CHECK_ENTER    JSR CHECK_ENTER
+                BNE :CHECK_LEAVE
+                JMP SPACE_HIT_A
 
-:CHECK_LEAVE	CMP	#"L"
-				BNE	KEYLOOP_A
+:CHECK_LEAVE    CMP #"L"
+                BNE KEYLOOP_A
 
-:LEAVE			LDA LIST25+0
-				CMP #5
-				BCS FRONT_EMPTY
-				JSR	ARROW
-				JSR	GRID_CURSOR_A
-				RTS						; return to camp
+:LEAVE          LDA LIST25+0
+                CMP #5
+                BCS FRONT_EMPTY
+                JSR ARROW
+                JSR GRID_CURSOR_A
+                RTS                     ; return to camp
 
-FRONT_EMPTY		JSR	DRAW_PICT
-				PictClear 15;161;38;185
-				PictTextAt 106;170;"THERE MUST BE AT LEAST ONE"
-				PictTextAt 112;178;"PERSON IN THE FRONT ROW"
-				PictEnd
-				LDY	#$05
-:1				LDA	#$00
-				JSR	WAIT_KEY
-				BMI	:2
-				DEY
-				BPL	:1
-:2				BIT	UNSTROB
-				JSR	DRAW_PICT
-				PictClear 15;170;38;185
-				PictTextAt 162;170;"L>EAVE"
-				PictEnd
-				JMP	KEYLOOP_A
+FRONT_EMPTY     JSR DRAW_PICT
+                PictClear 15;161;38;185
+                PictTextAt 106;170;"THERE MUST BE AT LEAST ONE"
+                PictTextAt 112;178;"PERSON IN THE FRONT ROW"
+                PictEnd
+                LDY #$05
+:1              LDA #$00
+                JSR WAIT_KEY
+                BMI :2
+                DEY
+                BPL :1
+:2              BIT UNSTROB
+                JSR DRAW_PICT
+                PictClear 15;170;38;185
+                PictTextAt 162;170;"L>EAVE"
+                PictEnd
+                JMP KEYLOOP_A
 
-LEFT_UP_A		JSR ARROW
-				JSR GRID_CURSOR_A
-				LDX SOURCE_INDEX
-				BNE :1
-				LDX CHAR_COUNT
-:1				DEX
-				STX SOURCE_INDEX
-				JSR ARROW
-				JSR GRID_CURSOR_A
-				JMP KEYLOOP_A
+LEFT_UP_A       JSR ARROW
+                JSR GRID_CURSOR_A
+                LDX SOURCE_INDEX
+                BNE :1
+                LDX CHAR_COUNT
+:1              DEX
+                STX SOURCE_INDEX
+                JSR ARROW
+                JSR GRID_CURSOR_A
+                JMP KEYLOOP_A
 
-RIGHT_DOWN_A	JSR ARROW
-				JSR GRID_CURSOR_A
-				LDX SOURCE_INDEX
-				INX
-				CPX CHAR_COUNT
-				BNE :1
-				LDX #0
-:1				STX SOURCE_INDEX
-				JSR ARROW
-				JSR GRID_CURSOR_A
-				JMP KEYLOOP_A
+RIGHT_DOWN_A    JSR ARROW
+                JSR GRID_CURSOR_A
+                LDX SOURCE_INDEX
+                INX
+                CPX CHAR_COUNT
+                BNE :1
+                LDX #0
+:1              STX SOURCE_INDEX
+                JSR ARROW
+                JSR GRID_CURSOR_A
+                JMP KEYLOOP_A
 
-GRID_CURSOR_A	LDX SOURCE_INDEX
-				LDY LIST25,X
+GRID_CURSOR_A   LDX SOURCE_INDEX
+                LDY LIST25,X
                 LDX _MOD5,Y
                 LDA _DIV5,Y
                 TAY
-				JMP _DRAW_GRID_CURSOR_XY
+                JMP _DRAW_GRID_CURSOR_XY
 
-GRID_CURSOR_B	LDX CURSOR_X
-				LDY CURSOR_Y
-				JMP _DRAW_GRID_CURSOR_XY
+GRID_CURSOR_B   LDX CURSOR_X
+                LDY CURSOR_Y
+                JMP _DRAW_GRID_CURSOR_XY
 
-ARROW			LDX	SOURCE_INDEX
-				LDY	YPOINTS,X
-				LDX	#$03
-				JMP	DRAW_ARROW
+ARROW           LDX SOURCE_INDEX
+                LDY YPOINTS,X
+                LDX #$03
+                JMP DRAW_ARROW
 
-MARKER     		LDX	SOURCE_INDEX
-				LDY YPOINTS,X
+MARKER          LDX SOURCE_INDEX
+                LDY YPOINTS,X
                 LDX #$06
                 JMP DRAW_MARKER
 
-SPACE_HIT_A		JSR	ARROW			; erase source arrow
-				JSR	MARKER			; replace it with a marker
-				JSR DRAW_SEL_DEST	; change messages
+SPACE_HIT_A     JSR ARROW           ; erase source arrow
+                JSR MARKER          ; replace it with a marker
+                JSR DRAW_SEL_DEST   ; change messages
 
-				; turn source cursor into CURSOR_X and CURSOR_Y
-				LDX SOURCE_INDEX
-				LDY LIST25,X
-				LDA _DIV5,Y
-				STA CURSOR_Y
-				LDX _MOD5,Y
-				INX
-				CPX #5
-				BNE :1
-				DEX
-				DEX
-:1				STX CURSOR_X
-				JSR	GRID_CURSOR_B
-				BIT	UNSTROB
-				JMP	KEYLOOP_B
+                ; turn source cursor into CURSOR_X and CURSOR_Y
+                LDX SOURCE_INDEX
+                LDY LIST25,X
+                LDA _DIV5,Y
+                STA CURSOR_Y
+                LDX _MOD5,Y
+                INX
+                CPX #5
+                BNE :1
+                DEX
+                DEX
+:1              STX CURSOR_X
+                JSR GRID_CURSOR_B
+                BIT UNSTROB
+                JMP KEYLOOP_B
 
-BLINK_B			LDA	#$10
-				JSR	WAIT
-				LDA	#$F0
-				JSR	WAIT_KEY
-				BMI	KEYHIT_B
-				JSR	GRID_CURSOR_B
-				LDA	#$00
-				JSR	WAIT_KEY
-				JSR	GRID_CURSOR_B
-KEYLOOP_B		LDA	KEYBRD
-				BPL	BLINK_B
-KEYHIT_B		BIT	UNSTROB
-				CMP	#"C"
-				BNE	LEFT_B
-CANCEL_B		JSR	GRID_CURSOR_B
-				JSR	MARKER
-				JSR	ARROW
-				JSR DRAW_SEL_MEMB
-				JMP	KEYLOOP_A
+BLINK_B         LDA #$10
+                JSR WAIT
+                LDA #$F0
+                JSR WAIT_KEY
+                BMI KEYHIT_B
+                JSR GRID_CURSOR_B
+                LDA #$00
+                JSR WAIT_KEY
+                JSR GRID_CURSOR_B
+KEYLOOP_B       LDA KEYBRD
+                BPL BLINK_B
+KEYHIT_B        BIT UNSTROB
+                CMP #"C"
+                BNE LEFT_B
+CANCEL_B        JSR GRID_CURSOR_B
+                JSR MARKER
+                JSR ARROW
+                JSR DRAW_SEL_MEMB
+                JMP KEYLOOP_A
 
-LEFT_B			JSR CHECK_LEFT
-				BNE RIGHT_B
-				JSR GRID_CURSOR_B
-:1				LDY CURSOR_Y
-				LDX	CURSOR_X
-				BNE :3
-				TYA
-				BNE :2
-				LDY #5
-:2				DEY
-				STY CURSOR_Y
-				LDX #5
-:3				DEX
-				STX CURSOR_X
-				CPX SOURCE_X
-				BNE UDLR_COMMON
-				CPY SOURCE_Y
-				BEQ :1
-				BNE UDLR_COMMON		; always
+LEFT_B          JSR CHECK_LEFT
+                BNE RIGHT_B
+                JSR GRID_CURSOR_B
+:1              LDY CURSOR_Y
+                LDX CURSOR_X
+                BNE :3
+                TYA
+                BNE :2
+                LDY #5
+:2              DEY
+                STY CURSOR_Y
+                LDX #5
+:3              DEX
+                STX CURSOR_X
+                CPX SOURCE_X
+                BNE UDLR_COMMON
+                CPY SOURCE_Y
+                BEQ :1
+                BNE UDLR_COMMON     ; always
 
-RIGHT_B			JSR CHECK_RIGHT
-				BNE UP_B
-				JSR GRID_CURSOR_B
-:1				LDY CURSOR_Y
-				LDX CURSOR_X
-				INX
-				CPX #5
-				BNE :3
-				INY
-				CPY #5
-				BNE :2
-				LDY #0
-:2				STY CURSOR_Y
-				LDX #0
-:3				STX CURSOR_X
-				CPX SOURCE_X
-				BNE UDLR_COMMON
-				CPY SOURCE_Y
-				BEQ :1
-				BNE UDLR_COMMON		; always
+RIGHT_B         JSR CHECK_RIGHT
+                BNE UP_B
+                JSR GRID_CURSOR_B
+:1              LDY CURSOR_Y
+                LDX CURSOR_X
+                INX
+                CPX #5
+                BNE :3
+                INY
+                CPY #5
+                BNE :2
+                LDY #0
+:2              STY CURSOR_Y
+                LDX #0
+:3              STX CURSOR_X
+                CPX SOURCE_X
+                BNE UDLR_COMMON
+                CPY SOURCE_Y
+                BEQ :1
+                BNE UDLR_COMMON     ; always
 
-UP_B			JSR CHECK_UP
-				BNE DOWN_B
-				JSR GRID_CURSOR_B
-:1				LDX CURSOR_X
-				LDY CURSOR_Y
-				BNE :3
-				TXA
-				BNE :2
-				LDX #5
-:2				DEX
-				STX CURSOR_X
-				LDY #5
-:3				DEY
-				STY CURSOR_Y
-				CPY SOURCE_Y
-				BNE UDLR_COMMON
-				CPX SOURCE_X
-				BEQ :1
-				BNE UDLR_COMMON		; always
+UP_B            JSR CHECK_UP
+                BNE DOWN_B
+                JSR GRID_CURSOR_B
+:1              LDX CURSOR_X
+                LDY CURSOR_Y
+                BNE :3
+                TXA
+                BNE :2
+                LDX #5
+:2              DEX
+                STX CURSOR_X
+                LDY #5
+:3              DEY
+                STY CURSOR_Y
+                CPY SOURCE_Y
+                BNE UDLR_COMMON
+                CPX SOURCE_X
+                BEQ :1
+                BNE UDLR_COMMON     ; always
 
-DOWN_B			JSR	CHECK_DOWN
-				BNE ENTER_B
-				JSR GRID_CURSOR_B
-:1				LDX CURSOR_X
-				LDY CURSOR_Y
-				INY
-				CPY #5
-				BNE :3
-				INX
-				CPX #5
-				BNE :2
-				LDX #0
-:2				STX CURSOR_X
-				LDY #0
-:3				STY CURSOR_Y
-				CPY SOURCE_Y
-				BNE UDLR_COMMON
-				CPX SOURCE_X
-				BEQ :1
-				; fall through
-UDLR_COMMON		JSR GRID_CURSOR_B
-				JMP	KEYLOOP_B
+DOWN_B          JSR CHECK_DOWN
+                BNE ENTER_B
+                JSR GRID_CURSOR_B
+:1              LDX CURSOR_X
+                LDY CURSOR_Y
+                INY
+                CPY #5
+                BNE :3
+                INX
+                CPX #5
+                BNE :2
+                LDX #0
+:2              STX CURSOR_X
+                LDY #0
+:3              STY CURSOR_Y
+                CPY SOURCE_Y
+                BNE UDLR_COMMON
+                CPX SOURCE_X
+                BEQ :1
+                ; fall through
+UDLR_COMMON     JSR GRID_CURSOR_B
+                JMP KEYLOOP_B
 
-ENTER_B			JSR	CHECK_ENTER
-				BEQ SPACE_HIT_B
-				JMP KEYLOOP_B
+ENTER_B         JSR CHECK_ENTER
+                BEQ SPACE_HIT_B
+                JMP KEYLOOP_B
 
-SPACE_HIT_B		JSR	MARKER
-				JSR GRID_CURSOR_A
-				JSR GRID_CURSOR_B
+SPACE_HIT_B     JSR MARKER
+                JSR GRID_CURSOR_A
+                JSR GRID_CURSOR_B
 
-				; erase source topview
-				LDA SOURCE_INDEX
-				JSR SET_CHAR
-				JSR _DRAW_CHAR_TOPVIEW
+                ; erase source topview
+                LDA SOURCE_INDEX
+                JSR SET_CHAR
+                JSR _DRAW_CHAR_TOPVIEW
 
-				LDY CURSOR_Y
-				LDA _MUL5,Y
-				CLC
-				ADC CURSOR_X
-				TAX
-				LDA GRID25,X
-				BMI :NOSWAP
+                LDY CURSOR_Y
+                LDA _MUL5,Y
+                CLC
+                ADC CURSOR_X
+                TAX
+                LDA GRID25,X
+                BMI :NOSWAP
 
-				; save swap source old position
-				TAX
-				LDY #position
-				LDA (CHARDL),Y
-				PHA
-				TXA
+                ; save swap source old position
+                TAX
+                LDY #position
+                LDA (CHARDL),Y
+                PHA
+                TXA
 
-				; erase swap target
-				JSR SET_CHAR
-				JSR _DRAW_CHAR_TOPVIEW
+                ; erase swap target
+                JSR SET_CHAR
+                JSR _DRAW_CHAR_TOPVIEW
 
-				; set swap target position and redraw
-				PLA
-				LDY #position
-				STA (CHARDL),Y
-				JSR _DRAW_CHAR_TOPVIEW
+                ; set swap target position and redraw
+                PLA
+                LDY #position
+                STA (CHARDL),Y
+                JSR _DRAW_CHAR_TOPVIEW
 
-				LDA SOURCE_INDEX
-				JSR SET_CHAR
+                LDA SOURCE_INDEX
+                JSR SET_CHAR
 :NOSWAP
-				; turn CURSOR_X and CURSOR_Y back into a 11 format position
-				LDX CURSOR_X
-				LDA :POSX_TABLE,X
-				LDY CURSOR_Y
-				ORA :POSY_TABLE,Y
-				LDY #position
-				STA (CHARDL),Y
-				JSR _DRAW_CHAR_TOPVIEW
+                ; turn CURSOR_X and CURSOR_Y back into a 11 format position
+                LDX CURSOR_X
+                LDA :POSX_TABLE,X
+                LDY CURSOR_Y
+                ORA :POSY_TABLE,Y
+                LDY #position
+                STA (CHARDL),Y
+                JSR _DRAW_CHAR_TOPVIEW
 
-				JSR BUILD_GRID25
-				JSR SCROLL_STATS
-				JSR SORT_GRID25
+                JSR BUILD_GRID25
+                JSR SCROLL_STATS
+                JSR SORT_GRID25
 
-				JSR DRAW_SEL_MEMB
-				JMP	MLOOP
+                JSR DRAW_SEL_MEMB
+                JMP MLOOP
 
-:POSX_TABLE		DB	$10,$20,$30,$40,$50
-:POSY_TABLE		DB	$05,$04,$03,$02,$01
+:POSX_TABLE     DB  $10,$20,$30,$40,$50
+:POSY_TABLE     DB  $05,$04,$03,$02,$01
 
-SCROLL_STATS	LDX #0
-				LDY #0
-:0				LDA GRID25,X
-				BMI :00
-				STA ORDER7,Y
-				INY
-:00				INX
-				CPX #25
-				BNE :0
+SCROLL_STATS    LDX #0
+                LDY #0
+:0              LDA GRID25,X
+                BMI :00
+                STA ORDER7,Y
+                INY
+:00             INX
+                CPX #25
+                BNE :0
 
-				LDX #0
-:1				TXA
-				CMP ORDER7,X
-				BNE :2
-				INX
-				CPX CHAR_COUNT
-				BNE :1
-				RTS
+                LDX #0
+:1              TXA
+                CMP ORDER7,X
+                BNE :2
+                INX
+                CPX CHAR_COUNT
+                BNE :1
+                RTS
 
-:2				LDA ORDER7,X
-				CMP ORDER7+1,X
-				PHP
-				LDA YPOINTS,X
-				STA TOP1
-				CLC
-				ADC #8-1
-				STA BOTTOM1
-				INX
-				CPX CHAR_COUNT
-				BEQ :SINGLE
+:2              LDA ORDER7,X
+                CMP ORDER7+1,X
+                PHP
+                LDA YPOINTS,X
+                STA TOP1
+                CLC
+                ADC #8-1
+                STA BOTTOM1
+                INX
+                CPX CHAR_COUNT
+                BEQ :SINGLE
 
-:3				TXA
-				CMP ORDER7,X
-				BEQ :4
-				LDA BOTTOM1
-				CLC
-				ADC #8
-				STA BOTTOM1
-				INX
-				CPX CHAR_COUNT
-				BNE :3
-				BEQ :SINGLE			; always
+:3              TXA
+                CMP ORDER7,X
+                BEQ :4
+                LDA BOTTOM1
+                CLC
+                ADC #8
+                STA BOTTOM1
+                INX
+                CPX CHAR_COUNT
+                BNE :3
+                BEQ :SINGLE         ; always
 
-:4				INX
-				CPX CHAR_COUNT
-				BEQ :SINGLE
+:4              INX
+                CPX CHAR_COUNT
+                BEQ :SINGLE
 
-:5				TXA
-				CMP ORDER7,X
-				BNE :6
-				INX
-				CPX CHAR_COUNT
-				BNE :5
-				BEQ :SINGLE
+:5              TXA
+                CMP ORDER7,X
+                BNE :6
+                INX
+                CPX CHAR_COUNT
+                BNE :5
+                BEQ :SINGLE
 
-:6				PLP
-				LDA YPOINTS,X
-				STA TOP2
-				CLC
-				ADC #8-1
-				STA BOTTOM2
-				BNE SCROLL_UP2		; always
+:6              PLP
+                LDA YPOINTS,X
+                STA TOP2
+                CLC
+                ADC #8-1
+                STA BOTTOM2
+                BNE SCROLL_UP2      ; always
 
-:SINGLE			PLP
-				BCS SCROLL_DOWN1
+:SINGLE         PLP
+                BCS SCROLL_DOWN1
 
-SCROLL_UP1		LDA #8
-				STA COUNT
-:1				LDX TOP1
-				JSR SET_SOURCE_LINE
-				JSR SET_DEST_OFF
-				JSR COPY_FULL_LINE
-:2				JSR SET_DEST_LINE
-				INX
-				JSR SET_SOURCE_LINE
-				JSR COPY_FULL_LINE
-				CPX BOTTOM1
-				BNE :2
-				JSR SET_DEST_LINE
-				LDX TOP1
-				JSR SET_SOURCE_OFF
-				JSR COPY_FULL_LINE
-				DEC COUNT
-				BNE :1
-				RTS
+SCROLL_UP1      LDA #8
+                STA COUNT
+:1              LDX TOP1
+                JSR SET_SOURCE_LINE
+                JSR SET_DEST_OFF
+                JSR COPY_FULL_LINE
+:2              JSR SET_DEST_LINE
+                INX
+                JSR SET_SOURCE_LINE
+                JSR COPY_FULL_LINE
+                CPX BOTTOM1
+                BNE :2
+                JSR SET_DEST_LINE
+                LDX TOP1
+                JSR SET_SOURCE_OFF
+                JSR COPY_FULL_LINE
+                DEC COUNT
+                BNE :1
+                RTS
 
-SCROLL_DOWN1	LDA #8
-				STA COUNT
-:1				LDX BOTTOM1
-				JSR SET_SOURCE_LINE
-				JSR SET_DEST_OFF
-				JSR COPY_FULL_LINE
-:2				JSR SET_DEST_LINE
-				DEX
-				JSR SET_SOURCE_LINE
-				JSR COPY_FULL_LINE
-				CPX TOP1
-				BNE :2
-				JSR SET_DEST_LINE
-				LDX BOTTOM1
-				JSR SET_SOURCE_OFF
-				JSR COPY_FULL_LINE
-				DEC COUNT
-				BNE :1
-				RTS
+SCROLL_DOWN1    LDA #8
+                STA COUNT
+:1              LDX BOTTOM1
+                JSR SET_SOURCE_LINE
+                JSR SET_DEST_OFF
+                JSR COPY_FULL_LINE
+:2              JSR SET_DEST_LINE
+                DEX
+                JSR SET_SOURCE_LINE
+                JSR COPY_FULL_LINE
+                CPX TOP1
+                BNE :2
+                JSR SET_DEST_LINE
+                LDX BOTTOM1
+                JSR SET_SOURCE_OFF
+                JSR COPY_FULL_LINE
+                DEC COUNT
+                BNE :1
+                RTS
 
-SCROLL_UP2		LDA #8
-				STA COUNT
-:1				LDX TOP1
-				JSR SET_SOURCE_LINE
-				JSR SET_DEST_OFF
-				JSR COPY_FULL_LINE
-:2				JSR SET_DEST_LINE
-				INX
-				JSR SET_SOURCE_LINE
-				JSR COPY_FULL_LINE
-				CPX BOTTOM1
-				BNE :2
-				JSR SET_DEST_LINE
-				LDX TOP2
-				JSR SET_SOURCE_LINE
-				JSR COPY_FULL_LINE
-:3				JSR SET_DEST_LINE
-				INX
-				JSR SET_SOURCE_LINE
-				JSR COPY_FULL_LINE
-				CPX BOTTOM2
-				BNE :3
-				JSR SET_DEST_LINE
-				LDX TOP1
-				JSR SET_SOURCE_OFF
-				JSR COPY_FULL_LINE
-				DEC COUNT
-				BNE :1
-				RTS
+SCROLL_UP2      LDA #8
+                STA COUNT
+:1              LDX TOP1
+                JSR SET_SOURCE_LINE
+                JSR SET_DEST_OFF
+                JSR COPY_FULL_LINE
+:2              JSR SET_DEST_LINE
+                INX
+                JSR SET_SOURCE_LINE
+                JSR COPY_FULL_LINE
+                CPX BOTTOM1
+                BNE :2
+                JSR SET_DEST_LINE
+                LDX TOP2
+                JSR SET_SOURCE_LINE
+                JSR COPY_FULL_LINE
+:3              JSR SET_DEST_LINE
+                INX
+                JSR SET_SOURCE_LINE
+                JSR COPY_FULL_LINE
+                CPX BOTTOM2
+                BNE :3
+                JSR SET_DEST_LINE
+                LDX TOP1
+                JSR SET_SOURCE_OFF
+                JSR COPY_FULL_LINE
+                DEC COUNT
+                BNE :1
+                RTS
 
 
-BUILD_GRID25	LDX #24
-				LDA #$80
-:1				STA GRID25,X
-				DEX
-				BPL :1
-				JSR FIRST_CHAR
-:2				LDY #position
-				LDA (CHARDL),Y
-:3				JSR _POS_TO_I25
-				LDA GRID25,Y
-				BMI :4
+BUILD_GRID25    LDX #24
+                LDA #$80
+:1              STA GRID25,X
+                DEX
+                BPL :1
+                JSR FIRST_CHAR
+:2              LDY #position
+                LDA (CHARDL),Y
+:3              JSR _POS_TO_I25
+                LDA GRID25,Y
+                BMI :4
 
-				; if space full, randomly pick new location
-				JSR RANDOM
-				AND #$33
-				CLC
-				ADC #$12
-				LDY #position
-				STA (CHARDL),Y
-				BNE :3				; always
+                ; if space full, randomly pick new location
+                JSR RANDOM
+                AND #$33
+                CLC
+                ADC #$12
+                LDY #position
+                STA (CHARDL),Y
+                BNE :3              ; always
 
-:4				LDA CHAR_INDEX
-				STA GRID25,Y
-				TAX
-				TYA
-				STA LIST25,X
-				JSR NEXT_CHAR
-				BCC :2
-				RTS
+:4              LDA CHAR_INDEX
+                STA GRID25,Y
+                TAX
+                TYA
+                STA LIST25,X
+                JSR NEXT_CHAR
+                BCC :2
+                RTS
 
 ; NOTE: This will be called externally when arriving at TRACC station
-;	with a newly formed group with unknown grid format.
-PROCESS_GRID	JSR BUILD_GRID25
-				; fall through
+;   with a newly formed group with unknown grid format.
+PROCESS_GRID    JSR BUILD_GRID25
+                ; fall through
 
-SORT_GRID25		LDA #0
-				STA SORTED_ANY
-:1				LDA #0
-				STA SORTED_PASS
-				JSR FIRST_CHAR
-:2				LDA CHARDL
-				STA DESTINL
-				LDA CHARDH
-				STA DESTINH
-				JSR	NEXT_CHAR
-				BCS :4
-				LDA LIST25,X
-				CMP LIST25-1,X
-				BCS :2
-				TAY
-				LDA #1
-				STA SORTED_ANY
-				STA SORTED_PASS
-				LDA LIST25-1,X
-				STA LIST25,X
-				TYA
-				STA LIST25-1,X
-				LDY	#$7F
-:3				LDA	(CHARDL),Y
-				TAX
-				LDA	(DESTINL),Y
-				STA	(CHARDL),Y
-				TXA
-				STA	(DESTINL),Y
-				DEY
-				BPL	:3
-				BMI :2				; always
-:4				LDA SORTED_PASS
-				BNE :1
-				LDA SORTED_ANY
-				BEQ :5
-				JMP BUILD_GRID25
-:5				RTS
+SORT_GRID25     LDA #0
+                STA SORTED_ANY
+:1              LDA #0
+                STA SORTED_PASS
+                JSR FIRST_CHAR
+:2              LDA CHARDL
+                STA DESTINL
+                LDA CHARDH
+                STA DESTINH
+                JSR NEXT_CHAR
+                BCS :4
+                LDA LIST25,X
+                CMP LIST25-1,X
+                BCS :2
+                TAY
+                LDA #1
+                STA SORTED_ANY
+                STA SORTED_PASS
+                LDA LIST25-1,X
+                STA LIST25,X
+                TYA
+                STA LIST25-1,X
+                LDY #$7F
+:3              LDA (CHARDL),Y
+                TAX
+                LDA (DESTINL),Y
+                STA (CHARDL),Y
+                TXA
+                STA (DESTINL),Y
+                DEY
+                BPL :3
+                BMI :2              ; always
+:4              LDA SORTED_PASS
+                BNE :1
+                LDA SORTED_ANY
+                BEQ :5
+                JMP BUILD_GRID25
+:5              RTS
 
-DRAW_SEL_MEMB	JSR DRAW_PICT
-				PictClear 15;86;37;93
-				PictTextAt 108;86;"SELECT MEMBER TO BE MOVED"
-				PictClear 22;170;29;177
-				PictTextAt 162;170;"L>EAVE"
-				PictEnd
-				RTS
+DRAW_SEL_MEMB   JSR DRAW_PICT
+                PictClear 15;86;37;93
+                PictTextAt 108;86;"SELECT MEMBER TO BE MOVED"
+                PictClear 22;170;29;177
+                PictTextAt 162;170;"L>EAVE"
+                PictEnd
+                RTS
 
-DRAW_SEL_DEST	JSR DRAW_PICT
-				PictClear 15;86;37;93
-				PictTextAt 126;86;"SELECT DESTINATION"
-				PictClear 22;170;29;177
-				PictTextAt 160;170;"C>ANCEL"
-				PictEnd
-				RTS
+DRAW_SEL_DEST   JSR DRAW_PICT
+                PictClear 15;86;37;93
+                PictTextAt 126;86;"SELECT DESTINATION"
+                PictClear 22;170;29;177
+                PictTextAt 160;170;"C>ANCEL"
+                PictEnd
+                RTS
 
 ; TODO: phase this out
 DRAW_GRID_OLD   JSR DRAW_PICT

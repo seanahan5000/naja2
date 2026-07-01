@@ -1,40 +1,40 @@
 
-EPOINT			=	XCOUNT
+EPOINT          =   XCOUNT
 ; * YCOUNT is used as a non-volatile counter
 
-				ORG	$8800
+                ORG $8800
 
-				PUT	AWARDER/AWARDER
-				PUT	AWARDER/AWARD.CREDIT
-				PUT	AWARDER/AWARD.EQUIP
-
-********************************
-				DUMMY	*
-********************************
-
-THE_ANDROID		DS	1
-GOOD_MEN		DS	1
-AWARD_KILLS		DS	1
-AWARD_CREDS		DS	4
-AWARD_EXP 		DS	4
-
-MASK			DS	1
-MASTER_MASK		DS	1
-GROUP			DS	1
-ITEM			DS	1
-
-ROOM_FOUND		DS	1
-
-FOUND_COUNT		DS	1
-FOUND_ITEMS		DS	20
-
-CREDIT_ALIEN	DS	18
-EXPERI_ALIEN	=	CREDIT_ALIEN+2
-FINDODD_ALIEN	=	EXPERI_ALIEN+2
-FINDGRP_ALIEN	=	FINDODD_ALIEN+1
+                PUT AWARDER/AWARDER
+                PUT AWARDER/AWARD.CREDIT
+                PUT AWARDER/AWARD.EQUIP
 
 ********************************
-				DEND
+                DUMMY   *
 ********************************
 
-				SAV	AWARDER
+THE_ANDROID     DS  1
+GOOD_MEN        DS  1
+AWARD_KILLS     DS  1
+AWARD_CREDS     DS  4
+AWARD_EXP       DS  4
+
+MASK            DS  1
+MASTER_MASK     DS  1
+GROUP           DS  1
+ITEM            DS  1
+
+ROOM_FOUND      DS  1
+
+FOUND_COUNT     DS  1
+FOUND_ITEMS     DS  20
+
+CREDIT_ALIEN    DS  18
+EXPERI_ALIEN    =   CREDIT_ALIEN+2
+FINDODD_ALIEN   =   EXPERI_ALIEN+2
+FINDGRP_ALIEN   =   FINDODD_ALIEN+1
+
+********************************
+                DEND
+********************************
+
+                SAV AWARDER

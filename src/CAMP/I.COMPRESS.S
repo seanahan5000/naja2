@@ -1,158 +1,158 @@
-COMPRESS		CLC
-				JSR	CALL_DRAIN
-				BCS	:HAS_ENERGY
+COMPRESS        CLC
+                JSR CALL_DRAIN
+                BCS :HAS_ENERGY
 
-				JSR DRAW_PICT
-				PictTextAt 171;62;"NOT ENOUGH ENERGY"
-				PictTextAt 195;71;"TO USE IT"
-				PictEnd
-				JMP :SPACE_EXIT
+                JSR DRAW_PICT
+                PictTextAt 171;62;"NOT ENOUGH ENERGY"
+                PictTextAt 195;71;"TO USE IT"
+                PictEnd
+                JMP :SPACE_EXIT
 
-:HAS_ENERGY		JSR	RESET_EQLIST
-				JSR	ESCAN_PUTABLE
-				BCS	:HAS_ROOM
+:HAS_ENERGY     JSR RESET_EQLIST
+                JSR ESCAN_PUTABLE
+                BCS :HAS_ROOM
 
-				JSR DRAW_PICT
-				PictMoveTo 171;60
-				PictCall DRAW_CNAME
-				; NOTE: not enough space for period at end
-				PictText "_HAS_NO"
-				PictTextAt 171;68;"ROOM TO CARRY A"
-				PictTextAt 171;76;"COMPRESSED PERSON"
-				PictEnd
+                JSR DRAW_PICT
+                PictMoveTo 171;60
+                PictCall DRAW_CNAME
+                ; NOTE: not enough space for period at end
+                PictText "_HAS_NO"
+                PictTextAt 171;68;"ROOM TO CARRY A"
+                PictTextAt 171;76;"COMPRESSED PERSON"
+                PictEnd
 
-:SPACE_EXIT		JSR DRAW_PICT
-				PictTextAt 201;87;"<SPACE>"
-				PictCall GET_SPACE_ENTER
-				PictClear 24;50;39;104
-				PictEnd
-				RTS						; back to C.ISTATS.S
+:SPACE_EXIT     JSR DRAW_PICT
+                PictTextAt 201;87;"<SPACE>"
+                PictCall GET_SPACE_ENTER
+                PictClear 24;50;39;104
+                PictEnd
+                RTS                     ; back to C.ISTATS.S
 
-:HAS_ROOM		STX	CMPHOLD
-				JSR	BIG_STATS_BOX
+:HAS_ROOM       STX CMPHOLD
+                JSR BIG_STATS_BOX
 
-				JSR DRAW_PICT
-				PictTextAt 180;84;"USE COMPRESSOR"
-				PictTextAt 198;93;"ON WHOM?"
-				PictEnd
+                JSR DRAW_PICT
+                PictTextAt 180;84;"USE COMPRESSOR"
+                PictTextAt 198;93;"ON WHOM?"
+                PictEnd
 
-				JSR	RESET_CHRLIST
-				LDX	ISOURCE_CHAR
-				DEC	CHAR_LIST,X
-				JSR	PRE_ARROW
-				JSR	MENU_SELECT
-				CPX #7
-				BNE	:CHOSE_TARGET
-				JSR	MENU_DRAW_CURSOR
-				JMP HIDE_BIG_STATS      ; return back to C.ISTATS.S
+                JSR RESET_CHRLIST
+                LDX ISOURCE_CHAR
+                DEC CHAR_LIST,X
+                JSR PRE_ARROW
+                JSR MENU_SELECT
+                CPX #7
+                BNE :CHOSE_TARGET
+                JSR MENU_DRAW_CURSOR
+                JMP HIDE_BIG_STATS      ; return back to C.ISTATS.S
 
-:CHOSE_TARGET	STX	ITARGET_CHAR
-				TXA
-				JSR	SET_CHAR
-				JSR	RESET_EQLIST
-				JSR	ESCAN_FULSLOT
-				LDX	#<FIND_NODROPS
-				LDY	#>FIND_NODROPS
-				JSR	ESCAN_COMMON
-				BCC	:CAN_COMPRESS
+:CHOSE_TARGET   STX ITARGET_CHAR
+                TXA
+                JSR SET_CHAR
+                JSR RESET_EQLIST
+                JSR ESCAN_FULSLOT
+                LDX #<FIND_NODROPS
+                LDY #>FIND_NODROPS
+                JSR ESCAN_COMMON
+                BCC :CAN_COMPRESS
 
-				JSR DRAW_PICT
-				PictClear 2;70;8;77
-				PictTextAt 10;70;">>>HAS UNCOMPRESSABLE EQUIPMENT<<<  <SPACE>"
-				PictEnd
-				JSR	GET_SPACE_ENTER
-				JMP HIDE_BIG_STATS      ; return back to C.ISTATS.S
+                JSR DRAW_PICT
+                PictClear 2;70;8;77
+                PictTextAt 10;70;">>>HAS UNCOMPRESSABLE EQUIPMENT<<<  <SPACE>"
+                PictEnd
+                JSR GET_SPACE_ENTER
+                JMP HIDE_BIG_STATS      ; return back to C.ISTATS.S
 
-:CAN_COMPRESS	JSR DRAW_PICT
-				PictClear 2;70;8;77
-				PictTextAt 25;70;"PRESS <SPACE> TO VERIFY  <C> TO CANCEL"
-				PictEnd
+:CAN_COMPRESS   JSR DRAW_PICT
+                PictClear 2;70;8;77
+                PictTextAt 25;70;"PRESS <SPACE> TO VERIFY  <C> TO CANCEL"
+                PictEnd
 
-				BIT	UNSTROB
-SGKEYER			LDA	KEYBRD
-				BPL	SGKEYER
-				BIT	UNSTROB
-				JSR	CHECK_ENTER
-				BEQ	SGENTER
-				CMP	#"C"
-				BNE	SGKEYER
-				JMP HIDE_BIG_STATS      ; return back to C.ISTATS.S
+                BIT UNSTROB
+SGKEYER         LDA KEYBRD
+                BPL SGKEYER
+                BIT UNSTROB
+                JSR CHECK_ENTER
+                BEQ SGENTER
+                CMP #"C"
+                BNE SGKEYER
+                JMP HIDE_BIG_STATS      ; return back to C.ISTATS.S
 
-SGENTER			JSR	HIDE_BIG_STATS
+SGENTER         JSR HIDE_BIG_STATS
 
-				LDY	#status
-				LDA	#compressd
-				STA	(CHARDL),Y
-				LDY	#disklocation
-				LDA	(CHARDL),Y
-				PHA
-				AND	#$80
-				STA	SCRATCH
-				PLA
-				AND	#$0F
-				ASL
-				ASL
-				ASL
-				ASL
-				ORA	SCRATCH
-				ORA	#$03
-				PHA
+                LDY #status
+                LDA #compressd
+                STA (CHARDL),Y
+                LDY #disklocation
+                LDA (CHARDL),Y
+                PHA
+                AND #$80
+                STA SCRATCH
+                PLA
+                AND #$0F
+                ASL
+                ASL
+                ASL
+                ASL
+                ORA SCRATCH
+                ORA #$03
+                PHA
 
-				JSR FIND_ROBOT
-				BMI :1
-				JSR SET_BROKEN
+                JSR FIND_ROBOT
+                BMI :1
+                JSR SET_BROKEN
 :1
-				LDA	ISOURCE_CHAR
-				JSR	SET_CHAR
-				LDX	CMPHOLD
-				LDY	CORESPS,X
-				LDA	#$43
-				STA	(CHARDL),Y
-				STA	ETABLE
-				INY
-				PLA
-				STA	(CHARDL),Y
-				STA	ETABLE+1
-				INY
-				LDA	#eq_undropable
-				STA	(CHARDL),Y
-				STA	ETABLE+2
-				INY
-				LDA	#$00
-				STA	(CHARDL),Y
-				STA	ETABLE+3
-				JSR	ETABLE_TO_TEXT
+                LDA ISOURCE_CHAR
+                JSR SET_CHAR
+                LDX CMPHOLD
+                LDY CORESPS,X
+                LDA #$43
+                STA (CHARDL),Y
+                STA ETABLE
+                INY
+                PLA
+                STA (CHARDL),Y
+                STA ETABLE+1
+                INY
+                LDA #eq_undropable
+                STA (CHARDL),Y
+                STA ETABLE+2
+                INY
+                LDA #$00
+                STA (CHARDL),Y
+                STA ETABLE+3
+                JSR ETABLE_TO_TEXT
 
-				LDY #profrace
-				LDA (CHARDL),Y
-				PHA
-				LDX	CMPHOLD
-				LDY	CHARLIN,X
-				PLA
-				BPL :2
-				LDY	ROBOLIN,X
-:2				LDX	#66
+                LDY #profrace
+                LDA (CHARDL),Y
+                PHA
+                LDX CMPHOLD
+                LDY CHARLIN,X
+                PLA
+                BPL :2
+                LDY ROBOLIN,X
+:2              LDX #66
                 JSR DRAW_TEXTBUF_XY
-				SEC
-				JSR	CALL_DRAIN
+                SEC
+                JSR CALL_DRAIN
 
-				LDA	ITARGET_CHAR
-				CMP	ISOURCE_CHAR
-				BCS	:3
-				DEC	ISOURCE_CHAR
-:3				JMP	HIDE_MEMBER			; back to C.ISTATS.S
+                LDA ITARGET_CHAR
+                CMP ISOURCE_CHAR
+                BCS :3
+                DEC ISOURCE_CHAR
+:3              JMP HIDE_MEMBER         ; back to C.ISTATS.S
 
-FIND_NODROPS	INY
-				INY
-				LDA	(CHARDL),Y
-				AND	#eq_undropable
-				EOR	#eq_undropable
-				RTS
+FIND_NODROPS    INY
+                INY
+                LDA (CHARDL),Y
+                AND #eq_undropable
+                EOR #eq_undropable
+                RTS
 
-CALL_DRAIN		LDX	#<:TAKE_5000
-				LDY	#>:TAKE_5000
-				JMP	DRAINER_MAIN
+CALL_DRAIN      LDX #<:TAKE_5000
+                LDY #>:TAKE_5000
+                JMP DRAINER_MAIN
 
-:TAKE_5000		DB	$00,$50,$00
+:TAKE_5000      DB  $00,$50,$00
 
-CMPHOLD			DB	$00
+CMPHOLD         DB  $00

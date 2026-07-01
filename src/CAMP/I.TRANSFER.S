@@ -1,7 +1,7 @@
 
-PNEW			=	$C2					; +1
-PVAL			=	$C4					; +1
-PTXT			=	$C6					; +1
+PNEW            =   $C2                 ; +1
+PVAL            =   $C4                 ; +1
+PTXT            =   $C6                 ; +1
 
                 DUMMY   SCRATCH_PAGE
 ENEW1           DS  3
@@ -57,24 +57,24 @@ RT_START2       LDA ITARGET_CHAR
                 BPL :2
                 RTS
 
-FROMJ_TRANSFER	JSR	BIG_STATS_BOX
+FROMJ_TRANSFER  JSR BIG_STATS_BOX
 
-				JSR DRAW_PICT
-				PictTextAt 177;84;"TRANSFER ENERGY"
-				PictTextAt 198;93;"TO WHOM?"
-				PictEnd
+                JSR DRAW_PICT
+                PictTextAt 177;84;"TRANSFER ENERGY"
+                PictTextAt 198;93;"TO WHOM?"
+                PictEnd
 
-				LDX	ISOURCE_CHAR
-				LDA	#$FF
-				STA	LEGALS,X
-				LDY YPOINTS,X
+                LDX ISOURCE_CHAR
+                LDA #$FF
+                STA LEGALS,X
+                LDY YPOINTS,X
                 LDX #$06
-   				JSR DRAW_MARKER
+                JSR DRAW_MARKER
 
-				JSR	PRE_ARROW
-				JSR	MENU_SELECT
-				CPX	#7
-				BNE	:NO_CANCEL
+                JSR PRE_ARROW
+                JSR MENU_SELECT
+                CPX #7
+                BNE :NO_CANCEL
                 JMP HIDE_BIG_STATS      ; return back to C.ISTATS.S
 
 :NO_CANCEL      JSR RT_START
@@ -97,9 +97,9 @@ TOJ_TRANSFER    JSR DRAW_PICT
                 PictEnd
 
 TRANSFER_CMN    JSR DRAW_PICT
-				PictTextAt 48;26;"ENERGY TRANSFER AMOUNT:"
+                PictTextAt 48;26;"ENERGY TRANSFER AMOUNT:"
                 PictTextAt 195;51;"C>ANCEL"
-				PictEnd
+                PictEnd
 
                 LDA ITARGET_CHAR
                 JSR SET_CHAR
@@ -164,7 +164,7 @@ TRBLINK         LDA #$10
                 JSR CHECK_ENTER
                 BNE :GETKEY
 
-:ENTER        	LDA ITARGET_CHAR
+:ENTER          LDA ITARGET_CHAR
                 JSR SET_CHAR
                 LDY #energylev+2
                 LDX #2
@@ -186,10 +186,10 @@ TRBLINK         LDA #$10
                 BPL :2
                 JSR CALC_ALL
 
-:CANCEL			JSR DRAW_PICT
-				PictClear 27;51;34;58
-				PictSwap $00;$31;$28;$00
-				PictEnd
+:CANCEL         JSR DRAW_PICT
+                PictClear 27;51;34;58
+                PictSwap $00;$31;$28;$00
+                PictEnd
                 RTS                     ; back to C.ISTATS.S
 
 :LEFT           LDA CURSOR
@@ -290,11 +290,11 @@ SET_ECMN        STX PNEW
                 STX PTXT
                 RTS
 
-TUPDATE_FIRST	LDA #$38				; SEC
-				BNE TUPDATE_CMN			; always
-TUPDATE         LDA #$18				; CLC
-TUPDATE_CMN		STA :MOD
-				JSR SET_ELEFT
+TUPDATE_FIRST   LDA #$38                ; SEC
+                BNE TUPDATE_CMN         ; always
+TUPDATE         LDA #$18                ; CLC
+TUPDATE_CMN     STA :MOD
+                JSR SET_ELEFT
                 LDY #$0E
                 JSR :UPDATE
                 JSR SET_ERIGHT

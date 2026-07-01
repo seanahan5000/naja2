@@ -24,7 +24,7 @@ ENTER_CAMP      ENT
 :MOTHER         JSR DRAW_PICT
                 PictSetBlue
                 ; TODO: this will eventually need to be tested in
-                ;	Mothership and adjusted accordingly
+                ;   Mothership and adjusted accordingly
                 ; TODO: too close to edge of byte
                 PictRect 106;14;174;35
                 PictTextAt_ 123;17
@@ -118,13 +118,13 @@ CAMP_CURS       LDY CAMP_YPNTS,X
                 LDX #109
                 JMP DRAW_ARROW
 
-CAMP_YPNTS		DB	17,26,35,44
+CAMP_YPNTS      DB  17,26,35,44
 
 *-------------------------------
 
 ; TODO: reconcile with full leave
 GO_LEAVE        JSR DRAW_PICT
-				PictClear 15;14;25;54
+                PictClear 15;14;25;54
                 PictSwap 0;122;40;191
                 PictEnd
                 RTS
@@ -133,7 +133,7 @@ TO_MEMBERS
 RECAMP
 CAMP_MARKER
 COPTION
-				RTS
+                RTS
 
         else
 
@@ -174,16 +174,16 @@ STATS_FLIP      JSR DRAW_PICT
                 JMP MENU_TARGET
 
 FORCE_CAMP      JSR DRAW_PICT
-				PictSetPage2
-				PictClearPage
-				PictEnd
+                PictSetPage2
+                PictClearPage
+                PictEnd
                 JSR DRAW_STATS_BOX
 
 STATS_MORE      LDA SHELL
                 BEQ :1
                 ; JSR SET_CAMPFILES
 :1
-				JSR DRAW_PICT
+                JSR DRAW_PICT
                 PictSetPage2
                 PictClear 0;121;40;192
                 PictCall CAMP_MENU_BOX
@@ -193,13 +193,13 @@ STATS_MORE      LDA SHELL
                 PictShowPage
                 PictEnd
 
-                LDA #0				; TRADE
-COPTION			STA CCURPOS_MS
+                LDA #0              ; TRADE
+COPTION         STA CCURPOS_MS
                 STA CCURPOS_TRACC
-                BPL CMENU			; always
+                BPL CMENU           ; always
 
-RECAMP			BIT	UNSTROB
-				JSR DRAW_PICT
+RECAMP          BIT UNSTROB
+                JSR DRAW_PICT
                 PictSetPage1
                 PictClearPage
                 PictCall DRAW_STATS_BOX
@@ -207,14 +207,14 @@ RECAMP			BIT	UNSTROB
                 PictShowPage
                 PictEnd
 
-CMENU         	LDA SHELL
+CMENU           LDA SHELL
                 BNE :TRACC
-:MOTHER			LDX #<CAMP_MENU_MS
+:MOTHER         LDX #<CAMP_MENU_MS
                 LDY #>CAMP_MENU_MS
-                BNE :COMMON			; always
-:TRACC			LDX #<CAMP_MENU_TRACC
+                BNE :COMMON         ; always
+:TRACC          LDX #<CAMP_MENU_TRACC
                 LDY #>CAMP_MENU_TRACC
-:COMMON			JSR MENU_INIT
+:COMMON         JSR MENU_INIT
 
 ; TODO: make it possible use <escape> to directly leave camp menu
 
@@ -225,9 +225,9 @@ CMENU         	LDA SHELL
 :1              JMP MENU_TARGET
 
 CAMP_MENU_BOX   LDA SHELL
-				BNE :TRACC
+                BNE :TRACC
 
-:MOTHER			JSR DRAW_PICT
+:MOTHER         JSR DRAW_PICT
                 PictSetBlue
 ;               PictRect $3A;$7C;$DC;$AE
                 PictRect $3A;$7C;$DC;$A5
@@ -240,7 +240,7 @@ CAMP_MENU_BOX   LDA SHELL
                 PictEnd
                 RTS
 
-:TRACC			JSR DRAW_PICT
+:TRACC          JSR DRAW_PICT
                 PictSetOrange
                 PictRect $3B;$7C;$DD;$B7
                 PictTextAt_ 81;128
@@ -285,14 +285,14 @@ CAMP_CURS       LDY CAMP_YPNTS,X
                 LDX #$43
                 JMP DRAW_ARROW
 
-CAMP_YPNTS		DB	128,137,146
-				DB	155,164,173
-				DB	182
+CAMP_YPNTS      DB  128,137,146
+                DB  155,164,173
+                DB  182
 
 *-------------------------------
 
-TO_TRADE		JSR BANK_1
-				JMP TRADE
+TO_TRADE        JSR BANK_1
+                JMP TRADE
 
 GOFLOP          JSR DRAW_PICT
         do SMALL_GROUP
@@ -305,41 +305,41 @@ GOFLOP          JSR DRAW_PICT
                 LDX CURSOR
                 JSR CAMP_MARKER
                 JSR MENU_SELECT
-		        JSR CAMP_MARKER
+                JSR CAMP_MARKER
                 JMP MENU_TARGET
 
-GOLEAVE			LDA	SHELL
-				BEQ EXIT_CAMP
-				; JSR LOOSE_ENDS
-EXIT_CAMP		JSR	DRAW_PICT
-				PictSetPage2
-				PictClearPage
-				PictCall DRAW_HALL
-				PictShowPage
-				PictSetPage1
-				PictCopyToPage
-				PictShowPage
-				PictEnd
-				RTS
+GOLEAVE         LDA SHELL
+                BEQ EXIT_CAMP
+                ; JSR LOOSE_ENDS
+EXIT_CAMP       JSR DRAW_PICT
+                PictSetPage2
+                PictClearPage
+                PictCall DRAW_HALL
+                PictShowPage
+                PictSetPage1
+                PictCopyToPage
+                PictShowPage
+                PictEnd
+                RTS
 
-TO_ISTATS		JSR DRAW_PICT
-		do SMALL_GROUP
-				PictTextAt 16;71;"CANCEL"
-		else
-				PictTextAt 16;70;"CANCEL"
-		fin
-				PictTextAt 63;96;"INDIVIDUAL STATS FOR WHOM?"
-				PictEnd
-				JSR	PICK_CHAR
-				CPX #7
-				BEQ	:CANCEL
-				TXA
-				JSR	SET_CHAR
-				JSR	MENU_DRAW_CURSOR
-				JMP	DOSTATS
+TO_ISTATS       JSR DRAW_PICT
+        do SMALL_GROUP
+                PictTextAt 16;71;"CANCEL"
+        else
+                PictTextAt 16;70;"CANCEL"
+        fin
+                PictTextAt 63;96;"INDIVIDUAL STATS FOR WHOM?"
+                PictEnd
+                JSR PICK_CHAR
+                CPX #7
+                BEQ :CANCEL
+                TXA
+                JSR SET_CHAR
+                JSR MENU_DRAW_CURSOR
+                JMP DOSTATS
 
-:CANCEL			JSR DRAW_PICT
-		do SMALL_GROUP
+:CANCEL         JSR DRAW_PICT
+        do SMALL_GROUP
                 PictClear 2;71;8;78
         else
                 PictClear 2;70;8;77
@@ -348,8 +348,8 @@ TO_ISTATS		JSR DRAW_PICT
                 PictEnd
                 ; TODO: clean this up after switch to JSR MENU_SELECT
                 LDX CCURPOS_MS
-				JSR CAMP_MARKER
-                JMP	CMENU
+                JSR CAMP_MARKER
+                JMP CMENU
 
 *-------------------------------
 
@@ -360,15 +360,15 @@ FLIP_STATS      LDA SELECT
                 AND #$03
                 STA SELECT_FLIP
                 EOR #$03
-                BPL :2					; always
-:1				STA SELECT_FLIP
-				EOR #$C3
-:2				PHA
-				LDA SELECT_FLIP
-				JSR STATS_HEADER2
-				PLA
-				PHA
-				JSR STATS_HEADER2
+                BPL :2                  ; always
+:1              STA SELECT_FLIP
+                EOR #$C3
+:2              PHA
+                LDA SELECT_FLIP
+                JSR STATS_HEADER2
+                PLA
+                PHA
+                JSR STATS_HEADER2
                 JSR DRAW_PICT
         do SMALL_GROUP
                 PictVMove 11
@@ -377,11 +377,11 @@ FLIP_STATS      LDA SELECT
         fin
                 PictEnd
                 JSR FIRST_CHAR
-:3				LDA SELECT_FLIP
-				JSR STATS_LINE2
-				PLA
-				PHA
-				JSR STATS_LINE2
+:3              LDA SELECT_FLIP
+                JSR STATS_LINE2
+                PLA
+                PHA
+                JSR STATS_LINE2
                 JSR DRAW_PICT
         do SMALL_GROUP
                 PictVMove 9
@@ -397,43 +397,43 @@ FLIP_STATS      LDA SELECT
 
         fin ; MINI_CAMP
 
-PICK_CHAR		JSR	RESET_CHRLIST
-				JSR	PRE_ARROW
-				JMP	MENU_SELECT
+PICK_CHAR       JSR RESET_CHRLIST
+                JSR PRE_ARROW
+                JMP MENU_SELECT
 
 *-------------------------------
 
-PRE_ARROW		LDA #$00
-		do SMALL_GROUP
-				STA LEGALS+7		; TODO: eventually adjust
-		else
-				STA LEGALS+7
-		fin
-				LDX	#<:PRE_DEF
-				LDY	#>:PRE_DEF
-				JMP	MENU_INIT
+PRE_ARROW       LDA #$00
+        do SMALL_GROUP
+                STA LEGALS+7        ; TODO: eventually adjust
+        else
+                STA LEGALS+7
+        fin
+                LDX #<:PRE_DEF
+                LDY #>:PRE_DEF
+                JMP MENU_INIT
 
-:PRE_DEF		DB	$0B
-				DB	$00
-				DW	:PRE_CURS
+:PRE_DEF        DB  $0B
+                DB  $00
+                DW  :PRE_CURS
 
-:PRE_CURS		LDY	YPOINTS,X
-				LDX	#$03
-				JMP	DRAW_ARROW
+:PRE_CURS       LDY YPOINTS,X
+                LDX #$03
+                JMP DRAW_ARROW
 
 ; NOTE: was in KEY.COMMONS.S
-YPOINTS			ENT
-		do SMALL_GROUP
-				DB  14,23,32
-				DB	41,50,59
-				DB	68					; TODO: eventually remove
-				DB	71					; cancel
-		else
-				DB	$0C,$14,$1C
-				DB	$24,$2C,$34
-				DB	$3C
-				DB	$46					; cancel
-		fin
+YPOINTS         ENT
+        do SMALL_GROUP
+                DB  14,23,32
+                DB  41,50,59
+                DB  68                  ; TODO: eventually remove
+                DB  71                  ; cancel
+        else
+                DB  $0C,$14,$1C
+                DB  $24,$2C,$34
+                DB  $3C
+                DB  $46                 ; cancel
+        fin
 
 *-------------------------------
 
@@ -441,7 +441,7 @@ YPOINTS			ENT
 REFORMAT_FILE   =   $A000
 REFORMAT        =   $A001
 
-TO_REFORMAT		LDX #fileReformat
+TO_REFORMAT     LDX #fileReformat
                 CPX REFORMAT_FILE
                 BEQ :1
                 LDA #side_F1
@@ -452,7 +452,7 @@ TO_REFORMAT		LDX #fileReformat
                 LDX SHELL
                 LDA DISK_SIDES,X
                 JSR SET_DISK_SIDE
-:1				JSR REFORMAT
+:1              JSR REFORMAT
                 JMP RECAMP
 
 *-------------------------------
@@ -470,250 +470,250 @@ TO_ALIENS       LDA #fileAlienId
             DO 0
 LOOSE_ENDS
 *** Notify if any characters in group are critical
-				JSR FIRST_CHAR
-:LOOP1			LDY	#status
-				LDA	(CHARDL),Y
-				AND	#critical
-				BNE	:SKIPA
-				JSR NEXT_CHAR
-				BCC :LOOP1
-				BCS	LOOK_FOR_DEAD		; always
+                JSR FIRST_CHAR
+:LOOP1          LDY #status
+                LDA (CHARDL),Y
+                AND #critical
+                BNE :SKIPA
+                JSR NEXT_CHAR
+                BCC :LOOP1
+                BCS LOOK_FOR_DEAD       ; always
 
-:SKIPA			LDX	#<CRIT_BOX
-				LDY	#>CRIT_BOX
-				JSR	INIT_BOX
-				LDA	#$40
-				STA	PAGE
-				JSR	CLEAR_OUTSIDE
-				JSR	DRAW_BOX
-				JSR	SWAP_BOX
-				LDA	#$20
-				STA	PAGE
-:LOOP2			JSR	CLEAR_INSIDE
-				LDX	#<TCRITCAMP+3
-				LDY	#>TCRITCAMP+3
-				JSR	FLUSH_NAME
+:SKIPA          LDX #<CRIT_BOX
+                LDY #>CRIT_BOX
+                JSR INIT_BOX
+                LDA #$40
+                STA PAGE
+                JSR CLEAR_OUTSIDE
+                JSR DRAW_BOX
+                JSR SWAP_BOX
+                LDA #$20
+                STA PAGE
+:LOOP2          JSR CLEAR_INSIDE
+                LDX #<TCRITCAMP+3
+                LDY #>TCRITCAMP+3
+                JSR FLUSH_NAME
 
-				LDY	#$11
-				JSR	TEXTER
-; TCRITCAMP		PLOTAT	64;89;(XXXXXXXXXX_NEEDS_MEDICAL)
-; 				PLOTAT	64;97;(ATTENTION...QUICK!)+
+                LDY #$11
+                JSR TEXTER
+; TCRITCAMP     PLOTAT  64;89;(XXXXXXXXXX_NEEDS_MEDICAL)
+;               PLOTAT  64;97;(ATTENTION...QUICK!)+
 
-				JSR	SPACE_KEY
+                JSR SPACE_KEY
 
-:LOOP3			JSR NEXT_CHAR
-				BCS :SKIPC
-				LDY	#status
-				LDA	(CHARDL),Y
-				AND	#critical
-				BEQ	:LOOP3
-				BNE	:LOOP2				; always
+:LOOP3          JSR NEXT_CHAR
+                BCS :SKIPC
+                LDY #status
+                LDA (CHARDL),Y
+                AND #critical
+                BEQ :LOOP3
+                BNE :LOOP2              ; always
 
-:SKIPC			JSR	SWAP_BOX
+:SKIPC          JSR SWAP_BOX
 *** Ask them to verify that they want to leave character/s
 ***   that are dead
-LOOK_FOR_DEAD	JSR	DEAD_LOOKER
-				INX
-				BNE	:1
-				JMP	FILL_FRONT
-:1				LDX	#<DEAD_BOX
-				LDY	#>DEAD_BOX
-				JSR	INIT_BOX
-				LDA	#$40
-				STA	PAGE
-				JSR	CLEAR_OUTSIDE
-				JSR	DRAW_BOX
+LOOK_FOR_DEAD   JSR DEAD_LOOKER
+                INX
+                BNE :1
+                JMP FILL_FRONT
+:1              LDX #<DEAD_BOX
+                LDY #>DEAD_BOX
+                JSR INIT_BOX
+                LDA #$40
+                STA PAGE
+                JSR CLEAR_OUTSIDE
+                JSR DRAW_BOX
 
-				LDY	#$12
-				JSR	TEXTER
-; TDEADCAMP		PLOTAT	40;81;(DEAD_CADETS_AND_BROKEN_ROBOTS_THAT)
-; 				PLOTAT	40;89;(ARE_LEFT_BEHIND,_UNCOMPRESSED_WILL)
-; 				PLOTAT	40;97;(BE_UNRECOVERABLE.__ARE_YOU_SURE)
-; 				PLOTAT	40;105;(YOU_WANT_TO_LEAVE?_)+
+                LDY #$12
+                JSR TEXTER
+; TDEADCAMP     PLOTAT  40;81;(DEAD_CADETS_AND_BROKEN_ROBOTS_THAT)
+;               PLOTAT  40;89;(ARE_LEFT_BEHIND,_UNCOMPRESSED_WILL)
+;               PLOTAT  40;97;(BE_UNRECOVERABLE.__ARE_YOU_SURE)
+;               PLOTAT  40;105;(YOU_WANT_TO_LEAVE?_)+
 
-				JSR	SWAP_BOX
-				LDA	#$20
-				STA	PAGE
-				JSR	ASK_YESNO
-				BCS	TAKE_DEAD
-				JSR	SWAP_BOX
-				LDY	CURSOR
-				JSR	CMARKER
-				LDA	#$04
-				JMP	COPTION
+                JSR SWAP_BOX
+                LDA #$20
+                STA PAGE
+                JSR ASK_YESNO
+                BCS TAKE_DEAD
+                JSR SWAP_BOX
+                LDY CURSOR
+                JSR CMARKER
+                LDA #$04
+                JMP COPTION
 
 *** Take dead characters out of the group if verified
-TAKE_DEAD		JSR	SWAP_BOX
-:LOOP1			LDA	GRPNUMB
-				BEQ	ALL_DEAD
-				JSR	DEAD_LOOKER
-				LDX	#0
-:LOOP2			LDA	CHAR_LIST,X
-				BEQ	:SKIPA
-				INX
-				BNE	:LOOP2			;Always
-:SKIPA			DEC	GRPNUMB
-				STX	COUNT
-				CPX	GRPNUMB
-				BEQ	:LOOP1
-				TXA
-				PHA
-				JSR	SET_CHAR
-				JSR	RETURN_DCARDS
-				LDY	#status
-				LDA	#intracc
-				STA	(CHARDL),Y
-				PLA
-				JSR	HIDE_MEMBER
-				JMP	:LOOP1
+TAKE_DEAD       JSR SWAP_BOX
+:LOOP1          LDA GRPNUMB
+                BEQ ALL_DEAD
+                JSR DEAD_LOOKER
+                LDX #0
+:LOOP2          LDA CHAR_LIST,X
+                BEQ :SKIPA
+                INX
+                BNE :LOOP2          ;Always
+:SKIPA          DEC GRPNUMB
+                STX COUNT
+                CPX GRPNUMB
+                BEQ :LOOP1
+                TXA
+                PHA
+                JSR SET_CHAR
+                JSR RETURN_DCARDS
+                LDY #status
+                LDA #intracc
+                STA (CHARDL),Y
+                PLA
+                JSR HIDE_MEMBER
+                JMP :LOOP1
 
 *** If all members are dead, force into dead group routine
-ALL_DEAD		LDA	GRPNUMB
-				BNE	FILL_FRONT
-				LDA	DISK_SIDE
-				EOR	#%00000110
-				STA	DISK_SIDE
-				JSR	SET_FGHTFILES
-				LDX	#fDeadGroup
-				JSR	SLOAD_FILE
-				JMP	$8000
+ALL_DEAD        LDA GRPNUMB
+                BNE FILL_FRONT
+                LDA DISK_SIDE
+                EOR #%00000110
+                STA DISK_SIDE
+                JSR SET_FGHTFILES
+                LDX #fDeadGroup
+                JSR SLOAD_FILE
+                JMP $8000
 
 *** Check for someone in front row, if not, force into reformat
-FILL_FRONT		JSR	RESET_CHRLIST
-				LDA	#$05			;Front Row
-				JSR	CSCAN_Y
-				INX
-				BNE	:SKIPA
-				JMP	GOFORM
+FILL_FRONT      JSR RESET_CHRLIST
+                LDA #$05            ;Front Row
+                JSR CSCAN_Y
+                INX
+                BNE :SKIPA
+                JMP GOFORM
 
 *** Calculate max sight range based on robots max 2
-:SKIPA			JSR	CALC_SRANGE
-				JMP	EXIT_CAMP
+:SKIPA          JSR CALC_SRANGE
+                JMP EXIT_CAMP
 
-DEAD_LOOKER		JSR	RESET_CHRLIST
-				LDX	#<FIND_DEAD
-				LDY	#>FIND_DEAD
-				JMP	CSCAN_COMMON
+DEAD_LOOKER     JSR RESET_CHRLIST
+                LDX #<FIND_DEAD
+                LDY #>FIND_DEAD
+                JMP CSCAN_COMMON
 
-FIND_DEAD		LDY	#status
-				LDA	(CHARDL),Y
-				AND	#%00111111
-				CMP	#dead
-				BEQ	:EXIT
-				CMP	#broken
-:EXIT			RTS
+FIND_DEAD       LDY #status
+                LDA (CHARDL),Y
+                AND #%00111111
+                CMP #dead
+                BEQ :EXIT
+                CMP #broken
+:EXIT           RTS
 
-FIND_CRITCALS	LDY	#status
-				LDA	(CHARDL),Y
-				AND	#critical
-				EOR	#critical
-				RTS
+FIND_CRITCALS   LDY #status
+                LDA (CHARDL),Y
+                AND #critical
+                EOR #critical
+                RTS
 
-CRIT_BOX		DDB	52
-				DB	86
-				DDB	226
-				DB	106
-				DFB	BLUE
-				DFB	wspace
+CRIT_BOX        DDB 52
+                DB  86
+                DDB 226
+                DB  106
+                DFB BLUE
+                DFB wspace
 
-DEAD_BOX		DDB	32
-				DB	78
-				DDB	248
-				DB	114
-				DFB	BLUE
-				DFB	wyesno
-
-
-RETURN_DCARDS	JSR	RESET_EQLIST
-				LDX	#<DCARD_ORBS
-				LDY	#>DCARD_ORBS
-				JSR	ESCAN_COMMON
-				BCC	:EXIT
-				LDX	#16
-:LOOP1			DEX
-				BMI	:EXIT
-				LDA	EQUIP_LIST,X
-				BEQ	:LOOP1
-				STX	TEMP
-				LDY	CORESPS,X
-				INY
-				LDA	(CHARDL),Y
-				TAY
-				AND	#%00000111
-				PHA
-				TYA
-				LSR
-				LSR
-				LSR
-				TAX
-				PLA
-				CMP	#$02			;ORB
-				BEQ	:SKIPA
-				TXA
-				LSR
-				LSR
-				LSR
-				TAY
-				TXA
-				AND	#%00000111
-				TAX
-				LDA	BITMASKS,X
-				EOR	#$FF
-				AND	DCARDS_FOUND,Y
-				STA	DCARDS_FOUND,Y
-				JMP	:SKIPB
-:SKIPA			LDA	BITMASKS,X
-				EOR	#$FF
-				AND	ORBS_FOUND
-				STA	ORBS_FOUND
-:SKIPB			LDA	TEMP
-				PHA
-				TAX
-				JSR	REMOVE_ITEM
-				PLA
-				TAX
-				BPL	:LOOP1			;Always
-:EXIT			RTS
-
-BITMASKS		DB	%10000000
-				DB	%01000000
-				DB	%00100000
-				DB	%00010000
-				DB	%00001000
-				DB	%00000100
-				DB	%00000010
-				DB	%00000001
-
-DCARD_ORBS		LDA	(CHARDL),Y
-				CMP	#$43
-				BNE	:EXIT
-				INY
-				LDA	(CHARDL),Y
-				AND	#%00000111
-				CMP	#$02			;ORBS
-				BEQ	:EXIT
-				CMP	#$04			;DATA CARDS
-:EXIT			RTS
+DEAD_BOX        DDB 32
+                DB  78
+                DDB 248
+                DB  114
+                DFB BLUE
+                DFB wyesno
 
 
-CALC_SRANGE		JSR	RESET_CHRLIST
-				LDA	#robot*16
-				JSR	CSCAN_PROF
-				LDA #2
-				BCC	:SKIPB
-				LDX	#$00
-:LOOP1			LDA	CHAR_LIST,X
-				BEQ	:SKIPA
-				INX
-				BNE	:LOOP1			;Always
-:SKIPA			TXA
-				JSR	SET_CHAR
-				LDY	#e1_HEAD
-				LDA	(CHARDL),Y
-				AND	#%00000111
-:SKIPB			CMP	SRANGE
-				BCS	:SKIPC
-				STA	SRANGE
-:SKIPC			STA	MXRANGE
-				RTS
-			FIN
+RETURN_DCARDS   JSR RESET_EQLIST
+                LDX #<DCARD_ORBS
+                LDY #>DCARD_ORBS
+                JSR ESCAN_COMMON
+                BCC :EXIT
+                LDX #16
+:LOOP1          DEX
+                BMI :EXIT
+                LDA EQUIP_LIST,X
+                BEQ :LOOP1
+                STX TEMP
+                LDY CORESPS,X
+                INY
+                LDA (CHARDL),Y
+                TAY
+                AND #%00000111
+                PHA
+                TYA
+                LSR
+                LSR
+                LSR
+                TAX
+                PLA
+                CMP #$02            ;ORB
+                BEQ :SKIPA
+                TXA
+                LSR
+                LSR
+                LSR
+                TAY
+                TXA
+                AND #%00000111
+                TAX
+                LDA BITMASKS,X
+                EOR #$FF
+                AND DCARDS_FOUND,Y
+                STA DCARDS_FOUND,Y
+                JMP :SKIPB
+:SKIPA          LDA BITMASKS,X
+                EOR #$FF
+                AND ORBS_FOUND
+                STA ORBS_FOUND
+:SKIPB          LDA TEMP
+                PHA
+                TAX
+                JSR REMOVE_ITEM
+                PLA
+                TAX
+                BPL :LOOP1          ;Always
+:EXIT           RTS
+
+BITMASKS        DB  %10000000
+                DB  %01000000
+                DB  %00100000
+                DB  %00010000
+                DB  %00001000
+                DB  %00000100
+                DB  %00000010
+                DB  %00000001
+
+DCARD_ORBS      LDA (CHARDL),Y
+                CMP #$43
+                BNE :EXIT
+                INY
+                LDA (CHARDL),Y
+                AND #%00000111
+                CMP #$02            ;ORBS
+                BEQ :EXIT
+                CMP #$04            ;DATA CARDS
+:EXIT           RTS
+
+
+CALC_SRANGE     JSR RESET_CHRLIST
+                LDA #robot*16
+                JSR CSCAN_PROF
+                LDA #2
+                BCC :SKIPB
+                LDX #$00
+:LOOP1          LDA CHAR_LIST,X
+                BEQ :SKIPA
+                INX
+                BNE :LOOP1          ;Always
+:SKIPA          TXA
+                JSR SET_CHAR
+                LDY #e1_HEAD
+                LDA (CHARDL),Y
+                AND #%00000111
+:SKIPB          CMP SRANGE
+                BCS :SKIPC
+                STA SRANGE
+:SKIPC          STA MXRANGE
+                RTS
+            FIN

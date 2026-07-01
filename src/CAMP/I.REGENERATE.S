@@ -1,46 +1,46 @@
 
-HNEW			=	ENEW1
-HVAL			=	EVAL1
-HTEXT			=	ETEXT1
+HNEW            =   ENEW1
+HVAL            =   EVAL1
+HTEXT           =   ETEXT1
 
-ENEW			=	ENEW2
-EVAL			=	EVAL2
-ETEXT			=	ETEXT2
+ENEW            =   ENEW2
+EVAL            =   EVAL2
+ETEXT           =   ETEXT2
 
 ; On Entry:
 ;   A: 0 = Cell regenerator
 ;      1 = Circuit repairer
 ;
-REGENERATE		STA	HEAL_TYPE+1
-				JSR	BIG_STATS_BOX
+REGENERATE      STA HEAL_TYPE+1
+                JSR BIG_STATS_BOX
 
-RECYCLE			JSR DRAW_PICT
-				PictTextAt 180;84;"GIVE TREATMENT"
-				PictTextAt 198;93;"TO WHOM?"
-				PictEnd
+RECYCLE         JSR DRAW_PICT
+                PictTextAt 180;84;"GIVE TREATMENT"
+                PictTextAt 198;93;"TO WHOM?"
+                PictEnd
 
-HEAL_TYPE		LDA	#$FF				; modified
-				BNE	CIRCUITS
-				JSR	RESET_CHLIST
-				JMP	BOTH_TYPES
-CIRCUITS		JSR	RESET_CHRLIST
-				LDA	#robot*16
-				JSR	CSCAN_PROF
-BOTH_TYPES		LDX	#<NEED_HEAL
-				LDY	#>NEED_HEAL
-				JSR	CSCAN_COMMON
+HEAL_TYPE       LDA #$FF                ; modified
+                BNE CIRCUITS
+                JSR RESET_CHLIST
+                JMP BOTH_TYPES
+CIRCUITS        JSR RESET_CHRLIST
+                LDA #robot*16
+                JSR CSCAN_PROF
+BOTH_TYPES      LDX #<NEED_HEAL
+                LDY #>NEED_HEAL
+                JSR CSCAN_COMMON
 
-				JSR	PRE_ARROW
-				JSR	MENU_SELECT
-				CPX #7
-				BNE :NO_CANCEL
+                JSR PRE_ARROW
+                JSR MENU_SELECT
+                CPX #7
+                BNE :NO_CANCEL
                 JMP HIDE_BIG_STATS      ; return back to C.ISTATS.S
 
 :NO_CANCEL      JSR RT_START
 
-				JSR DRAW_PICT
-				PictTextAt 40;26-2;"DAMAGE TO HEAL:"
-				PictEnd
+                JSR DRAW_PICT
+                PictTextAt 40;26-2;"DAMAGE TO HEAL:"
+                PictEnd
 
                 LDA ITARGET_CHAR
                 JSR SET_CHAR
@@ -67,7 +67,7 @@ BOTH_TYPES		LDX	#<NEED_HEAL
                 DEX
                 BPL :2
 
-				JSR REG_UPDATE_FIRST
+                JSR REG_UPDATE_FIRST
 
                 ; set cursor based on target damage level
                 LDY #0
@@ -110,31 +110,31 @@ RBLINK          LDA #$10
                 JSR CHECK_ENTER
                 BNE :GETKEY
 
-:ENTER			LDA ITARGET_CHAR
+:ENTER          LDA ITARGET_CHAR
                 JSR SET_CHAR
                 LDX DVAL+1
                 LDY DVAL+0
                 JSR SET_DAMAGE_LEVEL
 
-				LDA ISOURCE_CHAR
+                LDA ISOURCE_CHAR
                 JSR SET_CHAR
                 LDX #<EVAL
                 LDY #>EVAL
                 JSR SET_ENERGY_LEVEL
 
-:CANCEL			JSR DRAW_PICT
-				PictClear 27;51;34;58
-				PictSwap $00;$31;$28;$00
-				PictEnd
+:CANCEL         JSR DRAW_PICT
+                PictClear 27;51;34;58
+                PictSwap $00;$31;$28;$00
+                PictEnd
                 RTS                     ; back to C.ISTATS.S
 
 :LEFT           LDA CURSOR
-				CMP #2
+                CMP #2
                 BEQ :GETKEY
                 JSR REG_CURSIT
                 DEC CURSOR
                 JSR REG_CURSIT
-	            JMP :GETKEY
+                JMP :GETKEY
 
 :RIGHT          LDA CURSOR
                 CMP #5
@@ -142,7 +142,7 @@ RBLINK          LDA #$10
                 JSR REG_CURSIT
                 INC CURSOR
                 JSR REG_CURSIT
-             	JMP :GETKEY
+                JMP :GETKEY
 
 :UP             LDA ITARGET_CHAR
                 JSR SET_CHAR
@@ -162,119 +162,119 @@ RBLINK          LDA #$10
                 JSR REG_UPDATE
                 JMP :GETKEY
 
-REG_CURSIT		LDY #26-2
-				LDX #126
-				LDA #119
-				JMP RT_CURSIT
+REG_CURSIT      LDY #26-2
+                LDX #126
+                LDA #119
+                JMP RT_CURSIT
 ;
 ; On exit:
 ;   C=1: successful heal
 ;   C=0: failed heal
 ;
-HEAL_DAMAGE		LDY CURSOR
+HEAL_DAMAGE     LDY CURSOR
                 LDX AM_OFFSETS,Y
-				SED
-				SEC
-				LDY #1
-:1				LDA DVAL,Y
-				SBC AMOUNTS,X
-				STA DNEW,Y
-				DEX
-				DEY
-				BPL :1
-				BCS HEAL_UNHEAL
-				CLD
+                SED
+                SEC
+                LDY #1
+:1              LDA DVAL,Y
+                SBC AMOUNTS,X
+                STA DNEW,Y
+                DEX
+                DEY
+                BPL :1
+                BCS HEAL_UNHEAL
+                CLD
                 RTS
 
-UNHEAL_DAMAGE	LDY CURSOR
+UNHEAL_DAMAGE   LDY CURSOR
                 LDX AM_OFFSETS,Y
-				SED
-				CLC
-				LDY #1
-:1				LDA DVAL,Y
-				ADC AMOUNTS,X
-				STA DNEW,Y
-				DEX
-				DEY
-				BPL :1
+                SED
+                CLC
+                LDY #1
+:1              LDA DVAL,Y
+                ADC AMOUNTS,X
+                STA DNEW,Y
+                DEX
+                DEY
+                BPL :1
 
-HEAL_UNHEAL		SEC
-				LDY #damagelev+1
-				LDX #1
-:1				LDA (CHARDL),Y
-				SBC DNEW,X
-				STA ENEW+1,X
-				DEY
-				DEX
-				BPL :1
-				LDA #0
-				STA ENEW+0
-				BCC :3
+HEAL_UNHEAL     SEC
+                LDY #damagelev+1
+                LDX #1
+:1              LDA (CHARDL),Y
+                SBC DNEW,X
+                STA ENEW+1,X
+                DEY
+                DEX
+                BPL :1
+                LDA #0
+                STA ENEW+0
+                BCC :3
 
-;				SEC
-				LDY #damagemax+1
-				LDX #1
-:2				LDA (CHARDL),Y
-				SBC DNEW,X
-				STA HNEW+1,X
-				DEY
-				DEX
-				BPL :2
-				LDA #0
-				STA HNEW+0
-:3				CLD
+;               SEC
+                LDY #damagemax+1
+                LDX #1
+:2              LDA (CHARDL),Y
+                SBC DNEW,X
+                STA HNEW+1,X
+                DEY
+                DEX
+                BPL :2
+                LDA #0
+                STA HNEW+0
+:3              CLD
                 RTS
 ;
 ; On exit:
 ;   C=1: successful energy drain
 ;   C=0: failed energy drain
 ;
-TAKE_ENERGY		LDA ISOURCE_CHAR
-				JSR SET_CHAR
+TAKE_ENERGY     LDA ISOURCE_CHAR
+                JSR SET_CHAR
 
-				SED
-				LDX #2
-				CLC
-:1				LDA ENEW,X
-				; 2 energy per 1 damage
-				ADC ENEW,X
-				STA ENEW,X
-				DEX
-				BPL :1
+                SED
+                LDX #2
+                CLC
+:1              LDA ENEW,X
+                ; 2 energy per 1 damage
+                ADC ENEW,X
+                STA ENEW,X
+                DEX
+                BPL :1
 
                 LDY #energylev+2
-				LDX #2
-				SEC
-				LDA #0
-:2				STA :MOD+1
-				LDA (CHARDL),Y
-				SBC ENEW,X
-				STA ENEW,X
-:MOD			ORA #$FF
-				DEY
-				DEX
-				BPL :2
-				BCC :5
-				TAX
-				BEQ :4
+                LDX #2
+                SEC
+                LDA #0
+:2              STA :MOD+1
+                LDA (CHARDL),Y
+                SBC ENEW,X
+                STA ENEW,X
+:MOD            ORA #$FF
+                DEY
+                DEX
+                BPL :2
+                BCC :5
+                TAX
+                BEQ :4
 
-				LDX #1
-:3				LDA DNEW,X
-				STA DVAL,X
-				DEX
-				BPL :3
-				DB	$24					; BIT ZP
-:4				CLC
-:5				CLD
-				RTS
+                LDX #1
+:3              LDA DNEW,X
+                STA DVAL,X
+                DEX
+                BPL :3
+                DB  $24                 ; BIT ZP
+:4              CLC
+:5              CLD
+                RTS
 
 REG_UPDATE_FIRST
-				LDA #$38				; SEC
-				BNE RUPDATE_CMN			; always
-REG_UPDATE      LDA #$18				; CLC
-RUPDATE_CMN		STA :FIRST_MOD
-				JSR SET_ELEFT
-				LDA #138-12
+                LDA #$38                ; SEC
+                BNE RUPDATE_CMN         ; always
+REG_UPDATE      LDA #$18                ; CLC
+RUPDATE_CMN     STA :FIRST_MOD
+                JSR SET_ELEFT
+                LDA #138-12
                 LDY #$0E
                 JSR :UPDATE
                 JSR SET_ERIGHT
@@ -282,7 +282,7 @@ RUPDATE_CMN		STA :FIRST_MOD
                 LDY #$26
                 ; fall through
 :UPDATE         PHA
-				JSR VMOVE_TO
+                JSR VMOVE_TO
                 JSR RT_DIFF_TEXT
 :FIRST_MOD      CLC
                 PLA
@@ -298,13 +298,13 @@ RUPDATE_CMN		STA :FIRST_MOD
                 JMP DRAW_TEXT
 :1              RTS
 
-NEED_HEAL		LDY	#damagelev
-				LDX	#$00
-				LDA	(CHARDL),Y
-				BNE	:1
-				INY
-				LDA	(CHARDL),Y
-				BNE	:1
-				INX
-:1				TXA
-				RTS
+NEED_HEAL       LDY #damagelev
+                LDX #$00
+                LDA (CHARDL),Y
+                BNE :1
+                INY
+                LDA (CHARDL),Y
+                BNE :1
+                INX
+:1              TXA
+                RTS

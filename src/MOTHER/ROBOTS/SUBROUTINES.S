@@ -41,8 +41,8 @@ CHAR_DEF        DB  $08
                 DW  :CHAR_CURS
 
 :CHAR_CURS      LDY :YPNTS,X
-                LDX	#$03
-				JMP	DRAW_ARROW
+                LDX #$03
+                JMP DRAW_ARROW
 
 :YPNTS          DB  128,137,146
                 DB  155,164,173
